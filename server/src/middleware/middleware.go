@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	gamecontroller "../controllers"
+	"controllers"
 )
 
 // DB connection string

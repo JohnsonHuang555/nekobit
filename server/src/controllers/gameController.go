@@ -33,3 +33,13 @@ func GetAllGames(collection *mongo.Collection) []primitive.M {
 	cur.Close(context.Background())
 	return results
 }
+
+// GetGameInfo
+func GetGameInfo(collection *mongo.Collection, gameName string) {
+	result := collection.FindOne(context.Background(), bson.M{"name": gameName})
+	var t bson.M
+	e := result.Decode(&t)
+	if e != nil {
+		log.Fatal(e)
+	}
+}
