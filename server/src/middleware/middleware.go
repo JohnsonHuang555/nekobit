@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/gorilla/websocket"
 
 	"controllers/gamecontroller"
 	"controllers/roomcontroller"
@@ -63,6 +64,27 @@ func init() {
 	fmt.Println("Collection instance created!")
 }
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize: 1024,
+	WriteBufferSize: 1024,
+}
+
+func reader(conn *websocket.Conn) {
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		log.Println(string(p))
+		if err := conn.WriteMessage(messageType, p); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+
 // GetAllGames 取得所有遊戲
 func GetAllGames(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
@@ -89,6 +111,7 @@ func GetRooms(w http.ResponseWriter, r*http.Request) {
 	json.NewEncoder(w).Encode(payload)
 }
 
+// GetRoomInfo 取得房間資訊
 func GetRoomInfo(w http.ResponseWriter, r*http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -97,6 +120,7 @@ func GetRoomInfo(w http.ResponseWriter, r*http.Request) {
 	json.NewEncoder(w).Encode(payload)
 }
 
+// CreateRoom 創建新房間
 func CreateRoom(w http.ResponseWriter, r*http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -106,4 +130,19 @@ func CreateRoom(w http.ResponseWriter, r*http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&room)
 	roomcontroller.CreateRoom(roomCollection, room)
 	json.NewEncoder(w).Encode(room)
+}
+
+// WsEndpoint
+func WsEndpoint(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+
+	ws, err := upgrader.Upgrade(w, r, nil)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("Client Successfully connected...")
+
+	reader(ws)
 }
