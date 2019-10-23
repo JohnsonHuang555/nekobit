@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { RouteProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import GameApi from '../api/GameApi';
 
-const Home = (props:RouteProps) => {
+type Game = {
+  _id: string;
+  ImgUrl: string;
+  Name: string
+}
+
+const Home = (props: RouteComponentProps) => {
   const [games, setGames] = useState([]);
 
   useEffect(() => {
@@ -11,16 +17,20 @@ const Home = (props:RouteProps) => {
       setGames(data);
     }
     getAllGames();
-  }, [props])
+  }, [props]);
+
+  const chooseGameHandler = (gameName: string) => {
+    props.history.push(`/game/${gameName}`);
+  };
 
   return (
-    <div className="container-fluid game-container">
+    <div className="container-fluid">
       <div className="row">
-        {games.map((g:any) => (
-          <div className="col-md-2" key={g._id}>
-            <div className="game-card">
-              <img className="game-image" src={g.imgUrl} alt="象棋" width="100%" />
-              <div className="game-name">{g.name}</div>
+        {games.map((game: Game) => (
+          <div className="col-md-2" key={game._id}>
+            <div className="game-card" onClick={() => chooseGameHandler(game.Name)}>
+              <img className="game-image" src={game.ImgUrl} alt="象棋" width="100%" />
+              <div className="game-name">{game.Name}</div>
             </div>
           </div>
         ))}

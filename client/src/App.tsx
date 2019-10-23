@@ -21,16 +21,10 @@ const App: React.FC = () => {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/newroom" component={NewRoom} />
-          <Route path="/game/:id" component={Game} />
+          <Route path="/game/:gameName" component={Game} />
           <Route path="/room/:id" component={Room} />
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
-          {/* <UserContextProvider>
-            <GameContextProvider>
-              <RoomContextProvider>
-              </RoomContextProvider>
-            </GameContextProvider>
-          </UserContextProvider> */}
         </Switch>
       </div>
     </BrowserRouter>
