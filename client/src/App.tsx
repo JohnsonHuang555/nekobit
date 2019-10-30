@@ -11,21 +11,25 @@ import SignUp from './containers/SignUp';
 import Game from './containers/Game';
 import Room from './containers/Room';
 
+import AppContextProvider from './contexts/AppContext';
+
 library.add(faCheckSquare, faUser, faLock);
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="App">
-        <Navbar />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/newroom" component={NewRoom} />
-          <Route path="/game/:gameName" component={Game} />
-          <Route path="/room/:id" component={Room} />
-          <Route path="/signin" component={SignIn} />
-          <Route path="/signup" component={SignUp} />
-        </Switch>
+        <AppContextProvider>
+          <Navbar />
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/newroom" component={NewRoom} />
+            <Route path="/game/:gameName" component={Game} />
+            <Route path="/room/:id" component={Room} />
+            <Route path="/signin" component={SignIn} />
+            <Route path="/signup" component={SignUp} />
+          </Switch>
+        </AppContextProvider>
       </div>
     </BrowserRouter>
   );

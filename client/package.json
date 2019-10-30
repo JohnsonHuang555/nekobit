@@ -12,7 +12,8 @@
     "react-dom": "^16.10.1",
     "react-router-dom": "^5.1.1",
     "react-scripts": "3.1.2",
-    "typescript": "3.6.3"
+    "typescript": "3.6.3",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,6 +42,7 @@
     "@types/node-sass": "^4.11.0",
     "@types/react": "16.9.3",
     "@types/react-dom": "16.9.1",
-    "@types/react-router-dom": "^5.1.0"
+    "@types/react-router-dom": "^5.1.0",
+    "@types/uuid": "^3.4.5"
   }
 }

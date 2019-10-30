@@ -1,4 +1,4 @@
-import api from './Setting';
+import api from '../utils/ApiSetting';
 
 interface User {
   account: string;

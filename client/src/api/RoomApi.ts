@@ -1,4 +1,4 @@
-import api from './Setting';
+import api from '../utils/ApiSetting';
 
 export default {
   getRooms(gameName: string) {

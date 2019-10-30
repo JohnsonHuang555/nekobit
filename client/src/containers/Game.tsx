@@ -3,39 +3,15 @@ import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
+import { GameProps } from '../types/Game';
+import { RoomProps } from '../types/Room';
 
-type TParams = {
+type ParamsProps = {
   gameName: string;
 }
 
-type GameInfo = {
-  _id: string;
-  Name: string;
-  MaxPlayers: number;
-  Rules: [];
-  Brief: string;
-  Description: string;
-  ImgUrl: string;
-  EstimateTime: number;
-  CreateDate: string;
-}
-
-type Room = {
-  _id: string;
-  UserList: [];
-  Title: string;
-  Mode: number;
-  IsLock: boolean;
-  CurrentPlayer: number;
-  MaxPlayers: number;
-  CreateDate: string;
-  NowTurn: number;
-  GameStatus: number;
-  GameName: string;
-}
-
-const Game = (props: RouteComponentProps<TParams>) => {
-  const [gameInfo, setGameInfo] = useState<GameInfo>({
+const Game = (props: RouteComponentProps<ParamsProps>) => {
+  const [gameInfo, setGameInfo] = useState<GameProps>({
     _id: "",
     Name: "",
     MaxPlayers: 0,
@@ -44,10 +20,10 @@ const Game = (props: RouteComponentProps<TParams>) => {
     Description: "",
     ImgUrl: "",
     EstimateTime: 0,
-    CreateDate: ""
+    CreatedDate: ""
   });
 
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const [rooms, setRooms] = useState<RoomProps[]>([]);
 
   useEffect(() => {
     const gameName = props.match.params.gameName;
@@ -64,7 +40,7 @@ const Game = (props: RouteComponentProps<TParams>) => {
     getRooms();
   }, [props]);
 
-  const roomList = rooms.map((room: Room) => {
+  const roomList = rooms.map((room: RoomProps) => {
     return (
       <div className="room-info" key={room._id}>
         <div className="title">{room.Title}</div>
