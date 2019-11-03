@@ -128,8 +128,8 @@ func CreateRoom(w http.ResponseWriter, r*http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	var room roomModel.Room
 	_ = json.NewDecoder(r.Body).Decode(&room)
-	roomcontroller.CreateRoom(roomCollection, room)
-	json.NewEncoder(w).Encode(room)
+	payload := roomcontroller.CreateRoom(roomCollection, room)
+	json.NewEncoder(w).Encode(payload)
 }
 
 // WsEndpoint

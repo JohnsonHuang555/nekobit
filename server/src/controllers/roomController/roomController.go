@@ -2,8 +2,8 @@ package roomcontroller
 
 import (
 	"context"
-	"log"
 	"fmt"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -12,7 +12,7 @@ import (
 	"models/roomModel"
 )
 
-// GetAllGames from the DB and return it
+// GetRooms from the DB and return it
 func GetRooms(collection *mongo.Collection, gameName string) []roomModel.Room {
 	cur, err := collection.Find(context.Background(), bson.M{"gamename": gameName})
 	if err != nil {
@@ -48,11 +48,12 @@ func GetRoomInfo(collection *mongo.Collection, roomId string) roomModel.Room {
 	return room
 }
 
-func CreateRoom(collection *mongo.Collection, room roomModel.Room) {
+func CreateRoom(collection *mongo.Collection, room roomModel.Room) interface{} {
 	createResult, err := collection.InsertOne(context.Background(), room)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("Create room", createResult.InsertedID)
+	return createResult.InsertedID
 }

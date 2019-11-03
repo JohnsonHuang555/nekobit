@@ -1,19 +1,24 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import uuid from 'uuid';
 import { RouteComponentProps } from 'react-router';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
-import { GameProps } from '../types/Game';
 import LoginModal from '../components/LoginModal';
-import { AppContext } from '../contexts/AppContext';
+import { GameProps } from '../types/Game';
+import { User } from '../types/User';
 
 const NewRoom = (props: RouteComponentProps) => {
-  const { user, fastLogin } = useContext(AppContext);
-
   const [roomTitle, setRoomTitle] = useState('');
   const [roomPassword, setRoomPassword] = useState('');
   const [gameName, setGameName] = useState('');
   const [games, setGames] = useState([]);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const [userInfo, setUserInfo] = useState<User>({
+    id: "",
+    name: "",
+    account: "",
+    isLogin: false
+  });
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -21,27 +26,41 @@ const NewRoom = (props: RouteComponentProps) => {
       setGames(data);
     }
     getAllGames();
-  }, [props]);
 
-  useEffect(() => {
-    if (!user.isLogin) {
-      setIsShowLoginModal(true)
+    const user = localStorage.getItem('userInfo');
+    if (!user) {
+      setIsShowLoginModal(true);
+    } else {
+      setUserInfo(JSON.parse(user))
     }
-  }, [user])
+  }, [props]);
 
   const loadedGames = games.map((game: GameProps) => <option key={game._id}>{game.Name}</option>);
 
-  const submitHandler = (e: any) => {
+  const submitHandler = async (e: any) => {
     e.preventDefault();
-    RoomApi.createRoom({
+    const roomId = await RoomApi.createRoom({
       gameName,
-      userList: [],
+      userList: [
+        {
+          id: userInfo.id,
+          name: userInfo.name,
+        }
+      ],
       title: roomTitle,
     });
+    props.history.push(`/room/${roomId}`);
   };
 
   const onLogin = (name: string) => {
-    fastLogin(name)
+    const userData = {
+      name,
+      id: uuid(),
+      account: "",
+      isLogin: true,
+    }
+    localStorage.setItem('userInfo', JSON.stringify(userData));
+    setIsShowLoginModal(false);
   }
 
   return (
