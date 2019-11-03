@@ -1,6 +1,6 @@
-export type RoomProps = {
+export type TRoom = {
   _id: string;
-  UserList: [];
+  UserList: TRoomUser[];
   Title: string;
   Mode: number;
   IsLock: boolean;
@@ -10,4 +10,12 @@ export type RoomProps = {
   NowTurn: number;
   GameStatus: number;
   GameName: string;
+}
+
+export type TRoomUser = {
+  Id: string;
+  Name: string;
+  IsMaster: boolean;
+  IsReady: boolean;
+  PlayOrder: number;
 }

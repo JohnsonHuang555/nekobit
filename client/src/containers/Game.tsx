@@ -3,15 +3,15 @@ import { RouteComponentProps } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
-import { GameProps } from '../types/Game';
-import { RoomProps } from '../types/Room';
+import { TGame } from '../types/Game';
+import { TRoom } from '../types/Room';
 
-type ParamsProps = {
+type Params = {
   gameName: string;
 }
 
-const Game = (props: RouteComponentProps<ParamsProps>) => {
-  const [gameInfo, setGameInfo] = useState<GameProps>({
+const Game = (props: RouteComponentProps<Params>) => {
+  const [gameInfo, setGameInfo] = useState<TGame>({
     _id: "",
     Name: "",
     MaxPlayers: 0,
@@ -23,7 +23,7 @@ const Game = (props: RouteComponentProps<ParamsProps>) => {
     CreatedDate: ""
   });
 
-  const [rooms, setRooms] = useState<RoomProps[]>([]);
+  const [rooms, setRooms] = useState<TRoom[]>([]);
 
   useEffect(() => {
     const gameName = props.match.params.gameName;
@@ -40,7 +40,7 @@ const Game = (props: RouteComponentProps<ParamsProps>) => {
     getRooms();
   }, [props]);
 
-  const roomList = rooms.map((room: RoomProps) => {
+  const roomList = rooms.map((room: TRoom) => {
     return (
       <div className="room-info" key={room._id}>
         <div className="title">{room.Title}</div>

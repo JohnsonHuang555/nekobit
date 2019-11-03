@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { AppContext } from '../contexts/AppContext';
-import { GameProps } from '../types/Game';
+import { TGame } from '../types/Game';
 
 const Home = (props: RouteComponentProps) => {
   const { games } = useContext(AppContext);
@@ -13,7 +13,7 @@ const Home = (props: RouteComponentProps) => {
   return (
     <div className="container-fluid">
       <div className="row">
-        {games.map((game: GameProps) => (
+        {games.map((game: TGame) => (
           <div className="col-md-2" key={game._id}>
             <div className="game-card" onClick={() => chooseGameHandler(game.Name)}>
               <img className="game-image" src={game.ImgUrl} alt="象棋" width="100%" />

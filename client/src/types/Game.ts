@@ -1,4 +1,4 @@
-export type GameProps = {
+export type TGame = {
   _id: string;
   ImgUrl: string;
   Name: string;

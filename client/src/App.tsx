@@ -1,7 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCheckSquare, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheckSquare,
+  faUser,
+  faLock,
+  faCrown,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Navbar from './components/Navbar';
 import Home from './containers/Home';
@@ -13,7 +18,7 @@ import Room from './containers/Room';
 
 import AppContextProvider from './contexts/AppContext';
 
-library.add(faCheckSquare, faUser, faLock);
+library.add(faCheckSquare, faUser, faLock, faCrown);
 
 const App: React.FC = () => {
   return (

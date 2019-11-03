@@ -4,8 +4,8 @@ import { RouteComponentProps } from 'react-router';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
 import LoginModal from '../components/LoginModal';
-import { GameProps } from '../types/Game';
-import { User } from '../types/User';
+import { TGame } from '../types/Game';
+import { TUser } from '../types/Account';
 
 const NewRoom = (props: RouteComponentProps) => {
   const [roomTitle, setRoomTitle] = useState('');
@@ -13,7 +13,7 @@ const NewRoom = (props: RouteComponentProps) => {
   const [gameName, setGameName] = useState('');
   const [games, setGames] = useState([]);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
-  const [userInfo, setUserInfo] = useState<User>({
+  const [userInfo, setUserInfo] = useState<TUser>({
     id: "",
     name: "",
     account: "",
@@ -35,7 +35,7 @@ const NewRoom = (props: RouteComponentProps) => {
     }
   }, [props]);
 
-  const loadedGames = games.map((game: GameProps) => <option key={game._id}>{game.Name}</option>);
+  const loadedGames = games.map((game: TGame) => <option key={game._id}>{game.Name}</option>);
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
@@ -43,8 +43,11 @@ const NewRoom = (props: RouteComponentProps) => {
       gameName,
       userList: [
         {
-          id: userInfo.id,
-          name: userInfo.name,
+          Id: userInfo.id,
+          Name: userInfo.name,
+          IsMaster: true,
+          IsReady: true,
+          PlayOrder: 0
         }
       ],
       title: roomTitle,

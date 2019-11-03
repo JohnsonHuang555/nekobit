@@ -5,6 +5,9 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type user struct {
 	Id string
 	Name string
+	IsMaster bool
+	IsReady bool
+	PlayOrder int
 }
 
 type Room struct {

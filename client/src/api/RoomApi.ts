@@ -6,6 +6,9 @@ export default {
   },
   // FIXME:Type define
   createRoom(roomData: any) {
-    return api.execute('post', '/createRoom', roomData)
+    return api.execute('post', '/createRoom', roomData);
+  },
+  getRoomInfo(id: string) {
+    return api.execute('get', `/getRoomInfo/${id}`);
   }
 }
