@@ -1,4 +1,4 @@
-package gameModel
+package models
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -10,7 +10,7 @@ type Game struct {
 	Rules        []string
 	Brief        string
 	Description  string
-	ImgUrl       string
+	ImgURL       string
 	EstimateTime int
 	CreatedDate  string
 }

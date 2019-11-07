@@ -15,13 +15,17 @@ const AppContextProvider = (props: any) => {
     getAllGames();
 
     const connectSocket = () => {
-      let ws = new WebSocket("ws://localhost:8080/ws");
+      let ws = new WebSocket("ws://localhost:8080/ws/1");
 
       ws.onopen = () => {
         console.log("Successfully Connected");
         setWs(ws);
         ws.send("Hi~~ from client")
       };
+
+      ws.onmessage = (msg) => {
+        console.log(msg);
+      }
 
       ws.onclose = (event) => {
         console.log("Socket Closed Connection: ", event)

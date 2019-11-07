@@ -1,4 +1,4 @@
-package gamecontroller
+package controllers
 
 import (
 	"context"
@@ -7,19 +7,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"models/gameModel"
+	"server/models"
 )
 
 // GetAllGames from the DB and return it
-func GetAllGames(collection *mongo.Collection) []gameModel.Game {
+func GetAllGames(collection *mongo.Collection) []models.Game {
 	cur, err := collection.Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var results []gameModel.Game
+	var results []models.Game
 	for cur.Next(context.Background()) {
-		var result gameModel.Game
+		var result models.Game
 		e := cur.Decode(&result)
 		if e != nil {
 			log.Fatal(e)
@@ -36,8 +36,8 @@ func GetAllGames(collection *mongo.Collection) []gameModel.Game {
 }
 
 // GetGameInfo a
-func GetGameInfo(collection *mongo.Collection, gameName string) gameModel.Game {
-	var game gameModel.Game
+func GetGameInfo(collection *mongo.Collection, gameName string) models.Game {
+	var game models.Game
 	filter := bson.M{"name": gameName}
 	err := collection.FindOne(context.Background(), filter).Decode(&game)
 	if err != nil {

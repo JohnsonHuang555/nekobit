@@ -10,12 +10,9 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"github.com/gorilla/websocket"
 
-	"controllers/gamecontroller"
-	"controllers/roomcontroller"
-
-	"models/roomModel"
+	"server/controllers"
+	"server/models"
 )
 
 // DB connection string
@@ -64,32 +61,11 @@ func init() {
 	fmt.Println("Collection instance created!")
 }
 
-var upgrader = websocket.Upgrader{
-	ReadBufferSize: 1024,
-	WriteBufferSize: 1024,
-}
-
-func reader(conn *websocket.Conn) {
-	for {
-		messageType, p, err := conn.ReadMessage()
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		log.Println(string(p))
-		if err := conn.WriteMessage(messageType, p); err != nil {
-			log.Println(err)
-			return
-		}
-	}
-}
-
 // GetAllGames 取得所有遊戲
 func GetAllGames(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	payload := gamecontroller.GetAllGames(gameCollection)
+	payload := controllers.GetAllGames(gameCollection)
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -98,51 +74,36 @@ func GetGameInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := gamecontroller.GetGameInfo(gameCollection, params["name"])
+	payload := controllers.GetGameInfo(gameCollection, params["name"])
 	json.NewEncoder(w).Encode(payload)
 }
 
 // GetRooms 取得該遊戲的所有房間
-func GetRooms(w http.ResponseWriter, r*http.Request) {
+func GetRooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := roomcontroller.GetRooms(roomCollection, params["name"])
+	payload := controllers.GetRooms(roomCollection, params["name"])
 	json.NewEncoder(w).Encode(payload)
 }
 
 // GetRoomInfo 取得房間資訊
-func GetRoomInfo(w http.ResponseWriter, r*http.Request) {
+func GetRoomInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := roomcontroller.GetRoomInfo(roomCollection, params["id"])
+	payload := controllers.GetRoomInfo(roomCollection, params["id"])
 	json.NewEncoder(w).Encode(payload)
 }
 
 // CreateRoom 創建新房間
-func CreateRoom(w http.ResponseWriter, r*http.Request) {
+func CreateRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	var room roomModel.Room
+	var room models.Room
 	_ = json.NewDecoder(r.Body).Decode(&room)
-	payload := roomcontroller.CreateRoom(roomCollection, room)
+	payload := controllers.CreateRoom(roomCollection, room)
 	json.NewEncoder(w).Encode(payload)
-}
-
-// WsEndpoint
-func WsEndpoint(w http.ResponseWriter, r *http.Request) {
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-
-	ws, err := upgrader.Upgrade(w, r, nil)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	log.Println("Client Successfully connected...")
-
-	reader(ws)
 }

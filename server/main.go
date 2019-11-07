@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"router"
+	"server/router"
 )
 
 func main() {

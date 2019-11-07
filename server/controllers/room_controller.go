@@ -1,4 +1,4 @@
-package roomcontroller
+package controllers
 
 import (
 	"context"
@@ -9,19 +9,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"models/roomModel"
+	"server/models"
 )
 
 // GetRooms from the DB and return it
-func GetRooms(collection *mongo.Collection, gameName string) []roomModel.Room {
+func GetRooms(collection *mongo.Collection, gameName string) []models.Room {
 	cur, err := collection.Find(context.Background(), bson.M{"gamename": gameName})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var results []roomModel.Room
+	var results []models.Room
 	for cur.Next(context.Background()) {
-		var result roomModel.Room
+		var result models.Room
 		e := cur.Decode(&result)
 		if e != nil {
 			log.Fatal(e)
@@ -37,9 +37,10 @@ func GetRooms(collection *mongo.Collection, gameName string) []roomModel.Room {
 	return results
 }
 
-func GetRoomInfo(collection *mongo.Collection, roomId string) roomModel.Room {
-	var room roomModel.Room
-	id, _ := primitive.ObjectIDFromHex(roomId)
+// GetRoomInfo get room info
+func GetRoomInfo(collection *mongo.Collection, roomID string) models.Room {
+	var room models.Room
+	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
 	err := collection.FindOne(context.Background(), filter).Decode(&room)
 	if err != nil {
@@ -48,7 +49,8 @@ func GetRoomInfo(collection *mongo.Collection, roomId string) roomModel.Room {
 	return room
 }
 
-func CreateRoom(collection *mongo.Collection, room roomModel.Room) interface{} {
+// CreateRoom create a room
+func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 	createResult, err := collection.InsertOne(context.Background(), room)
 	if err != nil {
 		log.Fatal(err)

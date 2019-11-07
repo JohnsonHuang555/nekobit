@@ -16,7 +16,7 @@ const Home = (props: RouteComponentProps) => {
         {games.map((game: TGame) => (
           <div className="col-md-2" key={game._id}>
             <div className="game-card" onClick={() => chooseGameHandler(game.Name)}>
-              <img className="game-image" src={game.ImgUrl} alt="象棋" width="100%" />
+              <img className="game-image" src={game.ImgURL} alt="象棋" width="100%" />
               <div className="game-name">{game.Name}</div>
             </div>
           </div>

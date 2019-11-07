@@ -18,7 +18,7 @@ const Game = (props: RouteComponentProps<Params>) => {
     Rules: [],
     Brief: "",
     Description: "",
-    ImgUrl: "",
+    ImgURL: "",
     EstimateTime: 0,
     CreatedDate: ""
   });
@@ -57,7 +57,7 @@ const Game = (props: RouteComponentProps<Params>) => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-3">
-          <img src={gameInfo.ImgUrl} alt={gameInfo.Name} width="100%" />
+          <img src={gameInfo.ImgURL} alt={gameInfo.Name} width="100%" />
           <h2>{gameInfo.Name}</h2>
           <p>{gameInfo.Description}</p>
           <FontAwesomeIcon icon="user" className="mr-2" />

@@ -1,6 +1,6 @@
 export type TGame = {
   _id: string;
-  ImgUrl: string;
+  ImgURL: string;
   Name: string;
   Brief: string;
   Description: string;
