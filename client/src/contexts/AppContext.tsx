@@ -20,7 +20,11 @@ const AppContextProvider = (props: any) => {
       ws.onopen = () => {
         console.log("Successfully Connected");
         setWs(ws);
-        ws.send("Hi~~ from client")
+        ws.send(JSON.stringify({
+          sender: "johnson",
+          event: "123",
+          content: "456"
+        }))
       };
 
       ws.onmessage = (msg) => {
