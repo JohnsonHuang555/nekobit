@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/modal.scss';
+import '../assets/styles/modal.scss';
 
 type ModalProps = {
   show: boolean;
