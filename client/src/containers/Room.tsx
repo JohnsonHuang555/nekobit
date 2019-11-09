@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { RouteComponentProps } from 'react-router';
 import uuid from 'uuid';
 import RoomApi from '../api/RoomApi';
@@ -6,6 +6,7 @@ import LoginModal from '../components/LoginModal';
 import RoomUser from '../components/RoomUser';
 import { TRoom, TRoomUser } from '../types/Room';
 import { TUser } from '../types/Account';
+import { AppContext } from '../contexts/AppContext';
 import '../assets/styles/room/room.scss';
 
 type Params = {
@@ -13,6 +14,7 @@ type Params = {
 }
 
 const Room = (props: RouteComponentProps<Params>) => {
+  const { changeChannel, wsRoom } = useContext(AppContext);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
 
   const [roomInfo, setRoomInfo] = useState<TRoom>({
@@ -43,9 +45,40 @@ const Room = (props: RouteComponentProps<Params>) => {
     if (!user) {
       setIsShowLoginModal(true);
     } else {
-      setUserInfo(JSON.parse(user))
+      setUserInfo(JSON.parse(user));
+
+      // 切換 ws channel
+      changeChannel(roomId, {
+        sender: JSON.parse(user).id,
+        event: "joinRoom",
+        content: "johnson"
+      });
     }
   }, [props]);
+
+  useEffect(() => {
+    if (wsRoom) {
+      wsRoom.onmessage = (msg: any) => {
+        const data = JSON.parse(msg.data)
+        if (data.event === 'joinRoom') {
+          console.log(1234)
+          let currentUserList = roomInfo.UserList
+          currentUserList.push({
+            Id: data.sender,
+            Name: data.content,
+            IsMaster: false,
+            IsReady: false,
+            PlayOrder: 0
+          })
+          setRoomInfo({
+            ...roomInfo,
+            UserList: currentUserList
+          })
+        }
+        console.log(JSON.parse(msg.data));
+      };
+    }
+  }, [wsRoom])
 
   const startGame = () => {
     // socket
@@ -82,8 +115,8 @@ const Room = (props: RouteComponentProps<Params>) => {
         <div className="row">
           <div className="col-md-3">
             {
-              roomInfo.UserList.map((user: TRoomUser) => {
-                return <RoomUser key={user.Id} user={user}/>
+              roomInfo.UserList.map((user: TRoomUser, index) => {
+                return <RoomUser key={index} user={user}/>
               })
             }
             {

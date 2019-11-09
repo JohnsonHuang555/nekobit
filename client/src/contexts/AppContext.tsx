@@ -1,11 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react';
 import GameApi from '../api/GameApi';
+import { TSocket } from '../types/Socket';
 
 export const AppContext = createContext<any>(null);
 
 const AppContextProvider = (props: any) => {
   const [games, setGames] = useState([]);
-  const [ws, setWs] = useState<WebSocket>();
+  // const [wsLobby, setWsLobby] = useState<WebSocket>();
+  const [wsRoom, setWsRoom] = useState<WebSocket>();
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -14,37 +16,46 @@ const AppContextProvider = (props: any) => {
     };
     getAllGames();
 
-    const connectSocket = () => {
-      let ws = new WebSocket("ws://localhost:8080/ws/1");
+    // const connectSocket = () => {
+    //   let ws = new WebSocket("ws://localhost:8080/ws/lobby");
 
-      ws.onopen = () => {
-        console.log("Successfully Connected");
-        setWs(ws);
-        ws.send(JSON.stringify({
-          sender: "johnson",
-          event: "123",
-          content: "456"
-        }))
-      };
-
-      ws.onmessage = (msg) => {
-        console.log(msg);
-      }
-
-      ws.onclose = (event) => {
-        console.log("Socket Closed Connection: ", event)
-      };
-
-      ws.onerror = (error) => {
-        console.log("Socket Error: ", error)
-        ws.close();
-      };
-    };
-    connectSocket();
+    //   ws.onopen = () => {
+    //     console.log("Successfully Connected in lobby");
+    //     setWsLobby(ws);
+    //   };
+    //   ws.onclose = (event) => {
+    //     console.log("Socket Closed Connection: ", event)
+    //   };
+    //   ws.onerror = (error) => {
+    //     console.log("Socket Error: ", error)
+    //     ws.close();
+    //   };
+    // };
+    // connectSocket();
   }, []);
 
+  const changeChannel = (channel: string, socketData: TSocket) => {
+    let roomWs = new WebSocket(`ws://localhost:8080/ws/${channel}`);
+    roomWs.onopen = () => {
+      console.log(`Successfully Connected in ${channel}`);
+      setWsRoom(roomWs);
+      roomWs.send(JSON.stringify({
+        sender: socketData.sender,
+        event: socketData.event,
+        content: socketData.content
+      }))
+    };
+    roomWs.onclose = (event) => {
+      console.log("Socket Closed Connection: ", event)
+    };
+    roomWs.onerror = (error) => {
+      console.log("Socket Error: ", error)
+      roomWs.close();
+    };
+  }
+
   return (
-    <AppContext.Provider value={{ ws, games }}>
+    <AppContext.Provider value={{ games, changeChannel, wsRoom }}>
       {props.children}
     </AppContext.Provider>
   )
