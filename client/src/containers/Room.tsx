@@ -6,7 +6,7 @@ import LoginModal from '../components/LoginModal';
 import RoomUser from '../components/RoomUser';
 import { TRoom, TRoomUser } from '../types/Room';
 import { TUser } from '../types/Account';
-import '../styles/room/room.scss';
+import '../assets/styles/room/room.scss';
 
 type Params = {
   id: string;
