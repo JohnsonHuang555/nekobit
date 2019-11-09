@@ -2,6 +2,10 @@ import React, { useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { AppContext } from '../contexts/AppContext';
 import { TGame } from '../types/Game';
+import Swiper from 'react-id-swiper';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import '../assets/styles/home.scss';
 
 const Home = (props: RouteComponentProps) => {
   const { games } = useContext(AppContext);
@@ -10,17 +14,49 @@ const Home = (props: RouteComponentProps) => {
     props.history.push(`/game/${gameName}`);
   };
 
+  const SwiperParams = {
+    slidesPerView: 4,
+    spaceBetween: 30,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      dynamicBullets: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev'
+    },
+  };
+
   return (
-    <div className="container-fluid">
-      <div className="row">
-        {games.map((game: TGame) => (
-          <div className="col-md-2" key={game._id}>
-            <div className="game-card" onClick={() => chooseGameHandler(game.Name)}>
-              <img className="game-image" src={game.ImgURL} alt="象棋" width="100%" />
-              <div className="game-name">{game.Name}</div>
-            </div>
-          </div>
-        ))}
+    <div id="home">
+      <div className="container">
+        <div className="section-heading">
+          <h2>All Games</h2>
+        </div>
+        <div className="lobby_box">
+          <Swiper {...SwiperParams} shouldSwiperUpdate>
+            {games.map((game: TGame) => (
+              <div key={game._id}>
+                <div className="game-card">
+                  <img className="game-image" src={game.ImgURL} alt="象棋" width="100%" />
+                  <div className="game-block">
+                    <div className="center">
+                      <h2>{game.Name}</h2>
+                      <button className="game-enter" onClick={() => chooseGameHandler(game.Name)}>Enter</button>
+                      <div className="rates">
+                        <div className="stars">
+                          <FontAwesomeIcon icon="star" />
+                          <b>9.5 分</b>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   )

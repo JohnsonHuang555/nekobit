@@ -6,7 +6,9 @@ import {
   faUser,
   faLock,
   faCrown,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons';
+import './assets/styles/theme.scss';
 
 import Navbar from './components/Navbar';
 import Home from './containers/Home';
@@ -18,7 +20,13 @@ import Room from './containers/Room';
 
 import AppContextProvider from './contexts/AppContext';
 
-library.add(faCheckSquare, faUser, faLock, faCrown);
+library.add(
+  faCheckSquare,
+  faUser,
+  faLock,
+  faCrown,
+  faStar
+);
 
 const App: React.FC = () => {
   return (
