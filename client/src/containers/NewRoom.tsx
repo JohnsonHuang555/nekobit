@@ -35,7 +35,7 @@ const NewRoom = (props: RouteComponentProps) => {
     }
   }, [props]);
 
-  const loadedGames = games.map((game: TGame) => <option key={game._id}>{game.Name}</option>);
+  const loadedGames = games.map((game: TGame) => <option key={game._id}>{game.name}</option>);
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
@@ -43,11 +43,11 @@ const NewRoom = (props: RouteComponentProps) => {
       gameName,
       userList: [
         {
-          Id: userInfo.id,
-          Name: userInfo.name,
-          IsMaster: true,
-          IsReady: true,
-          PlayOrder: 0
+          id: userInfo.id,
+          name: userInfo.name,
+          isMaster: true,
+          isReady: true,
+          playOrder: 0
         }
       ],
       title: roomTitle,

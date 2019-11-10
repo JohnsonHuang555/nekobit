@@ -13,7 +13,7 @@ const RoomUser = (props: RoomUserProps) => {
   } = props;
   return (
     <div className="user">
-      <div className="name">{user.Name}</div>
+      <div className="name">{user.name}</div>
       <FontAwesomeIcon icon="crown" />
     </div>
   )

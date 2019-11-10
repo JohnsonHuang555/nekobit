@@ -1,21 +1,21 @@
 export type TRoom = {
   _id: string;
-  UserList: TRoomUser[];
-  Title: string;
-  Mode: number;
-  IsLock: boolean;
-  CurrentPlayer: number;
-  MaxPlayers: number;
-  CreateDate: string;
-  NowTurn: number;
-  GameStatus: number;
-  GameName: string;
+  userList: TRoomUser[];
+  title: string;
+  mode: number;
+  isLock: boolean;
+  currentPlayer: number;
+  maxPlayers: number;
+  createDate: string;
+  nowTurn: number;
+  gameStatus: number;
+  gameName: string;
 }
 
 export type TRoomUser = {
-  Id: string;
-  Name: string;
-  IsMaster: boolean;
-  IsReady: boolean;
-  PlayOrder: number;
+  id: string;
+  name: string;
+  isMaster: boolean;
+  isReady: boolean;
+  playOrder: number;
 }

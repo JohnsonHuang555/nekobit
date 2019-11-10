@@ -19,16 +19,16 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   const [roomInfo, setRoomInfo] = useState<TRoom>({
     _id: "",
-    UserList: [],
-    Title: "",
-    Mode: 0,
-    IsLock: false,
-    CurrentPlayer: 0,
-    MaxPlayers: 0,
-    CreateDate: "",
-    NowTurn: 0,
-    GameStatus: 0,
-    GameName: ""
+    userList: [],
+    title: "",
+    mode: 0,
+    isLock: false,
+    currentPlayer: 0,
+    maxPlayers: 0,
+    createDate: "",
+    nowTurn: 0,
+    gameStatus: 0,
+    gameName: ""
   });
 
   const [userInfo, setUserInfo] = useState<TUser>();
@@ -62,17 +62,17 @@ const Room = (props: RouteComponentProps<Params>) => {
         const data = JSON.parse(msg.data)
         if (data.event === 'joinRoom') {
           console.log(1234)
-          let currentUserList = roomInfo.UserList
+          let currentUserList = roomInfo.userList
           currentUserList.push({
-            Id: data.sender,
-            Name: data.content,
-            IsMaster: false,
-            IsReady: false,
-            PlayOrder: 0
+            id: data.sender,
+            name: data.content,
+            isMaster: false,
+            isReady: false,
+            playOrder: 0
           })
           setRoomInfo({
             ...roomInfo,
-            UserList: currentUserList
+            userList: currentUserList
           })
         }
         console.log(JSON.parse(msg.data));
@@ -101,8 +101,8 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   const isMaster = () => {
     if (userInfo) {
-      return roomInfo.UserList.find(u => {
-        return u.Id === userInfo.id;
+      return roomInfo.userList.find(u => {
+        return u.id === userInfo.id;
       }) ? true : false;
     }
     return false;
@@ -115,7 +115,7 @@ const Room = (props: RouteComponentProps<Params>) => {
         <div className="row">
           <div className="col-md-3">
             {
-              roomInfo.UserList.map((user: TRoomUser, index) => {
+              roomInfo.userList.map((user: TRoomUser, index) => {
                 return <RoomUser key={index} user={user}/>
               })
             }

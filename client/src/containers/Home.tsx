@@ -39,11 +39,11 @@ const Home = (props: RouteComponentProps) => {
             {games.map((game: TGame) => (
               <div key={game._id}>
                 <div className="game-card">
-                  <img className="game-image" src={game.ImgURL} alt="象棋" width="100%" />
+                  <img className="game-image" src={game.imgURL} alt="象棋" width="100%" />
                   <div className="game-block">
                     <div className="center">
-                      <h2>{game.Name}</h2>
-                      <button className="game-enter" onClick={() => chooseGameHandler(game.Name)}>Enter</button>
+                      <h2>{game.name}</h2>
+                      <button className="game-enter" onClick={() => chooseGameHandler(game.name)}>Enter</button>
                       <div className="rates">
                         <div className="stars">
                           <FontAwesomeIcon icon="star" />

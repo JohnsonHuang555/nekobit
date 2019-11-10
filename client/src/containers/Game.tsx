@@ -13,14 +13,14 @@ type Params = {
 const Game = (props: RouteComponentProps<Params>) => {
   const [gameInfo, setGameInfo] = useState<TGame>({
     _id: "",
-    Name: "",
-    MaxPlayers: 0,
-    Rules: [],
-    Brief: "",
-    Description: "",
-    ImgURL: "",
-    EstimateTime: 0,
-    CreatedDate: ""
+    name: "",
+    maxPlayers: 0,
+    rules: [],
+    brief: "",
+    description: "",
+    imgURL: "",
+    estimateTime: 0,
+    createdDate: ""
   });
 
   const [rooms, setRooms] = useState<TRoom[]>([]);
@@ -43,11 +43,11 @@ const Game = (props: RouteComponentProps<Params>) => {
   const roomList = rooms.map((room: TRoom) => {
     return (
       <div className="room-info" key={room._id}>
-        <div className="title">{room.Title}</div>
+        <div className="title">{room.title}</div>
         <div className="info">
           <span className="mode mr-3">暗棋</span>
-          {room.IsLock ? <FontAwesomeIcon className="mr-3" icon="lock" /> : null}
-          <FontAwesomeIcon icon="user" className="mr-3" /> {room.CurrentPlayer} / {room.MaxPlayers}
+          {room.isLock ? <FontAwesomeIcon className="mr-3" icon="lock" /> : null}
+          <FontAwesomeIcon icon="user" className="mr-3" /> {room.currentPlayer} / {room.maxPlayers}
         </div>
       </div>
     )
@@ -57,11 +57,11 @@ const Game = (props: RouteComponentProps<Params>) => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-3">
-          <img src={gameInfo.ImgURL} alt={gameInfo.Name} width="100%" />
-          <h2>{gameInfo.Name}</h2>
-          <p>{gameInfo.Description}</p>
+          <img src={gameInfo.imgURL} alt={gameInfo.name} width="100%" />
+          <h2>{gameInfo.name}</h2>
+          <p>{gameInfo.description}</p>
           <FontAwesomeIcon icon="user" className="mr-2" />
-          <span>{gameInfo.MaxPlayers}</span>
+          <span>{gameInfo.maxPlayers}</span>
         </div>
         <div className="col-md-3">
           <div className="title">Room List</div>

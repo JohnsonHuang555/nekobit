@@ -6,7 +6,6 @@ export const AppContext = createContext<any>(null);
 
 const AppContextProvider = (props: any) => {
   const [games, setGames] = useState([]);
-  // const [wsLobby, setWsLobby] = useState<WebSocket>();
   const [wsRoom, setWsRoom] = useState<WebSocket>();
 
   useEffect(() => {
@@ -15,23 +14,6 @@ const AppContextProvider = (props: any) => {
       setGames(data);
     };
     getAllGames();
-
-    // const connectSocket = () => {
-    //   let ws = new WebSocket("ws://localhost:8080/ws/lobby");
-
-    //   ws.onopen = () => {
-    //     console.log("Successfully Connected in lobby");
-    //     setWsLobby(ws);
-    //   };
-    //   ws.onclose = (event) => {
-    //     console.log("Socket Closed Connection: ", event)
-    //   };
-    //   ws.onerror = (error) => {
-    //     console.log("Socket Error: ", error)
-    //     ws.close();
-    //   };
-    // };
-    // connectSocket();
   }, []);
 
   const changeChannel = (channel: string, socketData: TSocket) => {
