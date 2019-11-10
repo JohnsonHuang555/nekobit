@@ -1,9 +1,22 @@
+// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package socket
 
+// Hub maintains the set of active clients and broadcasts messages to the
+// clients.
 type Hub struct {
-	clients    map[*Client]bool
-	broadcast  chan Message
-	register   chan *Client
+	// Registered clients.
+	clients map[*Client]bool
+
+	// Inbound messages from the clients.
+	broadcast chan Message
+
+	// Register requests from the clients.
+	register chan *Client
+
+	// Unregister requests from clients.
 	unregister chan *Client
 }
 
@@ -28,14 +41,11 @@ func (h *Hub) Run() {
 			}
 		case message := <-h.broadcast:
 			for client := range h.clients {
-				err := client.conn.WriteJSON(message)
-				if err != nil {
-					select {
-					case client.send <- message:
-					default:
-						close(client.send)
-						delete(h.clients, client)
-					}
+				select {
+				case client.send <- message:
+				default:
+					close(client.send)
+					delete(h.clients, client)
 				}
 			}
 		}

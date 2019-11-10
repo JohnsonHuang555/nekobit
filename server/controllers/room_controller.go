@@ -59,3 +59,16 @@ func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 	fmt.Println("Create room", createResult.InsertedID)
 	return createResult.InsertedID
 }
+
+func JoinRoom(collection *mongo.Collection, user models.User, roomID string) bool {
+	id, _ := primitive.ObjectIDFromHex(roomID)
+	filter := bson.M{"_id": id}
+	update := bson.M{"$push": bson.M{"userlist": user}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("join room", result.ModifiedCount)
+	return true
+}

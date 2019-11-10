@@ -20,7 +20,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/getRoomInfo/{id}", middleware.GetRoomInfo).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/createRoom", middleware.CreateRoom).Methods("POST", "OPTIONS")
 
-	router.HandleFunc("/ws/{id}", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		socket.ServeWs(hub, w, r)
 	})
 	return router

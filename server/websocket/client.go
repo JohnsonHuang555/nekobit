@@ -1,10 +1,17 @@
+// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package socket
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"server/controllers"
+	"server/middleware"
+	"server/models"
 
 	"github.com/gorilla/websocket"
 )
@@ -46,9 +53,10 @@ type Client struct {
 
 // Message Define message object
 type Message struct {
-	Sender  string `json:"sender"`
-	Event   string `json:"event"`
-	Content string `json:"content"`
+	Sender   string `json:"sender"`
+	Receiver string `json:"receiver"`
+	Event    string `json:"event"`
+	Data     string `json:"data"`
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -66,14 +74,21 @@ func (c *Client) readPump() {
 	c.conn.SetPongHandler(func(string) error { c.conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		var msg Message
+		// 從前端收到的資料
 		err := c.conn.ReadJSON(&msg)
+		switch msg.Event {
+		case "joinRoom":
+			user := models.User{ID: msg.Sender, Name: msg.Data, IsMaster: false, IsReady: false, PlayOrder: 0}
+			controllers.JoinRoom(middleware.RoomCollection, user, msg.Receiver)
+		default:
+			log.Printf("socket error: no match event!")
+		}
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
 			}
 			break
 		}
-		// message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 		c.hub.broadcast <- msg
 	}
 }
@@ -98,9 +113,7 @@ func (c *Client) writePump() {
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-			fmt.Println(message)
 			c.conn.WriteJSON(message)
-
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
@@ -110,7 +123,7 @@ func (c *Client) writePump() {
 	}
 }
 
-// ServeWs handles websocket requests from the peer.
+// serveWs handles websocket requests from the peer.
 func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	conn, err := upgrader.Upgrade(w, r, nil)

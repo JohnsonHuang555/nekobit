@@ -29,8 +29,8 @@ const colGame = "Game"
 const colRoom = "Room"
 
 // collections object/instance
-var gameCollection *mongo.Collection
-var roomCollection *mongo.Collection
+var GameCollection *mongo.Collection
+var RoomCollection *mongo.Collection
 
 // create connection with mongo db
 func init() {
@@ -55,8 +55,8 @@ func init() {
 	fmt.Println("Connected to MongoDB!!")
 
 	// accountCollection = client.Database(dbName).Collection(colAccount)
-	gameCollection = client.Database(dbName).Collection(colGame)
-	roomCollection = client.Database(dbName).Collection(colRoom)
+	GameCollection = client.Database(dbName).Collection(colGame)
+	RoomCollection = client.Database(dbName).Collection(colRoom)
 
 	fmt.Println("Collection instance created!")
 }
@@ -65,7 +65,7 @@ func init() {
 func GetAllGames(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	payload := controllers.GetAllGames(gameCollection)
+	payload := controllers.GetAllGames(GameCollection)
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -74,7 +74,7 @@ func GetGameInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := controllers.GetGameInfo(gameCollection, params["name"])
+	payload := controllers.GetGameInfo(GameCollection, params["name"])
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -83,7 +83,7 @@ func GetRooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := controllers.GetRooms(roomCollection, params["name"])
+	payload := controllers.GetRooms(RoomCollection, params["name"])
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -92,7 +92,7 @@ func GetRoomInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := controllers.GetRoomInfo(roomCollection, params["id"])
+	payload := controllers.GetRoomInfo(RoomCollection, params["id"])
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -104,6 +104,6 @@ func CreateRoom(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	var room models.Room
 	_ = json.NewDecoder(r.Body).Decode(&room)
-	payload := controllers.CreateRoom(roomCollection, room)
+	payload := controllers.CreateRoom(RoomCollection, room)
 	json.NewEncoder(w).Encode(payload)
 }

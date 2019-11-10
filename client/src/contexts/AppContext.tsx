@@ -16,17 +16,21 @@ const AppContextProvider = (props: any) => {
     getAllGames();
   }, []);
 
-  const changeChannel = (channel: string, socketData: TSocket) => {
-    let roomWs = new WebSocket(`ws://localhost:8080/ws/${channel}`);
+  const joinRoom = (channel: string, socketData: TSocket) => {
+    let roomWs = new WebSocket(`ws://localhost:8080/ws`);
     roomWs.onopen = () => {
       console.log(`Successfully Connected in ${channel}`);
       setWsRoom(roomWs);
       roomWs.send(JSON.stringify({
         sender: socketData.sender,
+        receiver: socketData.receiver,
         event: socketData.event,
-        content: socketData.content
+        data: socketData.data
       }))
     };
+    roomWs.onmessage = (data) => {
+      console.log(data)
+    }
     roomWs.onclose = (event) => {
       console.log("Socket Closed Connection: ", event)
     };
@@ -37,7 +41,7 @@ const AppContextProvider = (props: any) => {
   }
 
   return (
-    <AppContext.Provider value={{ games, changeChannel, wsRoom }}>
+    <AppContext.Provider value={{ games, joinRoom, wsRoom }}>
       {props.children}
     </AppContext.Provider>
   )

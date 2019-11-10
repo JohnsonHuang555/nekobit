@@ -2,7 +2,8 @@ package models
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type user struct {
+// User schema structure
+type User struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
 	IsMaster  bool   `json:"isMaster"`
@@ -13,7 +14,7 @@ type user struct {
 // Room schema structure
 type Room struct {
 	ID            primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	UserList      []user             `json:"userList"`
+	UserList      []User             `json:"userList"`
 	Title         string             `json:"title"`
 	Password      string             `json:"password"`
 	Mode          int                `json:"mode"`

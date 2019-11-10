@@ -14,9 +14,9 @@ type Params = {
 }
 
 const Room = (props: RouteComponentProps<Params>) => {
-  const { changeChannel, wsRoom } = useContext(AppContext);
+  const { joinRoom, wsRoom } = useContext(AppContext);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
-
+  const [userInfo, setUserInfo] = useState<TUser>();
   const [roomInfo, setRoomInfo] = useState<TRoom>({
     _id: "",
     userList: [],
@@ -30,8 +30,6 @@ const Room = (props: RouteComponentProps<Params>) => {
     gameStatus: 0,
     gameName: ""
   });
-
-  const [userInfo, setUserInfo] = useState<TUser>();
 
   useEffect(() => {
     const roomId = props.match.params.id;
@@ -48,37 +46,37 @@ const Room = (props: RouteComponentProps<Params>) => {
       setUserInfo(JSON.parse(user));
 
       // 切換 ws channel
-      changeChannel(roomId, {
+      joinRoom(roomId, {
         sender: JSON.parse(user).id,
+        receiver: roomId,
         event: "joinRoom",
-        content: "johnson"
+        data: JSON.parse(user).name
       });
     }
-  }, [props]);
+  }, []);
 
   useEffect(() => {
     if (wsRoom) {
-      wsRoom.onmessage = (msg: any) => {
-        const data = JSON.parse(msg.data)
-        if (data.event === 'joinRoom') {
-          console.log(1234)
-          let currentUserList = roomInfo.userList
-          currentUserList.push({
-            id: data.sender,
-            name: data.content,
-            isMaster: false,
-            isReady: false,
-            playOrder: 0
-          })
-          setRoomInfo({
-            ...roomInfo,
-            userList: currentUserList
-          })
-        }
-        console.log(JSON.parse(msg.data));
-      };
+      // wsRoom.onmessage = (msg: any) => {
+      //   const data = JSON.parse(msg.data)
+      //   console.log(data)
+      //   if (data.event === 'joinRoom') {
+      //     let currentUserList = roomInfo.userList
+      //     currentUserList.push({
+      //       id: data.sender,
+      //       name: data.content,
+      //       isMaster: false,
+      //       isReady: false,
+      //       playOrder: 0
+      //     })
+      //     setRoomInfo({
+      //       ...roomInfo,
+      //       userList: currentUserList
+      //     })
+      //   }
+      // };
     }
-  }, [wsRoom])
+  }, [wsRoom]);
 
   const startGame = () => {
     // socket
@@ -97,6 +95,16 @@ const Room = (props: RouteComponentProps<Params>) => {
     }
     localStorage.setItem('userInfo', JSON.stringify(userData));
     setIsShowLoginModal(false);
+    const roomId = props.match.params.id;
+    // 切換 ws channel
+    if (userInfo) {
+      joinRoom(roomId, {
+        sender: userInfo.id,
+        receiver: roomId,
+        event: "joinRoom",
+        data: userInfo.name
+      });
+    }
   }
 
   const isMaster = () => {
