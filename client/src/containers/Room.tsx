@@ -57,26 +57,21 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   useEffect(() => {
     if (wsRoom) {
-      // wsRoom.onmessage = (msg: any) => {
-      //   const data = JSON.parse(msg.data)
-      //   console.log(data)
-      //   if (data.event === 'joinRoom') {
-      //     let currentUserList = roomInfo.userList
-      //     currentUserList.push({
-      //       id: data.sender,
-      //       name: data.content,
-      //       isMaster: false,
-      //       isReady: false,
-      //       playOrder: 0
-      //     })
-      //     setRoomInfo({
-      //       ...roomInfo,
-      //       userList: currentUserList
-      //     })
-      //   }
-      // };
+      wsRoom.onmessage = (websocket: MessageEvent) => {
+        const data = JSON.parse(websocket.data);
+        if (data && data.event === 'joinRoom') {
+          console.log(data)
+          roomInfo.userList.push({
+            id: data.sender,
+            name: data.data,
+            isMaster: false,
+            isReady: false,
+            playOrder: 0
+          })
+        }
+      }
     }
-  }, [wsRoom]);
+  }, [wsRoom])
 
   const startGame = () => {
     // socket
@@ -96,13 +91,15 @@ const Room = (props: RouteComponentProps<Params>) => {
     localStorage.setItem('userInfo', JSON.stringify(userData));
     setIsShowLoginModal(false);
     const roomId = props.match.params.id;
+
     // 切換 ws channel
-    if (userInfo) {
+    const user = localStorage.getItem('userInfo');
+    if (user) {
       joinRoom(roomId, {
-        sender: userInfo.id,
+        sender: JSON.parse(user).id,
         receiver: roomId,
         event: "joinRoom",
-        data: userInfo.name
+        data: JSON.parse(user).name
       });
     }
   }

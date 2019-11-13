@@ -28,9 +28,6 @@ const AppContextProvider = (props: any) => {
         data: socketData.data
       }))
     };
-    roomWs.onmessage = (data) => {
-      console.log(data)
-    }
     roomWs.onclose = (event) => {
       console.log("Socket Closed Connection: ", event)
     };

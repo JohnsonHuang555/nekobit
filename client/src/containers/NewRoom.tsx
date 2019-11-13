@@ -5,7 +5,6 @@ import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
 import LoginModal from '../components/LoginModal';
 import { TGame } from '../types/Game';
-import { TUser } from '../types/Account';
 
 const NewRoom = (props: RouteComponentProps) => {
   const [roomTitle, setRoomTitle] = useState('');
@@ -13,12 +12,6 @@ const NewRoom = (props: RouteComponentProps) => {
   const [gameName, setGameName] = useState('');
   const [games, setGames] = useState([]);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
-  const [userInfo, setUserInfo] = useState<TUser>({
-    id: "",
-    name: "",
-    account: "",
-    isLogin: false
-  });
 
   useEffect(() => {
     const getAllGames = async () => {
@@ -30,8 +23,6 @@ const NewRoom = (props: RouteComponentProps) => {
     const user = localStorage.getItem('userInfo');
     if (!user) {
       setIsShowLoginModal(true);
-    } else {
-      setUserInfo(JSON.parse(user))
     }
   }, [props]);
 
@@ -41,15 +32,7 @@ const NewRoom = (props: RouteComponentProps) => {
     e.preventDefault();
     const roomId = await RoomApi.createRoom({
       gameName,
-      userList: [
-        {
-          id: userInfo.id,
-          name: userInfo.name,
-          isMaster: true,
-          isReady: true,
-          playOrder: 0
-        }
-      ],
+      userList: [],
       title: roomTitle,
     });
     props.history.push(`/room/${roomId}`);
