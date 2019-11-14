@@ -67,6 +67,7 @@ func JoinRoom(collection *mongo.Collection, user models.User, roomID string) boo
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
+		return false
 	}
 
 	fmt.Println("join room", result.ModifiedCount)

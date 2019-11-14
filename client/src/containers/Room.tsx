@@ -14,9 +14,13 @@ type Params = {
 }
 
 const Room = (props: RouteComponentProps<Params>) => {
-  const { joinRoom, wsRoom } = useContext(AppContext);
+  const {
+    joinRoom,
+    wsRoom,
+    userInfo,
+    setUserInfo
+  } = useContext(AppContext);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
-  const [userInfo, setUserInfo] = useState<TUser>();
   const [roomInfo, setRoomInfo] = useState<TRoom>({
     _id: "",
     userList: [],
@@ -38,19 +42,15 @@ const Room = (props: RouteComponentProps<Params>) => {
       setRoomInfo(data);
     };
     getRoomInfo();
-
-    const user = localStorage.getItem('userInfo');
-    if (!user) {
+    if (!userInfo) {
       setIsShowLoginModal(true);
     } else {
-      setUserInfo(JSON.parse(user));
-
       // 切換 ws channel
       joinRoom(roomId, {
-        sender: JSON.parse(user).id,
+        sender: userInfo.id,
         receiver: roomId,
         event: "joinRoom",
-        data: JSON.parse(user).name
+        data: userInfo.name
       });
     }
   }, []);
@@ -61,17 +61,22 @@ const Room = (props: RouteComponentProps<Params>) => {
         const data = JSON.parse(websocket.data);
         if (data && data.event === 'joinRoom') {
           console.log(data)
-          roomInfo.userList.push({
+          const userList = roomInfo.userList;
+          userList.push({
             id: data.sender,
             name: data.data,
             isMaster: false,
             isReady: false,
             playOrder: 0
           })
+          setRoomInfo({
+            userList,
+            ...roomInfo,
+          })
         }
       }
     }
-  }, [wsRoom])
+  }, [wsRoom]);
 
   const startGame = () => {
     // socket
@@ -88,20 +93,17 @@ const Room = (props: RouteComponentProps<Params>) => {
       account: "",
       isLogin: true,
     }
-    localStorage.setItem('userInfo', JSON.stringify(userData));
+    setUserInfo(userData)
     setIsShowLoginModal(false);
-    const roomId = props.match.params.id;
 
+    const roomId = props.match.params.id;
     // 切換 ws channel
-    const user = localStorage.getItem('userInfo');
-    if (user) {
-      joinRoom(roomId, {
-        sender: JSON.parse(user).id,
-        receiver: roomId,
-        event: "joinRoom",
-        data: JSON.parse(user).name
-      });
-    }
+    joinRoom(roomId, {
+      sender: userData.id,
+      receiver: roomId,
+      event: "joinRoom",
+      data: userData.name
+    });
   }
 
   const isMaster = () => {
