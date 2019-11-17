@@ -35,7 +35,12 @@ const NewRoom = (props: RouteComponentProps) => {
       userList: [],
       title: roomTitle,
     });
-    props.history.push(`/room/${roomId}`);
+    props.history.push({
+      pathname: `/room/${roomId}`,
+      state: {
+        isMaster: true
+      }
+    })
   };
 
   const onLogin = (name: string) => {

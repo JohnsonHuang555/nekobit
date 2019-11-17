@@ -37,6 +37,7 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   useEffect(() => {
     const roomId = props.match.params.id;
+    const { isMaster } = props.location.state;
     const getRoomInfo = async () => {
       const data = await RoomApi.getRoomInfo(roomId);
       setRoomInfo(data);
@@ -50,7 +51,10 @@ const Room = (props: RouteComponentProps<Params>) => {
         sender: userInfo.id,
         receiver: roomId,
         event: "joinRoom",
-        data: userInfo.name
+        data: {
+          isMaster,
+          name: userInfo.name,
+        }
       });
     }
   }, []);

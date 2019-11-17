@@ -56,7 +56,12 @@ type Message struct {
 	Sender   string `json:"sender"`
 	Receiver string `json:"receiver"`
 	Event    string `json:"event"`
-	Data     string `json:"data"`
+	Data     MsgData
+}
+
+type MsgData struct {
+	Name string `json:"name"`
+	IsMaster bool `json:"isMaster"`
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -78,7 +83,13 @@ func (c *Client) readPump() {
 		err := c.conn.ReadJSON(&msg)
 		switch msg.Event {
 		case "joinRoom":
-			user := models.User{ID: msg.Sender, Name: msg.Data, IsMaster: false, IsReady: false, PlayOrder: 0}
+			user := models.User{
+				ID: msg.Sender,
+				Name: msg.Data.Name,
+				IsMaster: msg.Data.IsMaster,
+				IsReady: false,
+				PlayOrder: 0,
+			}
 			controllers.JoinRoom(middleware.RoomCollection, user, msg.Receiver)
 		default:
 			log.Printf("socket error: no match event!")
