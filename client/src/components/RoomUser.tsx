@@ -14,7 +14,11 @@ const RoomUser = (props: RoomUserProps) => {
   return (
     <div className="user">
       <div className="name">{user.name}</div>
-      <FontAwesomeIcon icon="crown" />
+      {
+        user.isMaster ?
+        <FontAwesomeIcon icon="crown" /> :
+        null
+      }
     </div>
   )
 }

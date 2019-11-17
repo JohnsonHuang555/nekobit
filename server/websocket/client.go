@@ -56,7 +56,7 @@ type Message struct {
 	Sender   string `json:"sender"`
 	Receiver string `json:"receiver"`
 	Event    string `json:"event"`
-	Data     MsgData
+	Data     MsgData `json:"data"`
 }
 
 type MsgData struct {
