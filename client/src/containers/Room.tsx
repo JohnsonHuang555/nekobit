@@ -5,7 +5,6 @@ import RoomApi from '../api/RoomApi';
 import LoginModal from '../components/LoginModal';
 import RoomUser from '../components/RoomUser';
 import { TRoom, TRoomUser } from '../types/Room';
-import { TUser } from '../types/Account';
 import { AppContext } from '../contexts/AppContext';
 import '../assets/styles/room/room.scss';
 
@@ -37,7 +36,7 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   useEffect(() => {
     const roomId = props.match.params.id;
-    const { isMaster } = props.location.state;
+    const locationState = props.location.state;
     const getRoomInfo = async () => {
       const data = await RoomApi.getRoomInfo(roomId);
       setRoomInfo(data);
@@ -52,7 +51,7 @@ const Room = (props: RouteComponentProps<Params>) => {
         receiver: roomId,
         event: "joinRoom",
         data: {
-          isMaster,
+          isMaster: locationState ? locationState.isMaster : false,
           name: userInfo.name,
         }
       });
@@ -62,14 +61,14 @@ const Room = (props: RouteComponentProps<Params>) => {
   useEffect(() => {
     if (wsRoom) {
       wsRoom.onmessage = (websocket: MessageEvent) => {
-        const data = JSON.parse(websocket.data);
-        if (data && data.event === 'joinRoom') {
-          console.log(data)
+        const wsData = JSON.parse(websocket.data);
+        if (wsData && wsData.event === 'joinRoom') {
+          console.log(wsData)
           const userList = roomInfo.userList;
           userList.push({
-            id: data.sender,
-            name: data.data,
-            isMaster: false,
+            id: wsData.sender,
+            name: wsData.data.name,
+            isMaster: wsData.data.isMaster,
             isReady: false,
             playOrder: 0
           })
@@ -106,15 +105,20 @@ const Room = (props: RouteComponentProps<Params>) => {
       sender: userData.id,
       receiver: roomId,
       event: "joinRoom",
-      data: userData.name
+      data: {
+        isMaster: false,
+        name: userData.name,
+      }
     });
   }
 
   const isMaster = () => {
     if (userInfo) {
-      return roomInfo.userList.find(u => {
+      const user = roomInfo.userList.find(u => {
         return u.id === userInfo.id;
-      }) ? true : false;
+      });
+
+      return user ? user.isMaster : false;
     }
     return false;
   };
