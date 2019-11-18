@@ -53,15 +53,16 @@ type Client struct {
 
 // Message Define message object
 type Message struct {
-	Sender   string `json:"sender"`
-	Receiver string `json:"receiver"`
-	Event    string `json:"event"`
+	Sender   string  `json:"sender"`
+	Receiver string  `json:"receiver"`
+	Event    string  `json:"event"`
 	Data     MsgData `json:"data"`
 }
 
 type MsgData struct {
-	Name string `json:"name"`
-	IsMaster bool `json:"isMaster"`
+	Name     string `json:"name"`
+	IsMaster bool   `json:"isMaster"`
+	IsReady  bool   `json:"isReady"`
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -84,13 +85,15 @@ func (c *Client) readPump() {
 		switch msg.Event {
 		case "joinRoom":
 			user := models.User{
-				ID: msg.Sender,
-				Name: msg.Data.Name,
-				IsMaster: msg.Data.IsMaster,
-				IsReady: false,
+				ID:        msg.Sender,
+				Name:      msg.Data.Name,
+				IsMaster:  msg.Data.IsMaster,
+				IsReady:   false,
 				PlayOrder: 0,
 			}
 			controllers.JoinRoom(middleware.RoomCollection, user, msg.Receiver)
+		case "setGameReady":
+			controllers.SetGameReady(middleware.RoomCollection, msg.Receiver, msg.Sender, msg.Data.IsReady)
 		default:
 			log.Printf("socket error: no match event!")
 		}

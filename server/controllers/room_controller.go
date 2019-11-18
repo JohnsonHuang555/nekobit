@@ -60,16 +60,39 @@ func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 	return createResult.InsertedID
 }
 
-func JoinRoom(collection *mongo.Collection, user models.User, roomID string) bool {
+func JoinRoom(collection *mongo.Collection, user models.User, roomID string) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$push": bson.M{"userlist": user}}
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
-		return false
 	}
 
 	fmt.Println("join room", result.ModifiedCount)
-	return true
 }
+
+func SetGameReady(collection *mongo.Collection, roomID string, userId string, isReady bool) {
+	id, _ := primitive.ObjectIDFromHex(roomID)
+	filter := bson.M{"_id": id, "userlist.id": userId}
+	update := bson.M{"$set": bson.M{"userlist.$.isready": !isReady}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("set game ready", result.ModifiedCount)
+}
+
+// func SetGameStart(collection *mongo.Collection, user models.User, roomID string) {
+// 	id, _ := primitive.ObjectIDFromHex(roomID)
+// 	filter := bson.M{"_id": id}
+// 	update := bson.M{"$set": bson.M{"isready": true}}
+// 	result, err := collection.UpdateOne(context.Background(), filter, update)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 		return false
+// 	}
+
+// 	fmt.Println("set game ready", result.ModifiedCount)
+// }

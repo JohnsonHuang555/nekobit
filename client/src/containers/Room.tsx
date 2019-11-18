@@ -63,19 +63,30 @@ const Room = (props: RouteComponentProps<Params>) => {
       wsRoom.onmessage = (websocket: MessageEvent) => {
         const wsData = JSON.parse(websocket.data);
         if (wsData && wsData.event === 'joinRoom') {
-          console.log(wsData)
           const userList = roomInfo.userList;
           userList.push({
             id: wsData.sender,
             name: wsData.data.name,
             isMaster: wsData.data.isMaster,
-            isReady: false,
+            isReady: wsData.data.isMaster ? true : false,
             playOrder: 0
           })
           setRoomInfo({
             userList,
             ...roomInfo,
           })
+        } else if (wsData && wsData.event === 'setGameReady') {
+          let tempUserList = roomInfo.userList;
+          tempUserList.forEach(u => {
+            if (u.id === wsData.sender) {
+              u.isReady = !wsData.data.isReady;
+            }
+          });
+
+          setRoomInfo({
+            userList: tempUserList,
+            ...roomInfo
+          });
         }
       }
     }
@@ -87,6 +98,20 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   const readyGame = () => {
     // socket
+    if (wsRoom) {
+      const roomId = props.match.params.id;
+      const user = roomInfo.userList.find(u => {
+        return u.id === userInfo.id;
+      });
+      wsRoom.send(JSON.stringify({
+        sender: userInfo.id,
+        receiver: roomId,
+        event: "setGameReady",
+        data: {
+          isReady: (user as TRoomUser).isReady
+        }
+      }))
+    }
   }
 
   const onLogin = (name: string) => {
@@ -123,6 +148,12 @@ const Room = (props: RouteComponentProps<Params>) => {
     return false;
   };
 
+  const disabledStart = () => {
+    return roomInfo.userList.find(u => {
+      return u.isReady === false;
+    }) ? true : false;
+  };
+
   return (
     <>
       <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
@@ -136,8 +167,8 @@ const Room = (props: RouteComponentProps<Params>) => {
             }
             {
               isMaster() ?
-              <div className="start" onClick={startGame}>Start</div> :
-              <div className="ready" onClick={readyGame}>Ready</div>
+              <button className="start" disabled={disabledStart()} onClick={startGame}>Start</button> :
+              <button className="ready" onClick={readyGame}>Ready</button>
             }
           </div>
           <div className="col-md-9">

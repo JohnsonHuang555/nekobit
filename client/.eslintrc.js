@@ -5,6 +5,9 @@ module.exports = {
     'react-app',
     'plugin:prettier/recommended',
   ],
-  plugins: ['@typescript-eslint', 'react'],
-  rules: {},
+  plugins: ['@typescript-eslint', 'react', 'react-hooks'],
+  rules: {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  },
 };
