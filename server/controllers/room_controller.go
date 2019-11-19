@@ -63,7 +63,7 @@ func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 func JoinRoom(collection *mongo.Collection, user models.User, roomID string) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
-	update := bson.M{"$push": bson.M{"userlist": user}}
+	update := bson.M{"$push": bson.M{"userlist": user}, "$inc": bson.M{"currentplayer": 1}}
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
@@ -100,7 +100,7 @@ func LeaveRoom(collection *mongo.Collection, roomID string, userId string) {
 	fmt.Println(userId)
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
-	update := bson.M{"$pull": bson.M{"userlist": bson.M{"id": userId}}}
+	update := bson.M{"$pull": bson.M{"userlist": bson.M{"id": userId}}, "$inc": bson.M{"currentplayer": -1}}
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
