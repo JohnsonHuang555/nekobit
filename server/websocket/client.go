@@ -94,6 +94,10 @@ func (c *Client) readPump() {
 			controllers.JoinRoom(middleware.RoomCollection, user, msg.Receiver)
 		case "setGameReady":
 			controllers.SetGameReady(middleware.RoomCollection, msg.Receiver, msg.Sender, msg.Data.IsReady)
+		case "setGameStart":
+			controllers.SetGameStart(middleware.RoomCollection, msg.Receiver)
+		case "leaveRoom":
+			controllers.LeaveRoom(middleware.RoomCollection, msg.Receiver, msg.Sender)
 		default:
 			log.Printf("socket error: no match event!")
 		}

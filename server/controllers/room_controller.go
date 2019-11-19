@@ -84,15 +84,27 @@ func SetGameReady(collection *mongo.Collection, roomID string, userId string, is
 	fmt.Println("set game ready", result.ModifiedCount)
 }
 
-// func SetGameStart(collection *mongo.Collection, user models.User, roomID string) {
-// 	id, _ := primitive.ObjectIDFromHex(roomID)
-// 	filter := bson.M{"_id": id}
-// 	update := bson.M{"$set": bson.M{"isready": true}}
-// 	result, err := collection.UpdateOne(context.Background(), filter, update)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 		return false
-// 	}
+func SetGameStart(collection *mongo.Collection, roomID string) {
+	id, _ := primitive.ObjectIDFromHex(roomID)
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": bson.M{"gamestatus": 1}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	fmt.Println("set game ready", result.ModifiedCount)
-// }
+	fmt.Println("set game start", result.ModifiedCount)
+}
+
+func LeaveRoom(collection *mongo.Collection, roomID string, userId string) {
+	fmt.Println(userId)
+	id, _ := primitive.ObjectIDFromHex(roomID)
+	filter := bson.M{"_id": id}
+	update := bson.M{"$pull": bson.M{"userlist": bson.M{"id": userId}}}
+	result, err := collection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("one user left", result.ModifiedCount)
+}

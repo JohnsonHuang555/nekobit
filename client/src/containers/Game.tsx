@@ -5,6 +5,7 @@ import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
 import { TGame } from '../types/Game';
 import { TRoom } from '../types/Room';
+import '../assets/styles/game.scss';
 
 type Params = {
   gameName: string;
@@ -41,8 +42,11 @@ const Game = (props: RouteComponentProps<Params>) => {
   }, [props]);
 
   const roomList = rooms.map((room: TRoom) => {
+    const chooseRoom = () => {
+      props.history.push(`/room/${room._id}`);
+    }
     return (
-      <div className="room-info" key={room._id}>
+      <div className="room-info" key={room._id} onClick={chooseRoom}>
         <div className="title">{room.title}</div>
         <div className="info">
           <span className="mode mr-3">暗棋</span>
@@ -54,7 +58,7 @@ const Game = (props: RouteComponentProps<Params>) => {
   });
 
   return (
-    <div className="container-fluid">
+    <div id="game" className="container-fluid">
       <div className="row">
         <div className="col-md-3">
           <img src={gameInfo.imgURL} alt={gameInfo.name} width="100%" />

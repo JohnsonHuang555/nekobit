@@ -87,13 +87,46 @@ const Room = (props: RouteComponentProps<Params>) => {
             userList: tempUserList,
             ...roomInfo
           });
+        } else if (wsData && wsData.event === 'setGameStart') {
+
+        } else if (wsData && wsData.event === 'leaveRoom') {
+          const previosRoomUsers = roomInfo.userList;
+          const newRoomUsers = previosRoomUsers.filter(u => {
+            return u.id !== wsData.sender;
+          })
+
+          setRoomInfo({
+            ...roomInfo,
+            userList: newRoomUsers,
+          });
         }
       }
+
+      // Activate the event listener
+      window.addEventListener("beforeunload", (ev) => {
+        ev.preventDefault();
+        const roomId = props.match.params.id;
+        wsRoom.send(JSON.stringify({
+          sender: userInfo.id,
+          receiver: roomId,
+          event: "leaveRoom",
+          data: {}
+        }))
+      })
     }
   }, [wsRoom]);
 
   const startGame = () => {
     // socket
+    if (wsRoom) {
+      const roomId = props.match.params.id;
+      wsRoom.send(JSON.stringify({
+        sender: userInfo.id,
+        receiver: roomId,
+        event: "setGameStart",
+        data: {}
+      }))
+    }
   }
 
   const readyGame = () => {
