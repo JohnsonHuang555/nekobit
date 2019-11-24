@@ -10,8 +10,8 @@ import (
 
 // Router is exported and used in main.go
 func Router() *mux.Router {
-	hub := socket.NewHub()
-	go hub.Run()
+	// hub := socket.NewHub()
+	// go hub.Run()
 	router := mux.NewRouter()
 
 	router.HandleFunc("/api/getAllGames", middleware.GetAllGames).Methods("GET", "OPTIONS")
@@ -20,8 +20,9 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/getRoomInfo/{id}", middleware.GetRoomInfo).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/createRoom", middleware.CreateRoom).Methods("POST", "OPTIONS")
 
-	router.HandleFunc("/ws/{id}", func(w http.ResponseWriter, r *http.Request) {
-		socket.ServeWs(hub, w, r)
+	router.HandleFunc("/ws/{roomID}", func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+		socket.ServeWs(w, r, params["roomID"])
 	})
 	return router
 }

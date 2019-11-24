@@ -1,6 +1,5 @@
 export type TSocket = {
-  sender: string;
-  receiver: string;
+  userID: string;
   event: string;
-  data: string;
+  data: any;
 }

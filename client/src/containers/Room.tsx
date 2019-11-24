@@ -14,12 +14,11 @@ type Params = {
 
 const Room = (props: RouteComponentProps<Params>) => {
   const {
-    joinRoom,
-    wsRoom,
     userInfo,
     setUserInfo
   } = useContext(AppContext);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const [wsRoom, setWsRoom] = useState<WebSocket>();
   const [roomInfo, setRoomInfo] = useState<TRoom>({
     _id: "",
     userList: [],
@@ -42,20 +41,48 @@ const Room = (props: RouteComponentProps<Params>) => {
       setRoomInfo(data);
     };
     getRoomInfo();
-    if (!userInfo) {
-      setIsShowLoginModal(true);
-    } else {
-      // 切換 ws channel
-      joinRoom(roomId, {
-        sender: userInfo.id,
-        receiver: roomId,
-        event: "joinRoom",
-        data: {
-          isMaster: locationState ? locationState.isMaster : false,
-          name: userInfo.name,
-        }
-      });
-    }
+
+    // set room websocket
+    let ws = new WebSocket(`ws://localhost:8080/ws/${roomId}`);
+    ws.onopen = () => {
+      console.log(`Successfully Connected in ${roomId}`);
+      setWsRoom(ws);
+      if (userInfo) {
+        ws.send(JSON.stringify({
+          userID: userInfo.id,
+          event: "joinRoom",
+          data: {
+            isMaster: locationState ? locationState.isMaster : false,
+            name: userInfo.name,
+          }
+        }));
+
+        // // Activate the event listener
+        // window.addEventListener("beforeunload", (ev) => {
+        //   ev.preventDefault();
+        //   console.log(1234)
+        //   ws.send(JSON.stringify({
+        //     userID: userInfo.id,
+        //     event: "leaveRoom",
+        //     data: {}
+        //   }))
+        //   return ev.returnValue = "Test";
+        // })
+
+      } else {
+        setIsShowLoginModal(true);
+      }
+    };
+
+    ws.onclose = (e) => {
+      console.log("Socket Closed Connection: ", e);
+    };
+
+    ws.onerror = (error) => {
+      console.log("Socket Error: ", error);
+      ws.close();
+    };
+
   }, []);
 
   useEffect(() => {
@@ -63,18 +90,10 @@ const Room = (props: RouteComponentProps<Params>) => {
       wsRoom.onmessage = (websocket: MessageEvent) => {
         const wsData = JSON.parse(websocket.data);
         if (wsData && wsData.event === 'joinRoom') {
-          const userList = roomInfo.userList;
-          userList.push({
-            id: wsData.sender,
-            name: wsData.data.name,
-            isMaster: wsData.data.isMaster,
-            isReady: wsData.data.isMaster ? true : false,
-            playOrder: 0
-          })
           setRoomInfo({
-            userList,
             ...roomInfo,
-          })
+            userList: wsData.data.dbData.userList,
+          });
         } else if (wsData && wsData.event === 'setGameReady') {
           let tempUserList = roomInfo.userList;
           tempUserList.forEach(u => {
@@ -101,18 +120,6 @@ const Room = (props: RouteComponentProps<Params>) => {
           });
         }
       }
-
-      // Activate the event listener
-      window.addEventListener("beforeunload", (ev) => {
-        ev.preventDefault();
-        const roomId = props.match.params.id;
-        wsRoom.send(JSON.stringify({
-          sender: userInfo.id,
-          receiver: roomId,
-          event: "leaveRoom",
-          data: {}
-        }))
-      })
     }
   }, [wsRoom]);
 
@@ -157,17 +164,16 @@ const Room = (props: RouteComponentProps<Params>) => {
     setUserInfo(userData)
     setIsShowLoginModal(false);
 
-    const roomId = props.match.params.id;
-    // 切換 ws channel
-    joinRoom(roomId, {
-      sender: userData.id,
-      receiver: roomId,
-      event: "joinRoom",
-      data: {
-        isMaster: false,
-        name: userData.name,
-      }
-    });
+    if (wsRoom) {
+      wsRoom.send(JSON.stringify({
+        userID: userData.id,
+        event: "joinRoom",
+        data: {
+          isMaster: false,
+          name: userData.name,
+        }
+      }));
+    }
   }
 
   const isMaster = () => {
@@ -187,6 +193,10 @@ const Room = (props: RouteComponentProps<Params>) => {
     }) ? true : false;
   };
 
+  const backToList = () => {
+    // TODO: back to list
+  }
+
   return (
     <>
       <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
@@ -198,6 +208,7 @@ const Room = (props: RouteComponentProps<Params>) => {
                 return <RoomUser key={index} user={user}/>
               })
             }
+            <div onClick={backToList}>Back to list</div>
             {
               isMaster() ?
               <button className="start" disabled={disabledStart()} onClick={startGame}>Start</button> :

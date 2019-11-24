@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"server/models"
 )
@@ -60,18 +61,30 @@ func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 	return createResult.InsertedID
 }
 
-func JoinRoom(collection *mongo.Collection, user models.User, roomID string) {
+// JoinRoom websocket
+func JoinRoom(collection *mongo.Collection, user models.User, roomID string) (models.Room, error) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$push": bson.M{"userlist": user}, "$inc": bson.M{"currentplayer": 1}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		log.Fatal(err)
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
 	}
 
-	fmt.Println("join room", result.ModifiedCount)
+	result := collection.FindOneAndUpdate(context.Background(), filter, update, &opt)
+	if result.Err() != nil {
+		log.Fatal(result.Err())
+	}
+
+	var room models.Room
+	decodeErr := result.Decode(&room)
+
+	return room, decodeErr
 }
 
+// SetGameReady websocket
 func SetGameReady(collection *mongo.Collection, roomID string, userId string, isReady bool) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id, "userlist.id": userId}
@@ -96,15 +109,26 @@ func SetGameStart(collection *mongo.Collection, roomID string) {
 	fmt.Println("set game start", result.ModifiedCount)
 }
 
-func LeaveRoom(collection *mongo.Collection, roomID string, userId string) {
+// LeaveRoom websocket
+func LeaveRoom(collection *mongo.Collection, userId string, roomID string,) (models.Room, error) {
 	fmt.Println(userId)
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$pull": bson.M{"userlist": bson.M{"id": userId}}, "$inc": bson.M{"currentplayer": -1}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		log.Fatal(err)
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
 	}
 
-	fmt.Println("one user left", result.ModifiedCount)
+	result := collection.FindOneAndUpdate(context.Background(), filter, update, &opt)
+	if result.Err() != nil {
+		log.Fatal(result.Err())
+	}
+
+	var room models.Room
+	decodeErr := result.Decode(&room)
+
+	return room, decodeErr
 }
