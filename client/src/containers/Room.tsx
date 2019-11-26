@@ -56,19 +56,6 @@ const Room = (props: RouteComponentProps<Params>) => {
             name: userInfo.name,
           }
         }));
-
-        // // Activate the event listener
-        // window.addEventListener("beforeunload", (ev) => {
-        //   ev.preventDefault();
-        //   console.log(1234)
-        //   ws.send(JSON.stringify({
-        //     userID: userInfo.id,
-        //     event: "leaveRoom",
-        //     data: {}
-        //   }))
-        //   return ev.returnValue = "Test";
-        // })
-
       } else {
         setIsShowLoginModal(true);
       }
@@ -83,13 +70,17 @@ const Room = (props: RouteComponentProps<Params>) => {
       ws.close();
     };
 
+    return () => {
+      ws.close();
+    }
   }, []);
 
   useEffect(() => {
     if (wsRoom) {
       wsRoom.onmessage = (websocket: MessageEvent) => {
         const wsData = JSON.parse(websocket.data);
-        if (wsData && wsData.event === 'joinRoom') {
+        console.log(wsData)
+        if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
           setRoomInfo({
             ...roomInfo,
             userList: wsData.data.dbData.userList,
@@ -108,20 +99,10 @@ const Room = (props: RouteComponentProps<Params>) => {
           });
         } else if (wsData && wsData.event === 'setGameStart') {
 
-        } else if (wsData && wsData.event === 'leaveRoom') {
-          const previosRoomUsers = roomInfo.userList;
-          const newRoomUsers = previosRoomUsers.filter(u => {
-            return u.id !== wsData.sender;
-          })
-
-          setRoomInfo({
-            ...roomInfo,
-            userList: newRoomUsers,
-          });
         }
       }
     }
-  }, [wsRoom]);
+  }, [wsRoom, roomInfo]);
 
   const startGame = () => {
     // socket
@@ -195,6 +176,14 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   const backToList = () => {
     // TODO: back to list
+    if (wsRoom) {
+      wsRoom.send(JSON.stringify({
+        userID: userInfo.id,
+        event: "leaveRoom",
+        data: {}
+      }))
+      props.history.push(`/game/象棋`)
+    }
   }
 
   return (
