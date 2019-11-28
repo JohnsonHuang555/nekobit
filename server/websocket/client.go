@@ -11,7 +11,7 @@ import (
 
 	"server/controllers"
 	"server/middleware"
-	"server/models"
+	// "server/models"
 
 	"github.com/gorilla/websocket"
 )
@@ -73,15 +73,15 @@ func (s subscription) readPump() {
 
 		switch msg.Event {
 		case "joinRoom":
-			user := models.User{
-				ID: msg.UserID,
-				Name: msg.Data.Name,
-				IsMaster: msg.Data.IsMaster,
-				IsReady: false,
-				PlayOrder: 0,
-			}
-			payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
-			msg.Data.DbData = payload
+			// user := models.User{
+			// 	ID: msg.UserID,
+			// 	Name: msg.Data.Name,
+			// 	IsMaster: msg.Data.IsMaster,
+			// 	IsReady: false,
+			// 	PlayOrder: 0,
+			// }
+			// payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
+			// msg.Data.DbData = payload
 		case "leaveRoom":
 			payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
 			msg.Data.DbData = payload

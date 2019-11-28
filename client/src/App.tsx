@@ -38,7 +38,7 @@ const App: React.FC = () => {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/newroom" component={NewRoom} />
-            <Route path="/game/:gameName" component={Game} />
+            <Route path="/game/:gameID" component={Game} />
             <Route path="/room/:id" component={Room} />
             <Route path="/signin" component={SignIn} />
             <Route path="/signup" component={SignUp} />

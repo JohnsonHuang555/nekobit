@@ -9,7 +9,7 @@ import { TGame } from '../types/Game';
 const NewRoom = (props: RouteComponentProps) => {
   const [roomTitle, setRoomTitle] = useState('');
   const [roomPassword, setRoomPassword] = useState('');
-  const [gameName, setGameName] = useState('');
+  const [gameID, setGameID] = useState('');
   const [games, setGames] = useState([]);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
 
@@ -26,13 +26,13 @@ const NewRoom = (props: RouteComponentProps) => {
     }
   }, [props]);
 
-  const loadedGames = games.map((game: TGame) => <option key={game._id}>{game.name}</option>);
+  const loadedGames = games.map((game: TGame) => <option key={game._id} value={game._id}>{game.name}</option>);
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
     const roomId = await RoomApi.createRoom({
-      gameName,
-      userList: [],
+      gameID,
+      password: roomPassword,
       title: roomTitle,
     });
     props.history.push({
@@ -84,7 +84,7 @@ const NewRoom = (props: RouteComponentProps) => {
             </div>
             <div className="form-group">
               <label htmlFor="exampleInputEmail1">Choose game</label>
-              <select className="form-control mb-4" onChange={(e) => setGameName(e.target.value)}>
+              <select className="form-control mb-4" onChange={(e) => setGameID(e.target.value)}>
                 <option value="">please choose game</option>
                 {loadedGames}
               </select>

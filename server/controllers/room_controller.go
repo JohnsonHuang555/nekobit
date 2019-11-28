@@ -14,8 +14,8 @@ import (
 )
 
 // GetRooms from the DB and return it
-func GetRooms(collection *mongo.Collection, gameName string) []models.Room {
-	cur, err := collection.Find(context.Background(), bson.M{"gamename": gameName})
+func GetRooms(collection *mongo.Collection, gameID string) []models.Room {
+	cur, err := collection.Find(context.Background(), bson.M{"gameid": gameID})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,6 +52,7 @@ func GetRoomInfo(collection *mongo.Collection, roomID string) models.Room {
 
 // CreateRoom create a room
 func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
+	room.CurrentPlayer = 1
 	createResult, err := collection.InsertOne(context.Background(), room)
 	if err != nil {
 		log.Fatal(err)
@@ -62,7 +63,7 @@ func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 }
 
 // JoinRoom websocket
-func JoinRoom(collection *mongo.Collection, user models.User, roomID string) (models.Room, error) {
+func JoinRoom(collection *mongo.Collection, user interface{}, roomID string) (models.Room, error) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$push": bson.M{"userlist": user}, "$inc": bson.M{"currentplayer": 1}}

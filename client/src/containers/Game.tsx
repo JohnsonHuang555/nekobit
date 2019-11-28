@@ -8,7 +8,7 @@ import { TRoom } from '../types/Room';
 import '../assets/styles/game.scss';
 
 type Params = {
-  gameName: string;
+  gameID: string;
 }
 
 const Game = (props: RouteComponentProps<Params>) => {
@@ -27,14 +27,14 @@ const Game = (props: RouteComponentProps<Params>) => {
   const [rooms, setRooms] = useState<TRoom[]>([]);
 
   useEffect(() => {
-    const gameName = props.match.params.gameName;
+    const gameID = props.match.params.gameID;
     const getGameInfo = async () => {
-      const data = await GameApi.getGameInfo(gameName);
+      const data = await GameApi.getGameInfo(gameID);
       setGameInfo(data);
     };
 
     const getRooms = async () => {
-      const data = await RoomApi.getRooms(gameName);
+      const data = await RoomApi.getRooms(gameID);
       setRooms(data);
     }
     getGameInfo();

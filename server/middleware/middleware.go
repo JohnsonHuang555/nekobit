@@ -74,7 +74,7 @@ func GetGameInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := controllers.GetGameInfo(GameCollection, params["name"])
+	payload := controllers.GetGameInfo(GameCollection, params["id"])
 	json.NewEncoder(w).Encode(payload)
 }
 
@@ -83,7 +83,7 @@ func GetRooms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := controllers.GetRooms(RoomCollection, params["name"])
+	payload := controllers.GetRooms(RoomCollection, params["id"])
 	json.NewEncoder(w).Encode(payload)
 }
 

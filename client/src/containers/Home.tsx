@@ -10,8 +10,8 @@ import '../assets/styles/home.scss';
 const Home = (props: RouteComponentProps) => {
   const { games } = useContext(AppContext);
 
-  const chooseGameHandler = (gameName: string) => {
-    props.history.push(`/game/${gameName}`);
+  const chooseGameHandler = (id: string) => {
+    props.history.push(`/game/${id}`);
   };
 
   const SwiperParams = {
@@ -43,7 +43,7 @@ const Home = (props: RouteComponentProps) => {
                   <div className="game-block">
                     <div className="center">
                       <h2>{game.name}</h2>
-                      <button className="game-enter" onClick={() => chooseGameHandler(game.name)}>Enter</button>
+                      <button className="game-enter" onClick={() => chooseGameHandler(game._id)}>Enter</button>
                       <div className="rates">
                         <div className="stars">
                           <FontAwesomeIcon icon="star" />

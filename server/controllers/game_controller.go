@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"server/models"
 )
@@ -36,9 +37,10 @@ func GetAllGames(collection *mongo.Collection) []models.Game {
 }
 
 // GetGameInfo a
-func GetGameInfo(collection *mongo.Collection, gameName string) models.Game {
+func GetGameInfo(collection *mongo.Collection, gameID string) models.Game {
 	var game models.Game
-	filter := bson.M{"name": gameName}
+	id, _ := primitive.ObjectIDFromHex(gameID)
+	filter := bson.M{"_id": id}
 	err := collection.FindOne(context.Background(), filter).Decode(&game)
 	if err != nil {
 		log.Fatal(err)

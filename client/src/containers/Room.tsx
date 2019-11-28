@@ -18,6 +18,7 @@ const Room = (props: RouteComponentProps<Params>) => {
     setUserInfo
   } = useContext(AppContext);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [wsRoom, setWsRoom] = useState<WebSocket>();
   const [roomInfo, setRoomInfo] = useState<TRoom>({
     _id: "",
@@ -36,14 +37,9 @@ const Room = (props: RouteComponentProps<Params>) => {
   useEffect(() => {
     const roomId = props.match.params.id;
     const locationState = props.location.state;
-    const getRoomInfo = async () => {
-      const data = await RoomApi.getRoomInfo(roomId);
-      setRoomInfo(data);
-    };
-    getRoomInfo();
-
     // set room websocket
     let ws = new WebSocket(`ws://localhost:8080/ws/${roomId}`);
+    console.log(userInfo)
     ws.onopen = () => {
       console.log(`Successfully Connected in ${roomId}`);
       setWsRoom(ws);
@@ -70,12 +66,20 @@ const Room = (props: RouteComponentProps<Params>) => {
       ws.close();
     };
 
+    const getRoomInfo = async () => {
+      const data = await RoomApi.getRoomInfo(roomId);
+      setRoomInfo(data);
+      setIsLoading(false);
+    };
+    getRoomInfo();
+
     return () => {
       ws.close();
     }
   }, []);
 
   useEffect(() => {
+    console.log(wsRoom)
     if (wsRoom) {
       wsRoom.onmessage = (websocket: MessageEvent) => {
         const wsData = JSON.parse(websocket.data);
@@ -102,7 +106,7 @@ const Room = (props: RouteComponentProps<Params>) => {
         }
       }
     }
-  }, [wsRoom, roomInfo]);
+  }, [isLoading]);
 
   const startGame = () => {
     // socket
@@ -182,7 +186,7 @@ const Room = (props: RouteComponentProps<Params>) => {
         event: "leaveRoom",
         data: {}
       }))
-      props.history.push(`/game/象棋`)
+      props.history.push(`/game/${roomInfo.gameName}`)
     }
   }
 
