@@ -38,16 +38,36 @@ func GetRooms(collection *mongo.Collection, gameID string) []models.Room {
 	return results
 }
 
+type roomInfo struct {
+	room models.Room
+	game models.Game
+}
+
 // GetRoomInfo get room info
-func GetRoomInfo(collection *mongo.Collection, roomID string) models.Room {
+func GetRoomInfo(roomCollection *mongo.Collection, gameCollection *mongo.Collection,  roomID string) interface{} {
 	var room models.Room
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
-	err := collection.FindOne(context.Background(), filter).Decode(&room)
+	err := roomCollection.FindOne(context.Background(), filter).Decode(&room)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return room
+
+	var game models.Game
+
+	gameID, _ := primitive.ObjectIDFromHex(room.GameID)
+	gameFilter := bson.M{"_id": gameID}
+	gameErr := gameCollection.FindOne(context.Background(), gameFilter).Decode(&game)
+	if gameErr != nil {
+		log.Fatal(err)
+	}
+
+	data := struct {
+		models.Room
+		models.Game
+	}{room, game}
+
+	return data
 }
 
 // CreateRoom create a room

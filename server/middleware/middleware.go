@@ -92,7 +92,7 @@ func GetRoomInfo(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	payload := controllers.GetRoomInfo(RoomCollection, params["id"])
+	payload := controllers.GetRoomInfo(RoomCollection, GameCollection, params["id"])
 	json.NewEncoder(w).Encode(payload)
 }
 
