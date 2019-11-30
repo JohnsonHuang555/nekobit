@@ -37,35 +37,6 @@ const Room = (props: RouteComponentProps<Params>) => {
   useEffect(() => {
     const roomId = props.match.params.id;
     const locationState = props.location.state;
-    // set room websocket
-    let ws = new WebSocket(`ws://localhost:8080/ws/${roomId}`);
-    console.log(userInfo)
-    ws.onopen = () => {
-      console.log(`Successfully Connected in ${roomId}`);
-      setWsRoom(ws);
-      if (userInfo) {
-        ws.send(JSON.stringify({
-          userID: userInfo.id,
-          event: "joinRoom",
-          data: {
-            isMaster: locationState ? locationState.isMaster : false,
-            name: userInfo.name,
-          }
-        }));
-      } else {
-        setIsShowLoginModal(true);
-      }
-    };
-
-    ws.onclose = (e) => {
-      console.log("Socket Closed Connection: ", e);
-    };
-
-    ws.onerror = (error) => {
-      console.log("Socket Error: ", error);
-      ws.close();
-    };
-
     const getRoomInfo = async () => {
       const data = await RoomApi.getRoomInfo(roomId);
       setRoomInfo(data);
@@ -73,53 +44,92 @@ const Room = (props: RouteComponentProps<Params>) => {
     };
     getRoomInfo();
 
-    return () => {
-      ws.close();
+    if (!userInfo) {
+      setIsShowLoginModal(true);
+      return;
     }
+    // set room websocket
+    // let ws = new WebSocket(`ws://localhost:8080/ws/${roomId}`);
+    // console.log(userInfo)
+    // ws.onopen = () => {
+    //   console.log(`Successfully Connected in ${roomId}`);
+    //   setWsRoom(ws);
+    //   if (userInfo) {
+    //     ws.send(JSON.stringify({
+    //       userID: userInfo.id,
+    //       event: "joinRoom",
+    //       data: {
+    //         isMaster: locationState ? locationState.isMaster : false,
+    //         name: userInfo.name,
+    //       }
+    //     }));
+    //   } else {
+    //     setIsShowLoginModal(true);
+    //   }
+    // };
+
+    // ws.onclose = (e) => {
+    //   console.log("Socket Closed Connection: ", e);
+    // };
+
+    // ws.onerror = (error) => {
+    //   console.log("Socket Error: ", error);
+    //   ws.close();
+    // };
+
+
+
+    // return () => {
+    //   ws.close();
+    // }
   }, []);
 
+  // useEffect(() => {
+  //   if (wsRoom) {
+  //     wsRoom.onmessage = (websocket: MessageEvent) => {
+  //       const wsData = JSON.parse(websocket.data);
+  //       console.log(wsData)
+  //       if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
+  //         setRoomInfo({
+  //           ...roomInfo,
+  //           userList: wsData.data.dbData.userList,
+  //         });
+  //       } else if (wsData && wsData.event === 'setGameReady') {
+  //         let tempUserList = roomInfo.userList;
+  //         tempUserList.forEach(u => {
+  //           if (u.id === wsData.sender) {
+  //             u.isReady = !wsData.data.isReady;
+  //           }
+  //         });
+
+  //         setRoomInfo({
+  //           userList: tempUserList,
+  //           ...roomInfo
+  //         });
+  //       } else if (wsData && wsData.event === 'setGameStart') {
+
+  //       }
+  //     }
+  //   }
+  // }, [isLoading]);
+
+  // const startGame = () => {
+  //   // socket
+  //   if (wsRoom) {
+  //     const roomId = props.match.params.id;
+  //     wsRoom.send(JSON.stringify({
+  //       sender: userInfo.id,
+  //       receiver: roomId,
+  //       event: "setGameStart",
+  //       data: {}
+  //     }))
+  //   }
+  // }
+
   useEffect(() => {
-    console.log(wsRoom)
-    if (wsRoom) {
-      wsRoom.onmessage = (websocket: MessageEvent) => {
-        const wsData = JSON.parse(websocket.data);
-        console.log(wsData)
-        if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
-          setRoomInfo({
-            ...roomInfo,
-            userList: wsData.data.dbData.userList,
-          });
-        } else if (wsData && wsData.event === 'setGameReady') {
-          let tempUserList = roomInfo.userList;
-          tempUserList.forEach(u => {
-            if (u.id === wsData.sender) {
-              u.isReady = !wsData.data.isReady;
-            }
-          });
-
-          setRoomInfo({
-            userList: tempUserList,
-            ...roomInfo
-          });
-        } else if (wsData && wsData.event === 'setGameStart') {
-
-        }
-      }
+    if (roomInfo._id) {
     }
-  }, [isLoading]);
-
-  const startGame = () => {
-    // socket
-    if (wsRoom) {
-      const roomId = props.match.params.id;
-      wsRoom.send(JSON.stringify({
-        sender: userInfo.id,
-        receiver: roomId,
-        event: "setGameStart",
-        data: {}
-      }))
-    }
-  }
+  }, [roomInfo])
 
   const readyGame = () => {
     // socket
@@ -196,17 +206,17 @@ const Room = (props: RouteComponentProps<Params>) => {
       <div className="container-fluid room">
         <div className="row">
           <div className="col-md-3">
-            {
-              roomInfo.userList.map((user: TRoomUser, index) => {
+            {/* {
+              roomInfo && roomInfo.userList.map((user: TRoomUser, index) => {
                 return <RoomUser key={index} user={user}/>
               })
-            }
+            } */}
             <div onClick={backToList}>Back to list</div>
-            {
+            {/* {
               isMaster() ?
               <button className="start" disabled={disabledStart()} onClick={startGame}>Start</button> :
               <button className="ready" onClick={readyGame}>Ready</button>
-            }
+            } */}
           </div>
           <div className="col-md-9">
             Game screen

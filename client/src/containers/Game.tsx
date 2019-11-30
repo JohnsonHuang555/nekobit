@@ -41,7 +41,7 @@ const Game = (props: RouteComponentProps<Params>) => {
     getRooms();
   }, [props]);
 
-  const roomList = rooms.map((room: TRoom) => {
+  const roomList = rooms && rooms.map((room: TRoom) => {
     const chooseRoom = () => {
       props.history.push(`/room/${room._id}`);
     }
