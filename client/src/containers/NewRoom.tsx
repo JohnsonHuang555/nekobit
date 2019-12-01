@@ -34,6 +34,7 @@ const NewRoom = (props: RouteComponentProps) => {
       gameID,
       password: roomPassword,
       title: roomTitle,
+      userList: []
     });
     props.history.push({
       pathname: `/room/${roomId}`,

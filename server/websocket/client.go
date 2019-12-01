@@ -11,7 +11,7 @@ import (
 
 	"server/controllers"
 	"server/middleware"
-	// "server/models"
+	"server/models"
 
 	"github.com/gorilla/websocket"
 )
@@ -50,6 +50,7 @@ type MsgData struct {
 	Data   Attachment `json:"data"`
 }
 
+// 前端附加資訊
 type Attachment struct {
 	Name     string      `json:"name"`
 	IsMaster bool        `json:"isMaster"`
@@ -57,7 +58,7 @@ type Attachment struct {
 	DbData   interface{} `json:"dbData"`
 }
 
-// readPump pumps messages from the websocket connection to the hub.
+// ReadPump pumps messages from the websocket connection to the hub.
 func (s subscription) readPump() {
 	c := s.conn
 	defer func() {
@@ -73,15 +74,15 @@ func (s subscription) readPump() {
 
 		switch msg.Event {
 		case "joinRoom":
-			// user := models.User{
-			// 	ID: msg.UserID,
-			// 	Name: msg.Data.Name,
-			// 	IsMaster: msg.Data.IsMaster,
-			// 	IsReady: false,
-			// 	PlayOrder: 0,
-			// }
-			// payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
-			// msg.Data.DbData = payload
+			user := models.User{
+				ID: msg.UserID,
+				Name: msg.Data.Name,
+				IsMaster: msg.Data.IsMaster,
+				IsReady: msg.Data.IsMaster,
+				PlayOrder: 0,
+			}
+			payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
+			msg.Data.DbData = payload
 		case "leaveRoom":
 			payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
 			msg.Data.DbData = payload

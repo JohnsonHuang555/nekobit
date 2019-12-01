@@ -50,8 +50,8 @@ const Game = (props: RouteComponentProps<Params>) => {
         <div className="title">{room.title}</div>
         <div className="info">
           <span className="mode mr-3">暗棋</span>
-          {room.isLock ? <FontAwesomeIcon className="mr-3" icon="lock" /> : null}
-          <FontAwesomeIcon icon="user" className="mr-3" /> {room.currentPlayer} / {room.maxPlayers}
+          {/* {room.isLock ? <FontAwesomeIcon className="mr-3" icon="lock" /> : null} */}
+          <FontAwesomeIcon icon="user" className="mr-3" /> {room.userList.length} / {room.maxPlayers}
         </div>
       </div>
     )

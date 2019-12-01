@@ -72,7 +72,6 @@ func GetRoomInfo(roomCollection *mongo.Collection, gameCollection *mongo.Collect
 
 // CreateRoom create a room
 func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
-	room.CurrentPlayer = 1
 	createResult, err := collection.InsertOne(context.Background(), room)
 	if err != nil {
 		log.Fatal(err)
@@ -86,7 +85,7 @@ func CreateRoom(collection *mongo.Collection, room models.Room) interface{} {
 func JoinRoom(collection *mongo.Collection, user interface{}, roomID string) (models.Room, error) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
-	update := bson.M{"$push": bson.M{"userlist": user}, "$inc": bson.M{"currentplayer": 1}}
+	update := bson.M{"$push": bson.M{"userlist": user}}
 	upsert := true
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{
@@ -135,7 +134,7 @@ func LeaveRoom(collection *mongo.Collection, userId string, roomID string,) (mod
 	fmt.Println(userId)
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
-	update := bson.M{"$pull": bson.M{"userlist": bson.M{"id": userId}}, "$inc": bson.M{"currentplayer": -1}}
+	update := bson.M{"$pull": bson.M{"userlist": bson.M{"id": userId}}}
 	upsert := true
 	after := options.After
 	opt := options.FindOneAndUpdateOptions{

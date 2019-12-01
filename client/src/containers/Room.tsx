@@ -20,100 +20,102 @@ const Room = (props: RouteComponentProps<Params>) => {
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [wsRoom, setWsRoom] = useState<WebSocket>();
-  const [roomInfo, setRoomInfo] = useState<TRoom>({
-    _id: "",
-    userList: [],
-    title: "",
-    mode: 0,
-    isLock: false,
-    currentPlayer: 0,
-    maxPlayers: 0,
-    createDate: "",
-    nowTurn: 0,
-    gameStatus: 0,
-    gameName: ""
-  });
+  const [roomInfo, setRoomInfo] = useState<TRoom>();
 
   useEffect(() => {
     const roomId = props.match.params.id;
-    const locationState = props.location.state;
     const getRoomInfo = async () => {
       const data = await RoomApi.getRoomInfo(roomId);
       setRoomInfo(data);
       setIsLoading(false);
     };
     getRoomInfo();
-
-    if (!userInfo) {
-      setIsShowLoginModal(true);
-      return;
-    }
-    // set room websocket
-    // let ws = new WebSocket(`ws://localhost:8080/ws/${roomId}`);
-    // console.log(userInfo)
-    // ws.onopen = () => {
-    //   console.log(`Successfully Connected in ${roomId}`);
-    //   setWsRoom(ws);
-    //   if (userInfo) {
-    //     ws.send(JSON.stringify({
-    //       userID: userInfo.id,
-    //       event: "joinRoom",
-    //       data: {
-    //         isMaster: locationState ? locationState.isMaster : false,
-    //         name: userInfo.name,
-    //       }
-    //     }));
-    //   } else {
-    //     setIsShowLoginModal(true);
-    //   }
-    // };
-
-    // ws.onclose = (e) => {
-    //   console.log("Socket Closed Connection: ", e);
-    // };
-
-    // ws.onerror = (error) => {
-    //   console.log("Socket Error: ", error);
-    //   ws.close();
-    // };
-
-
-
-    // return () => {
-    //   ws.close();
-    // }
   }, []);
 
-  // useEffect(() => {
-  //   if (wsRoom) {
-  //     wsRoom.onmessage = (websocket: MessageEvent) => {
-  //       const wsData = JSON.parse(websocket.data);
-  //       console.log(wsData)
-  //       if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
-  //         setRoomInfo({
-  //           ...roomInfo,
-  //           userList: wsData.data.dbData.userList,
-  //         });
-  //       } else if (wsData && wsData.event === 'setGameReady') {
-  //         let tempUserList = roomInfo.userList;
-  //         tempUserList.forEach(u => {
-  //           if (u.id === wsData.sender) {
-  //             u.isReady = !wsData.data.isReady;
-  //           }
-  //         });
+  useEffect(() => {
+    let ws: WebSocket;
+    const newSocket = () => {
+      const locationState = props.location.state;
+      const roomId = props.match.params.id;
+      ws = new WebSocket(`ws://localhost:8080/ws/${roomId}`);
+      ws.onopen = () => {
+        console.log(`Successfully Connected in ${roomId}`);
+        setWsRoom(ws);
 
-  //         setRoomInfo({
-  //           userList: tempUserList,
-  //           ...roomInfo
-  //         });
-  //       } else if (wsData && wsData.event === 'setGameStart') {
+        if (!userInfo) {
+          setIsShowLoginModal(true);
+          return;
+        }
 
-  //       }
-  //     }
-  //   }
-  // }, [isLoading]);
+        ws.send(JSON.stringify({
+          userID: userInfo.id,
+          event: "joinRoom",
+          data: {
+            isMaster: locationState ? locationState.isMaster : false,
+            name: userInfo.name,
+          }
+        }));
+      };
 
-  // const startGame = () => {
+      ws.onclose = (e) => {
+        console.log("Socket Closed Connection: ", e);
+      };
+
+      ws.onerror = (error) => {
+        console.log("Socket Error: ", error);
+        ws.close();
+      };
+    };
+
+    if (!isLoading) {
+      // 判斷人數未滿
+      if (roomInfo && roomInfo.userList.length > roomInfo.maxPlayers) {
+        props.history.push(`/game/${roomInfo.gameID}`)
+      } else {
+      // 判斷登入狀態
+        newSocket();
+      }
+    }
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    }
+  }, [isLoading])
+
+  useEffect(() => {
+    if (wsRoom) {
+      wsRoom.onmessage = (websocket: MessageEvent) => {
+        const wsData = JSON.parse(websocket.data);
+        if (!roomInfo) {
+          return
+        }
+
+        if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
+          setRoomInfo({
+            ...roomInfo,
+            userList: wsData.data.dbData.userList,
+          });
+        } else if (wsData && wsData.event === 'setGameReady') {
+          let tempUserList = roomInfo.userList;
+          tempUserList.forEach(u => {
+            if (u.id === wsData.sender) {
+              u.isReady = !wsData.data.isReady;
+            }
+          });
+
+          setRoomInfo({
+            userList: tempUserList,
+            ...roomInfo
+          });
+        } else if (wsData && wsData.event === 'setGameStart') {
+
+        }
+      }
+    }
+  }, [wsRoom]);
+
+  const startGame = () => {
   //   // socket
   //   if (wsRoom) {
   //     const roomId = props.match.params.id;
@@ -124,18 +126,14 @@ const Room = (props: RouteComponentProps<Params>) => {
   //       data: {}
   //     }))
   //   }
-  // }
+  }
 
-  useEffect(() => {
-    if (roomInfo._id) {
-    }
-  }, [roomInfo])
 
   const readyGame = () => {
     // socket
     if (wsRoom) {
       const roomId = props.match.params.id;
-      const user = roomInfo.userList.find(u => {
+      const user = roomInfo && roomInfo.userList.find(u => {
         return u.id === userInfo.id;
       });
       wsRoom.send(JSON.stringify({
@@ -159,6 +157,7 @@ const Room = (props: RouteComponentProps<Params>) => {
     setUserInfo(userData)
     setIsShowLoginModal(false);
 
+    console.log(wsRoom)
     if (wsRoom) {
       wsRoom.send(JSON.stringify({
         userID: userData.id,
@@ -173,7 +172,7 @@ const Room = (props: RouteComponentProps<Params>) => {
 
   const isMaster = () => {
     if (userInfo) {
-      const user = roomInfo.userList.find(u => {
+      const user = roomInfo && roomInfo.userList.find(u => {
         return u.id === userInfo.id;
       });
 
@@ -183,40 +182,42 @@ const Room = (props: RouteComponentProps<Params>) => {
   };
 
   const disabledStart = () => {
-    return roomInfo.userList.find(u => {
+    return roomInfo && roomInfo.userList.find(u => {
       return u.isReady === false;
     }) ? true : false;
   };
 
   const backToList = () => {
-    // TODO: back to list
-    if (wsRoom) {
+    if (wsRoom && roomInfo) {
       wsRoom.send(JSON.stringify({
         userID: userInfo.id,
         event: "leaveRoom",
         data: {}
       }))
-      props.history.push(`/game/${roomInfo.gameName}`)
+      props.history.push(`/game/${roomInfo.gameID}`)
     }
   }
 
   return (
     <>
-      <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
+      {!isLoading ?
+        <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
+        : null
+      }
       <div className="container-fluid room">
         <div className="row">
           <div className="col-md-3">
-            {/* {
+            {
               roomInfo && roomInfo.userList.map((user: TRoomUser, index) => {
                 return <RoomUser key={index} user={user}/>
               })
-            } */}
+            }
             <div onClick={backToList}>Back to list</div>
-            {/* {
+            {
               isMaster() ?
               <button className="start" disabled={disabledStart()} onClick={startGame}>Start</button> :
               <button className="ready" onClick={readyGame}>Ready</button>
-            } */}
+            }
           </div>
           <div className="col-md-9">
             Game screen

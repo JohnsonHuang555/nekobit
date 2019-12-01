@@ -8,7 +8,16 @@ type Room struct {
 	Password      string             `json:"password"`
 	Title         string             `json:"title"`
 	Mode          int                `json:"mode"`
-	CurrentPlayer int                `json:"currentPlayer"`
 	GameID        string             `json:"gameID"`
 	Status        int                `json:"status"`
+	UserList      []User             `json:"userList"`
+}
+
+// User schema structure
+type User struct {
+	ID string `json:"id"`
+	Name string `json:"name"`
+	IsMaster bool `json:"isMaster"`
+	IsReady bool `json:"isReady"`
+	PlayOrder int `json:"playOrder"`
 }
