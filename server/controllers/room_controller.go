@@ -105,16 +105,26 @@ func JoinRoom(collection *mongo.Collection, user interface{}, roomID string) (mo
 }
 
 // SetGameReady websocket
-func SetGameReady(collection *mongo.Collection, roomID string, userId string, isReady bool) {
+func SetGameReady(collection *mongo.Collection, roomID string, userID string, isReady bool) (models.Room, error) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
-	filter := bson.M{"_id": id, "userlist.id": userId}
+	filter := bson.M{"_id": id, "userlist.id": userID}
 	update := bson.M{"$set": bson.M{"userlist.$.isready": !isReady}}
-	result, err := collection.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		log.Fatal(err)
+	upsert := true
+	after := options.After
+	opt := options.FindOneAndUpdateOptions{
+		ReturnDocument: &after,
+		Upsert:         &upsert,
 	}
 
-	fmt.Println("set game ready", result.ModifiedCount)
+	result := collection.FindOneAndUpdate(context.Background(), filter, update, &opt)
+	if result.Err() != nil {
+		log.Fatal(result.Err())
+	}
+
+	var room models.Room
+	decodeErr := result.Decode(&room)
+
+	return room, decodeErr
 }
 
 func SetGameStart(collection *mongo.Collection, roomID string) {

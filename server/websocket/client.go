@@ -86,6 +86,11 @@ func (s subscription) readPump() {
 		case "leaveRoom":
 			payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
 			msg.Data.DbData = payload
+		case "setGameReady":
+			payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room, msg.UserID, msg.Data.IsReady)
+			msg.Data.DbData = payload
+		case "setGameStart":
+			controllers.SetGameStart(middleware.RoomCollection, s.room)
 		default:
 			log.Printf("Socket error: no match event")
 		}

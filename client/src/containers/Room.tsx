@@ -67,10 +67,10 @@ const Room = (props: RouteComponentProps<Params>) => {
       };
     };
 
-    if (!isLoading) {
+    if (!isLoading && roomInfo) {
       // 判斷人數未滿
-      if (roomInfo && roomInfo.userList.length > roomInfo.maxPlayers) {
-        props.history.push(`/game/${roomInfo.gameID}`)
+      if (roomInfo && roomInfo.userList.length + 1 > roomInfo.maxPlayers) {
+        props.history.push(`/game/${roomInfo.gameID}`);
       } else {
       // 判斷登入狀態
         newSocket();
@@ -96,17 +96,10 @@ const Room = (props: RouteComponentProps<Params>) => {
             ...roomInfo,
             userList: wsData.data.dbData.userList,
           });
-        } else if (wsData && wsData.event === 'setGameReady') {
-          let tempUserList = roomInfo.userList;
-          tempUserList.forEach(u => {
-            if (u.id === wsData.sender) {
-              u.isReady = !wsData.data.isReady;
-            }
-          });
-
+        } else if (wsData.event === 'setGameReady') {
           setRoomInfo({
-            userList: tempUserList,
-            ...roomInfo
+            ...roomInfo,
+            userList: wsData.data.dbData.userList,
           });
         } else if (wsData && wsData.event === 'setGameStart') {
 
@@ -128,17 +121,14 @@ const Room = (props: RouteComponentProps<Params>) => {
   //   }
   }
 
-
   const readyGame = () => {
     // socket
     if (wsRoom) {
-      const roomId = props.match.params.id;
       const user = roomInfo && roomInfo.userList.find(u => {
         return u.id === userInfo.id;
       });
       wsRoom.send(JSON.stringify({
-        sender: userInfo.id,
-        receiver: roomId,
+        userID: userInfo.id,
         event: "setGameReady",
         data: {
           isReady: (user as TRoomUser).isReady
@@ -157,7 +147,6 @@ const Room = (props: RouteComponentProps<Params>) => {
     setUserInfo(userData)
     setIsShowLoginModal(false);
 
-    console.log(wsRoom)
     if (wsRoom) {
       wsRoom.send(JSON.stringify({
         userID: userData.id,
