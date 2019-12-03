@@ -4,6 +4,9 @@ body {
   background: $body-black;
   font-family: 'Helvetica';
 }
+button {
+  background: none;
+}
 .center { text-align: center; }
 .lobby_box {
   position: relative;

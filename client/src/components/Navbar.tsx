@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink, withRouter } from 'react-router-dom';
+import {AppContext} from '../contexts/AppContext';
 
-import '../assets/styles/navbar.scss'
+import '../assets/styles/navbar.scss';
 
 const Navbar = () => {
+  const {
+    userInfo,
+    setUserInfo
+  } = useContext(AppContext);
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark">
@@ -15,8 +20,25 @@ const Navbar = () => {
           <div className="navbar-nav">
             <NavLink className="nav-item nav-link active" to="/">Home</NavLink>
             <NavLink className="nav-item nav-link" to="/newroom">NewRoom</NavLink>
-            <NavLink className="nav-item nav-link" to="/signin">Login</NavLink>
-            <NavLink className="nav-item nav-link" to="/signup">Sign Up</NavLink>
+            { !userInfo ? (
+              <>
+                <NavLink className="nav-item nav-link" to="/signin">Login</NavLink>
+                <NavLink className="nav-item nav-link" to="/signup">SignUp</NavLink>
+              </>
+              ) : (
+              <div className="member_info">
+                <div className="user">
+                  <div className="photo">
+                    <img />
+                  </div>
+                  <b className="name">{userInfo.name}</b>
+                  <div className="down">
+                    <button>Logout</button>
+                  </div>
+                </div>
+                <b className="at">在<span>西洋棋</span>大廳</b>
+              </div> )
+            }
           </div>
         </div>
       </nav>
