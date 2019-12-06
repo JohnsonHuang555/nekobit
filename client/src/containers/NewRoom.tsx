@@ -49,7 +49,7 @@ const NewRoom = (props: RouteComponentProps) => {
     })
   };
 
-  const onLogin = (name: string) => {
+  const login = (name: string) => {
     const userData = {
       name,
       id: uuid(),
@@ -62,7 +62,7 @@ const NewRoom = (props: RouteComponentProps) => {
 
   return (
     <>
-      <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
+      <LoginModal show={isShowLoginModal} login={login}/>
       <div className="container-fluid">
         <div className="col-md-6">
           <h4 className="center mb-4">NewGame</h4>

@@ -147,7 +147,7 @@ const Room = (props: RouteComponentProps<Params>) => {
     }
   }
 
-  const onLogin = (name: string) => {
+  const login = (name: string) => {
     const userData = {
       name,
       id: uuid(),
@@ -201,7 +201,7 @@ const Room = (props: RouteComponentProps<Params>) => {
   return (
     <>
       {!isLoading ?
-        <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
+        <LoginModal show={isShowLoginModal} login={login}/>
         : null
       }
       <div className="container-fluid room">
