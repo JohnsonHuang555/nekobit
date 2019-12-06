@@ -3,13 +3,13 @@ import '../assets/styles/modal.scss';
 
 type ModalProps = {
   show: boolean;
-  onLogin: (name: string) => void;
+  login: (name: string) => void;
 }
 
 const LoginModal = (props: ModalProps) => {
   const {
     show,
-    onLogin,
+    login,
   } = props;
 
   const [name, setName] = useState('');
@@ -24,7 +24,7 @@ const LoginModal = (props: ModalProps) => {
               <div className="app-modal-content">
                 <h2>Login</h2>
                 <input type="text" onChange={(e) => setName(e.target.value)}/>
-                <button onClick={() => onLogin(name)}>Login</button>
+                <button onClick={() => login(name)}>Login</button>
               </div>
             </div>
           </div>

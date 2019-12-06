@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import uuid from 'uuid';
 import { RouteComponentProps } from 'react-router';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
 import LoginModal from '../components/LoginModal';
 import { TGame } from '../types/Game';
+import {AppContext} from '../contexts/AppContext';
 
 const NewRoom = (props: RouteComponentProps) => {
   const [roomTitle, setRoomTitle] = useState('');
@@ -13,6 +14,11 @@ const NewRoom = (props: RouteComponentProps) => {
   const [games, setGames] = useState([]);
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
 
+  const {
+    userInfo,
+    setUserInfo
+  } = useContext(AppContext);
+
   useEffect(() => {
     const getAllGames = async () => {
       const data = await GameApi.getAllGames();
@@ -20,8 +26,7 @@ const NewRoom = (props: RouteComponentProps) => {
     }
     getAllGames();
 
-    const user = localStorage.getItem('userInfo');
-    if (!user) {
+    if (!userInfo) {
       setIsShowLoginModal(true);
     }
   }, [props]);
@@ -44,20 +49,20 @@ const NewRoom = (props: RouteComponentProps) => {
     })
   };
 
-  const onLogin = (name: string) => {
+  const login = (name: string) => {
     const userData = {
       name,
       id: uuid(),
       account: "",
       isLogin: true,
     }
-    localStorage.setItem('userInfo', JSON.stringify(userData));
+    setUserInfo(userData);
     setIsShowLoginModal(false);
   }
 
   return (
     <>
-      <LoginModal show={isShowLoginModal} onLogin={onLogin}/>
+      <LoginModal show={isShowLoginModal} login={login}/>
       <div className="container-fluid">
         <div className="col-md-6">
           <h4 className="center mb-4">NewGame</h4>

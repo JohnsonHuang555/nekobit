@@ -7,6 +7,10 @@ import {
   faLock,
   faCrown,
   faStar,
+  faChess,
+  faUserFriends,
+  faDoorOpen,
+  faGamepad,
 } from '@fortawesome/free-solid-svg-icons';
 import './assets/styles/theme.scss';
 
@@ -26,7 +30,11 @@ library.add(
   faUser,
   faLock,
   faCrown,
-  faStar
+  faStar,
+  faChess,
+  faUserFriends,
+  faDoorOpen,
+  faGamepad,
 );
 
 const App: React.FC = () => {
