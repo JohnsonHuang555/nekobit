@@ -30,6 +30,11 @@
     a {
       font-weight: bold;
       font-size: 20px;
+      color: rgba(255,255,255,.5);
+      text-decoration: none;
+      &:hover {
+        color: rgba(255,255,255,.75);
+      }
     }
     .member_info {
       position: relative;

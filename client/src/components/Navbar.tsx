@@ -1,14 +1,18 @@
 import React, { useContext } from 'react';
-import { NavLink, withRouter } from 'react-router-dom';
+import { NavLink, withRouter, RouteComponentProps } from 'react-router-dom';
 import {AppContext} from '../contexts/AppContext';
 
 import '../assets/styles/navbar.scss';
 
-const Navbar = () => {
+const Navbar = (props: RouteComponentProps) => {
   const {
     userInfo,
     setUserInfo
   } = useContext(AppContext);
+  const logout = () => {
+    setUserInfo(null);
+    props.history.push('/');
+  };
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-dark">
@@ -22,7 +26,7 @@ const Navbar = () => {
             <NavLink className="nav-item nav-link" to="/newroom">NewRoom</NavLink>
             { !userInfo ? (
               <>
-                <NavLink className="nav-item nav-link" to="/signin">Login</NavLink>
+                <a href="javacript: void();">Login</a>
                 <NavLink className="nav-item nav-link" to="/signup">SignUp</NavLink>
               </>
               ) : (
@@ -33,7 +37,7 @@ const Navbar = () => {
                   </div>
                   <b className="name">{userInfo.name}</b>
                   <div className="down">
-                    <button>Logout</button>
+                    <button onClick={logout}>Logout</button>
                   </div>
                 </div>
                 <b className="at">在<span>西洋棋</span>大廳</b>
