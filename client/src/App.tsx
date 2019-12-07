@@ -11,6 +11,8 @@ import {
   faUserFriends,
   faDoorOpen,
   faGamepad,
+  faUserCircle,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import './assets/styles/theme.scss';
 
@@ -35,6 +37,8 @@ library.add(
   faUserFriends,
   faDoorOpen,
   faGamepad,
+  faUserCircle,
+  faTimes,
 );
 
 const App: React.FC = () => {

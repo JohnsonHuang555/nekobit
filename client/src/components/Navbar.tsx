@@ -16,6 +16,9 @@ const Navbar = (props: RouteComponentProps) => {
   const onLogin = () => {
     setIsShowLoginModal(true);
   };
+  const onCloseLogin = () => {
+    setIsShowLoginModal(false);
+  };
 
   const login = (name: string) => {
     const userData = {
@@ -35,7 +38,11 @@ const Navbar = (props: RouteComponentProps) => {
 
   return (
     <>
-      <LoginModal show={isShowLoginModal} login={login}/>
+      <LoginModal
+        show={isShowLoginModal}
+        login={login}
+        onCloseLogin={onCloseLogin}
+      />
       <nav className="navbar navbar-expand-lg navbar-dark">
         <div className="container">
           <NavLink className="logo" to="/">

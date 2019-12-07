@@ -4,6 +4,20 @@ body {
   background: $body-black;
   font-family: 'Helvetica';
 }
+h1, h2 {
+  font-weight: bold;
+}
+a {
+  display: inline-block;
+  &:hover {
+    text-decoration: none;
+  }
+}
+button, input {
+  &:focus {
+    outline: none;
+  }
+}
 button {
   background: none;
 }
