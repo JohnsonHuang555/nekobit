@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GameDetail from '../components/GameDetail';
+import RoomListPage from '../components/RoomListPage';
+import RoomList from '../components/RoomList';
+import { AppContext } from '../contexts/AppContext';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
 import { TGame } from '../types/Game';
@@ -24,7 +27,22 @@ const Game = (props: RouteComponentProps<Params>) => {
     createdDate: ""
   });
 
+  const {
+    userInfo,
+    setUserInfo
+  } = useContext(AppContext);
+
   const [rooms, setRooms] = useState<TRoom[]>([]);
+  const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+  const [showRoomList, setShowRoomList] = useState(false);
+
+  const playNow = () => {
+    if (userInfo) {
+      setShowRoomList(true);
+    } else {
+      setIsShowLoginModal(true);
+    }
+  };
 
   useEffect(() => {
     const gameID = props.match.params.gameID;
@@ -41,61 +59,23 @@ const Game = (props: RouteComponentProps<Params>) => {
     getRooms();
   }, [props]);
 
-  const roomList = rooms && rooms.map((room: TRoom) => {
-    const chooseRoom = () => {
-      props.history.push(`/room/${room._id}`);
-    }
-    return (
-      <div className="room-info" key={room._id} onClick={chooseRoom}>
-        <div className="title">{room.title}</div>
-        <div className="info">
-          <span className="mode mr-3">暗棋</span>
-          {/* {room.isLock ? <FontAwesomeIcon className="mr-3" icon="lock" /> : null} */}
-          <FontAwesomeIcon icon="user" className="mr-3" /> {room.userList.length} / {room.maxPlayers}
-        </div>
-      </div>
-    )
-  });
-
   return (
-    <div id="game" className="container-fluid">
-      <div className="container">
-        <div className="section-heading">
-          <h2>遊戲介紹</h2>
-        </div>
-        <div className="row main">
-          <div className="col-md-7 game-image">
-            <img src={gameInfo.imgURL} alt={gameInfo.name} width="100%" />
-          </div>
-          <div className="col-md-5 game-info">
-            <div className="game_title">
-              <h2>{gameInfo.name}</h2>
-            </div>
-            <div className="game_description">
-              <p>{gameInfo.description}</p>
-            </div>
-            <div className="counts">
-              <div className="players">
-                <FontAwesomeIcon icon="user-friends" /><b>遊戲需求人數：{gameInfo.maxPlayers}</b>
-              </div>
-              <div className="rooms">
-                <FontAwesomeIcon icon="chess" /><b>總房間數：{rooms ? rooms.length : 0}</b>
-              </div>
-            </div>
-            <div className="buttons">
-              <button className="new_room">
-                <FontAwesomeIcon icon="door-open" />
-                <b>New Room</b>
-              </button>
-              <button className="play_now">
-                <FontAwesomeIcon icon="gamepad" />
-                <b>Play Now</b>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      {showRoomList ? (
+        <RoomListPage/>
+        // <Room
+        //   rooms={rooms}
+        //   location={props.history}
+        // />
+      ) : (
+        <GameDetail
+          gameInfo={gameInfo}
+          rooms={rooms}
+          playNow={playNow}
+        />
+        )
+      }
+    </>
   )
 }
 
