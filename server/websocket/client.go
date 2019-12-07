@@ -52,10 +52,11 @@ type MsgData struct {
 
 // 前端附加資訊
 type Attachment struct {
-	Name     string      `json:"name"`
-	IsMaster bool        `json:"isMaster"`
-	IsReady  bool        `json:"isReady"`
-	DbData   interface{} `json:"dbData"`
+	Name     string      `json:"name,omitempty"`
+	IsMaster bool        `json:"isMaster,omitempty"`
+	IsReady  bool        `json:"isReady,omitempty"`
+	DbData   interface{} `json:"dbData,omitempty"`
+	GameData interface{} `json:"gameData,omitempty"`
 }
 
 // ReadPump pumps messages from the websocket connection to the hub.
@@ -75,10 +76,10 @@ func (s subscription) readPump() {
 		switch msg.Event {
 		case "joinRoom":
 			user := models.User{
-				ID: msg.UserID,
-				Name: msg.Data.Name,
-				IsMaster: msg.Data.IsMaster,
-				IsReady: msg.Data.IsMaster,
+				ID:        msg.UserID,
+				Name:      msg.Data.Name,
+				IsMaster:  msg.Data.IsMaster,
+				IsReady:   msg.Data.IsMaster,
 				PlayOrder: 0,
 			}
 			payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
@@ -91,6 +92,7 @@ func (s subscription) readPump() {
 			msg.Data.DbData = payload
 		case "setGameStart":
 			controllers.SetGameStart(middleware.RoomCollection, s.room)
+			msg.Data.GameData = controllers.CreateChesses()
 		default:
 			log.Printf("Socket error: no match event")
 		}

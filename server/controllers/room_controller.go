@@ -130,7 +130,7 @@ func SetGameReady(collection *mongo.Collection, roomID string, userID string, is
 func SetGameStart(collection *mongo.Collection, roomID string) {
 	id, _ := primitive.ObjectIDFromHex(roomID)
 	filter := bson.M{"_id": id}
-	update := bson.M{"$set": bson.M{"gamestatus": 1}}
+	update := bson.M{"$set": bson.M{"status": 1}}
 	result, err := collection.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		log.Fatal(err)
