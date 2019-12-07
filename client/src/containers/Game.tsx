@@ -79,7 +79,7 @@ const Game = (props: RouteComponentProps<Params>) => {
                 <FontAwesomeIcon icon="user-friends" /><b>遊戲需求人數：{gameInfo.maxPlayers}</b>
               </div>
               <div className="rooms">
-                <FontAwesomeIcon icon="chess" /><b>總房間數：{rooms.length}</b>
+                <FontAwesomeIcon icon="chess" /><b>總房間數：{rooms ? rooms.length : 0}</b>
               </div>
             </div>
             <div className="buttons">

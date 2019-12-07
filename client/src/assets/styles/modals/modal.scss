@@ -1,0 +1,49 @@
+@import '../color.scss';
+
+.app-modal {
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  .app-modal-dialog {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background: $modal-bg;
+    border: 1px solid $modal-border;
+    border-radius: 5px;
+    padding: 0 57px;
+    .exit {
+      position: absolute;
+      right: 30px;
+      top: 18px;
+      cursor: pointer;
+      svg {
+        font-size: 26px;
+        color: $input-gray;
+        transition: all .3s;
+        &:hover {
+          color: $title-gray;
+        }
+      }
+    }
+  }
+}
+.modal-shadow {
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.85);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: .5;
+}
