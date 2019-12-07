@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import GameDetail from '../components/GameDetail';
-import RoomListPage from '../components/RoomListPage';
-import RoomList from '../components/RoomList';
+import RoomListPage from '../components/Rooms/RoomList/RoomListPage';
 import { AppContext } from '../contexts/AppContext';
 import GameApi from '../api/GameApi';
 import RoomApi from '../api/RoomApi';
@@ -62,7 +61,10 @@ const Game = (props: RouteComponentProps<Params>) => {
   return (
     <>
       {showRoomList ? (
-        <RoomListPage/>
+        <RoomListPage
+          rooms={rooms}
+          location={props.history}
+        />
         // <Room
         //   rooms={rooms}
         //   location={props.history}
