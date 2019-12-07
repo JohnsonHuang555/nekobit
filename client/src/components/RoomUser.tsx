@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TRoomUser } from '../types/Room';
-import '../assets/styles/room/user.scss'
+import '../assets/styles/rooms/user.scss'
 
 type RoomUserProps = {
   user: TRoomUser

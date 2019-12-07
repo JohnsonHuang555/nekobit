@@ -6,13 +6,13 @@ import LoginModal from '../components/LoginModal';
 import RoomUser from '../components/RoomUser';
 import { TRoom, TRoomUser } from '../types/Room';
 import { AppContext } from '../contexts/AppContext';
-import '../assets/styles/room/room.scss';
+import '../assets/styles/rooms/room.scss';
 
 type Params = {
   id: string;
 }
 
-const Room = (props: RouteComponentProps<Params>) => {
+const RoomPage = (props: RouteComponentProps<Params>) => {
   const {
     userInfo,
     setUserInfo
@@ -217,4 +217,4 @@ const Room = (props: RouteComponentProps<Params>) => {
   )
 }
 
-export default Room;
+export default RoomPage;
