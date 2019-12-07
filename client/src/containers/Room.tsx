@@ -102,23 +102,21 @@ const Room = (props: RouteComponentProps<Params>) => {
             userList: wsData.data.dbData.userList,
           });
         } else if (wsData && wsData.event === 'setGameStart') {
-
+          console.log(wsData)
         }
       }
     }
   }, [wsRoom]);
 
   const startGame = () => {
-  //   // socket
-  //   if (wsRoom) {
-  //     const roomId = props.match.params.id;
-  //     wsRoom.send(JSON.stringify({
-  //       sender: userInfo.id,
-  //       receiver: roomId,
-  //       event: "setGameStart",
-  //       data: {}
-  //     }))
-  //   }
+    // socket
+    if (wsRoom) {
+      wsRoom.send(JSON.stringify({
+        userID: userInfo.id,
+        event: "setGameStart",
+        data: {}
+      }))
+    }
   }
 
   const readyGame = () => {
