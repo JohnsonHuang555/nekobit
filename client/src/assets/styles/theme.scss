@@ -4,10 +4,25 @@ body {
   background: $body-black;
   font-family: 'Helvetica';
 }
+h1, h2 {
+  font-weight: bold;
+}
+a {
+  display: inline-block;
+  &:hover {
+    text-decoration: none;
+  }
+}
+button, input {
+  &:focus {
+    outline: none;
+  }
+}
 button {
   background: none;
 }
 .center { text-align: center; }
+.main {margin-top: 30px;}
 .lobby_box {
   position: relative;
   border-bottom: 1px solid $title-gray;

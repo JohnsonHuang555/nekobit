@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import '../assets/styles/modal.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import '../assets/styles/modals/modal.scss';
+import '../assets/styles/modals/loginModal.scss';
 
 type ModalProps = {
   show: boolean;
   login: (name: string) => void;
+  onCloseLogin?: () => void;
 }
 
 const LoginModal = (props: ModalProps) => {
   const {
     show,
     login,
+    onCloseLogin,
   } = props;
 
   const [name, setName] = useState('');
@@ -17,18 +21,34 @@ const LoginModal = (props: ModalProps) => {
   return (
     <>
       { show ?
-        <>
+        <div id="login-modal">
           <div className="modal-shadow" />
           <div className="app-modal">
             <div className="app-modal-dialog">
-              <div className="app-modal-content">
+              <div className="exit" onClick={onCloseLogin}>
+                <FontAwesomeIcon icon="times" />
+              </div>
+              <div className="guest">
+                <h2>Quick Start</h2>
+                <div className="icon">
+                  <FontAwesomeIcon icon="user-circle" />
+                </div>
+                <input placeholder="User Nickname" type="text" onChange={(e) => setName(e.target.value)}/>
+                <button onClick={() => login(name)}>Start</button>
+              </div>
+              <div className="or">
+                <span>OR</span>
+              </div>
+              <div className="account-login">
                 <h2>Login</h2>
-                <input type="text" onChange={(e) => setName(e.target.value)}/>
-                <button onClick={() => login(name)}>Login</button>
+                <input placeholder="User Nickname" type="text" />
+                <input placeholder="Password" type="password" />
+                <button>Submit</button>
+                <p>創立一個霸氣屬於自己的帳號<a href="javacript: void(0);">立即註冊</a></p>
               </div>
             </div>
           </div>
-        </> : null}
+        </div> : null}
     </>
   );
 };
