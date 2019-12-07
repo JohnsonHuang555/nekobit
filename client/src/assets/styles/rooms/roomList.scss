@@ -21,4 +21,14 @@
 
 .room-list-flex {
   display: flex;
+  flex-wrap: wrap;
+  div.room {
+    width: calc(50% - 5px);
+    background: $room-bg;
+    border: 1px solid $room-border;
+    border-radius: 5px;
+    &:not(:nth-child(2n)) {
+      margin-right: 10px;
+    }
+  }
 }

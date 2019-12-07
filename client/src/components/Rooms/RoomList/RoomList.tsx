@@ -1,4 +1,5 @@
 import React from 'react';
+import Room from './Room';
 import { TRoom } from '../../../types/Room';
 import { LocationState } from 'history';
 
@@ -19,14 +20,16 @@ const RoomList = (props: RoomListProps) => {
     //   location.push(`/room/${room._id}`);
     // }
     return (
-      <div className="room-info" key={room._id}>
-        <div className="title">{room.title}</div>
-        <div className="info">
-          <span className="mode mr-3">暗棋</span>
-          {/* {room.isLock ? <FontAwesomeIcon className="mr-3" icon="lock" /> : null} */}
-        </div>
-      </div>
-    )
+      <Room
+        _id={room._id}
+        title={room.title}
+        mode={room.mode}
+        gameID={room.gameID}
+        status={room.status}
+        maxPlayers={room.maxPlayers}
+        userList={room.userList}
+      />
+    );
   });
   return (
     <div className="room-list-flex">
