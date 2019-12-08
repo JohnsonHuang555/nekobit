@@ -23,7 +23,6 @@ import SignIn from './containers/SignIn';
 import SignUp from './containers/SignUp';
 import Game from './containers/Game';
 import Room from './containers/RoomPage';
-import TestView from './containers/TestView';
 
 import AppContextProvider from './contexts/AppContext';
 
@@ -55,7 +54,6 @@ const App: React.FC = () => {
               <Route path="/room/:id" component={Room} />
               <Route path="/signin" component={SignIn} />
               <Route path="/signup" component={SignUp} />
-              <Route path="/test/:id" component={TestView} />
             </Switch>
           </div>
         </AppContextProvider>

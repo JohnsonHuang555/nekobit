@@ -7,6 +7,8 @@ import RoomUser from '../components/RoomUser';
 import { TRoom, TRoomUser } from '../types/Room';
 import { AppContext } from '../contexts/AppContext';
 import '../assets/styles/rooms/room.scss';
+import ChineseChess from '../components/Games/ChineseChess/ChineseChess';
+import { TChineseChess } from '../types/ChineseChess';
 
 type Params = {
   id: string;
@@ -21,6 +23,7 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
   const [isLoading, setIsLoading] = useState(true);
   const [wsRoom, setWsRoom] = useState<WebSocket>();
   const [roomInfo, setRoomInfo] = useState<TRoom>();
+  const [chineseChessData, setChineseChessData] = useState<TChineseChess[]>();
 
   useEffect(() => {
     const roomId = props.match.params.id;
@@ -81,13 +84,14 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
         ws.close();
       }
     }
-  }, [isLoading])
+  }, [isLoading]);
 
+  // 房間相關 socket event
   useEffect(() => {
     if (wsRoom) {
       wsRoom.onmessage = (websocket: MessageEvent) => {
         const wsData = JSON.parse(websocket.data);
-        if (!roomInfo) {
+        if (!roomInfo || !wsData) {
           return
         }
 
@@ -101,12 +105,35 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
             ...roomInfo,
             userList: wsData.data.dbData.userList,
           });
-        } else if (wsData && wsData.event === 'setGameStart') {
-          console.log(wsData)
+        } else if (wsData.event === 'setGameStart') {
+          setChineseChessData(wsData.data.gameData)
         }
       }
     }
   }, [wsRoom]);
+
+  // 象棋相關 socket event
+  useEffect(() => {
+    if (wsRoom) {
+      wsRoom.onmessage = (websocket: MessageEvent) => {
+        const wsData = JSON.parse(websocket.data);
+        if (wsData.event === 'flipChess') {
+          if (!chineseChessData) {
+            return;
+          }
+
+          let temp = chineseChessData;
+          temp.forEach(c => {
+            if (c.id === wsData.data.chessID) {
+              c.isFliped = true;
+            }
+          })
+
+          setChineseChessData([...temp])
+        }
+      }
+    }
+  }, [chineseChessData])
 
   const startGame = () => {
     // socket
@@ -185,6 +212,27 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
     }
   }
 
+  const onFlip = (id: number) => {
+    // socket
+    if (wsRoom) {
+      wsRoom.send(JSON.stringify({
+        userID: userInfo.id,
+        event: "flipChess",
+        data: {
+          chessID: id
+        }
+      }));
+    }
+  }
+
+  const sortData = chineseChessData && chineseChessData.sort((a, b) => {
+    return a.location > b.location ? 1 : -1
+  });
+
+  const games: any = {
+    "象棋": <ChineseChess chineseChessData={sortData} onFlip={onFlip}/>
+  }
+
   return (
     <>
       {!isLoading ?
@@ -207,7 +255,7 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
             }
           </div>
           <div className="col-md-9">
-            Game screen
+            {roomInfo && games[roomInfo.name]}
           </div>
         </div>
       </div>

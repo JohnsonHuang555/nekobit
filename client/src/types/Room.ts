@@ -6,6 +6,7 @@ export type TRoom = {
   status: number;
   maxPlayers: number;
   userList: TRoomUser[];
+  name: string;
 }
 
 export type TRoomUser = {
