@@ -1,10 +1,10 @@
 import React from 'react';
 import dynamic from 'next/dynamic'
-import Meta from '../Meta/Meta';
+import Meta from './Meta';
 import '@styles/layout.scss';
 
 const Header = dynamic(
-  () => import('../Header/Header'),
+  () => import('./Header'),
   { ssr: false }
 )
 

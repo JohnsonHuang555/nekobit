@@ -1,5 +1,5 @@
 export type TRoom = {
-  _id: string;
+  id: string;
   title: string;
   mode: number;
   gameID: string;

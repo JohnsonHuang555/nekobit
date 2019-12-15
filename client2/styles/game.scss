@@ -1,5 +1,62 @@
+
 @import 'global.scss';
 
-.game {
-  color: aqua;
+#game {
+  >.container {
+    margin-top: 68px;
+  }
+  .main {
+    padding: 60px 0 67px;
+    .game-info {
+      h2, p, b, svg {
+        color: #fff;
+      }
+      .game_title {
+        font-size: 30px;
+      }
+      .game_description {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 36px;
+      }
+      .counts {
+        display: flex;
+        margin-bottom: 40px;
+        svg {
+          height: 20px;
+          margin-right: 8px;
+        }
+        >div:first-child {
+          margin-right: 30px;
+        }
+      }
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        button {
+          padding: 7px 0;
+          text-align: center;
+          width: 48%;
+          font-size: 22px;
+          font-style: italic;
+          border: 2px solid;
+          transition: all .3s;
+          &:hover {
+            transform: scale(1.05, 1.05);
+            box-shadow: 5px 5px 8px #000;
+          }
+          svg {
+            height: 20px;
+            margin-right: 10px;
+          }
+          &.new_room {
+            border: 2px solid $logo-blue;
+          }
+          &.play_now {
+            border: 1px solid #d9b335;
+          }
+        }
+      }
+    }
+  }
 }

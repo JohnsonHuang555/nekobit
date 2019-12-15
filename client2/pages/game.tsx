@@ -1,15 +1,41 @@
-import React from 'react';
-import { withRouter } from 'next/router';
-import { WithRouterProps } from 'next/dist/client/with-router';
-import Layout from "../components/Layout/Layout";
-import "../styles/game.scss";
+import React, { useState } from 'react';
+import { NextPage } from 'next';
+import Layout from "../components/Layout";
+import RoomList from '../components/RoomList/RoomList';
+import GameDetail from '../components/GameDetail';
+import { TRoom } from '../types/Room';
+import { TGame } from '../types/Game';
+import GameApi from '../api/GameApi';
 
-const Game = ({ router }: WithRouterProps) => {
+import "@styles/game.scss";
+
+// TODO:補上
+const rooms: TRoom[] = [
+
+]
+
+const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
+  const [showRoomList, setShowRoomList] = useState(false);
+
   return (
     <Layout>
-      <div className="game">Game page {router.query.id}</div>
+      <>
+        {showRoomList? (
+          <RoomList rooms={rooms}/>
+        ): (
+          <GameDetail
+            gameInfo={gameInfo}
+            rooms={rooms}
+            playNow={() => setShowRoomList(true)}/>
+        )}
+      </>
     </Layout>
   )
-}
+};
 
-export default withRouter(Game);
+Game.getInitialProps = async ({ req, query }: any) => {
+  const gameInfo = await GameApi.getGameInfo(query.id);
+  return { gameInfo }
+};
+
+export default Game;

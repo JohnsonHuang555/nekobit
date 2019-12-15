@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router'
 import uuid from 'uuid';
-import LoginModal from '../Modals/LoginModal';
-import useLocalStorage from '../../customHook/useLocalStorage';
+import LoginModal from './Modals/LoginModal';
+import useLocalStorage from '../customHook/useLocalStorage';
 import '@styles/header.scss';
 
 const Header = () => {

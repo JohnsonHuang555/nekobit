@@ -1,20 +1,13 @@
 import { NextPage } from 'next';
 import { TGame } from '../types/Game';
 import Router from 'next/router'
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faStar,
-} from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swiper from 'react-id-swiper';
 import GameApi from '../api/GameApi';
 
 import "../styles/index.scss";
-import Layout from '../components/Layout/Layout';
-
-library.add(
-  faStar,
-);
+import Layout from '../components/Layout';
 
 const Home: NextPage<{ games: TGame[] }> = ({ games = [] }) => {
   const SwiperParams = {
@@ -59,7 +52,7 @@ const Home: NextPage<{ games: TGame[] }> = ({ games = [] }) => {
                         <button className="game-enter" onClick={() => chooseGameHandler(game._id)}>Enter</button>
                         <div className="rates">
                           <div className="stars">
-                            <FontAwesomeIcon icon="star" />
+                            <FontAwesomeIcon icon={faStar} />
                             <b>9.5 分</b>
                           </div>
                         </div>

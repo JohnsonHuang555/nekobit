@@ -72,15 +72,19 @@
           }
           .rates {
             margin-top: 28px;
-            b, svg {
-              font-size: 22px;
-            }
-            b {
-              color: #fff;
-            }
-            svg {
-              color: $star-yellow;
-              margin-right: 10px;
+            .stars {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              b {
+                color: #fff;
+                font-size: 22px;
+              }
+              svg {
+                height: 20px;
+                color: $star-yellow;
+                margin-right: 10px;
+              }
             }
           }
         }
