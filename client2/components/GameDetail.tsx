@@ -41,7 +41,7 @@ const GameDetail = (props: GameDetailProps) => {
             </div>
             <div className="counts">
               <div className="players">
-                <FontAwesomeIcon size="sm" icon={faUserFriends} /><b>遊戲需求人數：{gameInfo.maxPlayers}</b>
+                <FontAwesomeIcon icon={faUserFriends} /><b>遊戲需求人數：{gameInfo.maxPlayers}</b>
               </div>
               <div className="rooms">
                 <FontAwesomeIcon icon={faChess} /><b>總房間數：{rooms ? rooms.length : 0}</b>

@@ -6,13 +6,11 @@ import '../../../assets/styles/rooms/roomList.scss';
 
 type RoomListProps = {
   rooms: TRoom[];
-  location: LocationState;
 };
 
 const RoomListPage = (props: RoomListProps) => {
   const {
     rooms,
-    location,
   } = props;
   return (
     <div className="container">
@@ -24,7 +22,6 @@ const RoomListPage = (props: RoomListProps) => {
           <div className="block-content">
             <RoomList
               rooms={rooms}
-              location={location}
             />
           </div>
         </div>

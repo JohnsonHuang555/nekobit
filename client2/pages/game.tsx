@@ -3,9 +3,9 @@ import { NextPage } from 'next';
 import Layout from "../components/Layout";
 import RoomList from '../components/RoomList/RoomList';
 import GameDetail from '../components/GameDetail';
+import GameApi from '../api/GameApi';
 import { TRoom } from '../types/Room';
 import { TGame } from '../types/Game';
-import GameApi from '../api/GameApi';
 
 import "@styles/game.scss";
 
@@ -26,7 +26,8 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
           <GameDetail
             gameInfo={gameInfo}
             rooms={rooms}
-            playNow={() => setShowRoomList(true)}/>
+            playNow={() => setShowRoomList(true)}
+          />
         )}
       </>
     </Layout>
