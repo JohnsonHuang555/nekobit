@@ -1,32 +1,22 @@
-// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 package socket
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"server/controllers"
-	"server/middleware"
+	// "server/controllers"
+	// "server/middleware"
 	"server/models"
 
 	"github.com/gorilla/websocket"
 )
 
 const (
-	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
-
-	// Time allowed to read the next pong message from the peer.
-	pongWait = 60 * time.Second
-
-	// Send pings to peer with this period. Must be less than pongWait.
-	pingPeriod = (pongWait * 9) / 10
-
-	// Maximum message size allowed from peer.
+	writeWait      = 10 * time.Second
+	pongWait       = 60 * time.Second
+	pingPeriod     = (pongWait * 9) / 10
 	maxMessageSize = 512
 )
 
@@ -37,10 +27,7 @@ var upgrader = websocket.Upgrader{
 
 // connection is an middleman between the websocket connection and the hub.
 type connection struct {
-	// The websocket connection.
-	ws *websocket.Conn
-
-	// Buffered channel of outbound messages.
+	ws   *websocket.Conn
 	send chan MsgData
 }
 
@@ -52,12 +39,20 @@ type MsgData struct {
 
 // 前端附加資訊
 type Attachment struct {
-	Name     string      `json:"name,omitempty"`
-	IsMaster bool        `json:"isMaster,omitempty"`
-	IsReady  bool        `json:"isReady,omitempty"`
-	DbData   interface{} `json:"dbData,omitempty"`
-	GameData interface{} `json:"gameData,omitempty"`
+	Name         string        `json:"name,omitempty"`
+	IsMaster     bool          `json:"isMaster,omitempty"`
+	IsReady      bool          `json:"isReady,omitempty"`
+	ChessID      int           `json:"chessID,omitempty"`
+	GameData     interface{}   `json:"gameData,omitempty"`
+	RoomPassword string        `json:"roomPassword,omitempty"`
+	RoomTitle    string        `json:"roomTitle,omitempty"`
+	RoomMode     int           `json:"roomMode,omitempty"`
+	RoomStatus   int           `json:"roomStatus,omitempty"`
+	RoomUserList []models.User `json:"roomUserList,omitempty"`
 }
+
+var nowRooms = []models.Room{}
+var roomID = 0
 
 // ReadPump pumps messages from the websocket connection to the hub.
 func (s subscription) readPump() {
@@ -74,7 +69,7 @@ func (s subscription) readPump() {
 		err := c.ws.ReadJSON(&msg)
 
 		switch msg.Event {
-		case "joinRoom":
+		case "createRoom":
 			user := models.User{
 				ID:        msg.UserID,
 				Name:      msg.Data.Name,
@@ -82,17 +77,49 @@ func (s subscription) readPump() {
 				IsReady:   msg.Data.IsMaster,
 				PlayOrder: 0,
 			}
-			payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
-			msg.Data.DbData = payload
+
+			room := &models.Room{
+				ID:       roomID,
+				Password: msg.Data.RoomPassword,
+				Title:    msg.Data.RoomTitle,
+				Mode:     msg.Data.RoomMode,
+				Status:   msg.Data.RoomStatus,
+				UserList: []models.User{user},
+				GameData: nil,
+			}
+
+			fmt.Println(room)
+
+		case "joinRoom":
+			// user := models.User{
+			// 	ID:        msg.UserID,
+			// 	Name:      msg.Data.Name,
+			// 	IsMaster:  msg.Data.IsMaster,
+			// 	IsReady:   msg.Data.IsMaster,
+			// 	PlayOrder: 0,
+			// }
+
+			// if models.AddUser(user)
+			// payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
+			// msg.Data.DbData = payload
 		case "leaveRoom":
-			payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
-			msg.Data.DbData = payload
-		case "setGameReady":
-			payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room, msg.UserID, msg.Data.IsReady)
-			msg.Data.DbData = payload
-		case "setGameStart":
-			controllers.SetGameStart(middleware.RoomCollection, s.room)
-			msg.Data.GameData = controllers.CreateChesses()
+			// payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
+			// msg.Data.DbData = payload
+		// case "setGameReady":
+		// 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room, msg.UserID, msg.Data.IsReady)
+		// 	msg.Data.DbData = payload
+		// case "setPlayOrder":
+		// 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room)
+		// case "setGameStart":
+		// 	controllers.SetGameStart(middleware.RoomCollection, s.room)
+		// 	gameData := controllers.CreateChesses()
+		// 	info := models.RoomInfo{
+		// 		RoomID: s.room,
+		// 		GameData: gameData,
+		// 	}
+
+		// 	roomsInfo = append(roomsInfo, info)
+		// 	msg.Data.GameData = gameData
 		default:
 			log.Printf("Socket error: no match event")
 		}

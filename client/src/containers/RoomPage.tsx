@@ -29,7 +29,7 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
     const roomId = props.match.params.id;
     const getRoomInfo = async () => {
       const data = await RoomApi.getRoomInfo(roomId);
-      setRoomInfo(data);
+      setRoomInfo({ ...data, nowTurn: ''});
       setIsLoading(false);
     };
     getRoomInfo();
@@ -212,6 +212,16 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
     }
   }
 
+  const setPlayOrder = () => {
+    if (wsRoom) {
+      wsRoom.send(JSON.stringify({
+        userID: userInfo.id,
+        event: "setPlayOrder",
+        data: {}
+      }));
+    }
+  }
+
   const onFlip = (id: number) => {
     // socket
     if (wsRoom) {
@@ -253,6 +263,7 @@ const RoomPage = (props: RouteComponentProps<Params>) => {
               <button className="start" disabled={disabledStart()} onClick={startGame}>Start</button> :
               <button className="ready" onClick={readyGame}>Ready</button>
             }
+            <button className="ready" onClick={setPlayOrder}>Set Order</button>
           </div>
           <div className="col-md-9">
             {roomInfo && games[roomInfo.name]}

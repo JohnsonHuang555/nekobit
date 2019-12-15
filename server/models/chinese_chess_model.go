@@ -1,11 +1,11 @@
 package models
 
 type ChineseChess struct {
-	ID        int
-	Side      string
-	Name      string
-	IsFliped  bool
-	Location int
-	Rank      int
-	Alive     bool
+	ID        int    `json:"id"`
+	Side      string `json:"side"`
+	Name      string `json:"name"`
+	IsFliped  bool   `json:"isFliped"`
+	Location  int    `json:"location"`
+	Rank      int    `json:"rank"`
+	Alive     bool   `json:"alive"`
 }

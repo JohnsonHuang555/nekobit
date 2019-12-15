@@ -1,16 +1,14 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
-
 // Room schema structure
 type Room struct {
-	ID            primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Password      string             `json:"password"`
-	Title         string             `json:"title"`
-	Mode          int                `json:"mode"`
-	GameID        string             `json:"gameID"`
-	Status        int                `json:"status"`
-	UserList      []User             `json:"userList"`
+	ID            int      `json:"id,omitempty"`
+	Password      string      `json:"password"`
+	Title         string      `json:"title"`
+	Mode          int         `json:"mode"`
+	Status        int         `json:"status"`
+	UserList      []User      `json:"userList"`
+	GameData      interface{} `json:"gameData"`
 }
 
 // User schema structure
@@ -21,3 +19,20 @@ type User struct {
 	IsReady bool `json:"isReady"`
 	PlayOrder int `json:"playOrder"`
 }
+
+// func NewUser(id int, password string, title string, Mode int, status int, userList []User, gameData interface{}) {
+// 	return Room{
+// 		ID: id,
+// 		Password: password,
+// 		Title: title,
+// 		Mode: mode,
+// 		Status: status,
+// 		UserList: userList,
+// 		GameData: gameData,
+// 	}
+// }
+
+// func (room *Room) AddUser(user User) bool {
+// 	room.UserList = append(room.UserList, user)
+// 	return true
+// }

@@ -164,31 +164,31 @@ func CreateChesses() []models.ChineseChess {
 		25: models.ChineseChess{
 			ID:   26,
 			Side: "RED",
-			Name: "卒",
+			Name: "兵",
 			Rank: 1,
 		},
 		26: models.ChineseChess{
 			ID:   27,
 			Side: "RED",
-			Name: "卒",
+			Name: "兵",
 			Rank: 1,
 		},
 		27: models.ChineseChess{
 			ID:   28,
 			Side: "RED",
-			Name: "卒",
+			Name: "兵",
 			Rank: 1,
 		},
 		28: models.ChineseChess{
 			ID:   29,
 			Side: "RED",
-			Name: "卒",
+			Name: "兵",
 			Rank: 1,
 		},
 		29: models.ChineseChess{
 			ID:   30,
 			Side: "RED",
-			Name: "卒",
+			Name: "兵",
 			Rank: 1,
 		},
 		30: models.ChineseChess{

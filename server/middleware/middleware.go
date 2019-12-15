@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"server/controllers"
-	"server/models"
+	// "server/models"
 )
 
 // DB connection string
@@ -79,31 +79,31 @@ func GetGameInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetRooms 取得該遊戲的所有房間
-func GetRooms(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	params := mux.Vars(r)
-	payload := controllers.GetRooms(RoomCollection, params["id"])
-	json.NewEncoder(w).Encode(payload)
-}
+// func GetRooms(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	params := mux.Vars(r)
+// 	payload := controllers.GetRooms(RoomCollection, params["id"])
+// 	json.NewEncoder(w).Encode(payload)
+// }
 
-// GetRoomInfo 取得房間資訊
-func GetRoomInfo(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	params := mux.Vars(r)
-	payload := controllers.GetRoomInfo(RoomCollection, GameCollection, params["id"])
-	json.NewEncoder(w).Encode(payload)
-}
+// // GetRoomInfo 取得房間資訊
+// func GetRoomInfo(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	params := mux.Vars(r)
+// 	payload := controllers.GetRoomInfo(RoomCollection, GameCollection, params["id"])
+// 	json.NewEncoder(w).Encode(payload)
+// }
 
 // CreateRoom 創建新房間
-func CreateRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	var room models.Room
-	_ = json.NewDecoder(r.Body).Decode(&room)
-	payload := controllers.CreateRoom(RoomCollection, room)
-	json.NewEncoder(w).Encode(payload)
-}
+// func CreateRoom(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+// 	w.Header().Set("Access-Control-Allow-Origin", "*")
+// 	w.Header().Set("Access-Control-Allow-Methods", "POST")
+// 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+// 	var room models.Room
+// 	_ = json.NewDecoder(r.Body).Decode(&room)
+// 	payload := controllers.CreateRoom(RoomCollection, room)
+// 	json.NewEncoder(w).Encode(payload)
+// }

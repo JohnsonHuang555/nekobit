@@ -1,7 +1,3 @@
-// Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 package socket
 
 type message struct {
@@ -17,16 +13,9 @@ type subscription struct {
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type hub struct {
-	// Registered connections.
-	rooms map[string]map[*connection]bool
-
-	// Inbound messages from the connections.
-	broadcast chan message
-
-	// Register requests from the connections.
-	register chan subscription
-
-	// Unregister requests from connections.
+	rooms      map[string]map[*connection]bool
+	broadcast  chan message
+	register   chan subscription
 	unregister chan subscription
 }
 

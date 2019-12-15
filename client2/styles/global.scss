@@ -1,0 +1,118 @@
+$primary: #031927;
+$second: #C8E0F4;
+$body-black: #121314;
+$navbar-bg: #1d1d1d;
+$logo-blue: #57a5c7;
+$title-gray: #808080;
+$bullet-gray: #747474;
+$light-gray: #e3e3e3;
+$star-yellow: #ffd72c;
+$button-yallow: #d9b335;
+$modal-bg: rgba(29, 33, 36, 0.95);
+$modal-border: #707070;
+$input-gray: #555;
+$input-placeholder: #8c8c8c;
+$room-list-title: #9a9a9a;
+$room-list-content-bg: #0c0d0d;
+$room-bg: #64584b;
+$room-border: #898075;
+
+$basic-white: #fff;
+
+$first_blue: linear-gradient(#031927, #1a3343);
+
+body {
+  background: $body-black;
+  font-family: 'Helvetica';
+}
+h1, h2 {
+  font-weight: bold;
+}
+a {
+  display: inline-block;
+  &:hover {
+    text-decoration: none;
+  }
+}
+button, input {
+  &:focus {
+    outline: none;
+  }
+}
+button {
+  background: none;
+}
+.center { text-align: center; }
+.main {margin-top: 30px;}
+.lobby_box {
+  position: relative;
+  border-bottom: 1px solid $title-gray;
+  &:after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100%;
+    background: $title-gray;
+    position: absolute;
+    bottom: -4px;
+  }
+}
+.section-heading {
+  h2 {
+    color: $title-gray;
+    font-weight: bold;
+    font-size: 22px;
+    border-bottom: 1px solid $title-gray;
+    position: relative;
+    padding-bottom: 10px;
+    &:after {
+      content: "";
+      position: absolute;
+      height: 1px;
+      background: $title-gray;
+      width: 100%;
+      left: 0;
+      bottom: -4px;
+    }
+  }
+}
+.swiper-button-next, .swiper-button-prev {
+  background-image: none;
+  top: 40%;
+  &:after {
+    content: "";
+    width: 27px;
+    height: 27px;
+    border: solid #fff;
+    display: block;
+    transform: rotate(45deg);
+  }
+}
+.swiper-button-next {
+  right: -45px;
+  &:after {
+    border-width: 4px 4px 0 0;
+  }
+}
+.swiper-button-prev {
+  left: -55px;
+  &:after {
+    border-width: 0 0 4px 4px;
+  }
+}
+.swiper-pagination-bullets {
+  position: unset;
+  text-align: center;
+  width: 100%!important;
+  transform: none!important;
+  .swiper-pagination-bullet {
+    width: 14px;
+    height: 14px;
+    background: $bullet-gray;
+    &.swiper-pagination-bullet-active {
+      border: 3px solid $light-gray;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
