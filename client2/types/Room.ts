@@ -2,12 +2,10 @@ export type TRoom = {
   id: string;
   title: string;
   mode: number;
-  gameID: string;
   status: number;
-  maxPlayers: number;
   userList: TRoomUser[];
-  name: string;
   nowTurn: string;
+  gameData: any[];
 }
 
 export type TRoomUser = {

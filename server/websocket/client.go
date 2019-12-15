@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	// "server/controllers"
+	"server/controllers"
 	// "server/middleware"
 	"server/models"
 
@@ -49,10 +49,19 @@ type Attachment struct {
 	RoomMode     int           `json:"roomMode,omitempty"`
 	RoomStatus   int           `json:"roomStatus,omitempty"`
 	RoomUserList []models.User `json:"roomUserList,omitempty"`
+	Rooms        []models.Room `json:"rooms,omitempty"`
 }
 
-var nowRooms = []models.Room{}
-var roomID = 0
+type roomView struct {
+	roomService *controllers.RoomService
+}
+
+func (r *roomView) getRoomList() []models.Room {
+	rooms := r.roomService.List()
+	return rooms
+}
+
+var rv = roomView{}
 
 // ReadPump pumps messages from the websocket connection to the hub.
 func (s subscription) readPump() {
@@ -68,61 +77,62 @@ func (s subscription) readPump() {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
 
-		switch msg.Event {
-		case "createRoom":
-			user := models.User{
-				ID:        msg.UserID,
-				Name:      msg.Data.Name,
-				IsMaster:  msg.Data.IsMaster,
-				IsReady:   msg.Data.IsMaster,
-				PlayOrder: 0,
-			}
-
-			room := &models.Room{
-				ID:       roomID,
-				Password: msg.Data.RoomPassword,
-				Title:    msg.Data.RoomTitle,
-				Mode:     msg.Data.RoomMode,
-				Status:   msg.Data.RoomStatus,
-				UserList: []models.User{user},
-				GameData: nil,
-			}
-
-			fmt.Println(room)
-
-		case "joinRoom":
-			// user := models.User{
-			// 	ID:        msg.UserID,
-			// 	Name:      msg.Data.Name,
-			// 	IsMaster:  msg.Data.IsMaster,
-			// 	IsReady:   msg.Data.IsMaster,
-			// 	PlayOrder: 0,
-			// }
-
-			// if models.AddUser(user)
-			// payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
-			// msg.Data.DbData = payload
-		case "leaveRoom":
-			// payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
-			// msg.Data.DbData = payload
-		// case "setGameReady":
-		// 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room, msg.UserID, msg.Data.IsReady)
-		// 	msg.Data.DbData = payload
-		// case "setPlayOrder":
-		// 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room)
-		// case "setGameStart":
-		// 	controllers.SetGameStart(middleware.RoomCollection, s.room)
-		// 	gameData := controllers.CreateChesses()
-		// 	info := models.RoomInfo{
-		// 		RoomID: s.room,
-		// 		GameData: gameData,
+		newMsg := eventHandler(msg, s)
+		// switch msg.Event {
+		// case "createRoom":
+		// 	user := models.User{
+		// 		ID:        msg.UserID,
+		// 		Name:      msg.Data.Name,
+		// 		IsMaster:  msg.Data.IsMaster,
+		// 		IsReady:   msg.Data.IsMaster,
+		// 		PlayOrder: 0,
 		// 	}
 
-		// 	roomsInfo = append(roomsInfo, info)
-		// 	msg.Data.GameData = gameData
-		default:
-			log.Printf("Socket error: no match event")
-		}
+		// 	room := &models.Room{
+		// 		ID:       roomID,
+		// 		Password: msg.Data.RoomPassword,
+		// 		Title:    msg.Data.RoomTitle,
+		// 		Mode:     msg.Data.RoomMode,
+		// 		Status:   msg.Data.RoomStatus,
+		// 		UserList: []models.User{user},
+		// 		GameData: nil,
+		// 	}
+
+		// 	fmt.Println(room)
+
+		// case "joinRoom":
+		// 	// user := models.User{
+		// 	// 	ID:        msg.UserID,
+		// 	// 	Name:      msg.Data.Name,
+		// 	// 	IsMaster:  msg.Data.IsMaster,
+		// 	// 	IsReady:   msg.Data.IsMaster,
+		// 	// 	PlayOrder: 0,
+		// 	// }
+
+		// 	// if models.AddUser(user)
+		// 	// payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
+		// 	// msg.Data.DbData = payload
+		// case "leaveRoom":
+		// 	// payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
+		// 	// msg.Data.DbData = payload
+		// // case "setGameReady":
+		// // 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room, msg.UserID, msg.Data.IsReady)
+		// // 	msg.Data.DbData = payload
+		// // case "setPlayOrder":
+		// // 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room)
+		// // case "setGameStart":
+		// // 	controllers.SetGameStart(middleware.RoomCollection, s.room)
+		// // 	gameData := controllers.CreateChesses()
+		// // 	info := models.RoomInfo{
+		// // 		RoomID: s.room,
+		// // 		GameData: gameData,
+		// // 	}
+
+		// // 	roomsInfo = append(roomsInfo, info)
+		// // 	msg.Data.GameData = gameData
+		// default:
+		// 	log.Printf("Socket error: no match event")
+		// }
 
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
@@ -130,9 +140,24 @@ func (s subscription) readPump() {
 			}
 			break
 		}
-		m := message{msg, s.room}
+		m := message{newMsg, s.room}
 		h.broadcast <- m
 	}
+}
+
+func eventHandler(msg MsgData, s subscription) MsgData {
+	switch msg.Event {
+	case "getRooms":
+		msg.Data.Rooms = rv.getRoomList()
+	case "createRoom":
+		fmt.Println("create room")
+	case "joinRoom":
+		fmt.Println("join room")
+	case "leaveRoom":
+		fmt.Println("leave room")
+	}
+
+	return msg
 }
 
 // writePump pumps messages from the hub to the websocket connection.
@@ -160,8 +185,9 @@ func (s *subscription) writePump() {
 	}
 }
 
-// serveWs handles websocket requests from the peer.
+// ServeWs handles websocket requests from the peer.
 func ServeWs(w http.ResponseWriter, r *http.Request, roomID string) {
+	rv.roomService = controllers.NewRoomService()
 	go h.run()
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(w, r, nil)
