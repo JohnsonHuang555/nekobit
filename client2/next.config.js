@@ -14,7 +14,7 @@ const dev = process.env.NODE_ENV !== 'production'
 // }
 const nextConfiguration = {
     webpack: config => {
-        config.resolve.alias['@styles'] = path.join(__dirname, 'styles')
+        config.resolve.alias['@styles'] = path.join(__dirname, 'src/styles')
         //See https://github.com/zeit/next.js/issues/2324
         if (config.resolve.alias) {
             delete config.resolve.alias['react']

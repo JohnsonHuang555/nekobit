@@ -1,7 +1,6 @@
 import React from 'react';
 import RoomList from './RoomList';
-import { TRoom } from '../../../types/Room';
-import { LocationState } from 'history';
+import { TRoom } from '../../types/Room';
 import '../../../assets/styles/rooms/roomList.scss';
 
 type RoomListProps = {

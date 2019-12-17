@@ -50,6 +50,7 @@ type Attachment struct {
 	RoomStatus   int           `json:"roomStatus,omitempty"`
 	RoomUserList []models.User `json:"roomUserList,omitempty"`
 	Rooms        []models.Room `json:"rooms,omitempty"`
+	RoomID       int           `json:"roomID,omitempty"`
 }
 
 type roomView struct {
@@ -150,7 +151,24 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 	case "getRooms":
 		msg.Data.Rooms = rv.getRoomList()
 	case "createRoom":
-		fmt.Println("create room")
+		user := models.User{
+			ID:        msg.UserID,
+			Name:      msg.Data.Name,
+			IsMaster:  msg.Data.IsMaster,
+			IsReady:   msg.Data.IsMaster,
+			PlayOrder: 0,
+		}
+		room := models.NewRoomWithoutID(msg.Data.RoomPassword, msg.Data.RoomTitle,
+			msg.Data.RoomMode, 0, []models.User{user}, nil, "")
+
+		roomID := rv.roomService.Create(room)
+		if roomID != 0 {
+			fmt.Println("create room success", roomID)
+		} else {
+			fmt.Println("create room failed")
+		}
+		msg.Data.RoomID = roomID
+		msg.Data.Rooms = rv.getRoomList()
 	case "joinRoom":
 		fmt.Println("join room")
 	case "leaveRoom":
