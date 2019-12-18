@@ -6,8 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"server/controllers"
-	// "server/middleware"
+	"server/middleware"
 	"server/models"
 
 	"github.com/gorilla/websocket"
@@ -54,22 +53,6 @@ type Attachment struct {
 	RoomID       int           `json:"roomID,omitempty"`
 	RoomInfo     models.Room   `json:"roomInfo,omitempty"`
 }
-
-type roomView struct {
-	roomService *controllers.RoomService
-}
-
-func (r *roomView) getRoomList() []models.Room {
-	rooms := r.roomService.List()
-	return rooms
-}
-
-func (r *roomView) getUserList(id int) []models.User {
-	userList := r.roomService.GetUserList(id)
-	return userList
-}
-
-var rv = roomView{}
 
 // ReadPump pumps messages from the websocket connection to the hub.
 func (s subscription) readPump() {
@@ -156,20 +139,19 @@ func (s subscription) readPump() {
 func eventHandler(msg MsgData, s subscription) MsgData {
 	switch msg.Event {
 	case "getRooms":
-		fmt.Println(rv.getRoomList())
-		msg.Data.Rooms = rv.getRoomList()
+		fmt.Println(middleware.Rv.GetRoomList())
+		msg.Data.Rooms = middleware.Rv.GetRoomList()
 	case "createRoom":
 		room := models.NewRoomWithoutID(msg.Data.RoomPassword, msg.Data.RoomTitle,
 			msg.Data.RoomMode, 0, []models.User{}, nil, "")
 
-		roomID := rv.roomService.Create(room)
+		roomID := middleware.Rv.RoomService.Create(room)
 		if roomID != 0 {
 			fmt.Println("create room success", roomID)
 		} else {
 			fmt.Println("create room failed")
 		}
 		msg.Data.RoomID = roomID
-		fmt.Println(len(rv.getRoomList()), 123456)
 	case "joinRoom":
 		user := models.User{
 			ID:        msg.UserID,
@@ -178,7 +160,7 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 			IsReady:   msg.Data.IsMaster,
 			PlayOrder: 0,
 		}
-		roomInfo := rv.roomService.AddUser(msg.Data.RoomID, user)
+		roomInfo := middleware.Rv.RoomService.AddUser(msg.Data.RoomID, user)
 		msg.Data.RoomInfo = roomInfo
 	case "leaveRoom":
 		fmt.Println("leave room")
@@ -214,7 +196,6 @@ func (s *subscription) writePump() {
 
 // ServeWs handles websocket requests from the peer.
 func ServeWs(w http.ResponseWriter, r *http.Request, roomID string) {
-	rv.roomService = controllers.NewRoomService()
 	go h.run()
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(w, r, nil)

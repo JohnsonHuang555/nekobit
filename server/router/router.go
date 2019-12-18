@@ -14,10 +14,6 @@ func Router() *mux.Router {
 
 	router.HandleFunc("/api/getAllGames", middleware.GetAllGames).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/getGameInfo/{id}", middleware.GetGameInfo).Methods("GET", "OPTIONS")
-	// router.HandleFunc("/api/getRooms/{id}", middleware.GetRooms).Methods("GET", "OPTIONS")
-	// router.HandleFunc("/api/getRoomInfo/{id}", middleware.GetRoomInfo).Methods("GET", "OPTIONS")
-	// router.HandleFunc("/api/createRoom", middleware.CreateRoom).Methods("POST", "OPTIONS")
-
 	router.HandleFunc("/ws/{roomID}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		socket.ServeWs(w, r, params["roomID"])

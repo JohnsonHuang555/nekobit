@@ -30,6 +30,7 @@ func (r *RoomService) Create(room models.Room) int {
 	r.roomNum++
 	room.ID = r.roomNum
 	r.rooms = append(r.rooms, room)
+	fmt.Println(r.rooms)
 	return r.roomNum
 }
 

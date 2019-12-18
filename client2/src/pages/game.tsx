@@ -40,13 +40,13 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       if (wsData.event === 'getRooms') {
         setRooms(wsData.data.rooms);
       } else if (wsData.event === 'createRoom') {
-        Router.push({
-          pathname: '/room',
-          query: {
-            id: wsData.data.roomID,
-            isMaster: true
-          }
-        });
+        // Router.push({
+        //   pathname: '/room',
+        //   query: {
+        //     id: wsData.data.roomID,
+        //     isMaster: true
+        //   }
+        // });
       }
     }
 
