@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"server/models"
 )
 
@@ -13,7 +14,7 @@ type RoomService struct {
 // NewRoomService function
 func NewRoomService() *RoomService {
 	roomService := &RoomService{}
-	roomService.roomNum = 0
+	roomService.roomNum = 1
 	room := models.NewRoom(1, "", "Play", 0, 0, make([]models.User, 5), nil, "")
 	roomService.rooms = append(roomService.rooms, room)
 	return roomService
@@ -41,6 +42,19 @@ func (r *RoomService) Delete(id int) bool {
 
 	r.rooms = append(r.rooms[:index], r.rooms[index+1:]...)
 	return true
+}
+
+func (r *RoomService) AddUser(id int, user models.User) models.Room {
+
+	fmt.Println(r.roomNum)
+	// index := r.FindByID(id)
+	// r.rooms[index].UserList = append(r.rooms[index].UserList, user)
+	return r.rooms[0]
+}
+
+func (r *RoomService) GetUserList(id int) []models.User {
+	index := r.FindByID(id)
+	return r.rooms[index].UserList
 }
 
 // FindByID , if not found return -1

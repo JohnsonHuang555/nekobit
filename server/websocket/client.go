@@ -39,11 +39,12 @@ type MsgData struct {
 
 // 前端附加資訊
 type Attachment struct {
-	Name         string        `json:"name,omitempty"`
-	IsMaster     bool          `json:"isMaster,omitempty"`
-	IsReady      bool          `json:"isReady,omitempty"`
-	ChessID      int           `json:"chessID,omitempty"`
-	GameData     interface{}   `json:"gameData,omitempty"`
+	Name     string      `json:"name,omitempty"`
+	IsMaster bool        `json:"isMaster,omitempty"`
+	IsReady  bool        `json:"isReady,omitempty"`
+	ChessID  int         `json:"chessID,omitempty"`
+	GameData interface{} `json:"gameData,omitempty"`
+
 	RoomPassword string        `json:"roomPassword,omitempty"`
 	RoomTitle    string        `json:"roomTitle,omitempty"`
 	RoomMode     int           `json:"roomMode,omitempty"`
@@ -51,6 +52,7 @@ type Attachment struct {
 	RoomUserList []models.User `json:"roomUserList,omitempty"`
 	Rooms        []models.Room `json:"rooms,omitempty"`
 	RoomID       int           `json:"roomID,omitempty"`
+	RoomInfo     models.Room   `json:"roomInfo,omitempty"`
 }
 
 type roomView struct {
@@ -60,6 +62,11 @@ type roomView struct {
 func (r *roomView) getRoomList() []models.Room {
 	rooms := r.roomService.List()
 	return rooms
+}
+
+func (r *roomView) getUserList(id int) []models.User {
+	userList := r.roomService.GetUserList(id)
+	return userList
 }
 
 var rv = roomView{}
@@ -149,17 +156,11 @@ func (s subscription) readPump() {
 func eventHandler(msg MsgData, s subscription) MsgData {
 	switch msg.Event {
 	case "getRooms":
+		fmt.Println(rv.getRoomList())
 		msg.Data.Rooms = rv.getRoomList()
 	case "createRoom":
-		user := models.User{
-			ID:        msg.UserID,
-			Name:      msg.Data.Name,
-			IsMaster:  msg.Data.IsMaster,
-			IsReady:   msg.Data.IsMaster,
-			PlayOrder: 0,
-		}
 		room := models.NewRoomWithoutID(msg.Data.RoomPassword, msg.Data.RoomTitle,
-			msg.Data.RoomMode, 0, []models.User{user}, nil, "")
+			msg.Data.RoomMode, 0, []models.User{}, nil, "")
 
 		roomID := rv.roomService.Create(room)
 		if roomID != 0 {
@@ -168,9 +169,17 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 			fmt.Println("create room failed")
 		}
 		msg.Data.RoomID = roomID
-		msg.Data.Rooms = rv.getRoomList()
+		fmt.Println(len(rv.getRoomList()), 123456)
 	case "joinRoom":
-		fmt.Println("join room")
+		user := models.User{
+			ID:        msg.UserID,
+			Name:      msg.Data.Name,
+			IsMaster:  msg.Data.IsMaster,
+			IsReady:   msg.Data.IsMaster,
+			PlayOrder: 0,
+		}
+		roomInfo := rv.roomService.AddUser(msg.Data.RoomID, user)
+		msg.Data.RoomInfo = roomInfo
 	case "leaveRoom":
 		fmt.Println("leave room")
 	}

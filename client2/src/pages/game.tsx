@@ -13,7 +13,7 @@ import '@styles/game.scss';
 import { TSocket } from '../types/Socket';
 
 const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
-  const [userInfo, setUserInfo] = useLocalStorage('userInfo', null);
+  const [userInfo] = useLocalStorage('userInfo', null);
   const [showRoomList, setShowRoomList] = useState(false);
   const [rooms, setRooms] = useState<TRoom[]>([]);
   const [ws, setWs] = useState<WebSocket>();
@@ -40,7 +40,13 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       if (wsData.event === 'getRooms') {
         setRooms(wsData.data.rooms);
       } else if (wsData.event === 'createRoom') {
-        Router.push(`/room/${wsData.data.roomID}`);
+        Router.push({
+          pathname: '/room',
+          query: {
+            id: wsData.data.roomID,
+            isMaster: true
+          }
+        });
       }
     }
 
