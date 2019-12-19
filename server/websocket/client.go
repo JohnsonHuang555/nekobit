@@ -139,7 +139,6 @@ func (s subscription) readPump() {
 func eventHandler(msg MsgData, s subscription) MsgData {
 	switch msg.Event {
 	case "getRooms":
-		fmt.Println(middleware.Rv.GetRoomList())
 		msg.Data.Rooms = middleware.Rv.GetRoomList()
 	case "createRoom":
 		room := models.NewRoomWithoutID(msg.Data.RoomPassword, msg.Data.RoomTitle,

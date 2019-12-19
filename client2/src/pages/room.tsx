@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { TSocket } from '../types/Socket';
-import { TRoom } from '../types/Room';
+import { TRoom, TRoomUser } from '../types/Room';
 import Layout from "../components/Layout"
 import useLocalStorage from '../customHook/useLocalStorage';
+import RoomUser from '../components/RoomList/RoomUser';
 
 const Room = () => {
   const router = useRouter();
@@ -12,6 +13,9 @@ const Room = () => {
   const [roomInfo, setRoomInfo] = useState<TRoom>();
 
   useEffect(() => {
+    if (!router.query) {
+      return;
+    }
     let ws: WebSocket = new WebSocket(`ws://localhost:8080/ws/${router.query.id}`)
 
     ws.onopen = () => {
@@ -35,7 +39,10 @@ const Room = () => {
 
     ws.onmessage = (websocket: MessageEvent) => {
       const wsData: TSocket = JSON.parse(websocket.data);
-      console.log(wsData)
+      if (!wsData) {
+        return;
+      }
+
       if (wsData.event === 'joinRoom') {
         setRoomInfo(wsData.data.roomInfo)
       }
@@ -49,11 +56,22 @@ const Room = () => {
     return () => {
       ws.close();
     }
-  }, [])
+  }, [router.query])
 
   return (
     <Layout>
-      <div>{router.query.id}</div>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-3">
+            {
+              roomInfo && roomInfo.userList.map((user: TRoomUser) => {
+                return <RoomUser key={user.id} user={user}/>
+              })
+            }
+            <div>Back to list</div>
+          </div>
+        </div>
+      </div>
     </Layout>
   )
 }

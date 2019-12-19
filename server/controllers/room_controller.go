@@ -25,12 +25,16 @@ func (r *RoomService) List() []models.Room {
 	return r.rooms
 }
 
+func (r *RoomService) UserList(id int) []models.User {
+	index := r.FindByID(id)
+	return r.rooms[index].UserList
+}
+
 // Create Room
 func (r *RoomService) Create(room models.Room) int {
 	r.roomNum++
 	room.ID = r.roomNum
 	r.rooms = append(r.rooms, room)
-	fmt.Println(r.rooms)
 	return r.roomNum
 }
 
@@ -45,17 +49,11 @@ func (r *RoomService) Delete(id int) bool {
 	return true
 }
 
-func (r *RoomService) AddUser(id int, user models.User) models.Room {
-
-	fmt.Println(r.roomNum)
-	// index := r.FindByID(id)
-	// r.rooms[index].UserList = append(r.rooms[index].UserList, user)
-	return r.rooms[0]
-}
-
-func (r *RoomService) GetUserList(id int) []models.User {
-	index := r.FindByID(id)
-	return r.rooms[index].UserList
+func (r *RoomService) AddUser(roomID int, user models.User) models.Room {
+	index := r.FindByID(roomID)
+	fmt.Println(index, roomID)
+	r.rooms[index].UserList = append(r.rooms[index].UserList, user)
+	return r.rooms[index]
 }
 
 // FindByID , if not found return -1

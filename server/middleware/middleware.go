@@ -91,7 +91,7 @@ func (r *RoomView) GetRoomList() []models.Room {
 	return rooms
 }
 
-func (r *RoomView) GetUserList(id int) []models.User {
-	userList := r.RoomService.GetUserList(id)
+func (r *RoomView) GetUserList(roomID int) []models.User {
+	userList := r.RoomService.UserList(roomID)
 	return userList
 }

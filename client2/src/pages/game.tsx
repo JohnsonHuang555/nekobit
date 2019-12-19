@@ -8,9 +8,9 @@ import GameApi from '../api/GameApi';
 import useLocalStorage from '../customHook/useLocalStorage';
 import { TRoom } from '../types/Room';
 import { TGame } from '../types/Game';
+import { TSocket } from '../types/Socket';
 
 import '@styles/game.scss';
-import { TSocket } from '../types/Socket';
 
 const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
   const [userInfo] = useLocalStorage('userInfo', null);
@@ -40,13 +40,13 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       if (wsData.event === 'getRooms') {
         setRooms(wsData.data.rooms);
       } else if (wsData.event === 'createRoom') {
-        // Router.push({
-        //   pathname: '/room',
-        //   query: {
-        //     id: wsData.data.roomID,
-        //     isMaster: true
-        //   }
-        // });
+        Router.push({
+          pathname: '/room',
+          query: {
+            id: wsData.data.roomID,
+            isMaster: true
+          }
+        });
       }
     }
 
