@@ -4,7 +4,7 @@ import Router from 'next/router'
 import uuid from 'uuid';
 import LoginModal from './Modals/LoginModal';
 import useLocalStorage from '../customHook/useLocalStorage';
-import '@styles/header.scss';
+import '@styles/components/header.scss';
 
 const Header = () => {
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);

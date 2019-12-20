@@ -1,7 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic'
 import Meta from './Meta';
-import '@styles/layout.scss';
+import '@styles/components/layout.scss';
 
 const Header = dynamic(
   () => import('./Header'),
@@ -9,12 +9,14 @@ const Header = dynamic(
 )
 
 type LayoutProps = {
-  children: JSX.Element;
+  id?: string;
+  children: React.ReactNode;
   meta?: any;
 };
 
 const Layout = (props: LayoutProps) => {
   const {
+    id,
     children,
     meta,
   } = props;
@@ -23,7 +25,9 @@ const Layout = (props: LayoutProps) => {
     <>
       <Meta {...meta} />
       <Header />
-      {children}
+      <div id={id} className="container">
+        {children}
+      </div>
     </>
   )
 };

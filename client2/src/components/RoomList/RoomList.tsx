@@ -2,7 +2,7 @@ import React from 'react';
 import Room from './Room';
 import { TRoom } from '../../types/Room';
 
-import '@styles/rooms/roomList.scss';
+import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {
   rooms: TRoom[];

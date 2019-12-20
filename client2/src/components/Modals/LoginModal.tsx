@@ -5,8 +5,8 @@ import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import '@styles/modals/modal.scss';
-import '@styles/modals/loginModal.scss';
+import '@styles/components/modals/modal.scss';
+import '@styles/components/modals/loginModal.scss';
 
 library.add(
   faUserCircle,

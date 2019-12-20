@@ -10,7 +10,7 @@ import { TRoom } from '../types/Room';
 import { TGame } from '../types/Game';
 import { TSocket } from '../types/Socket';
 
-import '@styles/game.scss';
+import '@styles/pages/game.scss';
 
 const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
   const [userInfo] = useLocalStorage('userInfo', null);
