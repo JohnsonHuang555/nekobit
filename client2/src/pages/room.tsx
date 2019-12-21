@@ -5,6 +5,7 @@ import { TRoom, TRoomUser } from '../types/Room';
 import Layout from "../components/Layout"
 import useLocalStorage from '../customHook/useLocalStorage';
 import RoomUser from '../components/RoomList/RoomUser';
+import Button from '../components/Shared/Button';
 
 const Room = () => {
   const router = useRouter();
@@ -44,6 +45,8 @@ const Room = () => {
 
       if (wsData.event === 'joinRoom') {
         setRoomInfo(wsData.data.roomInfo)
+      } else if (wsData.event === 'readyGame') {
+        console.log(wsData.data)
       }
     }
 
@@ -55,7 +58,41 @@ const Room = () => {
     return () => {
       ws.close();
     }
-  }, [router.query])
+  }, [router.query]);
+
+  const isMaster = () => {
+    if (userInfo) {
+      const user = roomInfo && roomInfo.userList.find(u => {
+        return u.id === userInfo.id;
+      });
+
+      return user ? user.isMaster : false;
+    }
+    return false;
+  };
+
+  const startGame = () => {
+    console.log("start")
+  }
+
+  const readyGame = () => {
+    if (ws) {
+      const sendData = JSON.stringify({
+        userID: userInfo.id,
+        event: 'readyGame',
+        data: {
+          roomID: Number(router.query.id)
+        }
+      })
+      ws.send(sendData);
+    }
+  }
+
+  const disabledStart = () => {
+    return roomInfo && roomInfo.userList.find(u => {
+      return u.isReady === false;
+    }) ? true : false;
+  };
 
   return (
     <Layout>
@@ -68,6 +105,20 @@ const Room = () => {
               })
             }
             <div>Back to list</div>
+            {
+              isMaster() ?
+              <Button
+                className="start"
+                disabled={disabledStart()}
+                onClick={startGame}
+                title="Start"
+              /> :
+              <Button
+                className="ready"
+                onClick={readyGame}
+                title="Ready"
+              />
+            }
           </div>
         </div>
       </div>

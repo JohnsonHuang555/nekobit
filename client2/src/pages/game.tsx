@@ -39,6 +39,9 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
 
     ws.onmessage = (websocket: MessageEvent) => {
       const wsData: TSocket = JSON.parse(websocket.data);
+      if (!wsData) {
+        return;
+      }
       if (wsData.event === 'getRooms') {
         setRooms(wsData.data.rooms);
       } else if (wsData.event === 'createRoom') {

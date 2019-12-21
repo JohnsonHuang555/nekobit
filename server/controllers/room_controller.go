@@ -65,6 +65,13 @@ func (r *RoomService) AddUser(roomID int, user models.User) models.Room {
 	return r.rooms[index]
 }
 
+func (r *RoomService) ReadyGame(roomID int, userID string) {
+	index := r.FindByID(roomID)
+	userIndex := r.FindUserByID(userID, index)
+	room := r.rooms[index]
+	room.UserList[userIndex].IsReady = !room.UserList[userIndex].IsReady
+}
+
 func (r *RoomService) FindUserByID(userID string, roomIndex int) int {
 	users := r.rooms[roomIndex].UserList
 	index := -1

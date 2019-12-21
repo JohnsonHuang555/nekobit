@@ -2,8 +2,9 @@ import React from 'react';
 import '@styles/components/shared/button.scss';
 
 type ButtonProps = {
-  className?: string;
   title: string;
+  className?: string;
+  disabled?: boolean;
   onClick?: (el: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -11,6 +12,7 @@ const Button = (props: ButtonProps) => {
   const {
     className,
     title,
+    disabled,
     onClick = () => {}
   } = props;
   return (
@@ -21,6 +23,7 @@ const Button = (props: ButtonProps) => {
         onClick(el);
         el.target.blur();
       }}
+      disabled={disabled}
     >
       {title}
     </button>

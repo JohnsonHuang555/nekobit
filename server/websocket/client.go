@@ -67,64 +67,7 @@ func (s subscription) readPump() {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-
 		newMsg := eventHandler(msg, s)
-		// switch msg.Event {
-		// case "createRoom":
-		// 	user := models.User{
-		// 		ID:        msg.UserID,
-		// 		Name:      msg.Data.Name,
-		// 		IsMaster:  msg.Data.IsMaster,
-		// 		IsReady:   msg.Data.IsMaster,
-		// 		PlayOrder: 0,
-		// 	}
-
-		// 	room := &models.Room{
-		// 		ID:       roomID,
-		// 		Password: msg.Data.RoomPassword,
-		// 		Title:    msg.Data.RoomTitle,
-		// 		Mode:     msg.Data.RoomMode,
-		// 		Status:   msg.Data.RoomStatus,
-		// 		UserList: []models.User{user},
-		// 		GameData: nil,
-		// 	}
-
-		// 	fmt.Println(room)
-
-		// case "joinRoom":
-		// 	// user := models.User{
-		// 	// 	ID:        msg.UserID,
-		// 	// 	Name:      msg.Data.Name,
-		// 	// 	IsMaster:  msg.Data.IsMaster,
-		// 	// 	IsReady:   msg.Data.IsMaster,
-		// 	// 	PlayOrder: 0,
-		// 	// }
-
-		// 	// if models.AddUser(user)
-		// 	// payload, _ := controllers.JoinRoom(middleware.RoomCollection, user, s.room)
-		// 	// msg.Data.DbData = payload
-		// case "leaveRoom":
-		// 	// payload, _ := controllers.LeaveRoom(middleware.RoomCollection, msg.UserID, s.room)
-		// 	// msg.Data.DbData = payload
-		// // case "setGameReady":
-		// // 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room, msg.UserID, msg.Data.IsReady)
-		// // 	msg.Data.DbData = payload
-		// // case "setPlayOrder":
-		// // 	payload, _ := controllers.SetGameReady(middleware.RoomCollection, s.room)
-		// // case "setGameStart":
-		// // 	controllers.SetGameStart(middleware.RoomCollection, s.room)
-		// // 	gameData := controllers.CreateChesses()
-		// // 	info := models.RoomInfo{
-		// // 		RoomID: s.room,
-		// // 		GameData: gameData,
-		// // 	}
-
-		// // 	roomsInfo = append(roomsInfo, info)
-		// // 	msg.Data.GameData = gameData
-		// default:
-		// 	log.Printf("Socket error: no match event")
-		// }
-
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("error: %v", err)
@@ -163,6 +106,11 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		msg.Data.RoomInfo = roomInfo
 	case "leaveRoom":
 		fmt.Println("leave room")
+	case "readyGame":
+		middleware.Rv.RoomService.ReadyGame(msg.Data.RoomID, msg.UserID)
+		msg.Data.RoomUserList = middleware.Rv.GetUserList(msg.Data.RoomID)
+	case "startGame":
+		fmt.Println("start")
 	}
 
 	return msg
