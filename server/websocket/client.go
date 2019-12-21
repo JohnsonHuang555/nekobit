@@ -155,8 +155,8 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		user := models.User{
 			ID:        msg.UserID,
 			Name:      msg.Data.Name,
-			IsMaster:  msg.Data.IsMaster,
-			IsReady:   msg.Data.IsMaster,
+			IsMaster:  false,
+			IsReady:   false,
 			PlayOrder: 0,
 		}
 		roomInfo := middleware.Rv.RoomService.AddUser(msg.Data.RoomID, user)

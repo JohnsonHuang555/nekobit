@@ -17,6 +17,8 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
   const [showRoomList, setShowRoomList] = useState(false);
   const [rooms, setRooms] = useState<TRoom[]>([]);
   const [ws, setWs] = useState<WebSocket>();
+  const [isOnCreateRoom, setIsOnCreateRoom] = useState(false);
+  const [roomID, setRoomID] = useState('');
 
   useEffect(() => {
     let ws: WebSocket = new WebSocket('ws://localhost:8080/ws/gamePage');
@@ -40,13 +42,14 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       if (wsData.event === 'getRooms') {
         setRooms(wsData.data.rooms);
       } else if (wsData.event === 'createRoom') {
-        Router.push({
-          pathname: '/room',
-          query: {
-            id: wsData.data.roomID,
-            isMaster: true
-          }
-        });
+        // reget rooms
+        const sendData = JSON.stringify({
+          userID: '',
+          event: 'getRooms',
+          data: {}
+        })
+        ws.send(sendData);
+        setRoomID(wsData.data.roomID)
       }
     }
 
@@ -60,7 +63,19 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isOnCreateRoom && roomID) {
+      Router.push({
+        pathname: '/room',
+        query: {
+          id: roomID
+        }
+      });
+    }
+  }, [isOnCreateRoom, roomID])
+
   const createRoom = (data: any) => {
+    setIsOnCreateRoom(true);
     const sendData = JSON.stringify({
       userID: userInfo.id,
       event: 'createRoom',

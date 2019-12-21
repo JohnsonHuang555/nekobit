@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"server/models"
 )
 
@@ -38,8 +37,8 @@ func (r *RoomService) Create(room models.Room) int {
 	return r.roomNum
 }
 
-// Delete Room
-func (r *RoomService) Delete(id int) bool {
+// Delete Room 判斷是否為最後一人
+func (r *RoomService) DeleteUser(id int) bool {
 	index := r.FindByID(id)
 	if index == -1 {
 		return false
@@ -49,11 +48,32 @@ func (r *RoomService) Delete(id int) bool {
 	return true
 }
 
+// 回傳 roomInfo
 func (r *RoomService) AddUser(roomID int, user models.User) models.Room {
 	index := r.FindByID(roomID)
-	fmt.Println(index, roomID)
-	r.rooms[index].UserList = append(r.rooms[index].UserList, user)
+	// 當房間沒有其他玩家時，設定為房主
+	if len(r.rooms[index].UserList) == 0 {
+		user.IsMaster = true
+		user.IsReady = true
+	}
+
+	userIndex := r.FindUserByID(user.ID, index)
+	// 判斷是否已經在房間內
+	if userIndex == -1 {
+		r.rooms[index].UserList = append(r.rooms[index].UserList, user)
+	}
 	return r.rooms[index]
+}
+
+func (r *RoomService) FindUserByID(userID string, roomIndex int) int {
+	users := r.rooms[roomIndex].UserList
+	index := -1
+	for i := 0; i < len(users); i++ {
+		if users[i].ID == userID {
+			index = i
+		}
+	}
+	return index
 }
 
 // FindByID , if not found return -1

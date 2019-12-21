@@ -25,7 +25,6 @@ const Room = () => {
         event: 'joinRoom',
         data: {
           name: userInfo.name,
-          isMaster: Boolean(router.query.isMaster),
           roomID: Number(router.query.id)
         }
       })
