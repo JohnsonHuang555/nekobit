@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"server/models"
+	"server/utils"
 )
 
 // RoomService struct
@@ -14,7 +16,7 @@ type RoomService struct {
 func NewRoomService() *RoomService {
 	roomService := &RoomService{}
 	roomService.roomNum = 1
-	room := models.NewRoom(1, "", "Play", 0, 0, make([]models.User, 5), nil, "")
+	room := models.NewRoom(1, "", "Play", 0, 0, make([]models.User, 5), nil, "", "象棋")
 	roomService.rooms = append(roomService.rooms, room)
 	return roomService
 }
@@ -70,6 +72,21 @@ func (r *RoomService) ReadyGame(roomID int, userID string) {
 	userIndex := r.FindUserByID(userID, index)
 	room := r.rooms[index]
 	room.UserList[userIndex].IsReady = !room.UserList[userIndex].IsReady
+}
+
+func (r *RoomService) StartGame(roomID int) ([]models.User, int) {
+	index := r.FindByID(roomID)
+	r.rooms[index].Status = 1
+	return r.rooms[index].UserList, index
+}
+
+func (r *RoomService) SetPlayOrder(user []models.User, roomIndex int) {
+	randUser := utils.RandomShuffle(len(user))
+	fmt.Println(randUser)
+
+	for i := 0; i < len(user); i++ {
+		r.rooms[roomIndex].UserList[i].PlayOrder = randUser[i]
+	}
 }
 
 func (r *RoomService) FindUserByID(userID string, roomIndex int) int {

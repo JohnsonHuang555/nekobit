@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"server/controllers"
 	"server/middleware"
 	"server/models"
 
@@ -38,12 +39,12 @@ type MsgData struct {
 
 // 前端附加資訊
 type Attachment struct {
-	Name     string      `json:"name,omitempty"`
-	IsMaster bool        `json:"isMaster,omitempty"`
-	IsReady  bool        `json:"isReady,omitempty"`
-	ChessID  int         `json:"chessID,omitempty"`
-	GameData interface{} `json:"gameData,omitempty"`
-
+	Name         string        `json:"name,omitempty"`
+	IsMaster     bool          `json:"isMaster,omitempty"`
+	IsReady      bool          `json:"isReady,omitempty"`
+	ChessID      int           `json:"chessID,omitempty"`
+	GameData     interface{}   `json:"gameData,omitempty"`
+	GameName     string        `json:"gameName,omitempty"`
 	RoomPassword string        `json:"roomPassword,omitempty"`
 	RoomTitle    string        `json:"roomTitle,omitempty"`
 	RoomMode     int           `json:"roomMode,omitempty"`
@@ -85,7 +86,7 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		msg.Data.Rooms = middleware.Rv.GetRoomList()
 	case "createRoom":
 		room := models.NewRoomWithoutID(msg.Data.RoomPassword, msg.Data.RoomTitle,
-			msg.Data.RoomMode, 0, []models.User{}, nil, "")
+			msg.Data.RoomMode, 0, []models.User{}, nil, "", msg.Data.GameName)
 
 		roomID := middleware.Rv.RoomService.Create(room)
 		if roomID != 0 {
@@ -110,7 +111,10 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		middleware.Rv.RoomService.ReadyGame(msg.Data.RoomID, msg.UserID)
 		msg.Data.RoomUserList = middleware.Rv.GetUserList(msg.Data.RoomID)
 	case "startGame":
-		fmt.Println("start")
+		users, index := middleware.Rv.RoomService.StartGame(msg.Data.RoomID)
+		middleware.Rv.RoomService.SetPlayOrder(users, index)
+		msg.Data.RoomUserList = middleware.Rv.GetUserList(msg.Data.RoomID)
+		msg.Data.GameData = controllers.CreateChesses()
 	}
 
 	return msg

@@ -1,9 +1,8 @@
 package controllers
 
 import (
-	"math/rand"
 	"server/models"
-	"time"
+	"server/utils"
 )
 
 // CreateChesses 建立象棋
@@ -205,12 +204,7 @@ func CreateChesses() []models.ChineseChess {
 		},
 	}
 
-	locations := []int{}
-	for i := 0; i < 32; i++ {
-		locations = append(locations, i + 1)
-	}
-
-	randLocation := RandomLocation(locations)
+	randLocation := utils.RandomShuffle(32)
 
 	for i := 0; i < 32; i++ {
 		ID := chesses[i].ID
@@ -228,15 +222,4 @@ func CreateChesses() []models.ChineseChess {
 		})
 	}
 	return gameData
-}
-
-func RandomLocation(slice []int) []int {
-	randLocation := slice
-	r := rand.New(rand.NewSource(time.Now().Unix()))
-	for n := len(randLocation); n > 0; n-- {
-		randIndex := r.Intn(n)
-		randLocation[n-1], randLocation[randIndex] = randLocation[randIndex], randLocation[n-1]
-	}
-
-	return randLocation
 }

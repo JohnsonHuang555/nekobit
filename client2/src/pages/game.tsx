@@ -84,7 +84,7 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       event: 'createRoom',
       data: {
         name: userInfo.name,
-        isMaster: true,
+        gameName: "象棋",
         roomPassword: data.roomPassword,
         roomTitle: data.roomTitle,
         roomStatus: data.roomStatus

@@ -6,6 +6,7 @@ export type TRoom = {
   userList: TRoomUser[];
   nowTurn: string;
   gameData: any;
+  gameName: string;
 }
 
 export type TRoomUser = {

@@ -10,6 +10,7 @@ type Room struct {
 	UserList []User      `json:"userList"`
 	GameData interface{} `json:"gameData"`
 	NowTurn  interface{} `json:"nowTurn"`
+	GameName string      `json:"gameName"`
 }
 
 // User schema structure
@@ -23,7 +24,7 @@ type User struct {
 
 // NewRoom instance
 func NewRoom(id int, password string, title string, mode int,
-	status int, userList []User, gameData interface{}, nowTurn string) Room {
+	status int, userList []User, gameData interface{}, nowTurn string, gameName string) Room {
 	return Room{
 		ID:       id,
 		Password: password,
@@ -33,12 +34,13 @@ func NewRoom(id int, password string, title string, mode int,
 		UserList: userList,
 		GameData: gameData,
 		NowTurn:  nowTurn,
+		GameName: gameName,
 	}
 }
 
 // NewRoom withoutID instance
 func NewRoomWithoutID(password string, title string, mode int,
-	status int, userList []User, gameData interface{}, nowTurn string) Room {
+	status int, userList []User, gameData interface{}, nowTurn string, gameName string) Room {
 	return Room{
 		Password: password,
 		Title:    title,
@@ -47,5 +49,6 @@ func NewRoomWithoutID(password string, title string, mode int,
 		UserList: userList,
 		GameData: gameData,
 		NowTurn:  nowTurn,
+		GameName: gameName,
 	}
 }
