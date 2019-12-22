@@ -8,13 +8,13 @@ import RoomUser from '../components/RoomList/RoomUser';
 import Button from '../components/Shared/Button';
 import ChineseChess from '../components/Games/ChineseChess';
 import { TChineseChess } from '../types/ChineseChess';
+import GameArea from '../components/Games/GameArea';
 
 const Room = () => {
   const router = useRouter();
   const [userInfo] = useLocalStorage('userInfo', null);
   const [ws, setWs] = useState<WebSocket>();
   const [roomInfo, setRoomInfo] = useState<TRoom>();
-  const [chineseChessData, setChineseChessData] = useState<TChineseChess[]>();
 
   useEffect(() => {
     if (!router.query) {
@@ -44,14 +44,20 @@ const Room = () => {
       const wsData: TSocket = JSON.parse(websocket.data);
       if (!wsData) return;
       if (wsData.event === 'joinRoom') {
-        tempRoomInfo = wsData.data.roomInfo
-        setRoomInfo(wsData.data.roomInfo)
-      } else if (wsData.event === 'readyGame' || wsData.event === 'startGame') {
+        tempRoomInfo = wsData.data.roomInfo;
+        setRoomInfo(wsData.data.roomInfo);
+      } else if (wsData.event === 'readyGame') {
         if (!tempRoomInfo) return;
-        setChineseChessData(wsData.data.gameData)
         setRoomInfo({
           ...tempRoomInfo,
-          userList: wsData.data.roomUserList,
+          userList: wsData.data.roomUserList
+        });
+      } else if (wsData.event === 'startGame') {
+        if (!tempRoomInfo) return;
+        tempRoomInfo = wsData.data.roomInfo;
+        setRoomInfo({
+          ...tempRoomInfo,
+          gameData: wsData.data.gameData
         });
       }
     }
@@ -109,16 +115,11 @@ const Room = () => {
     }) ? true : false;
   };
 
-  const sortData = chineseChessData && chineseChessData.sort((a, b) => {
-    return a.location > b.location ? 1 : -1
-  });
-
-  const onFlip = (id: number) => {
-
-  }
-
-  const GameList: any = {
-    "象棋": <ChineseChess chineseChessData={sortData as TChineseChess[]} onFlip={onFlip}/>
+  const ShowGameArea = () => {
+    if (!ws || !roomInfo) {
+      return null;
+    }
+    return <GameArea roomInfo={roomInfo} websocket={ws}/>;
   }
 
   return (
@@ -148,7 +149,7 @@ const Room = () => {
             }
           </div>
           <div className="col-md-9">
-            {roomInfo && GameList[roomInfo.gameName]}
+            {roomInfo && roomInfo.status !== 0 &&<ShowGameArea />}
           </div>
         </div>
       </div>

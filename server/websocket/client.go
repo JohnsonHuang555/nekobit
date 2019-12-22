@@ -113,7 +113,7 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 	case "startGame":
 		users, index := middleware.Rv.RoomService.StartGame(msg.Data.RoomID)
 		middleware.Rv.RoomService.SetPlayOrder(users, index)
-		msg.Data.RoomUserList = middleware.Rv.GetUserList(msg.Data.RoomID)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 		msg.Data.GameData = controllers.CreateChesses()
 	}
 

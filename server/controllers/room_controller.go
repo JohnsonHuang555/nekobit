@@ -31,6 +31,11 @@ func (r *RoomService) UserList(id int) []models.User {
 	return r.rooms[index].UserList
 }
 
+func (r *RoomService) RoomInfo(roomID int) models.Room {
+	index := r.FindByID(roomID)
+	return r.rooms[index]
+}
+
 // Create Room
 func (r *RoomService) Create(room models.Room) int {
 	r.roomNum++
