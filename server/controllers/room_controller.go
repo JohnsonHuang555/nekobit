@@ -82,6 +82,7 @@ func (r *RoomService) ReadyGame(roomID int, userID string) {
 func (r *RoomService) StartGame(roomID int) ([]models.User, int) {
 	index := r.FindByID(roomID)
 	r.rooms[index].Status = 1
+	r.rooms[index].GameData = CreateChesses()
 	return r.rooms[index].UserList, index
 }
 

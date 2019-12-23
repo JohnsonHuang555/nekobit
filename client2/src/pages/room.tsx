@@ -8,7 +8,6 @@ import RoomUser from '../components/RoomList/RoomUser';
 import Button from '../components/Shared/Button';
 import ChineseChess from '../components/Games/ChineseChess';
 import { TChineseChess } from '../types/ChineseChess';
-import GameArea from '../components/Games/GameArea';
 
 const Room = () => {
   const router = useRouter();
@@ -21,7 +20,6 @@ const Room = () => {
       return;
     }
     let ws: WebSocket = new WebSocket(`ws://localhost:8080/ws/${router.query.id}`)
-    let tempRoomInfo: TRoom;
     ws.onopen = () => {
       console.log(`Successfully Connected in Room <${router.query.id}>`);
       const sendData = JSON.stringify({
@@ -40,37 +38,44 @@ const Room = () => {
       console.log('Socket Closed Connection: ', e);
     };
 
-    ws.onmessage = (websocket: MessageEvent) => {
-      const wsData: TSocket = JSON.parse(websocket.data);
-      if (!wsData) return;
-      if (wsData.event === 'joinRoom') {
-        tempRoomInfo = wsData.data.roomInfo;
-        setRoomInfo(wsData.data.roomInfo);
-      } else if (wsData.event === 'readyGame') {
-        if (!tempRoomInfo) return;
-        setRoomInfo({
-          ...tempRoomInfo,
-          userList: wsData.data.roomUserList
-        });
-      } else if (wsData.event === 'startGame') {
-        if (!tempRoomInfo) return;
-        tempRoomInfo = wsData.data.roomInfo;
-        setRoomInfo({
-          ...tempRoomInfo,
-          gameData: wsData.data.gameData
-        });
-      }
-    }
-
     ws.onerror = (error) => {
       console.log('Socket Error: ', error);
       ws.close();
     };
 
+    initialOnListening(ws);
+
     return () => {
       ws.close();
     }
   }, [router.query]);
+
+  const initialOnListening = (ws: WebSocket) => {
+    let tempRoomInfo: TRoom;
+    if (ws) {
+      ws.onmessage = (websocket: MessageEvent) => {
+        const wsData: TSocket = JSON.parse(websocket.data);
+        if (!wsData) return;
+        if (wsData.event === 'joinRoom') {
+          tempRoomInfo = wsData.data.roomInfo;
+          setRoomInfo(wsData.data.roomInfo);
+        } else if (wsData.event === 'readyGame') {
+          if (!tempRoomInfo) return;
+          setRoomInfo({
+            ...tempRoomInfo,
+            userList: wsData.data.roomUserList
+          });
+        } else if (wsData.event === 'startGame') {
+          if (!tempRoomInfo) return;
+          tempRoomInfo = wsData.data.roomInfo;
+          setRoomInfo({
+            ...tempRoomInfo,
+            gameData: wsData.data.roomInfo.gameData
+          });
+        }
+      }
+    }
+  }
 
   const isMaster = () => {
     if (userInfo) {
@@ -119,7 +124,19 @@ const Room = () => {
     if (!ws || !roomInfo) {
       return null;
     }
-    return <GameArea roomInfo={roomInfo} websocket={ws}/>;
+
+    if (roomInfo.status === 0) {
+      return null;
+    }
+
+    const chineseChessData: TChineseChess[] = roomInfo.gameData.sort((a: TChineseChess, b:TChineseChess) => {
+      return a.location > b.location ? 1 : -1
+    });
+
+    const gameList: any = {
+      "象棋": <ChineseChess chineseChessData={chineseChessData} ws={ws} />,
+    }
+    return gameList[roomInfo.gameName];
   }
 
   return (
@@ -149,7 +166,7 @@ const Room = () => {
             }
           </div>
           <div className="col-md-9">
-            {roomInfo && roomInfo.status !== 0 &&<ShowGameArea />}
+            <ShowGameArea />
           </div>
         </div>
       </div>

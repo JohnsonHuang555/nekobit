@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"server/controllers"
 	"server/middleware"
 	"server/models"
 
@@ -114,7 +113,6 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		users, index := middleware.Rv.RoomService.StartGame(msg.Data.RoomID)
 		middleware.Rv.RoomService.SetPlayOrder(users, index)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
-		msg.Data.GameData = controllers.CreateChesses()
 	}
 
 	return msg

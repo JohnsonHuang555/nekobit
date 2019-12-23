@@ -5,14 +5,22 @@ import { TChineseChess } from '../../types/ChineseChess';
 
 type ChineseChessProps = {
   chineseChessData: TChineseChess[];
-  onFlip: (id: number) => void;
+  ws: WebSocket;
 }
 
 const ChineseChess = (props: ChineseChessProps) => {
   const {
     chineseChessData,
-    onFlip
+    ws,
   } = props;
+
+  ws.onmessage = () => {
+
+  }
+
+  const onFlip = () => {
+
+  }
 
   return (
     <div className="chinese-chess-container">
