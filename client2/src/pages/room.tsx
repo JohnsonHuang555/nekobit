@@ -120,6 +120,10 @@ const Room = () => {
     }) ? true : false;
   };
 
+  const onChangeRoomIno = (data: TRoom) => {
+    setRoomInfo(data);
+  }
+
   const ShowGameArea = () => {
     if (!ws || !roomInfo) {
       return null;
@@ -129,12 +133,18 @@ const Room = () => {
       return null;
     }
 
-    const chineseChessData: TChineseChess[] = roomInfo.gameData.sort((a: TChineseChess, b:TChineseChess) => {
+    const chineseChessData: TChineseChess[] = roomInfo.gameData.sort((a: TChineseChess, b: TChineseChess) => {
       return a.location > b.location ? 1 : -1
     });
 
     const gameList: any = {
-      "象棋": <ChineseChess chineseChessData={chineseChessData} ws={ws} />,
+      "象棋": <ChineseChess
+                chineseChessData={chineseChessData}
+                ws={ws}
+                userID={userInfo.id}
+                roomInfo={roomInfo}
+                onChangeRoomIno={onChangeRoomIno}
+              />,
     }
     return gameList[roomInfo.gameName];
   }

@@ -9,7 +9,7 @@ type Room struct {
 	Status   int         `json:"status"`
 	UserList []User      `json:"userList"`
 	GameData interface{} `json:"gameData"`
-	NowTurn  interface{} `json:"nowTurn"`
+	NowTurn  string      `json:"nowTurn"`
 	GameName string      `json:"gameName"`
 }
 

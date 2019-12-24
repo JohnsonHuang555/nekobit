@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"server/models"
 	"server/utils"
 )
@@ -88,10 +87,44 @@ func (r *RoomService) StartGame(roomID int) ([]models.User, int) {
 
 func (r *RoomService) SetPlayOrder(user []models.User, roomIndex int) {
 	randUser := utils.RandomShuffle(len(user))
-	fmt.Println(randUser)
-
 	for i := 0; i < len(user); i++ {
 		r.rooms[roomIndex].UserList[i].PlayOrder = randUser[i]
+	}
+	playerOne := user[0]
+	for i := 0; i < len(user); i++ {
+		if user[i].PlayOrder < playerOne.PlayOrder {
+			playerOne = user[i]
+		}
+	}
+	r.rooms[roomIndex].NowTurn = playerOne.ID
+}
+
+func (r *RoomService) OnFlip(roomID int, userID string, chessID int) {
+	roomIndex := r.FindByID(roomID)
+
+	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
+	for i := 0; i < len(chesses); i++ {
+		if chesses[i].ID == chessID {
+			chesses[i].IsFliped = true
+			break
+		}
+	}
+	r.rooms[roomIndex].GameData = chesses
+
+	// FIXME:change player 可能要抽出去 暫時這樣寫
+	nowPlayerIndex := r.FindUserByID(userID, roomIndex)
+	newPlayerOrder := r.rooms[roomIndex].UserList[nowPlayerIndex].PlayOrder + 1
+	// 代表 p1 重頭開始
+	if newPlayerOrder > len(r.rooms[roomIndex].UserList) {
+		newPlayerOrder = 1
+	}
+
+	users := r.rooms[roomIndex].UserList
+	for i := 0; i < len(users); i++ {
+		if users[i].PlayOrder == newPlayerOrder {
+			r.rooms[roomIndex].NowTurn = users[i].ID
+			break
+		}
 	}
 }
 
