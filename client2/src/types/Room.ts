@@ -1,5 +1,5 @@
 export type TRoom = {
-  id: string;
+  id: number;
   title: string;
   mode: number;
   status: number;

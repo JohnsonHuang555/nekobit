@@ -1,6 +1,7 @@
 import React from 'react';
 import Room from './Room';
 import { TRoom } from '../../types/Room';
+import Router from 'next/router';
 
 import '@styles/components/rooms/roomList.scss';
 
@@ -13,10 +14,16 @@ const RoomList = (props: RoomListProps) => {
     rooms,
   } = props;
 
+  const onChooseRoom = (id: number) => {
+    Router.push({
+      pathname: '/room',
+      query: {
+        id
+      }
+    })
+  }
+
   const roomList = rooms && rooms.map((room: TRoom) => {
-    // const chooseRoom = () => {
-    //   location.push(`/room/${room._id}`);
-    // }
     return (
       <Room
         key={room.id}
@@ -25,6 +32,7 @@ const RoomList = (props: RoomListProps) => {
         mode={room.mode}
         status={room.status}
         userList={room.userList}
+        onChooseRoom={onChooseRoom}
       />
     );
   });

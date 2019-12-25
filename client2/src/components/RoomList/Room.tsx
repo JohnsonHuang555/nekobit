@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {
-  id: string;
+  id: number;
   title: string;
   mode: number;
   status: number;
   userList: TRoomUser[];
+  onChooseRoom: (id: number) => void;
 };
 
 const Room = (props: RoomListProps) => {
@@ -19,10 +20,11 @@ const Room = (props: RoomListProps) => {
     mode,
     status,
     userList,
+    onChooseRoom,
   } = props;
 
   return (
-    <div className="room" key={id}>
+    <div className="room" key={id} onClick={() => onChooseRoom(id)}>
       <div className="title">{title}</div>
       <div className="info">
         <span className="mode mr-3">暗棋</span>

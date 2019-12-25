@@ -120,7 +120,7 @@ const Room = () => {
     }) ? true : false;
   };
 
-  const onChangeRoomIno = (data: TRoom) => {
+  const onChangeRoomInfo = (data: TRoom) => {
     setRoomInfo(data);
   }
 
@@ -143,7 +143,7 @@ const Room = () => {
                 ws={ws}
                 userID={userInfo.id}
                 roomInfo={roomInfo}
-                onChangeRoomIno={onChangeRoomIno}
+                onChangeRoomInfo={onChangeRoomInfo}
               />,
     }
     return gameList[roomInfo.gameName];

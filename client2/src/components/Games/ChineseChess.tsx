@@ -1,61 +1,104 @@
-import React from 'react';
-import '@styles/games/chineseChess.scss';
+import React, { useState } from 'react';
 import ChessItem from './ChessItem';
 import { TChineseChess } from '../../types/ChineseChess';
 import { TRoom } from '../../types/Room';
 import { TSocket } from '../../types/Socket';
+import '@styles/games/chineseChess.scss';
 
 type ChineseChessProps = {
   chineseChessData: TChineseChess[];
   userID: string;
   roomInfo: TRoom;
   ws: WebSocket;
-  onChangeRoomIno: (r: TRoom) => void;
+  onChangeRoomInfo: (r: TRoom) => void;
 }
 
 const ChineseChess = (props: ChineseChessProps) => {
+  const [selectedChess, setSelectChess] = useState<TChineseChess>();
   const {
     chineseChessData,
     userID,
     roomInfo,
     ws,
-    onChangeRoomIno
+    onChangeRoomInfo
   } = props;
 
   ws.onmessage = (websocket: MessageEvent) => {
     const wsData: TSocket = JSON.parse(websocket.data);
     if (!wsData) return;
     if (wsData.event === 'onFlip') {
-      onChangeRoomIno(wsData.data.roomInfo)
+      onChangeRoomInfo(wsData.data.roomInfo)
     }
   }
 
-  const onFlip = (id: number) => {
+  const onSelect = (id: number) => {
     // 判斷是否輪到你了
     if (userID !== roomInfo.nowTurn) {
       return;
     }
 
-    const sendData = JSON.stringify({
-      userID: userID,
-      event: 'onFlip',
-      data: {
-        roomID: roomInfo.id,
-        ChessID: id
+    let sendData = '';
+    const chess = findChessByID(id);
+    if (!chess) {
+      return;
+    }
+
+    if (chess.isFliped) {
+      // select event
+      if (selectedChess) {
+        setSelectChess(undefined)
+      } else {
+        setSelectChess(chess);
       }
-    })
-    ws.send(sendData);
+    } else {
+      // flip
+      sendData = JSON.stringify({
+        userID: userID,
+        event: 'onFlip',
+        data: {
+          roomID: roomInfo.id,
+          ChessID: id
+        }
+      })
+      ws.send(sendData);
+    }
   }
+
+  const onMove = (id: number, location: number) => {
+
+  }
+
+  const chessesList = chineseChessData.map(chessInfo => {
+    let isSelected = false
+    if (selectedChess && selectedChess.id === chessInfo.id) {
+      isSelected = true;
+    }
+    return (
+      <ChessItem
+        key={chessInfo.id}
+        chessInfo={chessInfo}
+        isSelected={isSelected}
+        onSelect={onSelect}
+      />
+    )
+  });
+
+  const findChessByID = (id: number) => (
+    chineseChessData.find(c => {
+      return c.id === id;
+    })
+  );
 
   return (
     <div className="chinese-chess-container">
-      {chineseChessData && chineseChessData.map(chessInfo =>
+      {/* {chineseChessData.map(chessInfo =>
         <ChessItem
           key={chessInfo.id}
           chessInfo={chessInfo}
-          onFlip={onFlip}
+          onSelect={onSelect}
         />
-      )}
+      )} */}
+      {chessesList}
     </div>
   )
 }

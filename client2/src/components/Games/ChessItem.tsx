@@ -3,18 +3,23 @@ import { TChineseChess } from '../../types/ChineseChess';
 
 type ChessItemProps = {
   chessInfo: TChineseChess;
-  onFlip: (id: number) => void;
+  isSelected: boolean;
+  onSelect: (id: number) => void;
 };
 
 const ChessItem = (props: ChessItemProps) => {
   const {
     chessInfo,
-    onFlip
+    isSelected,
+    onSelect
   } = props;
 
   return (
-    <div className="map-item">
-      <span className={"chess " + (chessInfo.side === 'RED' ? 'red' : 'black')} onClick={() => onFlip(chessInfo.id)}>
+    <div className={"map-item " + (isSelected ? "active" : "")} >
+      <span
+        className={"chess " + (chessInfo.side === 'RED' ? "red" : "black")}
+        onClick={() => onSelect(chessInfo.id)}
+      >
         {chessInfo.isFliped && (chessInfo.name)}
       </span>
     </div>
