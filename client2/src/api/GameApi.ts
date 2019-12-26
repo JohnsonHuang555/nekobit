@@ -1,4 +1,4 @@
-import api from '../utils/ApiSetting';
+import api from 'src/utils/ApiSetting';
 
 export default {
   getAllGames() {

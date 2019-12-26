@@ -3,11 +3,11 @@ import Swiper from 'react-id-swiper';
 import Router from 'next/router'
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Layout from '../components/Layout';
-import Button from '../components/Shared/Button';
-import GameApi from '../api/GameApi';
-import { TGame } from '../types/Game';
-import "@styles/pages/index.scss";
+import Layout from 'src/components/Layout';
+import Button from 'src/components/Shared/Button';
+import GameApi from 'src/api/GameApi';
+import { TGame } from 'src/types/Game';
+import '@styles/pages/index.scss';
 
 const Home: NextPage<{ games: TGame[] }> = ({ games = [] }) => {
   const SwiperParams = {

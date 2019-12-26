@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import ChessItem from './ChessItem';
-import { TChineseChess } from '../../types/ChineseChess';
-import { TRoom } from '../../types/Room';
-import { TSocket } from '../../types/Socket';
+import ChessItem from 'src/components/Games/ChessItem';
+import { TChineseChess } from 'src/types/ChineseChess';
+import { TRoom } from 'src/types/Room';
+import { TSocket } from 'src/types/Socket';
 import '@styles/games/chineseChess.scss';
 
 type ChineseChessProps = {

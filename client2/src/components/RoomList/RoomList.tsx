@@ -1,7 +1,7 @@
 import React from 'react';
-import Room from './Room';
-import { TRoom } from '../../types/Room';
 import Router from 'next/router';
+import Room from 'src/components/RoomList/Room';
+import { TRoom } from 'src/types/Room';
 
 import '@styles/components/rooms/roomList.scss';
 

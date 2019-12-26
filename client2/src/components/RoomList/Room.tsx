@@ -1,7 +1,7 @@
 import React from 'react';
-import { TRoomUser } from '../../types/Room';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TRoomUser } from 'src/types/Room';
 import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {

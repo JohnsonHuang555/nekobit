@@ -1,6 +1,6 @@
 import React from 'react';
-import RoomList from './RoomList';
-import { TRoom } from '../../types/Room';
+import RoomList from 'src/components/RoomList/RoomList';
+import { TRoom } from 'src/types/Room';
 import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {
