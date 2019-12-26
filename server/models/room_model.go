@@ -20,6 +20,7 @@ type User struct {
 	IsMaster  bool   `json:"isMaster"`
 	IsReady   bool   `json:"isReady"`
 	PlayOrder int    `json:"playOrder"`
+	Side      string `json:"side"`
 }
 
 // NewRoom instance

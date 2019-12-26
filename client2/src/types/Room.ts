@@ -15,4 +15,5 @@ export type TRoomUser = {
   isMaster: boolean;
   isReady: boolean;
   playOrder: number;
+  side: string;
 }

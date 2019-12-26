@@ -102,10 +102,12 @@ func (r *RoomService) SetPlayOrder(user []models.User, roomIndex int) {
 func (r *RoomService) OnFlip(roomID int, userID string, chessID int) {
 	roomIndex := r.FindByID(roomID)
 
+	selectedChess := models.ChineseChess{}
 	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
 	for i := 0; i < len(chesses); i++ {
 		if chesses[i].ID == chessID {
 			chesses[i].IsFliped = true
+			selectedChess = chesses[i]
 			break
 		}
 	}
@@ -121,9 +123,11 @@ func (r *RoomService) OnFlip(roomID int, userID string, chessID int) {
 
 	users := r.rooms[roomIndex].UserList
 	for i := 0; i < len(users); i++ {
+		if users[i].Side == "" && users[i].ID == userID {
+			users[i].Side = selectedChess.Side
+		}
 		if users[i].PlayOrder == newPlayerOrder {
 			r.rooms[roomIndex].NowTurn = users[i].ID
-			break
 		}
 	}
 }

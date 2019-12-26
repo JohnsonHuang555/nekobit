@@ -43,6 +43,12 @@ const ChineseChess = (props: ChineseChessProps) => {
       return;
     }
 
+    // 代表正在選取棋子
+    if (selectedChess && chess.isFliped) {
+      onMove(selectedChess.id, chess.location);
+      return;
+    }
+
     if (chess.isFliped) {
       // select event
       if (selectedChess) {
@@ -64,8 +70,14 @@ const ChineseChess = (props: ChineseChessProps) => {
     }
   }
 
-  const onMove = (id: number, location: number) => {
+  const findChessByID = (id: number) => (
+    chineseChessData.find(c => {
+      return c.id === id;
+    })
+  );
 
+  const onMove = (id: number, location: number) => {
+    console.log(id, location)
   }
 
   const chessesList = chineseChessData.map(chessInfo => {
@@ -83,21 +95,8 @@ const ChineseChess = (props: ChineseChessProps) => {
     )
   });
 
-  const findChessByID = (id: number) => (
-    chineseChessData.find(c => {
-      return c.id === id;
-    })
-  );
-
   return (
     <div className="chinese-chess-container">
-      {/* {chineseChessData.map(chessInfo =>
-        <ChessItem
-          key={chessInfo.id}
-          chessInfo={chessInfo}
-          onSelect={onSelect}
-        />
-      )} */}
       {chessesList}
     </div>
   )
