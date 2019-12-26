@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import Router from 'next/router';
-import Layout from "../components/Layout";
-import RoomList from '../components/RoomList/RoomList';
-import GameDetail from '../components/GameDetail';
-import GameApi from '../api/GameApi';
-import useLocalStorage from '../customHook/useLocalStorage';
-import { TRoom } from '../types/Room';
-import { TGame } from '../types/Game';
-import { TSocket } from '../types/Socket';
+import Layout from 'src/components/Layout';
+import RoomList from 'src/components/RoomList/RoomList';
+import GameDetail from 'src/components/GameDetail';
+import GameApi from 'src/api/GameApi';
+import useLocalStorage from 'src/customHook/useLocalStorage';
+import { TRoom } from 'src/types/Room';
+import { TGame } from 'src/types/Game';
+import { TSocket } from 'src/types/Socket';
 
 import '@styles/pages/game.scss';
 

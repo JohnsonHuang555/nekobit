@@ -1,5 +1,5 @@
 import React from 'react';
-import { TChineseChess } from '../../types/ChineseChess';
+import { TChineseChess } from 'src/types/ChineseChess';
 
 type ChessItemProps = {
   chessInfo: TChineseChess;

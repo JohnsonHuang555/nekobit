@@ -1,6 +1,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic'
-import Meta from './Meta';
+import Meta from 'src/components/Meta';
 import '@styles/components/layout.scss';
 
 const Header = dynamic(

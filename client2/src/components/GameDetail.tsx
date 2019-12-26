@@ -1,6 +1,4 @@
 import React from 'react';
-import { TGame } from '../types/Game';
-import { TRoom } from '../types/Room';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserFriends,
@@ -8,6 +6,8 @@ import {
   faDoorOpen,
   faGamepad
 } from '@fortawesome/free-solid-svg-icons';
+import { TGame } from 'src/types/Game';
+import { TRoom } from 'src/types/Room';
 
 type GameDetailProps = {
   gameInfo: TGame;

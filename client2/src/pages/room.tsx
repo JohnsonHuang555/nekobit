@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { TSocket } from '../types/Socket';
-import { TRoom, TRoomUser } from '../types/Room';
-import Layout from "../components/Layout"
-import useLocalStorage from '../customHook/useLocalStorage';
-import RoomUser from '../components/RoomList/RoomUser';
-import Button from '../components/Shared/Button';
-import ChineseChess from '../components/Games/ChineseChess';
-import { TChineseChess } from '../types/ChineseChess';
+import { TSocket } from 'src/types/Socket';
+import { TRoom, TRoomUser } from 'src/types/Room';
+import Layout from "src/components/Layout"
+import useLocalStorage from 'src/customHook/useLocalStorage';
+import RoomUser from 'src/components/RoomList/RoomUser';
+import Button from 'src/components/Shared/Button';
+import ChineseChess from 'src/components/Games/ChineseChess';
+import { TChineseChess } from 'src/types/ChineseChess';
 
 const Room = () => {
   const router = useRouter();
