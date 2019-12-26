@@ -124,12 +124,23 @@ func (r *RoomService) OnFlip(roomID int, userID string, chessID int) {
 	users := r.rooms[roomIndex].UserList
 	for i := 0; i < len(users); i++ {
 		if users[i].Side == "" && users[i].ID == userID {
-			users[i].Side = selectedChess.Side
+			if !isSideExist(selectedChess.Side, users) {
+				users[i].Side = selectedChess.Side
+			}
 		}
 		if users[i].PlayOrder == newPlayerOrder {
 			r.rooms[roomIndex].NowTurn = users[i].ID
 		}
 	}
+}
+
+func isSideExist(side string, users []models.User) bool {
+	for i := 0; i < len(users); i++ {
+		if users[i].Side == side {
+			return true
+		}
+	}
+	return false
 }
 
 func (r *RoomService) FindUserByID(userID string, roomIndex int) int {
