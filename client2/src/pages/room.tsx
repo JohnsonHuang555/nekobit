@@ -6,7 +6,7 @@ import Layout from "src/components/Layout"
 import useLocalStorage from 'src/customHook/useLocalStorage';
 import RoomUser from 'src/components/RoomList/RoomUser';
 import Button from 'src/components/Shared/Button';
-import ChineseChess from 'src/components/Games/ChineseChess';
+import ChineseChess from 'src/components/Games/ChineseChess/ChineseChess';
 import { TChineseChess } from 'src/types/ChineseChess';
 
 const Room = () => {
@@ -133,13 +133,12 @@ const Room = () => {
       return null;
     }
 
-    const chineseChessData: TChineseChess[] = roomInfo.gameData.sort((a: TChineseChess, b: TChineseChess) => {
-      return a.location > b.location ? 1 : -1
-    });
+    // const chineseChessData: TChineseChess[] = roomInfo.gameData.sort((a: TChineseChess, b: TChineseChess) => {
+    //   return a.location > b.location ? 1 : -1
+    // });
 
     const gameList: any = {
       "象棋": <ChineseChess
-                chineseChessData={chineseChessData}
                 ws={ws}
                 userID={userInfo.id}
                 roomInfo={roomInfo}

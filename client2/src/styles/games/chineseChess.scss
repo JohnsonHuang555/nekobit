@@ -3,10 +3,11 @@
   flex-wrap:wrap;
   .map-item {
     width: calc(100% / 8);
-    height: 120px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid #fff;
     .chess {
       width: 80px;
       height: 80px;
@@ -19,9 +20,13 @@
       background: #d9bc99;
       font-family: '標楷體';
       cursor: pointer;
+      box-shadow: 0 5px 3px #ccc;
       &:hover {
         opacity: 0.9;
       }
+    }
+    .active {
+      background-color: #e69c43;
     }
     .red {
       color: #be1010;
@@ -30,7 +35,5 @@
       color: black;
     }
   }
-  .active {
-    border: 1px solid #fff;
-  }
+
 }

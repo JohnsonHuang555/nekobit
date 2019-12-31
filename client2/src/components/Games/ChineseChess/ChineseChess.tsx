@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import ChessItem from 'src/components/Games/ChessItem';
 import { TChineseChess } from 'src/types/ChineseChess';
-import { TRoom } from 'src/types/Room';
+import { TRoom, TRoomUser } from 'src/types/Room';
 import { TSocket } from 'src/types/Socket';
 import '@styles/games/chineseChess.scss';
+import ChessMapItem from './ChessMapItem';
 
 type ChineseChessProps = {
-  chineseChessData: TChineseChess[];
   userID: string;
   roomInfo: TRoom;
   ws: WebSocket;
@@ -16,7 +15,6 @@ type ChineseChessProps = {
 const ChineseChess = (props: ChineseChessProps) => {
   const [selectedChess, setSelectChess] = useState<TChineseChess>();
   const {
-    chineseChessData,
     userID,
     roomInfo,
     ws,
@@ -44,13 +42,18 @@ const ChineseChess = (props: ChineseChessProps) => {
     }
 
     // 代表正在選取棋子
-    if (selectedChess && chess.isFliped) {
-      onMove(selectedChess.id, chess.location);
+    if (selectedChess && chess.isFliped && chess.id !== selectedChess.id) {
+      onMove(selectedChess, chess);
       return;
     }
 
     if (chess.isFliped) {
       // select event
+      const userInfo = findUserByID(userID);
+      if (userInfo.side !== chess.side) {
+        return;
+      }
+
       if (selectedChess) {
         setSelectChess(undefined)
       } else {
@@ -70,34 +73,49 @@ const ChineseChess = (props: ChineseChessProps) => {
     }
   }
 
-  const findChessByID = (id: number) => (
-    chineseChessData.find(c => {
-      return c.id === id;
-    })
-  );
-
-  const onMove = (id: number, location: number) => {
-    console.log(id, location)
+  const onMove = (nowChess: TChineseChess, targetChess: TChineseChess) => {
+    if (nowChess.side === targetChess.side) {
+      setSelectChess(targetChess);
+      return;
+    }
   }
 
-  const chessesList = chineseChessData.map(chessInfo => {
-    let isSelected = false
-    if (selectedChess && selectedChess.id === chessInfo.id) {
-      isSelected = true;
+  const findChessByID = (id: number) => (
+    roomInfo.gameData.find((c: any) => {
+      return c.id === id;
+    }) as TChineseChess
+  );
+
+  const findUserByID = (id: string) => (
+    roomInfo.userList.find(u => {
+      return u.id === id;
+    }) as TRoomUser
+  );
+
+  const chessMap = () => {
+    let map = [];
+    const gameData = [...roomInfo.gameData] as TChineseChess[];
+    for (let i = 0; i < 32; i++) {
+      let chessIndex = gameData[i].location - 1
+      let isSelected = false
+      if (selectedChess && selectedChess.id === roomInfo.gameData[chessIndex].id) {
+        isSelected = true;
+      }
+      map.push(
+        <ChessMapItem
+          key={i}
+          chessInfo={gameData[chessIndex]}
+          onSelect={onSelect}
+          isSelected={isSelected}
+        />
+      )
     }
-    return (
-      <ChessItem
-        key={chessInfo.id}
-        chessInfo={chessInfo}
-        isSelected={isSelected}
-        onSelect={onSelect}
-      />
-    )
-  });
+    return map;
+  }
 
   return (
     <div className="chinese-chess-container">
-      {chessesList}
+      {chessMap()}
     </div>
   )
 }
