@@ -26,7 +26,7 @@ const ChessMapItem = (props: ChessMapItemProps) => {
     <div className="map-item" onClick={checkChessExist}>
       {chessInfo && (
         <div
-          className={"chess " + (isSelected ? "active" : "")}
+          className={"chess " + (isSelected ? "active " : "") + (chessInfo.isFliped ? "isFliped" : "")}
           onClick={() => onSelect(chessInfo.id)}
         >
           <ChessItem

@@ -17,9 +17,7 @@ const ChessItem = (props: ChessItemProps) => {
   return (
     <>
       {isFliped && (
-        <span
-          className={side === 'RED' ? "red" : "black"}
-        >
+        <span className={side === 'RED' ? "red" : "black"}>
           {name}
         </span>
       )}
