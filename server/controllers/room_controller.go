@@ -113,7 +113,70 @@ func (r *RoomService) OnFlip(roomID int, userID string, chessID int) {
 	}
 	r.rooms[roomIndex].GameData = chesses
 
-	// FIXME:change player 可能要抽出去 暫時這樣寫
+	// // FIXME:change player 可能要抽出去 暫時這樣寫
+	// nowPlayerIndex := r.FindUserByID(userID, roomIndex)
+	// newPlayerOrder := r.rooms[roomIndex].UserList[nowPlayerIndex].PlayOrder + 1
+	// // 代表 p1 重頭開始
+	// if newPlayerOrder > len(r.rooms[roomIndex].UserList) {
+	// 	newPlayerOrder = 1
+	// }
+
+	// users := r.rooms[roomIndex].UserList
+	// for i := 0; i < len(users); i++ {
+	// 	if users[i].Side == "" && users[i].ID == userID {
+	// 		if !isSideExist(selectedChess.Side, users) {
+	// 			users[i].Side = selectedChess.Side
+	// 		}
+	// 	}
+	// 	if users[i].PlayOrder == newPlayerOrder {
+	// 		r.rooms[roomIndex].NowTurn = users[i].ID
+	// 	}
+	// }
+	r.changePlayer(userID, roomIndex, selectedChess)
+}
+
+func isSideExist(side string, users []models.User) bool {
+	for i := 0; i < len(users); i++ {
+		if users[i].Side == side {
+			return true
+		}
+	}
+	return false
+}
+
+func (r *RoomService) OnEat(userID string, roomID int, chessID int, newLocation int, eatenChessID int) {
+	roomIndex := r.FindByID(roomID)
+	selectedChess := models.ChineseChess{}
+	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
+	for i := 0; i < len(chesses); i++ {
+		if chesses[i].ID == chessID {
+			chesses[i].Location = newLocation
+			selectedChess = chesses[i]
+		}
+		if chesses[i].ID == eatenChessID {
+			chesses[i].Alive = false
+			chesses[i].Location = -1
+		}
+	}
+	r.rooms[roomIndex].GameData = chesses
+	r.changePlayer(userID, roomIndex, selectedChess)
+}
+
+func (r *RoomService) OnMove(userID string, roomID int, chessID int, newLocation int) {
+	roomIndex := r.FindByID(roomID)
+	selectedChess := models.ChineseChess{}
+	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
+	for i := 0; i < len(chesses); i++ {
+		if chesses[i].ID == chessID {
+			chesses[i].Location = newLocation
+			selectedChess = chesses[i]
+		}
+	}
+	r.rooms[roomIndex].GameData = chesses
+	r.changePlayer(userID, roomIndex, selectedChess)
+}
+
+func (r *RoomService) changePlayer(userID string, roomIndex int, selectedChess models.ChineseChess) {
 	nowPlayerIndex := r.FindUserByID(userID, roomIndex)
 	newPlayerOrder := r.rooms[roomIndex].UserList[nowPlayerIndex].PlayOrder + 1
 	// 代表 p1 重頭開始
@@ -132,15 +195,6 @@ func (r *RoomService) OnFlip(roomID int, userID string, chessID int) {
 			r.rooms[roomIndex].NowTurn = users[i].ID
 		}
 	}
-}
-
-func isSideExist(side string, users []models.User) bool {
-	for i := 0; i < len(users); i++ {
-		if users[i].Side == side {
-			return true
-		}
-	}
-	return false
 }
 
 func (r *RoomService) FindUserByID(userID string, roomIndex int) int {

@@ -52,6 +52,8 @@ type Attachment struct {
 	Rooms        []models.Room `json:"rooms,omitempty"`
 	RoomID       int           `json:"roomID,omitempty"`
 	RoomInfo     models.Room   `json:"roomInfo,omitempty"`
+	NewLocation  int           `json:"newLocation,omitempty"`
+	EatenChessID int           `json:"eatenChessID,omitempty"`
 }
 
 // ReadPump pumps messages from the websocket connection to the hub.
@@ -116,8 +118,13 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 	case "onFlip":
 		middleware.Rv.RoomService.OnFlip(msg.Data.RoomID, msg.UserID, msg.Data.ChessID)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
+	case "onEat":
+		middleware.Rv.RoomService.OnEat(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.NewLocation, msg.Data.EatenChessID)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
+	case "onMove":
+		middleware.Rv.RoomService.OnMove(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.NewLocation)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	}
-
 	return msg
 }
 

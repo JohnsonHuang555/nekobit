@@ -121,7 +121,7 @@ const Room = () => {
   };
 
   const onChangeRoomInfo = (data: TRoom) => {
-    setRoomInfo(data);
+    setRoomInfo({ ...data });
   }
 
   const ShowGameArea = () => {
@@ -132,10 +132,6 @@ const Room = () => {
     if (roomInfo.status === 0) {
       return null;
     }
-
-    // const chineseChessData: TChineseChess[] = roomInfo.gameData.sort((a: TChineseChess, b: TChineseChess) => {
-    //   return a.location > b.location ? 1 : -1
-    // });
 
     const gameList: any = {
       "象棋": <ChineseChess

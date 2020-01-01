@@ -98,13 +98,13 @@ func CreateChesses() []models.ChineseChess {
 			ID:   15,
 			Side: "BLACK",
 			Name: "炮",
-			Rank: 0,
+			Rank: 99,
 		},
 		15: models.ChineseChess{
 			ID:   16,
 			Side: "BLACK",
 			Name: "炮",
-			Rank: 0,
+			Rank: 99,
 		},
 		16: models.ChineseChess{
 			ID:   17,
@@ -194,13 +194,13 @@ func CreateChesses() []models.ChineseChess {
 			ID:   31,
 			Side: "RED",
 			Name: "炮",
-			Rank: 0,
+			Rank: 99,
 		},
 		31: models.ChineseChess{
 			ID:   32,
 			Side: "RED",
 			Name: "炮",
-			Rank: 0,
+			Rank: 99,
 		},
 	}
 
