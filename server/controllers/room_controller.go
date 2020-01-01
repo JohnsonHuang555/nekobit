@@ -220,3 +220,8 @@ func (r *RoomService) FindByID(id int) int {
 	}
 	return index
 }
+
+func (r *RoomService) GameOver(roomID int) {
+	roomIndex := r.FindByID(roomID)
+	r.rooms[roomIndex].Status = 2
+}

@@ -28,6 +28,7 @@ const ChineseChess = (props: ChineseChessProps) => {
       case 'onFlip':
       case 'onEat':
       case 'onMove':
+      case 'gameOver':
         onChangeRoomInfo(wsData.data.roomInfo)
         break;
     }
@@ -123,6 +124,9 @@ const ChineseChess = (props: ChineseChessProps) => {
       if (targetChess.name === '帥' || targetChess.name === '將') {
         return true;
       }
+      if (targetChess.name === '炮' || targetChess.name === '包') {
+        return false;
+      }
     }
 
     // 帥不能吃卒
@@ -152,16 +156,16 @@ const ChineseChess = (props: ChineseChessProps) => {
         // Y axis
         if (nowChess.location > targetChess.location) {
           const temp = [];
-          for (let i = targetChess.location + 8; i < nowChess.location; i=i+8) {
-            if ((roomInfo.gameData[i + 1] as TChineseChess).location !== -1) {
+          for (let i = targetChess.location + 8; i < nowChess.location; i+=8) {
+            if ((roomInfo.gameData[i] as TChineseChess).location !== -1) {
               temp.push(i)
             }
           }
           return temp.length === 1 ? true : false;
         } else {
           const temp = [];
-          for (let i = nowChess.location + 8; i < targetChess.location; i=i+8) {
-            if ((roomInfo.gameData[i + 1] as TChineseChess).location !== -1) {
+          for (let i = nowChess.location + 8; i < targetChess.location; i+=8) {
+            if ((roomInfo.gameData[i] as TChineseChess).location !== -1) {
               temp.push(i)
             }
           }
@@ -230,7 +234,6 @@ const ChineseChess = (props: ChineseChessProps) => {
     if (nowLocation + 8 < 32) {
       range.push(thirdLineMedian);
     }
-    console.log(range, nowLocation)
 
     if (range.includes(targetLocation)) {
       return true;
@@ -239,6 +242,25 @@ const ChineseChess = (props: ChineseChessProps) => {
   }
 
   const chessMap = () => {
+    // 檢查是否遊戲結束
+    const remainRedChesses = [...roomInfo.gameData].filter((g: TChineseChess) => {
+      return g.location !== -1 && g.side === 'RED';
+    })
+    const remainBlackChesses = [...roomInfo.gameData].filter((g: TChineseChess) => {
+      return g.location !== -1 && g.side === 'BLACK';
+    })
+    if (remainRedChesses.length === 0 || remainBlackChesses.length === 0) {
+      console.log(123)
+      const sendData = JSON.stringify({
+        userID: userID,
+        event: 'gameOver',
+        data: {
+          roomID: roomInfo.id,
+        }
+      });
+
+      ws.send(sendData);
+    }
     let map = [];
     for (let i = 0; i < 32; i++) {
       const chessInfo: TChineseChess = [...roomInfo.gameData].find((g: TChineseChess) => {

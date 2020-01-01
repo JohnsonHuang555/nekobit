@@ -129,7 +129,7 @@ const Room = () => {
       return null;
     }
 
-    if (roomInfo.status === 0) {
+    if (roomInfo.status === 0 || roomInfo.status === 2) {
       return null;
     }
 

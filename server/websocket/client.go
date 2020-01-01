@@ -124,6 +124,9 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 	case "onMove":
 		middleware.Rv.RoomService.OnMove(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.NewLocation)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
+	case "gameOver":
+		middleware.Rv.RoomService.GameOver(msg.Data.RoomID)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	}
 	return msg
 }
