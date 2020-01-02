@@ -7,7 +7,6 @@ import useLocalStorage from 'src/customHook/useLocalStorage';
 import RoomUser from 'src/components/RoomList/RoomUser';
 import Button from 'src/components/Shared/Button';
 import ChineseChess from 'src/components/Games/ChineseChess/ChineseChess';
-import { TChineseChess } from 'src/types/ChineseChess';
 
 const Room = () => {
   const router = useRouter();

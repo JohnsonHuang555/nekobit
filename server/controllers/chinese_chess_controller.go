@@ -223,7 +223,3 @@ func CreateChesses() []models.ChineseChess {
 	}
 	return gameData
 }
-
-// func SetChessFlip(chesses []models.ChineseChess, chessID int) []models.ChineseChess {
-
-// }
