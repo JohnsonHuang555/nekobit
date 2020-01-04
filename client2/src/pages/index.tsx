@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import Swiper from 'react-id-swiper';
-import Router from 'next/router'
+import Router from 'next/router';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from 'src/components/Layout';
@@ -43,7 +43,7 @@ const Home: NextPage<{ games: TGame[] }> = ({ games = [] }) => {
           {games.map((game: TGame) => (
             <div key={game._id}>
               <div className="game-card">
-                <img className="game-image" src={game.imgURL} alt={game.name} width="100%" height="100%" />
+                <img className="game-image" src={`${game.imgURL}/home.png`} alt={game.name} width="100%" height="100%" />
                 <div className="game-block">
                   <div className="center">
                     <h2>{game.name}</h2>

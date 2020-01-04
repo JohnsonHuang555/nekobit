@@ -1,0 +1,23 @@
+@import '../theme';
+
+#footer {
+  margin-top: 40px;
+  .icons {
+    background-color: $navbar-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    margin-bottom: 8px;
+    svg {
+      margin: 0 10px;
+      height: 40px;
+      color: $basic-white;
+    }
+  }
+  .copyright {
+    text-align: center;
+    color: $title-gray;
+    font-size: 13px;
+  }
+}

@@ -28,7 +28,6 @@
   .navbar-nav {
     align-items: center;
     a {
-      font-weight: bold;
       font-size: 20px;
       color: rgba(255,255,255,.5);
       text-decoration: none;
@@ -45,6 +44,13 @@
         align-items: center;
         color: #fff;
         cursor: pointer;
+        .photo img {
+          width: 46px;
+          height: 46px;
+          margin-right: 12px;
+          border-radius: 50%;
+          box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.75);
+        }
         .name {
           font-size: 18px;
           margin-right: 12px;
@@ -58,7 +64,6 @@
           button {
             background: $button-yallow;
             border: 1px solid $button-yallow;
-            font-weight: bold;
             padding: 3px 10px;
             text-align: center;
             &:hover {

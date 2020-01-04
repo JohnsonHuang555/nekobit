@@ -5,9 +5,9 @@ body {
   background: $body-black;
   font-family: $core-font;
 }
-h1, h2 {
-  font-weight: bold;
-}
+// h1, h2 {
+//   font-weight: bold;
+// }
 a {
   display: inline-block;
   &:hover {
@@ -40,7 +40,6 @@ button {
 .section-heading {
   h2 {
     color: $title-gray;
-    font-weight: bold;
     font-size: 22px;
     border-bottom: 1px solid $title-gray;
     position: relative;

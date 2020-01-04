@@ -1,10 +1,13 @@
 import React from 'react';
+import Router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserFriends,
   faChess,
   faDoorOpen,
-  faGamepad
+  faGamepad,
+  faStar,
+  faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { TGame } from 'src/types/Game';
 import { TRoom } from 'src/types/Room';
@@ -40,11 +43,19 @@ const GameDetail = (props: GameDetailProps) => {
         </div>
         <div className="row main">
           <div className="col-md-7 game-image">
-            <img src={gameInfo.imgURL} alt={gameInfo.name} width="100%" />
+            <img src={`${gameInfo.imgURL}/game.png`} alt={gameInfo.name} width="100%" />
           </div>
           <div className="col-md-5 game-info">
             <div className="game_title">
               <h2>{gameInfo.name}</h2>
+            </div>
+            <div className="game_stars">
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <FontAwesomeIcon icon={faStar} />
+              <span className="points">10 分</span>
             </div>
             <div className="game_description">
               <p>{gameInfo.description}</p>
@@ -66,6 +77,10 @@ const GameDetail = (props: GameDetailProps) => {
                 <FontAwesomeIcon icon={faGamepad} />
                 <b>Play Now</b>
               </button>
+            </div>
+            <div className="back_to_home" onClick={() => Router.push('/')}>
+              <FontAwesomeIcon icon={faHome} />
+              <span>回遊戲大廳</span>
             </div>
           </div>
         </div>

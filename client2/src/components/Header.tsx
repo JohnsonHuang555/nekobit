@@ -55,12 +55,6 @@ const Header = () => {
             </a>
           </Link>
           <div className="navbar-nav">
-            <Link href="/">
-              <a className="nav-item nav-link active">Home</a>
-            </Link>
-            <Link href="/newroom">
-              <a className="nav-item nav-link">NewRoom</a>
-            </Link>
             { !userInfo ? (
               <>
                 <a onClick={onLogin} href="javacript: void();">Login</a>
@@ -72,14 +66,14 @@ const Header = () => {
               <div className="member_info">
                 <div className="user">
                   <div className="photo">
-                    <img />
+                    <img src="https://images.pexels.com/photos/3393375/pexels-photo-3393375.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
                   </div>
                   <b className="name">{userInfo.name}</b>
                   <div className="down">
                     <button onClick={logout}>Logout</button>
                   </div>
                 </div>
-                <b className="at">在<span>西洋棋</span>大廳</b>
+                <span className="at">在<span>西洋棋</span>大廳</span>
               </div> )
             }
           </div>
