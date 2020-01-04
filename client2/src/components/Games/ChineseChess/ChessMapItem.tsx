@@ -1,6 +1,6 @@
 import React from 'react';
-import { TChineseChess } from 'src/types/ChineseChess';
 import ChessItem from 'src/components/Games/ChineseChess/ChessItem';
+import { TChineseChess } from 'src/types/ChineseChess';
 
 type ChessMapItemProps = {
   chessInfo?: TChineseChess;

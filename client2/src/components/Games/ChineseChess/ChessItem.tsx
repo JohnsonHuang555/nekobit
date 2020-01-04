@@ -1,5 +1,4 @@
 import React from 'react';
-import { TChineseChess } from 'src/types/ChineseChess';
 
 type ChessItemProps = {
   name: string;

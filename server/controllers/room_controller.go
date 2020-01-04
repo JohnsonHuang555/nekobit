@@ -148,7 +148,6 @@ func (r *RoomService) OnMove(userID string, roomID int, chessID int, newLocation
 	}
 	r.rooms[roomIndex].GameData = chesses
 	r.changePlayer(changePlayer{userID: userID, roomIndex: roomIndex})
-	// r.changePlayer(userID, roomIndex, selectedChess)
 }
 
 type changePlayer struct {

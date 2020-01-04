@@ -9,7 +9,6 @@ import useLocalStorage from 'src/customHook/useLocalStorage';
 import { TRoom } from 'src/types/Room';
 import { TGame } from 'src/types/Game';
 import { TSocket } from 'src/types/Socket';
-
 import '@styles/pages/game.scss';
 
 const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {

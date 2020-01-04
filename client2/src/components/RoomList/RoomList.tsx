@@ -2,7 +2,6 @@ import React from 'react';
 import Router from 'next/router';
 import Room from 'src/components/RoomList/Room';
 import { TRoom } from 'src/types/Room';
-
 import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {

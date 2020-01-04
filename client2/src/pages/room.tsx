@@ -77,8 +77,8 @@ const Room = () => {
   }
 
   const isMaster = () => {
-    if (userInfo) {
-      const user = roomInfo && roomInfo.userList.find(u => {
+    if (userInfo && roomInfo) {
+      const user = roomInfo.userList.find(u => {
         return u.id === userInfo.id;
       });
 
@@ -148,11 +148,9 @@ const Room = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-3">
-            {
-              roomInfo && roomInfo.userList.map((user: TRoomUser) => {
-                return <RoomUser key={user.id} user={user}/>
-              })
-            }
+            {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
+              <RoomUser key={user.id} user={user}/>
+            ))}
             <div>Back to list</div>
             {
               isMaster() ?

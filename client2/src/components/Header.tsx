@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Router from 'next/router'
+import Router from 'next/router';
 import uuid from 'uuid';
 import LoginModal from 'src/components/Modals/LoginModal';
 import useLocalStorage from 'src/customHook/useLocalStorage';
