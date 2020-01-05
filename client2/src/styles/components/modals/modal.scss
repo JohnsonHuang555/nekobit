@@ -20,7 +20,6 @@
     background: $modal-bg;
     border: 1px solid $modal-border;
     border-radius: 5px;
-    padding: 0 57px;
     .exit {
       position: absolute;
       right: 30px;
@@ -30,6 +29,7 @@
         font-size: 26px;
         color: $input-gray;
         transition: all .3s;
+        height: 20px;
         &:hover {
           color: $title-gray;
         }

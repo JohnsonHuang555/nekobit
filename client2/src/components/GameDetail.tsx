@@ -15,7 +15,7 @@ import { TRoom } from 'src/types/Room';
 type GameDetailProps = {
   gameInfo: TGame;
   rooms: TRoom[];
-  createRoom: (d: any) => void;
+  onShowModal: () => void;
   playNow: () => void;
 };
 
@@ -23,17 +23,17 @@ const GameDetail = (props: GameDetailProps) => {
   const {
     gameInfo,
     rooms,
-    createRoom,
+    onShowModal,
     playNow,
   } = props;
 
-  const onCreateRoom = () => {
-    createRoom({
-      roomPassword: "",
-      roomTitle: "Play game",
-      roomMode: 0,
-    });
-  }
+  // const onCreateRoom = () => {
+  //   createRoom({
+  //     roomPassword: "",
+  //     roomTitle: "Play game",
+  //     roomMode: 0,
+  //   });
+  // }
 
   return (
     <div id="game" className="container-fluid">
@@ -69,7 +69,7 @@ const GameDetail = (props: GameDetailProps) => {
               </div>
             </div>
             <div className="buttons">
-              <button className="new_room" onClick={onCreateRoom}>
+              <button className="new_room" onClick={onShowModal}>
                 <FontAwesomeIcon icon={faDoorOpen} />
                 <b>New Room</b>
               </button>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faUserCircle,
   faTimes
@@ -8,10 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '@styles/components/modals/modal.scss';
 import '@styles/components/modals/loginModal.scss';
 
-library.add(
-  faUserCircle,
-  faTimes
-);
 type LoginModalProps = {
   show: boolean;
   login: (name: string) => void;
@@ -29,18 +24,18 @@ const LoginModal = (props: LoginModalProps) => {
 
   return (
     <>
-      { show ?
+      { show &&
         <div id="login-modal">
           <div className="modal-shadow" />
           <div className="app-modal">
             <div className="app-modal-dialog">
               <div className="exit" onClick={onCloseLogin}>
-                <FontAwesomeIcon icon="times" />
+                <FontAwesomeIcon icon={faTimes} />
               </div>
               <div className="guest">
                 <h2>Quick Start</h2>
                 <div className="icon">
-                  <FontAwesomeIcon icon="user-circle" />
+                  <FontAwesomeIcon icon={faUserCircle} />
                 </div>
                 <input placeholder="User Nickname" type="text" onChange={(e) => setName(e.target.value)}/>
                 <button onClick={() => login(name)}>Start</button>
@@ -57,7 +52,7 @@ const LoginModal = (props: LoginModalProps) => {
               </div>
             </div>
           </div>
-        </div> : null
+        </div>
       }
     </>
   );

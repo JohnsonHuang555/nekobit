@@ -9,8 +9,7 @@
   .app-modal-dialog {
     width: 90%;
     max-width: 1086px;
-    padding-top: 142px;
-    padding-bottom: 202px;
+    padding: 60px 40px;
     .guest, .account-login {
       flex: 1;
     }
@@ -51,12 +50,13 @@
         text-align: center;
         margin-bottom: 53px;
         svg {
-          font-size: 134px;
+          height: 100px;
         }
       }
       button {
         background: $logo-blue;
         border: none;
+        margin: 0;
       }
     }
     .or {

@@ -9,7 +9,16 @@ import useLocalStorage from 'src/customHook/useLocalStorage';
 import { TRoom } from 'src/types/Room';
 import { TGame } from 'src/types/Game';
 import { TSocket } from 'src/types/Socket';
+import CreateRoomModal from 'src/components/Modals/CreateRoomModal';
+import { GameModeCode } from 'src/types/ChineseChess';
 import '@styles/pages/game.scss';
+
+const GameListMode: any = {
+  '象棋': [
+    {label: '標準(大盤)', value: GameModeCode.STANDARD},
+    {label: '暗棋(小盤)', value: GameModeCode.HIDDEN}
+  ],
+}
 
 const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
   const [userInfo] = useLocalStorage('userInfo', null);
@@ -18,6 +27,7 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
   const [ws, setWs] = useState<WebSocket>();
   const [isOnCreateRoom, setIsOnCreateRoom] = useState(false);
   const [roomID, setRoomID] = useState('');
+  const [isShowCreateRoomModal, setIsShowCreateRoomModal] = useState(false);
 
   useEffect(() => {
     let ws: WebSocket = new WebSocket('ws://localhost:8080/ws/gamePage');
@@ -83,10 +93,10 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       event: 'createRoom',
       data: {
         name: userInfo.name,
-        gameName: "象棋",
+        gameName: gameInfo.name,
         roomPassword: data.roomPassword,
         roomTitle: data.roomTitle,
-        roomStatus: data.roomStatus
+        roomMode: data.roomMode
       }
     })
     if (ws) {
@@ -96,6 +106,12 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
 
   return (
     <Layout>
+      <CreateRoomModal
+        show={isShowCreateRoomModal}
+        mode={GameListMode[gameInfo.name]}
+        onCloseLogin={() => setIsShowCreateRoomModal(false)}
+        onCreate={createRoom}
+      />
       <>
         {showRoomList? (
           <RoomList rooms={rooms}/>
@@ -103,7 +119,7 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
           <GameDetail
             gameInfo={gameInfo}
             rooms={rooms}
-            createRoom={createRoom}
+            onShowModal={() => setIsShowCreateRoomModal(true)}
             playNow={() => setShowRoomList(true)}
           />
         )}

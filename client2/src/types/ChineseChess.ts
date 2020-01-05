@@ -7,3 +7,8 @@ export type TChineseChess = {
 	rank: number;
 	alive: boolean;
 }
+
+export enum GameModeCode {
+	STANDARD = 1,
+	HIDDEN = 2,
+}

@@ -133,7 +133,7 @@ const Room = () => {
     }
 
     const gameList: any = {
-      "象棋": <ChineseChess
+      '象棋': <ChineseChess
                 ws={ws}
                 userID={userInfo.id}
                 roomInfo={roomInfo}
