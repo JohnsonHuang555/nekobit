@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TSocket } from 'src/types/Socket';
 import { TRoom, TRoomUser } from 'src/types/Room';
 import Layout from "src/components/Layout"
@@ -7,6 +9,7 @@ import useLocalStorage from 'src/customHook/useLocalStorage';
 import RoomUser from 'src/components/RoomList/RoomUser';
 import Button from 'src/components/Shared/Button';
 import ChineseChess from 'src/components/Games/ChineseChess/ChineseChess';
+import '@styles/pages/room.scss';
 
 const Room = () => {
   const router = useRouter();
@@ -128,9 +131,9 @@ const Room = () => {
       return null;
     }
 
-    if (roomInfo.status === 0 || roomInfo.status === 2) {
-      return null;
-    }
+    // if (roomInfo.status === 0 || roomInfo.status === 2) {
+    //   return null;
+    // }
 
     const gameList: any = {
       '象棋': <ChineseChess
@@ -143,34 +146,67 @@ const Room = () => {
     return gameList[roomInfo.gameName];
   }
 
+  const isPlayerReady = () => {
+    if (userInfo && roomInfo) {
+      const user = roomInfo.userList.find(u => {
+        return u.id === userInfo.id;
+      });
+
+      return (user && user.isReady) ? 'Cancel' : 'Ready';
+    }
+    return 'Ready';
+  }
+
   return (
-    <Layout>
-      <div className="container">
-        <div className="row">
-          <div className="col-md-3">
-            {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
-              <RoomUser key={user.id} user={user}/>
-            ))}
-            <div>Back to list</div>
-            {
-              isMaster() ?
-              <Button
-                className="start"
-                disabled={disabledStart()}
-                onClick={startGame}
-                title="Start"
-              /> :
-              <Button
-                className="ready"
-                onClick={readyGame}
-                title="Ready"
-              />
-            }
+    <Layout id="room-page">
+      <div className="row">
+        <div className="col-md-8">
+          <div className="user-block">
+            <div className="header">
+              {roomInfo && (
+                <div className="title">
+                  <span>{roomInfo.id}.</span>
+                  <span>{roomInfo.title}</span>
+                </div>
+              )}
+              <span className="icons">
+                <FontAwesomeIcon icon={faPen}/>
+                <FontAwesomeIcon icon={faDoorOpen}/>
+              </span>
+            </div>
+            <div className="content">
+              {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
+                <RoomUser key={user.id} user={user}/>
+              ))}
+            </div>
           </div>
-          <div className="col-md-9">
+          <div className="chat-block"></div>
+        </div>
+        <div className="col-md-4">
+          <div className="settings-block"></div>
+          {
+            isMaster() ?
+            <Button
+              className="start"
+              disabled={disabledStart()}
+              onClick={startGame}
+              title="Start"
+            /> :
+            <Button
+              className="ready"
+              onClick={readyGame}
+              title={isPlayerReady()}
+            />
+          }
+        </div>
+        {roomInfo && roomInfo.status === 1 && (
+          <div className="game-screen">
             <ShowGameArea />
           </div>
-        </div>
+        )}
+        {/* <div className="col-md-9">
+          <ShowGameArea />
+        </div> */}
       </div>
     </Layout>
   )

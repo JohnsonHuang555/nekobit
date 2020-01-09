@@ -4,12 +4,12 @@ import Router from 'next/router';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/components/RoomList/RoomList';
 import GameDetail from 'src/components/GameDetail';
+import CreateRoomModal from 'src/components/Modals/CreateRoomModal';
 import GameApi from 'src/api/GameApi';
 import useLocalStorage from 'src/customHook/useLocalStorage';
 import { TRoom } from 'src/types/Room';
 import { TGame } from 'src/types/Game';
 import { TSocket } from 'src/types/Socket';
-import CreateRoomModal from 'src/components/Modals/CreateRoomModal';
 import { GameModeCode } from 'src/types/ChineseChess';
 import '@styles/pages/game.scss';
 
@@ -94,13 +94,13 @@ const Game: NextPage<{ gameInfo: TGame }> = ({ gameInfo }) => {
       data: {
         name: userInfo.name,
         gameName: gameInfo.name,
-        roomPassword: data.roomPassword,
-        roomTitle: data.roomTitle,
-        roomMode: data.roomMode
+        roomPassword: data.password,
+        roomTitle: data.title,
+        roomMode: data.mode
       }
     })
     if (ws) {
-      ws.send(sendData)
+      ws.send(sendData);
     }
   }
 

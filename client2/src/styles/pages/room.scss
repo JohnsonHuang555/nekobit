@@ -1,1 +1,96 @@
 @import '../theme';
+
+#room-page {
+  color: $basic-white;
+  margin-top: 20px;
+  .user-block {
+    box-shadow: 0 0 8px 0 $basic-black;
+    border: solid 1px $modal-border;
+    background-color: $navbar-bg;
+    padding: 20px;
+    height: 45vh;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      .icons {
+        svg {
+          height: 20px;
+          cursor: pointer;
+          &:hover {
+            opacity: .8;
+          }
+        }
+      }
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      background-color: $room-list-content-bg;
+      padding: 10px;
+      .user {
+        display: flex;
+        flex: .5;
+        position: relative;
+        border: solid 1px $room-border;
+        background-color: $room-bg;
+        border-radius: 5px;
+        padding: 5px;
+        &:not(:nth-child(2n)) {
+          margin-right: 10px;
+        }
+        img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          margin-right: 10px;
+        }
+        .info {
+          flex: 1;
+          font-size: 20px;
+          display: flex;
+          align-items: center;
+        }
+        svg {
+          position: absolute;
+          color: $star-yellow;
+          top: -10px;
+          left: -10px;
+          height: 20px;
+          transform: rotate(-45deg);
+        }
+      }
+    }
+  }
+  .chat-block {
+    box-shadow: 0 0 8px 0 $basic-black;
+    border: solid 1px $modal-border;
+    background-color: $navbar-bg;
+    padding: 20px;
+    height: 25vh;
+  }
+  .settings-block {
+    box-shadow: 0 0 8px 0 $basic-black;
+    border: solid 1px $modal-border;
+    background-color: $navbar-bg;
+    padding: 20px;
+    height: calc(70vh - 60px);
+  }
+  button {
+    width: 100%;
+    margin: 0;
+    height: 60px;
+  }
+  .game-screen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: $primary;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

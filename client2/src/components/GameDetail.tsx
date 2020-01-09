@@ -27,14 +27,6 @@ const GameDetail = (props: GameDetailProps) => {
     playNow,
   } = props;
 
-  // const onCreateRoom = () => {
-  //   createRoom({
-  //     roomPassword: "",
-  //     roomTitle: "Play game",
-  //     roomMode: 0,
-  //   });
-  // }
-
   return (
     <div id="game" className="container-fluid">
       <div className="container">
