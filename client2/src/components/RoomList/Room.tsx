@@ -23,6 +23,13 @@ const Room = (props: RoomListProps) => {
     onChooseRoom,
   } = props;
 
+  const onChoose = (id: number) => {
+    if (userList.length === 2) {
+      return;
+    }
+    onChooseRoom(id);
+  }
+
   return (
     <div className="room">
       <div className="top">
@@ -48,7 +55,7 @@ const Room = (props: RoomListProps) => {
           {/* FIXME: 2 該為變數 */}
           <FontAwesomeIcon icon={faUser}/> {userList.length} / 2
         </span>
-        <span className="enter" onClick={() => onChooseRoom(id)}>
+        <span className={"btn-enter " + (userList.length === 2 ? 'full' : 'remain')} onClick={() => onChoose(id)}>
           {/* FIXME: 2 該為變數 */}
           {userList.length === 2 ? 'Full' : 'Enter'}
         </span>

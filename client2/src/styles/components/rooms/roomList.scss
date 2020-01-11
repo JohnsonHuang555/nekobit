@@ -109,7 +109,7 @@
             margin-right: 3px;
           }
         }
-        .enter {
+        .btn-enter {
           flex: 1;
           text-align: center;
           font-size: 11px;
@@ -121,10 +121,16 @@
           cursor: pointer;
           transition: all .3s;
           font-style: italic;
-          &:hover {
-            color: $basic-white;
-            background-color: $star-yellow;
-          }
+        }
+        .remain:hover {
+          color: $basic-white;
+          background-color: $star-yellow;
+        }
+        .full {
+          cursor: not-allowed;
+          border-color: #555555;
+          background-color: $room-list-title;
+          color: #4a4a4a;
         }
       }
     }

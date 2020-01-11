@@ -14,7 +14,7 @@ type RoomService struct {
 // NewRoomService function
 func NewRoomService() *RoomService {
 	roomService := &RoomService{}
-	roomService.roomNum = 1
+	roomService.roomNum = 0
 	return roomService
 }
 
@@ -41,15 +41,22 @@ func (r *RoomService) Create(room models.Room) int {
 	return r.roomNum
 }
 
-// Delete Room 判斷是否為最後一人
-func (r *RoomService) DeleteUser(id int) bool {
-	index := r.FindByID(id)
-	if index == -1 {
-		return false
+// Delete Room
+func (r *RoomService) DeleteUser(roomID int, userID string) {
+	roomIndex := r.FindByID(roomID)
+	userIndex := r.FindUserByID(userID, roomIndex)
+	if roomIndex == -1 || userIndex == -1 {
+		return
 	}
 
-	r.rooms = append(r.rooms[:index], r.rooms[index+1:]...)
-	return true
+	userList := r.rooms[roomIndex].UserList
+	// 代表最後一位玩家則 刪除 該房間
+	if len(userList) == 1 {
+		r.rooms = append(r.rooms[:roomIndex], r.rooms[roomIndex+1:]...)
+	} else {
+		userList = append(userList[:userIndex], userList[userIndex+1:]...)
+	}
+	r.rooms[roomIndex].UserList = userList
 }
 
 // 回傳 roomInfo

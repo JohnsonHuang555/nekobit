@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TSocket } from 'src/types/Socket';
@@ -47,7 +47,21 @@ const Room = () => {
 
     initialOnListening(ws);
 
+    const handleRouteChange = () => {
+      const sendData = JSON.stringify({
+        userID: userInfo.id,
+        event: 'leaveRoom',
+        data: {
+          roomID: Number(router.query.id)
+        }
+      })
+      ws.send(sendData);
+    }
+
+    Router.events.on('routeChangeStart', handleRouteChange);
+
     return () => {
+      Router.events.off('routeChangeStart', handleRouteChange);
       ws.close();
     }
   }, [router.query]);
@@ -131,10 +145,6 @@ const Room = () => {
       return null;
     }
 
-    // if (roomInfo.status === 0 || roomInfo.status === 2) {
-    //   return null;
-    // }
-
     const gameList: any = {
       '象棋': <ChineseChess
                 ws={ws}
@@ -204,9 +214,6 @@ const Room = () => {
             <ShowGameArea />
           </div>
         )}
-        {/* <div className="col-md-9">
-          <ShowGameArea />
-        </div> */}
       </div>
     </Layout>
   )
