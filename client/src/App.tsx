@@ -13,6 +13,7 @@ import {
   faGamepad,
   faUserCircle,
   faTimes,
+  faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
 import './assets/styles/theme.scss';
 
@@ -38,6 +39,7 @@ library.add(
   faGamepad,
   faUserCircle,
   faTimes,
+  faChevronDown,
 );
 
 const App: React.FC = () => {

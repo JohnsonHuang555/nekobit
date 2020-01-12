@@ -5,16 +5,16 @@ body {
   background: $body-black;
   font-family: $core-font;
 }
-// h1, h2 {
-//   font-weight: bold;
-// }
+h1, h2 {
+  font-weight: bold;
+}
 a {
   display: inline-block;
   &:hover {
     text-decoration: none;
   }
 }
-button, input {
+button, input, select {
   &:focus {
     outline: none;
   }
