@@ -72,7 +72,7 @@ const Room = () => {
       ws.onmessage = (websocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(websocket.data);
         if (!wsData) return;
-        if (wsData.event === 'joinRoom') {
+        if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
           tempRoomInfo = wsData.data.roomInfo;
           setRoomInfo(wsData.data.roomInfo);
         } else if (wsData.event === 'readyGame') {
