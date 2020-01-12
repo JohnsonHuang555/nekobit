@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import GamePlayButton, { borderClass } from 'src/components/GamePlayButton';
+import { faTimes, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '@styles/components/modals/modal.scss';
 import '@styles/components/modals/createRoomModal.scss';
@@ -61,12 +62,15 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
               {mode && (
                 <div className="group">
                   <label>遊戲模式</label>
-                  <select id="room-mode" onChange={(e) => setRoomMode(Number(e.target.value))}>
-                    <option value="0">請選擇模式</option>
-                    {mode.map((m, i) => (
-                      <option key={i} value={m.value}>{m.label}</option>
-                    ))}
-                  </select>
+                  <div className="room_mode_group">
+                    <select id="room-mode" onChange={(e) => setRoomMode(Number(e.target.value))}>
+                      <option value="0">請選擇模式</option>
+                      {mode.map((m, i) => (
+                        <option key={i} value={m.value}>{m.label}</option>
+                      ))}
+                    </select>
+                    <FontAwesomeIcon icon={faChevronDown} />
+                  </div>
                 </div>
               )}
               <div className="group">
@@ -79,9 +83,12 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
                   onChange={(e) => setRoomPassword(e.target.value)}
                 />
               </div>
-              <div className="create" onClick={onSubmit}>
-                Create
-              </div>
+              <GamePlayButton
+                className={"create"}
+                text={'Create'}
+                borderClass={borderClass.THICKBLUE}
+                onClick={onSubmit}
+              />
             </div>
           </div>
         </div>

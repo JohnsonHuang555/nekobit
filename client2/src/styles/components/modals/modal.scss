@@ -20,6 +20,21 @@
     background: $modal-bg;
     border: 1px solid $modal-border;
     border-radius: 5px;
+    input {
+      font-size: 22px;
+      color: #eee;
+      background: $input-gray;
+      border: none;
+      height: 50px;
+      padding: 14px;
+      &:focus {
+        box-shadow: 0 0 10px #fff;
+      }
+    }
+    ::placeholder {
+      color: $input-placeholder;
+      font-style: italic;
+    }
     .exit {
       position: absolute;
       right: 30px;

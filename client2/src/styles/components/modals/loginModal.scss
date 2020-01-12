@@ -18,16 +18,7 @@
       height: 50px;
     }
     input {
-      font-size: 22px;
-      color: #eee;
-      background: $input-gray;
-      border: none;
-      height: 50px;
-      padding: 14px;
       margin-bottom: 30px;
-      &:focus {
-        box-shadow: 0 0 10px #fff;
-      }
     }
     button {
       color: #fff;
@@ -37,10 +28,6 @@
       &:hover {
         transform: scale(1.02, 1.02);
       }
-    }
-    ::placeholder {
-      color: $input-placeholder;
-      font-style: italic;
     }
     .guest {
       h2 {
