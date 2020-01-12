@@ -60,7 +60,7 @@ func (r *RoomService) DeleteUser(roomID int, userID string) {
 }
 
 // 回傳 roomInfo
-func (r *RoomService) AddUser(roomID int, user models.User) models.Room {
+func (r *RoomService) AddUser(roomID int, user models.User) {
 	index := r.FindByID(roomID)
 	// 當房間沒有其他玩家時，設定為房主
 	if len(r.rooms[index].UserList) == 0 {
@@ -73,7 +73,6 @@ func (r *RoomService) AddUser(roomID int, user models.User) models.Room {
 	if userIndex == -1 {
 		r.rooms[index].UserList = append(r.rooms[index].UserList, user)
 	}
-	return r.rooms[index]
 }
 
 func (r *RoomService) ReadyGame(roomID int, userID string) {

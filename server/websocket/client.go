@@ -104,10 +104,11 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 			IsReady:   false,
 			PlayOrder: 0,
 		}
-		roomInfo := middleware.Rv.RoomService.AddUser(msg.Data.RoomID, user)
-		msg.Data.RoomInfo = roomInfo
+		middleware.Rv.RoomService.AddUser(msg.Data.RoomID, user)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	case "leaveRoom":
 		middleware.Rv.RoomService.DeleteUser(msg.Data.RoomID, msg.UserID)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	case "readyGame":
 		middleware.Rv.RoomService.ReadyGame(msg.Data.RoomID, msg.UserID)
 		msg.Data.RoomUserList = middleware.Rv.GetUserList(msg.Data.RoomID)
