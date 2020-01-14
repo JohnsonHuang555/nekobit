@@ -105,12 +105,13 @@ const Room = () => {
   };
 
   const startGame = () => {
-    if (ws) {
+    if (ws && roomInfo) {
       const sendData = JSON.stringify({
         userID: userInfo.id,
         event: 'startGame',
         data: {
-          roomID: Number(router.query.id)
+          roomID: Number(router.query.id),
+          roomMode: roomInfo.mode
         }
       })
       ws.send(sendData);

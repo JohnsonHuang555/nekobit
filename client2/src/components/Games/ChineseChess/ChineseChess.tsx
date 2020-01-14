@@ -241,7 +241,7 @@ const ChineseChess = (props: ChineseChessProps) => {
     return false;
   }
 
-  const chessMap = () => {
+  const chessMapHiddenMode = () => {
     // 檢查是否遊戲結束
     const remainRedChesses = [...roomInfo.gameData].filter((g: TChineseChess) => {
       return g.location !== -1 && g.side === 'RED';
@@ -279,6 +279,33 @@ const ChineseChess = (props: ChineseChessProps) => {
           isSelected={isSelected}
           onSelect={onSelect}
           onMove={() => onMove(i + 1)}
+          mode={roomInfo.mode}
+        />
+      )
+    }
+    return map;
+  }
+
+  const chessMapStandardMode = () => {
+    let map = []
+    for (let i = 0; i < 90; i++) {
+      const chessInfo: TChineseChess = [...roomInfo.gameData].find((g: TChineseChess) => {
+        return g.location === i + 1;
+      });
+
+      let isSelected = false
+      if (chessInfo && selectedChess && selectedChess.id === chessInfo.id) {
+        isSelected = true;
+      }
+
+      map.push(
+        <ChessMapItem
+          key={i}
+          chessInfo={chessInfo ? chessInfo : undefined}
+          isSelected={isSelected}
+          onSelect={onSelect}
+          onMove={() => {}}
+          mode={roomInfo.mode}
         />
       )
     }
@@ -287,7 +314,7 @@ const ChineseChess = (props: ChineseChessProps) => {
 
   return (
     <div className="chinese-chess-container">
-      {chessMap()}
+      { roomInfo.mode === 1 ? chessMapStandardMode() : chessMapHiddenMode()}
     </div>
   )
 }

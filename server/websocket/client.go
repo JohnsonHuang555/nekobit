@@ -113,7 +113,7 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		middleware.Rv.RoomService.ReadyGame(msg.Data.RoomID, msg.UserID)
 		msg.Data.RoomUserList = middleware.Rv.GetUserList(msg.Data.RoomID)
 	case "startGame":
-		users, index := middleware.Rv.RoomService.StartGame(msg.Data.RoomID)
+		users, index := middleware.Rv.RoomService.StartGame(msg.Data.RoomID, msg.Data.RoomMode)
 		middleware.Rv.RoomService.SetPlayOrder(users, index)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	case "onFlip":

@@ -82,10 +82,17 @@ func (r *RoomService) ReadyGame(roomID int, userID string) {
 	room.UserList[userIndex].IsReady = !room.UserList[userIndex].IsReady
 }
 
-func (r *RoomService) StartGame(roomID int) ([]models.User, int) {
+func (r *RoomService) StartGame(roomID int, mode int) ([]models.User, int) {
 	index := r.FindByID(roomID)
 	r.rooms[index].Status = 1
-	r.rooms[index].GameData = CreateChesses()
+	switch mode {
+	case 1:
+		// 大盤
+		r.rooms[index].GameData = CreateChessesStandard()
+	case 2:
+		// 小盤
+		r.rooms[index].GameData = CreateChessesHidden()
+	}
 	return r.rooms[index].UserList, index
 }
 
