@@ -5,27 +5,18 @@ import { TChineseChess } from 'src/types/ChineseChess';
 type ChessMapItemProps = {
   chessInfo?: TChineseChess;
   isSelected: boolean;
-  mode: number;
   onSelect: (id: number) => void;
-  onMove: () => void;
 }
 
 const ChessMapItem = (props: ChessMapItemProps) => {
   const {
     chessInfo,
     isSelected,
-    mode,
     onSelect,
-    onMove,
   } = props;
 
-  const checkChessExist = () => {
-    if (chessInfo) return;
-    onMove();
-  }
-
   return (
-    <div className={"map-item " + (mode === 1 ? 'standard' : '')} onClick={checkChessExist}>
+    <>
       {chessInfo && (
         <div
           className={"chess " + (isSelected ? "active " : "") + (chessInfo.isFliped ? "isFliped" : "")}
@@ -38,7 +29,7 @@ const ChessMapItem = (props: ChessMapItemProps) => {
           />
         </div>
       )}
-    </div>
+    </>
   )
 }
 
