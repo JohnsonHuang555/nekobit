@@ -20,42 +20,53 @@ const Hidden = (props: HiddenProps) => {
   } = props;
 
   // override functions
-  // const onEatOverride = (nowChess: TChineseChess, targetChess: TChineseChess) => {
-  //   if (nowChess.side === targetChess.side) {
-  //     onSetSelectChess(targetChess);
-  //     return;
-  //   }
+  const onSelectOverride = (id: number, chessInfo: TChineseChess) => {
+    if (chessInfo.isFliped) {
+      if (selectedChess && id !== selectedChess.id && selectedChess.side !== chessInfo.side) {
+        onEatOverride(selectedChess, chessInfo);
+        return;
+      }
+      onSelect(id);
+    } else {
+      onFlip(id);
+    }
+  }
 
-  //   // FIXME: refactor
-  //   if (checkEatCondition(nowChess, targetChess)) {
-  //     if (nowChess.name === '炮' || nowChess.name === '包') {
-  //       onWsSend('onEat', {
-  //         chessID: nowChess.id,
-  //         newLocation: targetChess.location,
-  //         eatenChessID: targetChess.id
-  //       });
-  //       onSetSelectChess(undefined);
-  //     } else {
-  //       if (isInRange(nowChess.location, targetChess.location)) {
-  //         onWsSend('onEat', {
-  //           chessID: nowChess.id,
-  //           newLocation: targetChess.location,
-  //           eatenChessID: targetChess.id
-  //         });
-  //         onSetSelectChess(undefined);
-  //       }
-  //     }
-  //   }
-  // }
+  const onMoveOverride = (newLocation: number) => {
+    if (!selectedChess || !isInRangeCross(selectedChess.location, newLocation)) {
+      return;
+    }
+    onMove({
+      newLocation,
+      chessID: selectedChess.id,
+    });
+    onClearSelectedChess();
+  }
 
-  // const onMoveOverride = (newLocation: number) => {
-  //   if (!selectedChess || !isInRange(selectedChess.location, newLocation)) {
-  //     return;
-  //   }
-  //   onSetSelectChess(undefined);
-  // }
+  const onEatOverride = (nowChess: TChineseChess, targetChess: TChineseChess) => {
+    if (checkEatCondition(nowChess, targetChess)) {
+      // 是包的話不用做十字行走範圍判斷
+      if (nowChess.name === '炮' || nowChess.name === '包') {
+        onEat({
+          chessID: nowChess.id,
+          newLocation: targetChess.location,
+          eatenChessID: targetChess.id
+        });
+        onClearSelectedChess();
+      } else {
+        if (isInRangeCross(nowChess.location, targetChess.location)) {
+          onEat({
+            chessID: nowChess.id,
+            newLocation: targetChess.location,
+            eatenChessID: targetChess.id
+          });
+          onClearSelectedChess();
+        }
+      }
+    }
+  }
 
-  const isInRange = (nowLocation: number, targetLocation: number): boolean => {
+  const isInRangeCross = (nowLocation: number, targetLocation: number): boolean => {
     const range = [];
     // first line x - 8
     const firstLineMedian = nowLocation - 8;
@@ -167,15 +178,15 @@ const Hidden = (props: HiddenProps) => {
 
       const checkChessExist = () => {
         if (chessInfo) return;
-        // onMoveOverride(i + 1);
+        onMoveOverride(i + 1);
       }
 
       map.push(
-        <div key={chessInfo.id} className="map-item" onClick={checkChessExist}>
+        <div key={i} className="map-item" onClick={checkChessExist}>
           <ChessMapItem
             chessInfo={chessInfo ? chessInfo : undefined}
             isSelected={isSelected}
-            onSelect={onSelect}
+            onSelect={(id: number) => onSelectOverride(id, chessInfo)}
           />
         </div>
       )

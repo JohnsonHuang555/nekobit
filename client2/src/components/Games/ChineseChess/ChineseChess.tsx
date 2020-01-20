@@ -48,219 +48,21 @@ const ChineseChess = (props: ChineseChessProps) => {
     }
   }
 
-  // const onSelect = (id: number) => {
-  //   // 判斷是否輪到你了
-  //   if (userID !== roomInfo.nowTurn) {
-  //     return;
-  //   }
-
-  //   let sendData = '';
-  //   const chess = findChessByID(id);
-
-  //   // 代表正在選取棋子
-  //   // if (selectedChess && chess.isFliped && chess.id !== selectedChess.id) {
-  //   //   onEat(selectedChess, chess);
-  //   //   return;
-  //   // }
-
-  //   // if (chess.isFliped) {
-  //   //   // select event
-  //   //   const userInfo = findUserByID(userID);
-  //   //   if (userInfo.side !== chess.side) {
-  //   //     return;
-  //   //   }
-
-  //   //   if (selectedChess) {
-  //   //     setSelectChess(undefined);
-  //   //   } else {
-  //   //     setSelectChess(chess);
-  //   //   }
-  //   // } else {
-  //   //   // flip
-  //   //   sendData = JSON.stringify({
-  //   //     userID: userID,
-  //   //     event: 'onFlip',
-  //   //     data: {
-  //   //       roomID: roomInfo.id,
-  //   //       chessID: id
-  //   //     }
-  //   //   })
-  //   //   ws.send(sendData);
-  //   // }
-  // }
-
-  // const onEat = (nowChess: TChineseChess, targetChess: TChineseChess) => {
-  //   if (nowChess.side === targetChess.side) {
-  //     setSelectChess(targetChess);
-  //     return;
-  //   }
-
-  //   // FIXME: refactor
-  //   if (checkEatCondition(nowChess, targetChess)) {
-  //     if (nowChess.name === '炮' || nowChess.name === '包') {
-  //       // eat
-  //       const sendData = JSON.stringify({
-  //         userID: userID,
-  //         event: 'onEat',
-  //         data: {
-  //           roomID: roomInfo.id,
-  //           chessID: nowChess.id,
-  //           newLocation: targetChess.location,
-  //           eatenChessID: targetChess.id
-  //         }
-  //       });
-
-  //       ws.send(sendData);
-  //       setSelectChess(undefined);
-  //     } else {
-  //       if (isInRange(nowChess.location, targetChess.location)) {
-  //         const sendData = JSON.stringify({
-  //           userID: userID,
-  //           event: 'onEat',
-  //           data: {
-  //             roomID: roomInfo.id,
-  //             chessID: nowChess.id,
-  //             newLocation: targetChess.location,
-  //             eatenChessID: targetChess.id
-  //           }
-  //         });
-
-  //         ws.send(sendData);
-  //         setSelectChess(undefined);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // const onMove = (newLocation: number) => {
-  //   // 判斷是否輪到你了
-  //   if (userID !== roomInfo.nowTurn) {
-  //     return;
-  //   }
-
-  //   if (!selectedChess || !isInRange(selectedChess.location, newLocation)) {
-  //     return;
-  //   }
-
-  //   const sendData = JSON.stringify({
-  //     userID: userID,
-  //     event: 'onMove',
-  //     data: {
-  //       newLocation,
-  //       chessID: selectedChess.id,
-  //       roomID: roomInfo.id,
-  //     }
-  //   });
-
-  //   ws.send(sendData);
-  //   setSelectChess(undefined);
-  // }
-
-  // 判斷移動範圍
-  // const isInRange = (nowLocation: number, targetLocation: number): boolean => {
-  //   const range = [];
-  //   // first line x - 8
-  //   const firstLineMedian = nowLocation - 8;
-  //   if (nowLocation > 8) {
-  //     range.push(firstLineMedian);
-  //   }
-  //   // second line x
-  //   const secondLineMedian = nowLocation;
-  //   range.push(secondLineMedian - 1);
-  //   range.push(secondLineMedian + 1);
-  //   // third line x + 8
-  //   const thirdLineMedian = nowLocation + 8;
-  //   if (nowLocation + 8 < 32) {
-  //     range.push(thirdLineMedian);
-  //   }
-
-  //   if (range.includes(targetLocation)) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  // const chessMapHiddenMode = () => {
-  //   // 檢查是否遊戲結束
-  //   const remainRedChesses = [...roomInfo.gameData].filter((g: TChineseChess) => {
-  //     return g.location !== -1 && g.side === 'RED';
-  //   });
-  //   const remainBlackChesses = [...roomInfo.gameData].filter((g: TChineseChess) => {
-  //     return g.location !== -1 && g.side === 'BLACK';
-  //   });
-
-  //   if (remainRedChesses.length === 0 || remainBlackChesses.length === 0) {
-  //     const sendData = JSON.stringify({
-  //       userID: userID,
-  //       event: 'gameOver',
-  //       data: {
-  //         roomID: roomInfo.id,
-  //       }
-  //     });
-
-  //     ws.send(sendData);
-  //   }
-  //   let map = [];
-  //   for (let i = 0; i < 32; i++) {
-  //     const chessInfo: TChineseChess = [...roomInfo.gameData].find((g: TChineseChess) => {
-  //       return g.location === i + 1;
-  //     })
-
-  //     let isSelected = false
-  //     if (chessInfo && selectedChess && selectedChess.id === chessInfo.id) {
-  //       isSelected = true;
-  //     }
-
-  //     map.push(
-  //       <ChessMapItem
-  //         key={i}
-  //         chessInfo={chessInfo ? chessInfo : undefined}
-  //         isSelected={isSelected}
-  //         onSelect={onSelect}
-  //         onMove={() => onMove(i + 1)}
-  //         mode={roomInfo.mode}
-  //       />
-  //     )
-  //   }
-  //   return map;
-  // }
-
-  // const chessMapStandardMode = () => {
-  //   let map = []
-  //   for (let i = 0; i < 90; i++) {
-  //     const chessInfo: TChineseChess = [...roomInfo.gameData].find((g: TChineseChess) => {
-  //       return g.location === i + 1;
-  //     });
-
-  //     let isSelected = false
-  //     if (chessInfo && selectedChess && selectedChess.id === chessInfo.id) {
-  //       isSelected = true;
-  //     }
-
-  //     map.push(
-  //       <ChessMapItem
-  //         key={i}
-  //         chessInfo={chessInfo ? chessInfo : undefined}
-  //         isSelected={isSelected}
-  //         onSelect={onSelect}
-  //         onMove={() => {}}
-  //         mode={roomInfo.mode}
-  //       />
-  //     )
-  //   }
-  //   return map;
-  // }
-
   const onSelect = (id: number) => {
     const chess = findChessByID(id);
+    const userInfo = findUserByID(userID);
     // 判斷是否輪到你了
-    if (userID !== roomInfo.nowTurn || !chess) {
+    if (userID !== roomInfo.nowTurn || !chess || userInfo.side !== chess.side) {
       return;
     }
     setSelectChess(chess);
   }
 
   const onMove = (data: any) => {
+    if (userID !== roomInfo.nowTurn) {
+      return;
+    }
+
     onWsSend('onMove', data);
   }
 
@@ -269,6 +71,9 @@ const ChineseChess = (props: ChineseChessProps) => {
   }
 
   const onFlip = (id: number) => {
+    if (userID !== roomInfo.nowTurn) {
+      return;
+    }
     onWsSend('onFlip', {
       chessID: id,
     });
