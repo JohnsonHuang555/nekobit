@@ -62,5 +62,31 @@
   }
   .standard {
     width: calc(100% / 9);
+    height: 60px;
+    position: relative;
+    border: none;
+    .chess {
+      width: 50px;
+      height: 50px;
+      font-size: 26px;
+      box-shadow: 0 3px 1px #ccc;
+      z-index: 999;
+    }
+    &:before {
+      position: absolute;
+      content: "";
+      top: 50%;
+      left: 0;
+      width: 100%;
+      border: 1px solid;
+    }
+    &:after {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 50%;
+      height: 100%;
+      border: 1px solid;
+    }
   }
 }

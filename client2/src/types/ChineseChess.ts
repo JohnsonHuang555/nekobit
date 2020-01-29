@@ -4,6 +4,8 @@ export type TChineseChess = {
   name: string;
 	isFliped: boolean;
 	location: number;
+	locationX: number;
+	locationY: number;
 	rank: number;
 	alive: boolean;
 }

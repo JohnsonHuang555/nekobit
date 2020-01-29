@@ -102,6 +102,7 @@ const ChineseChess = (props: ChineseChessProps) => {
   const renderMode: any = {
     1: <Standard
           gameData={roomInfo.gameData}
+          mode={roomInfo.mode}
           selectedChess={selectedChess}
           onClearSelectedChess={onClearSelectedChess}
           onSelect={onSelect}

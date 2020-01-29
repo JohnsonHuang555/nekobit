@@ -1,7 +1,7 @@
 import React from 'react';
 import { IChineseChess } from 'src/interfaces/ChineseChess';
 import { TChineseChess } from 'src/types/ChineseChess';
-import ChessMapItem from '../ChessMapItem';
+import ChessMapItem from 'src/components/Games/ChineseChess/ChessMapItem';
 
 interface HiddenProps extends IChineseChess {
   onFlip: (id: number) => void;
@@ -19,7 +19,7 @@ const Hidden = (props: HiddenProps) => {
     onGameOver,
   } = props;
 
-  // override functions
+  // override methods
   const onSelectOverride = (id: number, chessInfo: TChineseChess) => {
     if (chessInfo.isFliped) {
       if (selectedChess && id !== selectedChess.id && selectedChess.side !== chessInfo.side) {
@@ -66,6 +66,7 @@ const Hidden = (props: HiddenProps) => {
     }
   }
 
+  // 除了包之外其餘走法判斷範圍
   const isInRangeCross = (nowLocation: number, targetLocation: number): boolean => {
     const range = [];
     // first line x - 8

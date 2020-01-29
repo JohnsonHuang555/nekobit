@@ -53,7 +53,7 @@ const Room = (props: RoomListProps) => {
         </span>
         <span className="players">
           {/* FIXME: 2 該為變數 */}
-          <FontAwesomeIcon icon={faUser}/> {userList.length} / 2
+          <FontAwesomeIcon icon={faUser}/> {userList.length || 1} / 2
         </span>
         <span className={"btn-enter " + (userList.length === 2 ? 'full' : 'remain')} onClick={() => onChoose(id)}>
           {/* FIXME: 2 該為變數 */}
