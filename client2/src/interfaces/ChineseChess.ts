@@ -1,7 +1,7 @@
 import { TChineseChess } from "src/types/ChineseChess";
 
 export interface IChineseChess {
-  gameData: any;
+  gameData: TChineseChess[];
   selectedChess?: TChineseChess;
 
   onClearSelectedChess: () => void;

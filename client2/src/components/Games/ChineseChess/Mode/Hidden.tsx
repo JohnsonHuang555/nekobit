@@ -168,9 +168,9 @@ const Hidden = (props: HiddenProps) => {
 
     let map = [];
     for (let i = 0; i < 32; i++) {
-      const chessInfo: TChineseChess = [...gameData].find((g: TChineseChess) => {
+      const chessInfo = [...gameData].find((g: TChineseChess) => {
         return g.location === i + 1;
-      })
+      }) as TChineseChess;
 
       let isSelected = false
       if (chessInfo && selectedChess && selectedChess.id === chessInfo.id) {

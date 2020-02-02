@@ -96,9 +96,16 @@ func (r *RoomService) StartGame(roomID int, mode int) ([]models.User, int) {
 	return r.rooms[index].UserList, index
 }
 
-func (r *RoomService) SetPlayOrder(user []models.User, roomIndex int) {
+func (r *RoomService) SetPlayOrder(user []models.User, roomIndex int, mode int) {
 	randUser := utils.RandomShuffle(len(user))
 	for i := 0; i < len(user); i++ {
+		// 如果是大盤就要判斷1P為黑方
+		if mode == 1 && randUser[i] == 1 {
+			r.rooms[roomIndex].UserList[i].Side = "BLACK"
+		}
+		if mode == 1 && randUser[i] != 1 {
+			r.rooms[roomIndex].UserList[i].Side = "RED"
+		}
 		r.rooms[roomIndex].UserList[i].PlayOrder = randUser[i]
 	}
 	playerOne := user[0]
