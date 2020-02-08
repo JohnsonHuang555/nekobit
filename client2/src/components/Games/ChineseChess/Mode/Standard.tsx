@@ -51,7 +51,7 @@ const Standard = (props: StandardProps) => {
       case '將':
       case '卒':
       case '兵':
-      case '車' || '俥':
+      case '車' || '俥' || '包' || '炮':
         const currentLocations = [selectedChess.locationX, selectedChess.locationY];
         if (currentLocations.includes(locationX) || currentLocations.includes(locationY)) {
           return true;
@@ -139,7 +139,24 @@ const Standard = (props: StandardProps) => {
         });
         return canElephantMove ? true : false;
       case '士' || '仕':
-      case '包' || '炮':
+        const soldierRange: TRange[] = [];
+        if (locationX > 6 || locationX < 4) {
+          return false;
+        }
+        if (selectedChess.name === '士' && locationY > 3) {
+          return false;
+        } else if (selectedChess.name === '仕' as string && locationY < 8) {
+          return false;
+        }
+
+        soldierRange.push({x: selectedChess.locationX - 1, y: selectedChess.locationY + 1});
+        soldierRange.push({x: selectedChess.locationX - 1, y: selectedChess.locationY + 1});
+        soldierRange.push({x: selectedChess.locationX + 1, y: selectedChess.locationY - 1});
+        soldierRange.push({x: selectedChess.locationX + 1, y: selectedChess.locationY + 1});
+        const canSoldierMove = soldierRange.find(item => {
+          return item.x === locationX && item.y === locationY;
+        });
+        return canSoldierMove ? true : false;
       default:
         return false;
     }
