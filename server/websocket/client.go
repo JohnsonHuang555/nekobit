@@ -53,6 +53,8 @@ type Attachment struct {
 	RoomID       int           `json:"roomID,omitempty"`
 	RoomInfo     models.Room   `json:"roomInfo,omitempty"`
 	NewLocation  int           `json:"newLocation,omitempty"`
+	LocationX    int           `json:"locationX,omitempty"`
+	LocationY    int           `json:"locationY,omitempty"`
 	EatenChessID int           `json:"eatenChessID,omitempty"`
 }
 
@@ -124,6 +126,9 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	case "onMove":
 		middleware.Rv.RoomService.OnMove(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.NewLocation)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
+	case "onMoveStandard":
+		middleware.Rv.RoomService.OnMoveStandard(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	case "gameOver":
 		middleware.Rv.RoomService.GameOver(msg.Data.RoomID)

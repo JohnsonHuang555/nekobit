@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"server/models"
 	"server/utils"
 )
@@ -164,6 +165,20 @@ func (r *RoomService) OnMove(userID string, roomID int, chessID int, newLocation
 	for i := 0; i < len(chesses); i++ {
 		if chesses[i].ID == chessID {
 			chesses[i].Location = newLocation
+		}
+	}
+	r.rooms[roomIndex].GameData = chesses
+	r.changePlayer(changePlayer{userID: userID, roomIndex: roomIndex})
+}
+
+func (r *RoomService) OnMoveStandard(userID string, roomID int, chessID int, locationX int, locationY int) {
+	fmt.Println(locationX, locationY)
+	roomIndex := r.FindByID(roomID)
+	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
+	for i := 0; i < len(chesses); i++ {
+		if chesses[i].ID == chessID {
+			chesses[i].LocationX = locationX
+			chesses[i].LocationY = locationY
 		}
 	}
 	r.rooms[roomIndex].GameData = chesses

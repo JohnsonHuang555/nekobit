@@ -33,10 +33,12 @@ const Standard = (props: StandardProps) => {
       return;
     }
     console.log('moving')
-    // onMove({
-    //   chessID: selectedChess.id,
-    // });
-    // onClearSelectedChess();
+    onMove({
+      chessID: selectedChess.id,
+      locationX: newLocationX,
+      locationY: newLocationY,
+    });
+    onClearSelectedChess();
   }
 
   const onEatOverride = () => {
@@ -49,14 +51,54 @@ const Standard = (props: StandardProps) => {
     switch (selectedChess.name) {
       case '帥':
       case '將':
+        if (selectedChess.name === '將' && locationY > 3) {
+          return false;
+        } else if (selectedChess.name === '帥' && locationY < 8) {
+          return false;
+        }
+
+        const kingRange: TRange[] = [];
+        kingRange.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+        kingRange.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+        kingRange.push({x: selectedChess.locationX, y: selectedChess.locationY + 1});
+        kingRange.push({x: selectedChess.locationX, y: selectedChess.locationY - 1});
+        const canKingMove = kingRange.find(item => {
+          return item.x === locationX && item.y === locationY;
+        });
+        return canKingMove ? true : false;
       case '卒':
+        const blackSoldierRange: TRange[] = [];
+        blackSoldierRange.push({x: selectedChess.locationX, y: selectedChess.locationY + 1});
+        if (selectedChess.locationY > 5) {
+          blackSoldierRange.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+          blackSoldierRange.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+        }
+        const canBlackSoldierMove = blackSoldierRange.find(item => {
+          return item.x === locationX && item.y === locationY;
+        });
+        return canBlackSoldierMove ? true : false;
       case '兵':
-      case '車' || '俥' || '包' || '炮':
-        const currentLocations = [selectedChess.locationX, selectedChess.locationY];
-        if (currentLocations.includes(locationX) || currentLocations.includes(locationY)) {
+        const redSoldierRange: TRange[] = [];
+        redSoldierRange.push({x: selectedChess.locationX, y: selectedChess.locationY - 1});
+        if (selectedChess.locationY < 6) {
+          redSoldierRange.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+          redSoldierRange.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+        }
+        const canRedSoldierMove = redSoldierRange.find(item => {
+          return item.x === locationX && item.y === locationY;
+        });
+        return canRedSoldierMove ? true : false;
+      case '車':
+      case '俥':
+      case '包':
+      case '炮':
+        const currentLocations: TRange = {x: selectedChess.locationX, y: selectedChess.locationY};
+        if (currentLocations.x === locationX || currentLocations.y === locationY) {
           return true;
         }
-      case '馬' || '傌':
+        return false;
+      case '馬':
+      case '傌':
         const horseRange: TRange[] = [];
         ['xAdd', 'xMinus', 'yAdd', 'yMinus'].forEach(item => {
           switch (item) {
@@ -99,12 +141,13 @@ const Standard = (props: StandardProps) => {
           return item.x === locationX && item.y === locationY;
         });
         return canHorseMove ? true : false;
-      case '象' || '像':
+      case '象':
+      case '像':
         // 不可過河
         if (selectedChess.name === '象' && selectedChess.locationY > 5) {
           return false;
         }
-        if (selectedChess.name === '像' as string && selectedChess.locationY < 6) {
+        if (selectedChess.name === '像' && selectedChess.locationY < 6) {
           return false;
         }
         const elephantRange: TRange[] = [];
@@ -138,14 +181,15 @@ const Standard = (props: StandardProps) => {
           return item.x === locationX && item.y === locationY;
         });
         return canElephantMove ? true : false;
-      case '士' || '仕':
+      case '士':
+      case '仕':
         const soldierRange: TRange[] = [];
         if (locationX > 6 || locationX < 4) {
           return false;
         }
         if (selectedChess.name === '士' && locationY > 3) {
           return false;
-        } else if (selectedChess.name === '仕' as string && locationY < 8) {
+        } else if (selectedChess.name === '仕' && locationY < 8) {
           return false;
         }
 

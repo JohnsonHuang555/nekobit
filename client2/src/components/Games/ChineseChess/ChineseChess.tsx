@@ -42,6 +42,7 @@ const ChineseChess = (props: ChineseChessProps) => {
       case 'onFlip':
       case 'onEat':
       case 'onMove':
+      case 'onMoveStandard':
       case 'gameOver':
         onChangeRoomInfo(wsData.data.roomInfo)
         break;
@@ -64,6 +65,14 @@ const ChineseChess = (props: ChineseChessProps) => {
     }
 
     onWsSend('onMove', data);
+  }
+
+  const onMoveStandard = (data: any) => {
+    if (userID !== roomInfo.nowTurn) {
+      return;
+    }
+
+    onWsSend('onMoveStandard', data);
   }
 
   const onEat = (data: any) => {
@@ -106,7 +115,7 @@ const ChineseChess = (props: ChineseChessProps) => {
           selectedChess={selectedChess}
           onClearSelectedChess={onClearSelectedChess}
           onSelect={onSelect}
-          onMove={onMove}
+          onMove={onMoveStandard}
           onEat={onEat}
           onGameOver={onGameOver}
         />,
