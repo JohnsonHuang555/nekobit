@@ -159,6 +159,25 @@ func (r *RoomService) OnEat(userID string, roomID int, chessID int, newLocation 
 	r.changePlayer(changePlayer{userID: userID, roomIndex: roomIndex})
 }
 
+func (r *RoomService) OnEatStandard(userID string, roomID int, chessID int, locationX int, locationY int, eatenChessID int) {
+	fmt.Println(chessID, locationX, locationY, eatenChessID)
+	roomIndex := r.FindByID(roomID)
+	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
+	for i := 0; i < len(chesses); i++ {
+		if chesses[i].ID == chessID {
+			chesses[i].LocationX = locationX
+			chesses[i].LocationY = locationY
+		}
+		if chesses[i].ID == eatenChessID {
+			chesses[i].Alive = false
+			chesses[i].LocationX = -1
+			chesses[i].LocationY = -1
+		}
+	}
+	r.rooms[roomIndex].GameData = chesses
+	r.changePlayer(changePlayer{userID: userID, roomIndex: roomIndex})
+}
+
 func (r *RoomService) OnMove(userID string, roomID int, chessID int, newLocation int) {
 	roomIndex := r.FindByID(roomID)
 	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
@@ -172,7 +191,6 @@ func (r *RoomService) OnMove(userID string, roomID int, chessID int, newLocation
 }
 
 func (r *RoomService) OnMoveStandard(userID string, roomID int, chessID int, locationX int, locationY int) {
-	fmt.Println(locationX, locationY)
 	roomIndex := r.FindByID(roomID)
 	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
 	for i := 0; i < len(chesses); i++ {

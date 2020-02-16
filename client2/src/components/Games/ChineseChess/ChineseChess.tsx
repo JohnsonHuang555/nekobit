@@ -41,6 +41,7 @@ const ChineseChess = (props: ChineseChessProps) => {
     switch (wsData.event) {
       case 'onFlip':
       case 'onEat':
+      case 'onEatStandard':
       case 'onMove':
       case 'onMoveStandard':
       case 'gameOver':
@@ -77,6 +78,10 @@ const ChineseChess = (props: ChineseChessProps) => {
 
   const onEat = (data: any) => {
     onWsSend('onEat', data);
+  }
+
+  const onEatStandard = (data: any) => {
+    onWsSend('onEatStandard', data);
   }
 
   const onFlip = (id: number) => {
@@ -116,7 +121,7 @@ const ChineseChess = (props: ChineseChessProps) => {
           onClearSelectedChess={onClearSelectedChess}
           onSelect={onSelect}
           onMove={onMoveStandard}
-          onEat={onEat}
+          onEat={onEatStandard}
           onGameOver={onGameOver}
         />,
     2: <Hidden

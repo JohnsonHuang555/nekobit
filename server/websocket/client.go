@@ -124,6 +124,9 @@ func eventHandler(msg MsgData, s subscription) MsgData {
 	case "onEat":
 		middleware.Rv.RoomService.OnEat(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.NewLocation, msg.Data.EatenChessID)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
+	case "onEatStandard":
+		middleware.Rv.RoomService.OnEatStandard(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY, msg.Data.EatenChessID)
+		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)
 	case "onMove":
 		middleware.Rv.RoomService.OnMove(msg.UserID, msg.Data.RoomID, msg.Data.ChessID, msg.Data.NewLocation)
 		msg.Data.RoomInfo = middleware.Rv.GetRoomInfo(msg.Data.RoomID)

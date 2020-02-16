@@ -25,6 +25,10 @@ const Standard = (props: StandardProps) => {
 
   // override methods
   const onSelectOverride = (id: number, chessInfo: TChineseChess) => {
+    if (selectedChess && id !== selectedChess.id && selectedChess.side !== chessInfo.side) {
+      onEatOverride(selectedChess, chessInfo);
+      return;
+    }
     onSelect(id);
   }
 
@@ -32,7 +36,6 @@ const Standard = (props: StandardProps) => {
     if (!selectedChess || !isInRange(newLocationX, newLocationY)) {
       return;
     }
-    console.log('moving')
     onMove({
       chessID: selectedChess.id,
       locationX: newLocationX,
@@ -41,8 +44,13 @@ const Standard = (props: StandardProps) => {
     onClearSelectedChess();
   }
 
-  const onEatOverride = () => {
-
+  const onEatOverride = (nowChess: TChineseChess, targetChess: TChineseChess) => {
+    onEat({
+      chessID: nowChess.id,
+      locationX: targetChess.locationX,
+      locationY: targetChess.locationY,
+      eatenChessID: targetChess.id,
+    });
   }
 
   // 判斷每種棋子步法
