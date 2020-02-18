@@ -5,6 +5,7 @@ import ChessMapItem from '../ChessMapItem';
 
 interface StandardProps extends IChineseChess {
   mode: number;
+  isRotate: boolean;
 }
 
 type TRange = {
@@ -21,6 +22,7 @@ const Standard = (props: StandardProps) => {
     onSelect,
     onMove,
     onEat,
+    isRotate
   } = props;
 
   // override methods
@@ -238,6 +240,7 @@ const Standard = (props: StandardProps) => {
               chessInfo={chessInfo ? chessInfo : undefined}
               isSelected={isSelected}
               onSelect={(id: number) => onSelectOverride(id, chessInfo)}
+              isRotate={isRotate}
             />
           </div>
         );

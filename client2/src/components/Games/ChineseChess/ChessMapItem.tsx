@@ -5,6 +5,7 @@ import { TChineseChess } from 'src/types/ChineseChess';
 type ChessMapItemProps = {
   chessInfo?: TChineseChess;
   isSelected: boolean;
+  isRotate?: boolean;
   onSelect: (id: number) => void;
 }
 
@@ -12,6 +13,7 @@ const ChessMapItem = (props: ChessMapItemProps) => {
   const {
     chessInfo,
     isSelected,
+    isRotate,
     onSelect,
   } = props;
 
@@ -19,7 +21,7 @@ const ChessMapItem = (props: ChessMapItemProps) => {
     <>
       {chessInfo && (
         <div
-          className={"chess " + (isSelected ? "active " : "") + (chessInfo.isFliped ? "isFliped" : "")}
+          className={"chess " + (isSelected ? "active " : "") + (chessInfo.isFliped ? "isFliped " : "") + (isRotate && 'rotate')}
           onClick={() => onSelect(chessInfo.id)}
         >
           <ChessItem

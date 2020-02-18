@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TChineseChess } from 'src/types/ChineseChess';
+import { TChineseChess, GameModeCode } from 'src/types/ChineseChess';
 import { TRoom, TRoomUser } from 'src/types/Room';
 import { TSocket } from 'src/types/Socket';
 import Standard from 'src/components/Games/ChineseChess/Mode/Standard';
@@ -123,6 +123,7 @@ const ChineseChess = (props: ChineseChessProps) => {
           onMove={onMoveStandard}
           onEat={onEatStandard}
           onGameOver={onGameOver}
+          isRotate={findUserByID(userID).side === 'BLACK' && true}
         />,
     2: <Hidden
           gameData={roomInfo.gameData}
@@ -137,7 +138,10 @@ const ChineseChess = (props: ChineseChessProps) => {
   }
 
   return (
-    <div className="chinese-chess-container">
+    <div
+      className={`chinese-chess-container ` +
+        (roomInfo.mode === GameModeCode.STANDARD && findUserByID(userID).side === 'BLACK' && 'rotate')}
+    >
       {renderMode[roomInfo.mode]}
     </div>
   )
