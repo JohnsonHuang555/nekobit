@@ -11,6 +11,6 @@ export type TChineseChess = {
 }
 
 export enum GameModeCode {
-	STANDARD = 1,
-	HIDDEN = 2,
+	Standard = 1,
+	Hidden = 2,
 }

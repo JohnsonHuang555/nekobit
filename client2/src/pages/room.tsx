@@ -4,12 +4,19 @@ import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TSocket } from 'src/types/Socket';
 import { TRoom, TRoomUser } from 'src/types/Room';
-import Layout from "src/components/Layout"
+import Layout from "src/components/Layout";
 import useLocalStorage from 'src/customHook/useLocalStorage';
 import RoomUser from 'src/components/RoomList/RoomUser';
 import Button from 'src/components/Shared/Button';
 import ChineseChess from 'src/components/Games/ChineseChess/ChineseChess';
 import '@styles/pages/room.scss';
+
+export enum SocketEvent {
+  JoinRoom = 'joinRoom',
+  LeaveRoom = 'leaveRoom',
+  ReadyGame = 'readyGame',
+  StartGame = 'startGame',
+}
 
 const Room = () => {
   const router = useRouter();
@@ -18,15 +25,13 @@ const Room = () => {
   const [roomInfo, setRoomInfo] = useState<TRoom>();
 
   useEffect(() => {
-    if (!router.query) {
-      return;
-    }
+    if (!router.query) { return; }
     let ws: WebSocket = new WebSocket(`ws://localhost:8080/ws/${router.query.id}`)
     ws.onopen = () => {
       console.log(`Successfully Connected in Room <${router.query.id}>`);
       const sendData = JSON.stringify({
         userID: userInfo.id,
-        event: 'joinRoom',
+        event: SocketEvent.JoinRoom,
         data: {
           name: userInfo.name,
           roomID: Number(router.query.id)
@@ -50,7 +55,7 @@ const Room = () => {
     const handleRouteChange = () => {
       const sendData = JSON.stringify({
         userID: userInfo.id,
-        event: 'leaveRoom',
+        event: SocketEvent.LeaveRoom,
         data: {
           roomID: Number(router.query.id)
         }
@@ -72,22 +77,27 @@ const Room = () => {
       ws.onmessage = (websocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(websocket.data);
         if (!wsData) return;
-        if (wsData.event === 'joinRoom' || wsData.event === 'leaveRoom') {
-          tempRoomInfo = wsData.data.roomInfo;
-          setRoomInfo(wsData.data.roomInfo);
-        } else if (wsData.event === 'readyGame') {
-          if (!tempRoomInfo) return;
-          setRoomInfo({
-            ...tempRoomInfo,
-            userList: wsData.data.roomUserList
-          });
-        } else if (wsData.event === 'startGame') {
-          if (!tempRoomInfo) return;
-          tempRoomInfo = wsData.data.roomInfo;
-          setRoomInfo({
-            ...tempRoomInfo,
-            gameData: wsData.data.roomInfo.gameData
-          });
+        switch (wsData.event) {
+          case SocketEvent.JoinRoom:
+          case SocketEvent.LeaveRoom:
+            tempRoomInfo = wsData.data.roomInfo;
+            setRoomInfo(wsData.data.roomInfo);
+            break;
+          case SocketEvent.ReadyGame:
+            if (!tempRoomInfo) return;
+            setRoomInfo({
+              ...tempRoomInfo,
+              userList: wsData.data.roomUserList
+            });
+            break;
+          case SocketEvent.StartGame:
+            if (!tempRoomInfo) return;
+            tempRoomInfo = wsData.data.roomInfo;
+            setRoomInfo({
+              ...tempRoomInfo,
+              gameData: wsData.data.roomInfo.gameData
+            });
+            break;
         }
       }
     }
@@ -108,7 +118,7 @@ const Room = () => {
     if (ws && roomInfo) {
       const sendData = JSON.stringify({
         userID: userInfo.id,
-        event: 'startGame',
+        event: SocketEvent.StartGame,
         data: {
           roomID: Number(router.query.id),
           roomMode: roomInfo.mode
@@ -122,7 +132,7 @@ const Room = () => {
     if (ws) {
       const sendData = JSON.stringify({
         userID: userInfo.id,
-        event: 'readyGame',
+        event: SocketEvent.ReadyGame,
         data: {
           roomID: Number(router.query.id)
         }

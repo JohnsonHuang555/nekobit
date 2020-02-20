@@ -140,7 +140,7 @@ const ChineseChess = (props: ChineseChessProps) => {
   return (
     <div
       className={`chinese-chess-container ` +
-        (roomInfo.mode === GameModeCode.STANDARD && findUserByID(userID).side === 'BLACK' && 'rotate')}
+        (roomInfo.mode === GameModeCode.Standard && findUserByID(userID).side === 'BLACK' && 'rotate')}
     >
       {renderMode[roomInfo.mode]}
     </div>

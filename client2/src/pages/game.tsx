@@ -15,8 +15,8 @@ import '@styles/pages/game.scss';
 
 const GameListMode: any = {
   '象棋': [
-    {label: '標準(大盤)', value: GameModeCode.STANDARD},
-    {label: '暗棋(小盤)', value: GameModeCode.HIDDEN}
+    {label: '標準(大盤)', value: GameModeCode.Standard},
+    {label: '暗棋(小盤)', value: GameModeCode.Hidden}
   ],
 }
 
