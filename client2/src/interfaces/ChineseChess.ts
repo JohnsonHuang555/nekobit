@@ -3,6 +3,7 @@ import { TChineseChess } from "src/types/ChineseChess";
 export interface IChineseChess {
   gameData: TChineseChess[];
   selectedChess?: TChineseChess;
+  isYouTurn: boolean;
 
   onClearSelectedChess: () => void;
   onSelect: (id: number) => void;

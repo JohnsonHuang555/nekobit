@@ -2,13 +2,16 @@
   display: flex;
   flex-wrap: wrap;
   width: 100vh;
+  border: 2px solid #b3a6a6;
+  position: relative;
   .map-item {
     width: calc(100% / 8);
     height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #fff;
+    border: 1px solid #867d72;
+    background: #cbaa89;
     .chess {
       width: 80px;
       height: 80px;
@@ -18,10 +21,10 @@
       font-size: 40px;
       border: 3px solid #eee;
       border-radius: 50px;
-      background: #d9bc99;
+      background: #6eb47e;
       font-family: '標楷體';
       cursor: pointer;
-      box-shadow: 0 5px 1px #ccc;
+      box-shadow: 0 6px 1px #dadada;
       &:hover {
         opacity: 0.9;
       }
@@ -87,6 +90,23 @@
       left: 50%;
       height: 100%;
       border: 1px solid;
+    }
+  }
+  .hidden {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vh;
+    .game-header {
+      position: absolute;
+      top: -15%;
+      font-size: 24px;
+      letter-spacing: 2px;
+      .player-side {
+        margin-right: 20px;
+      }
+    }
+    .game-footer {
+      position: absolute;
     }
   }
 }

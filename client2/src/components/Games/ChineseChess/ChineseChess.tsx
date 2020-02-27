@@ -3,7 +3,7 @@ import { TChineseChess, GameModeCode } from 'src/types/ChineseChess';
 import { TRoom, TRoomUser } from 'src/types/Room';
 import { TSocket } from 'src/types/Socket';
 import Standard from 'src/components/Games/ChineseChess/Mode/Standard';
-import Hidden from 'src/components/Games/ChineseChess/Mode/Hidden';
+import Hidden, { PlayerSide } from 'src/components/Games/ChineseChess/Mode/Hidden';
 import '@styles/games/chineseChess.scss';
 
 type ChineseChessProps = {
@@ -124,6 +124,7 @@ const ChineseChess = (props: ChineseChessProps) => {
           onEat={onEatStandard}
           onGameOver={onGameOver}
           isRotate={findUserByID(userID).side === 'BLACK' && true}
+          isYouTurn={userID !== roomInfo.nowTurn && true}
         />,
     2: <Hidden
           gameData={roomInfo.gameData}
@@ -134,6 +135,8 @@ const ChineseChess = (props: ChineseChessProps) => {
           onMove={onMove}
           onEat={onEat}
           onGameOver={onGameOver}
+          yourSide={findUserByID(userID).side}
+          isYouTurn={userID === roomInfo.nowTurn && true}
         />
   }
 

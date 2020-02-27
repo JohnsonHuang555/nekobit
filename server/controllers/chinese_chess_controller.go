@@ -127,13 +127,13 @@ func CreateChessesHidden() []models.ChineseChess {
 		19: models.ChineseChess{
 			ID:   20,
 			Side: "RED",
-			Name: "像",
+			Name: "相",
 			Rank: 4,
 		},
 		20: models.ChineseChess{
 			ID:   21,
 			Side: "RED",
-			Name: "像",
+			Name: "相",
 			Rank: 4,
 		},
 		21: models.ChineseChess{
@@ -400,7 +400,7 @@ func CreateChessesStandard() []models.ChineseChess {
 		models.ChineseChess{
 			ID:        20,
 			Side:      "RED",
-			Name:      "像",
+			Name:      "相",
 			LocationX: 3,
 			LocationY: 10,
 			IsFliped:  true,
@@ -409,7 +409,7 @@ func CreateChessesStandard() []models.ChineseChess {
 		models.ChineseChess{
 			ID:        21,
 			Side:      "RED",
-			Name:      "像",
+			Name:      "相",
 			LocationX: 7,
 			LocationY: 10,
 			IsFliped:  true,

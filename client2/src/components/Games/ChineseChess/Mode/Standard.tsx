@@ -152,12 +152,12 @@ const Standard = (props: StandardProps) => {
         });
         return canHorseMove ? true : false;
       case '象':
-      case '像':
+      case '相':
         // 不可過河
         if (selectedChess.name === '象' && selectedChess.locationY > 5) {
           return false;
         }
-        if (selectedChess.name === '像' && selectedChess.locationY < 6) {
+        if (selectedChess.name === '相' && selectedChess.locationY < 6) {
           return false;
         }
         const elephantRange: TRange[] = [];

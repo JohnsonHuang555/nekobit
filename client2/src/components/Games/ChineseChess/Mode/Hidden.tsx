@@ -3,14 +3,22 @@ import { IChineseChess } from 'src/interfaces/ChineseChess';
 import { TChineseChess } from 'src/types/ChineseChess';
 import ChessMapItem from 'src/components/Games/ChineseChess/ChessMapItem';
 
+export enum PlayerSide {
+  Red = 'RED',
+  Black = 'BLACK',
+}
+
 interface HiddenProps extends IChineseChess {
+  yourSide: string;
   onFlip: (id: number) => void;
 }
 
 const Hidden = (props: HiddenProps) => {
   const {
     gameData,
+    yourSide,
     selectedChess,
+    isYouTurn,
     onClearSelectedChess,
     onFlip,
     onSelect,
@@ -196,9 +204,17 @@ const Hidden = (props: HiddenProps) => {
   }
 
   return (
-    <>
+    <div className="hidden">
+      <div className="game-header">
+        {yourSide === PlayerSide.Red
+          ? <span className="player-side">玩家為 紅方</span>
+          : <span className="player-side">玩家為 黑方</span>
+        }
+        {isYouTurn && <span>你的回合</span>}
+      </div>
       {chessMap()}
-    </>
+      <div className="game-footer"></div>
+    </div>
   );
 };
 
