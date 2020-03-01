@@ -203,13 +203,15 @@ const Hidden = (props: HiddenProps) => {
     return map;
   }
 
+  const playerSide = {
+    [PlayerSide.Red]: <span className="player-side">玩家為 紅方</span>,
+    [PlayerSide.Black]: <span className="player-side">玩家為 黑方</span>
+  }
+
   return (
     <div className="hidden">
       <div className="game-header">
-        {yourSide === PlayerSide.Red
-          ? <span className="player-side">玩家為 紅方</span>
-          : <span className="player-side">玩家為 黑方</span>
-        }
+        {playerSide[yourSide as PlayerSide]}
         {isYouTurn && <span>你的回合</span>}
       </div>
       {chessMap()}

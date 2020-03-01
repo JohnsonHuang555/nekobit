@@ -3,7 +3,7 @@ import { TChineseChess, GameModeCode } from 'src/types/ChineseChess';
 import { TRoom, TRoomUser } from 'src/types/Room';
 import { TSocket } from 'src/types/Socket';
 import Standard from 'src/components/Games/ChineseChess/Mode/Standard';
-import Hidden, { PlayerSide } from 'src/components/Games/ChineseChess/Mode/Hidden';
+import Hidden from 'src/components/Games/ChineseChess/Mode/Hidden';
 import '@styles/games/chineseChess.scss';
 
 type ChineseChessProps = {

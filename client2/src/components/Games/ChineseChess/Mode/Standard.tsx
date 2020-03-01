@@ -1,7 +1,7 @@
 import React from 'react';
 import { IChineseChess } from 'src/interfaces/ChineseChess';
 import { TChineseChess } from 'src/types/ChineseChess';
-import ChessMapItem from '../ChessMapItem';
+import ChessMapItem from 'src/components/Games/ChineseChess/ChessMapItem';
 
 interface StandardProps extends IChineseChess {
   mode: number;
@@ -47,6 +47,10 @@ const Standard = (props: StandardProps) => {
   }
 
   const onEatOverride = (nowChess: TChineseChess, targetChess: TChineseChess) => {
+    if (!selectedChess || !isInRange(targetChess.locationX, targetChess.locationY)) {
+      return;
+    }
+
     onEat({
       chessID: nowChess.id,
       locationX: targetChess.locationX,
@@ -72,6 +76,10 @@ const Standard = (props: StandardProps) => {
         kingRange.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
         kingRange.push({x: selectedChess.locationX, y: selectedChess.locationY + 1});
         kingRange.push({x: selectedChess.locationX, y: selectedChess.locationY - 1});
+
+        if (selectedChess.locationX === locationX) {
+
+        }
         const canKingMove = kingRange.find(item => {
           return item.x === locationX && item.y === locationY;
         });
@@ -102,11 +110,26 @@ const Standard = (props: StandardProps) => {
       case '俥':
       case '包':
       case '炮':
-        const currentLocations: TRange = {x: selectedChess.locationX, y: selectedChess.locationY};
-        if (currentLocations.x === locationX || currentLocations.y === locationY) {
-          return true;
-        }
-        return false;
+        // if (selectedChess.locationX === locationX) {
+        //   for (let i = 0; i < Math.abs(selectedChess.locationX - locationX - 1); i++) {
+        //     // const hasChess = findChessByLocation(locationX + i + 1, locationY);
+        //     // console.log(hasChess);
+        //     // return hasChess ? false : true;
+        //     console.log(selectedChess.locationX, locationX);
+        //   }
+        // }
+        // if (selectedChess.locationY === locationY) {
+        //   for (let i = 0; i < Math.abs(selectedChess.locationY - locationY - 1); i++) {
+        //     const hasChess = findChessByLocation(locationX, locationY + i + 1);
+        //     return hasChess ? false : true;
+        //   }
+        // }
+        // return false;
+        // const currentLocations: TRange = {x: selectedChess.locationX, y: selectedChess.locationY};
+        // if (currentLocations.x === locationX || currentLocations.y === locationY) {
+        //   return true;
+        // }
+        // return false;
       case '馬':
       case '傌':
         const horseRange: TRange[] = [];
@@ -250,6 +273,7 @@ const Standard = (props: StandardProps) => {
   }
 
   const findChessByLocation = (x: number, y:number) => {
+    console.log(x, y)
     return gameData.find(chess => {
       return chess.locationX === x && chess.locationY === y;
     });
