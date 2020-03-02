@@ -110,26 +110,36 @@ const Standard = (props: StandardProps) => {
       case '俥':
       case '包':
       case '炮':
-        // if (selectedChess.locationX === locationX) {
-        //   for (let i = 0; i < Math.abs(selectedChess.locationX - locationX - 1); i++) {
-        //     // const hasChess = findChessByLocation(locationX + i + 1, locationY);
-        //     // console.log(hasChess);
-        //     // return hasChess ? false : true;
-        //     console.log(selectedChess.locationX, locationX);
-        //   }
-        // }
-        // if (selectedChess.locationY === locationY) {
-        //   for (let i = 0; i < Math.abs(selectedChess.locationY - locationY - 1); i++) {
-        //     const hasChess = findChessByLocation(locationX, locationY + i + 1);
-        //     return hasChess ? false : true;
-        //   }
-        // }
-        // return false;
-        // const currentLocations: TRange = {x: selectedChess.locationX, y: selectedChess.locationY};
-        // if (currentLocations.x === locationX || currentLocations.y === locationY) {
-        //   return true;
-        // }
-        // return false;
+        let canMove = true;
+        if (selectedChess.locationX === locationX) {
+          for (let i = 0; i < Math.abs(selectedChess.locationY - locationY) - 1; i++) {
+            let hasChessY;
+            if (locationY > selectedChess.locationY) {
+              hasChessY = findChessByLocation(locationX, selectedChess.locationY + i + 1);
+            } else {
+              hasChessY = findChessByLocation(locationX, locationY + i + 1);
+            }
+            if (hasChessY) {
+              canMove = false;
+              return canMove;
+            }
+          }
+        }
+        if (selectedChess.locationY === locationY) {
+          for (let i = 0; i < Math.abs(selectedChess.locationX - locationX) - 1; i++) {
+            let hasChessX;
+            if (locationX > selectedChess.locationX) {
+              hasChessX = findChessByLocation(selectedChess.locationX + i + 1, locationY);
+            } else {
+              hasChessX = findChessByLocation(locationX + i + 1, locationY);
+            }
+            if (hasChessX) {
+              canMove = false;
+              return canMove;
+            }
+          }
+        }
+        return canMove;
       case '馬':
       case '傌':
         const horseRange: TRange[] = [];
