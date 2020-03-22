@@ -1,4 +1,4 @@
-import { UseCaseHandler } from "src/domain/usecases/UseCaseHandler";
+import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { Games } from "src/features/games/domain/source/GamesDataSource";
 import appProvider from "src/provider/AppProvider";
 import { GetGames } from "src/features/games/Index/use_cases/base/GetGamesUseCaseItf";

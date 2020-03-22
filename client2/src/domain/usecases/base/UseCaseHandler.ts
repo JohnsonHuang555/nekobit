@@ -3,7 +3,7 @@ import {
   UseCaseOutputData,
   UseCase,
   UseCaseCallbacks
-} from "src/domain/usecases/UseCase";
+} from "src/domain/usecases/base/UseCase";
 
 export class UseCaseHandler {
 

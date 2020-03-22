@@ -1,4 +1,4 @@
-import { SuccessCallback, ErrorCallback } from "src/domain/source/RepositoryCallbacks";
+import { SuccessCallback, ErrorCallback } from "src/domain/source/base/RepositoryCallbacks";
 import { TGame } from "src/features/games/domain/models/Game";
 
 export namespace Games {

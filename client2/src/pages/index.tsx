@@ -1,21 +1,17 @@
 import React from 'react';
-// import { NextPage } from 'next';
 import Swiper from 'react-id-swiper';
 import Router from 'next/router';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from 'src/components/Layout';
 import Button from 'src/components/Shared/Button';
-// import GameApi from 'src/api/GameApi';
-// import { TGame } from 'src/types/Game';
-import '@styles/pages/index.scss';
 import { TGame } from 'src/features/games/domain/models/Game';
 import { IndexContract } from 'src/features/games/Index/IndexContract';
 import { IndexPresenter } from 'src/features/games/Index/IndexPresenter';
 import { Injection } from 'src/features/games/Index/injection/injection';
+import '@styles/pages/index.scss';
 
 interface IndexViewProps {}
-
 interface IndexViewState {
   games: TGame[];
   swiperParams: any;
@@ -26,7 +22,7 @@ class IndexView extends React.Component<IndexViewProps, IndexViewState>
 
   private presenter: IndexContract.Presenter;
 
-  constructor(props :any) {
+  constructor(props :IndexViewProps) {
     super(props);
 
     this.state = {

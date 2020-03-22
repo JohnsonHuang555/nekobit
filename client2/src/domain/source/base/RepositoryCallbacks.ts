@@ -5,3 +5,7 @@ export interface ErrorCallback {
 export interface SuccessCallback<T> {
   onSuccess: (result: T) => void;
 }
+
+export interface SuccessWithoutResultCallback {
+  onSuccess: () => void;
+}

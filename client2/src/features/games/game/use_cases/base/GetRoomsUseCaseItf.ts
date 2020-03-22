@@ -3,16 +3,14 @@ import {
   UseCaseOutputData,
   UseCaseCallbacks,
   UseCase as BaseUseCase
-} from "src/domain/usecases/UseCase";
-import { TGame } from "src/features/games/domain/models/Game";
+} from "src/domain/usecases/base/UseCase";
+import { TRoom } from "src/features/games/domain/models/Room";
 
-export namespace GetGameInfo {
-  export interface InputData extends UseCaseInputData {
-    id: string;
-  }
+export namespace GetRooms {
+  export interface InputData extends UseCaseInputData {}
 
   export interface OutputData extends UseCaseOutputData {
-    gameInfo: TGame;
+    rooms: TRoom[];
   }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}

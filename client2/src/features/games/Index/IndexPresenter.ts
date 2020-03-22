@@ -1,6 +1,6 @@
-import { IndexContract } from "./IndexContract";
-import { UseCaseHandler } from "src/domain/usecases/UseCaseHandler";
-import { GetGames } from "./use_cases/base/GetGamesUseCaseItf";
+import { IndexContract } from "src/features/games/Index/IndexContract";
+import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
+import { GetGames } from "src/features/games/Index/use_cases/base/GetGamesUseCaseItf";
 
 export class IndexPresenter implements IndexContract.Presenter {
   private readonly view: IndexContract.View;

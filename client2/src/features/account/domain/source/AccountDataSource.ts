@@ -1,4 +1,4 @@
-import { SuccessCallback, ErrorCallback } from "src/domain/source/RepositoryCallbacks";
+import { SuccessCallback, ErrorCallback } from "src/domain/source/base/RepositoryCallbacks";
 import { TRegister } from "src/features/account/domain/models/Account";
 
 export namespace Account {

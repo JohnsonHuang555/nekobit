@@ -6,11 +6,13 @@ import {
 } from "src/domain/usecases/base/UseCase";
 import { TGame } from "src/features/games/domain/models/Game";
 
-export namespace GetGames {
-  export interface InputData extends UseCaseInputData {}
+export namespace GetGameInfo {
+  export interface InputData extends UseCaseInputData {
+    id: string;
+  }
 
   export interface OutputData extends UseCaseOutputData {
-    games: TGame[];
+    gameInfo: TGame;
   }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}

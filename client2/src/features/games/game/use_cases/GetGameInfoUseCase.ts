@@ -1,6 +1,6 @@
 import { Games } from "src/features/games/domain/source/GamesDataSource";
 import { TGame } from "src/features/games/domain/models/Game";
-import { GetGameInfo } from "./base/GetGameInfoUseCaseItf";
+import { GetGameInfo } from "src/features/games/game/use_cases/base/GetGameInfoUseCaseItf";
 
 export class GetGameInfoUseCase implements GetGameInfo.UseCase {
   private repository: Games.DataSource;

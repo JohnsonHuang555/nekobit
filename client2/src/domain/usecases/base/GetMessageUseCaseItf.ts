@@ -4,13 +4,12 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
-import { TGame } from "src/features/games/domain/models/Game";
 
-export namespace GetGames {
+export namespace GetSocketMessage {
   export interface InputData extends UseCaseInputData {}
 
   export interface OutputData extends UseCaseOutputData {
-    games: TGame[];
+    socketData: any;
   }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
