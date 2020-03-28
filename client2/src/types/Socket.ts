@@ -8,4 +8,5 @@ export enum SocketEvent {
   GetRooms = 'getRooms',
   JoinRoom = 'joinRoom',
   LeaveRoom = 'leaveRoom',
+  CreateRoom = 'createRoom',
 }

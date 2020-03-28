@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { NextPage } from 'next';
-import Router from 'next/router';
+import React from 'react';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/components/RoomList/RoomList';
 import GameDetail from 'src/components/GameDetail';
-import CreateRoomModal from 'src/components/Modals/CreateRoomModal';
-import GameApi from 'src/api/GameApi';
-import useLocalStorage from 'src/customHook/useLocalStorage';
-// import { TGame } from 'src/types/Game';
-import { TSocket } from 'src/types/Socket';
-import { GameModeCode } from 'src/types/ChineseChess';
+import CreateRoomModal, { TCreateRoom } from 'src/components/Modals/CreateRoomModal';
 import { GameContract } from 'src/features/games/game/GameContract';
 import { GamePresenter } from 'src/features/games/game/GamePresenter';
 import { Injection } from 'src/features/games/game/injection/injection';
 import { TGame } from 'src/features/games/domain/models/Game';
 import { TRoom } from 'src/features/games/domain/models/Room';
+import { GameListMode } from 'src/components/Games/ChineseChess/ModeList';
 import '@styles/pages/game.scss';
 
 interface GameViewProps {}
@@ -24,7 +18,7 @@ interface GameViewState {
   ws?: WebSocket;
   rooms: TRoom[];
   roomId: string;
-  showRoomList: boolean;
+  isShowRoomList: boolean;
   isOnCreateRoom: boolean;
   isShowCreateRoomModal: boolean;
 }
@@ -42,7 +36,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       ws: undefined,
       rooms: [],
       roomId: '',
-      showRoomList: false,
+      isShowRoomList: false,
       isOnCreateRoom: false,
       isShowCreateRoomModal: false,
     }
@@ -51,30 +45,56 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       this,
       Injection.provideUseCaseHandler(),
       Injection.provideCreateSocketUseCase(),
-      Injection.provideGetSocketMessageUseCase(),
       Injection.provideGetGameInfoUseCase(),
       Injection.provideGetRoomsUseCase(),
+      Injection.provideCreateRoomUseCase(),
     )
   }
 
   componentDidMount() {
     const id = location.search.substr(4);
-    this.presenter.mount({ id });
+    let userInfo = null;
+    if (localStorage.getItem('userInfo')) {
+      userInfo = JSON.parse(localStorage.getItem('userInfo') || '');
+    }
+    this.presenter.mount({ id, userInfo });
   }
 
   render() {
+    const {
+      isShowCreateRoomModal,
+      isShowRoomList,
+      rooms,
+      gameInfo
+    } = this.state;
     return (
-      <div>11111</div>
+      <Layout>
+        <CreateRoomModal
+          show={isShowCreateRoomModal}
+          mode={gameInfo && GameListMode[gameInfo.name]}
+          onCloseLogin={() => this.setIsShowCreateRoomModal(false)}
+          onCreate={(roomData) => this.createRoom(roomData)}
+        />
+        <>
+          {isShowRoomList ? (
+            <RoomList rooms={rooms}/>
+          ): (
+            gameInfo &&
+              <GameDetail
+                gameInfo={gameInfo}
+                rooms={rooms}
+                onShowModal={() => this.setIsShowCreateRoomModal(true)}
+                playNow={() => this.setIsShowRoomList(true)}
+              />
+          )}
+        </>
+      </Layout>
     );
   }
 
-  nowLoading(): void {
+  nowLoading(): void {}
 
-  }
-
-  finishLoading(): void {
-
-  }
+  finishLoading(): void {}
 
   setGameInfo(gameInfo: TGame): void {
     this.setState({ gameInfo });
@@ -82,6 +102,24 @@ class GameView extends React.Component<GameViewProps, GameViewState>
 
   setRooms(rooms: TRoom[]): void {
     this.setState({ rooms });
+  }
+
+  setRoomID(id: number): void {
+    // change route to room page
+    // reget rooms
+    this.presenter.getRooms();
+  }
+
+  private createRoom({ roomMode, roomPassword, roomTitle}: TCreateRoom): void {
+    this.presenter.createRoom('TestName', roomMode, roomPassword, roomTitle);
+  }
+
+  private setIsShowCreateRoomModal(show: boolean): void {
+    this.setState({ isShowCreateRoomModal: show });
+  }
+
+  private setIsShowRoomList(show: boolean): void {
+    this.setState({ isShowRoomList: show });
   }
 }
 // const GameListMode: any = {

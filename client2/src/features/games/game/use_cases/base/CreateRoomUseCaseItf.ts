@@ -5,11 +5,18 @@ import {
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
 
-export namespace GetSocketMessage {
-  export interface InputData extends UseCaseInputData {}
+export namespace CreateRoom {
+  export interface InputData extends UseCaseInputData {
+    userID: string;
+    name: string;
+    gameName: string;
+    roomPassword: string;
+    roomTitle: string;
+    roomMode: number;
+  }
 
   export interface OutputData extends UseCaseOutputData {
-    socketData: any;
+    roomID: number;
   }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}

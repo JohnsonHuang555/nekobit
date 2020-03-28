@@ -6,10 +6,10 @@ import { GetGameInfoUseCase } from "src/features/games/game/use_cases/GetGameInf
 import { GetRoomsUseCase } from "../use_cases/GetRoomsUseCase";
 import { App } from "src/domain/source/AppDataSource";
 import { GetRooms } from "../use_cases/base/GetRoomsUseCaseItf";
-import { GetSocketMessage } from "src/domain/usecases/base/GetMessageUseCaseItf";
-import { GetSocketMessageUseCase } from "src/domain/usecases/GetSocketMessageUseCase";
 import { CreateSocket } from "src/domain/usecases/base/CreateSocketUseCaseItf";
 import { CreateSocketUseCase } from "src/domain/usecases/CreateSocketUseCase";
+import { CreateRoom } from "../use_cases/base/CreateRoomUseCaseItf";
+import { CreateRoomUseCase } from "../use_cases/CreateRoomUseCase";
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -24,19 +24,20 @@ export class Injection {
     return appProvider.gamesRepository;
   }
 
-  static provideGetRoomsUseCase(): GetRooms.UseCase {
-    return new GetRoomsUseCase(this.provideAppRepository());
-  }
-
   static provideGetGameInfoUseCase(): GetGameInfo.UseCase {
     return new GetGameInfoUseCase(this.provideGamesRepository());
+  }
+
+  // socket
+  static provideGetRoomsUseCase(): GetRooms.UseCase {
+    return new GetRoomsUseCase(this.provideAppRepository());
   }
 
   static provideCreateSocketUseCase(): CreateSocket.UseCase {
     return new CreateSocketUseCase(this.provideAppRepository());
   }
 
-  static provideGetSocketMessageUseCase(): GetSocketMessage.UseCase {
-    return new GetSocketMessageUseCase(this.provideAppRepository());
+  static provideCreateRoomUseCase(): CreateRoom.UseCase {
+    return new CreateRoomUseCase(this.provideAppRepository());
   }
 }

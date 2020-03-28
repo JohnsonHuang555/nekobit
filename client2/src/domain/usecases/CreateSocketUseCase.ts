@@ -12,7 +12,6 @@ export class CreateSocketUseCase implements CreateSocket.UseCase {
     const { path } = inputData;
     this.repository.createSocket(path, {
       onSuccess: () => {
-        console.log(123456)
         callbacks.onSuccess({});
       },
       onError: callbacks.onError,

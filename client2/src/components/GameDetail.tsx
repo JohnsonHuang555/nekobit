@@ -9,8 +9,8 @@ import {
   faStar,
   faHome
 } from '@fortawesome/free-solid-svg-icons';
-import { TGame } from 'src/types/Game';
 import { TRoom } from 'src/types/Room';
+import { TGame } from 'src/features/games/domain/models/Game';
 
 type GameDetailProps = {
   gameInfo: TGame;

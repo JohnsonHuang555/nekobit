@@ -8,12 +8,18 @@ import '@styles/components/modals/createRoomModal.scss';
 type modeProps = {
   label: string;
   value: number;
-}
+};
+
+export type TCreateRoom = {
+  roomTitle: string;
+  roomMode: number;
+  roomPassword: string;
+};
 
 type CreateRoomModalProps = {
   show: boolean;
   mode?: modeProps[];
-  onCreate: (data: any) => void;
+  onCreate: (data: TCreateRoom) => void;
   onCloseLogin?: () => void;
 }
 
@@ -33,9 +39,9 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
       return;
     }
     onCreate({
-      title: roomTitle,
-      password: roomPassword,
-      mode: roomMode
+      roomTitle,
+      roomPassword,
+      roomMode
     });
   }
 
