@@ -1,13 +1,14 @@
 import React from 'react';
+import Router from 'next/router';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/components/RoomList/RoomList';
 import GameDetail from 'src/components/GameDetail';
 import CreateRoomModal, { TCreateRoom } from 'src/components/Modals/CreateRoomModal';
-import { GameContract } from 'src/features/games/game/GameContract';
-import { GamePresenter } from 'src/features/games/game/GamePresenter';
-import { Injection } from 'src/features/games/game/injection/injection';
-import { TGame } from 'src/features/games/domain/models/Game';
-import { TRoom } from 'src/features/games/domain/models/Room';
+import { GameContract } from 'src/features/main/game/GameContract';
+import { GamePresenter } from 'src/features/main/game/GamePresenter';
+import { Injection } from 'src/features/main/game/injection/injection';
+import { TGame } from 'src/features/main/domain/models/Game';
+import { TRoom } from 'src/features/main/domain/models/Room';
 import { GameListMode } from 'src/components/Games/ChineseChess/ModeList';
 import '@styles/pages/game.scss';
 
@@ -105,13 +106,18 @@ class GameView extends React.Component<GameViewProps, GameViewState>
   }
 
   setRoomID(id: number): void {
-    // change route to room page
-    // reget rooms
     this.presenter.getRooms();
+    if (id) {
+      Router.push({
+        pathname: '/room',
+        query: { id }
+      });
+    }
   }
 
   private createRoom({ roomMode, roomPassword, roomTitle}: TCreateRoom): void {
-    this.presenter.createRoom('TestName', roomMode, roomPassword, roomTitle);
+    const gameName = this.state.gameInfo?.name || '';
+    this.presenter.createRoom(gameName, roomMode, roomPassword, roomTitle);
   }
 
   private setIsShowCreateRoomModal(show: boolean): void {

@@ -10,7 +10,7 @@ import {
   faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { TRoom } from 'src/types/Room';
-import { TGame } from 'src/features/games/domain/models/Game';
+import { TGame } from 'src/features/main/domain/models/Game';
 
 type GameDetailProps = {
   gameInfo: TGame;

@@ -78,26 +78,26 @@ const Room = () => {
         const wsData: TSocket = JSON.parse(websocket.data);
         if (!wsData) return;
         switch (wsData.event) {
-          case SocketEvent.JoinRoom:
-          case SocketEvent.LeaveRoom:
-            tempRoomInfo = wsData.data.roomInfo;
-            setRoomInfo(wsData.data.roomInfo);
-            break;
-          case SocketEvent.ReadyGame:
-            if (!tempRoomInfo) return;
-            setRoomInfo({
-              ...tempRoomInfo,
-              userList: wsData.data.roomUserList
-            });
-            break;
-          case SocketEvent.StartGame:
-            if (!tempRoomInfo) return;
-            tempRoomInfo = wsData.data.roomInfo;
-            setRoomInfo({
-              ...tempRoomInfo,
-              gameData: wsData.data.roomInfo.gameData
-            });
-            break;
+          // case SocketEvent.JoinRoom:
+          // case SocketEvent.LeaveRoom:
+          //   tempRoomInfo = wsData.data.roomInfo;
+          //   setRoomInfo(wsData.data.roomInfo);
+          //   break;
+          // case SocketEvent.ReadyGame:
+          //   if (!tempRoomInfo) return;
+          //   setRoomInfo({
+          //     ...tempRoomInfo,
+          //     userList: wsData.data.roomUserList
+          //   });
+          //   break;
+          // case SocketEvent.StartGame:
+          //   if (!tempRoomInfo) return;
+          //   tempRoomInfo = wsData.data.roomInfo;
+          //   setRoomInfo({
+          //     ...tempRoomInfo,
+          //     gameData: wsData.data.roomInfo.gameData
+          //   });
+          //   break;
         }
       }
     }

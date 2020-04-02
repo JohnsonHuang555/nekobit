@@ -39,12 +39,13 @@ const ChineseChess = (props: ChineseChessProps) => {
     const wsData: TSocket = JSON.parse(websocket.data);
     if (!wsData) return;
     switch (wsData.event) {
-      case 'onFlip':
-      case 'onEat':
-      case 'onEatStandard':
-      case 'onMove':
-      case 'onMoveStandard':
-      case 'gameOver':
+      // case 'onFlip':
+      // case 'onEat':
+      // case 'onEatStandard':
+      // case 'onMove':
+      // case 'onMoveStandard':
+      // case 'gameOver':
+      default:
         onChangeRoomInfo(wsData.data.roomInfo)
         break;
     }

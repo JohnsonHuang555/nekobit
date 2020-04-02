@@ -5,10 +5,10 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from 'src/components/Layout';
 import Button from 'src/components/Shared/Button';
-import { TGame } from 'src/features/games/domain/models/Game';
-import { IndexContract } from 'src/features/games/Index/IndexContract';
-import { IndexPresenter } from 'src/features/games/Index/IndexPresenter';
-import { Injection } from 'src/features/games/Index/injection/injection';
+import { TGame } from 'src/features/main/domain/models/Game';
+import { IndexContract } from 'src/features/main/Index/IndexContract';
+import { IndexPresenter } from 'src/features/main/Index/IndexPresenter';
+import { Injection } from 'src/features/main/Index/injection/injection';
 import '@styles/pages/index.scss';
 
 interface IndexViewProps {}
