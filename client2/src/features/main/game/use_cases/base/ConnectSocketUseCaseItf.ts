@@ -5,7 +5,7 @@ import {
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
 
-export namespace CreateSocket {
+export namespace ConnectSocket {
   export interface InputData extends UseCaseInputData {
     path: string;
   }

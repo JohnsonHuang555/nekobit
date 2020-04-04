@@ -45,7 +45,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     this.presenter = new GamePresenter(
       this,
       Injection.provideUseCaseHandler(),
-      Injection.provideCreateSocketUseCase(),
+      Injection.provideConnectSocketUseCase(),
       Injection.provideGetGameInfoUseCase(),
       Injection.provideGetRoomsUseCase(),
       Injection.provideCreateRoomUseCase(),
@@ -54,11 +54,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
 
   componentDidMount() {
     const id = location.search.substr(4);
-    let userInfo = null;
-    if (localStorage.getItem('userInfo')) {
-      userInfo = JSON.parse(localStorage.getItem('userInfo') || '');
-    }
-    this.presenter.mount({ id, userInfo });
+    this.presenter.mount({ id });
   }
 
   render() {

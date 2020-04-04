@@ -1,6 +1,5 @@
 import { Games } from 'src/features/main/domain/source/GamesDataSource';
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
-import { SocketEvent } from "src/types/Socket";
 
 export class CreateRoomUseCase implements CreateRoom.UseCase {
   private repository: Games.DataSource;
@@ -19,7 +18,7 @@ export class CreateRoomUseCase implements CreateRoom.UseCase {
 
     this.repository.createRoom(gameName, roomPassword, roomTitle, roomMode, {
       onSuccess: (result) => {
-        callbacks.onSuccess({ roomID: result.roomID });
+        callbacks.onSuccess({ roomID: result });
       },
       onError: callbacks.onError,
     });

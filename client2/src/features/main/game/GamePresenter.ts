@@ -1,44 +1,41 @@
 import { GameContract } from "src/features/main/game/GameContract";
 import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { GetGameInfo } from "src/features/main/game/use_cases/base/GetGameInfoUseCaseItf";
-import { CreateSocket } from "src/domain/usecases/base/CreateSocketUseCaseItf";
 import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseItf";
 import { TUser } from "src/types/Account";
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
+import { ConnectSocket } from "./use_cases/base/ConnectSocketUseCaseItf";
 
 const SOCKET_PATH = 'game_page';
 
 export class GamePresenter implements GameContract.Presenter {
   private readonly view: GameContract.View;
   private readonly useCaseHandler: UseCaseHandler;
-  private readonly createSocketUseCase: CreateSocket.UseCase;
+  private readonly connectSocketUseCase: ConnectSocket.UseCase;
   private readonly getGameInfoUseCase: GetGameInfo.UseCase;
   private readonly getRoomsUseCase: GetRooms.UseCase;
   private readonly createRoomUseCase: CreateRoom.UseCase;
 
-  private userInfo: TUser | null = null;
-
   constructor(
     view: GameContract.View,
     useCaseHandler: UseCaseHandler,
-    createSocketUseCase: CreateSocket.UseCase,
+    connectSocketUseCase: ConnectSocket.UseCase,
     getGameInfoUseCase: GetGameInfo.UseCase,
     getRoomsUseCase: GetRooms.UseCase,
     createRoomUseCase: CreateRoom.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
-    this.createSocketUseCase = createSocketUseCase;
+    this.connectSocketUseCase = connectSocketUseCase;
     this.getGameInfoUseCase = getGameInfoUseCase;
     this.getRoomsUseCase = getRoomsUseCase;
     this.createRoomUseCase = createRoomUseCase;
   }
 
   mount(params: GameContract.GamePageParams): void {
-    const { id, userInfo } = params;
-    this.userInfo = userInfo;
+    const { id } = params;
     this.getGameInfo(id);
-    this.createSocket(SOCKET_PATH);
+    this.connectSocket(SOCKET_PATH);
   }
 
   getGameInfo(id: string): void {
@@ -72,7 +69,6 @@ export class GamePresenter implements GameContract.Presenter {
     roomMode: number,
     roomPassword: string,
     roomTitle: string): void {
-    if (!this.userInfo) { return; }
     this.view.nowLoading();
     this.useCaseHandler.execute(this.createRoomUseCase,
       {
@@ -80,8 +76,6 @@ export class GamePresenter implements GameContract.Presenter {
         roomMode,
         roomTitle,
         roomPassword,
-        name: this.userInfo.name,
-        userID: this.userInfo.id,
       },
       {
         onSuccess: (result) => {
@@ -94,9 +88,9 @@ export class GamePresenter implements GameContract.Presenter {
       });
   }
 
-  private createSocket(path: string): void {
+  private connectSocket(path: string): void {
     this.view.nowLoading();
-    this.useCaseHandler.execute(this.createSocketUseCase, { path }, {
+    this.useCaseHandler.execute(this.connectSocketUseCase, { path }, {
       onSuccess: () => {
         // TODO: Toast Message
         console.log('connected successfully...')

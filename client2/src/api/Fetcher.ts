@@ -88,6 +88,7 @@ export default class Fetcher implements IFetcher {
       // clear socket
       this.removeSocket();
       this.socketPath = path;
+      console.log(`${SOCKET_PATH}/${this.socketPath}`)
 
       this.socket = new WebSocket(`${SOCKET_PATH}/${this.socketPath}`);
       this.socket.onopen = () => {

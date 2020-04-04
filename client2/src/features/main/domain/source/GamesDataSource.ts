@@ -11,6 +11,7 @@ export namespace Games {
     getGames(callbacks: Games.GetGamesCallbacks): void;
     getGameInfo(id: string, callbacks: Games.GetGameInfoCallbacks): void;
 
+    connectSocket(path: string, callbacks: Games.ConnectSocketCallbacks): void;
     createRoom(
       gameName: string,
       roomPassword: string,
@@ -24,6 +25,7 @@ export namespace Games {
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}
   export interface GetGameInfoCallbacks extends SuccessCallback<TGame>, ErrorCallback {}
 
+  export interface ConnectSocketCallbacks extends SuccessWithoutResultCallback, ErrorCallback {}
   export interface CreateRoomCallbacks extends SuccessCallback<number>, ErrorCallback {}
-  export interface GetRoomsCallbacks extends SuccessCallback<TRoom>, ErrorCallback {}
+  export interface GetRoomsCallbacks extends SuccessCallback<TRoom[]>, ErrorCallback {}
 }
