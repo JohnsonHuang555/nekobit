@@ -1,15 +1,16 @@
 import React from 'react';
 import Router from 'next/router';
 import Layout from 'src/components/Layout';
-import RoomList from 'src/components/RoomList/RoomList';
-import GameDetail from 'src/components/GameDetail';
-import CreateRoomModal, { TCreateRoom } from 'src/components/Modals/CreateRoomModal';
+import RoomList from 'src/features/main/game/components/RoomList';
+import GameDetail from 'src/features/main/game/components/GameDetail';
+import CreateRoomModal, { TCreateRoom } from 'src/features/main/game/components/CreateRoomModal';
 import { GameContract } from 'src/features/main/game/GameContract';
 import { GamePresenter } from 'src/features/main/game/GamePresenter';
 import { Injection } from 'src/features/main/game/injection/injection';
 import { TGame } from 'src/features/main/domain/models/Game';
 import { TRoom } from 'src/features/main/domain/models/Room';
 import { GameListMode } from 'src/components/Games/ChineseChess/ModeList';
+import { Box } from '@material-ui/core';
 import '@styles/pages/game.scss';
 
 interface GameViewProps {}
@@ -72,7 +73,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
           onCloseLogin={() => this.setIsShowCreateRoomModal(false)}
           onCreate={(roomData) => this.createRoom(roomData)}
         />
-        <>
+        <Box>
           {isShowRoomList ? (
             <RoomList rooms={rooms}/>
           ): (
@@ -84,7 +85,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
                 playNow={() => this.setIsShowRoomList(true)}
               />
           )}
-        </>
+        </Box>
       </Layout>
     );
   }

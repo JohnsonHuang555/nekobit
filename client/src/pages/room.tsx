@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import Router, { useRouter } from 'next/router';
+import React from 'react';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TSocket } from 'src/types/Socket';
-// import { TRoom, TRoomUser } from 'src/types/Room';
 import Layout from "src/components/Layout";
-import useLocalStorage from 'src/customHook/useLocalStorage';
 import RoomUser from 'src/components/RoomList/RoomUser';
-import Button from 'src/components/Shared/Button';
-import ChineseChess from 'src/components/Games/ChineseChess/ChineseChess';
-import '@styles/pages/room.scss';
 import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
+import '@styles/pages/room.scss';
 
 interface RoomViewProps {}
 interface RoomViewState {
@@ -110,17 +104,6 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
   setRoomInfo(roomInfo: TRoom): void {
     this.setState({ roomInfo });
-  }
-
-  private isMaster(): boolean {
-    // if (userInfo && roomInfo) {
-    //   const user = roomInfo.userList.find(u => {
-    //     return u.id === userInfo.id;
-    //   });
-
-    //   return user ? user.isMaster : false;
-    // }
-    return false;
   }
 
   private startGame(): void {

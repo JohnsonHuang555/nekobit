@@ -1,20 +1,17 @@
 import React from 'react';
-import Swiper from 'react-id-swiper';
 import Router from 'next/router';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Box } from '@material-ui/core';
 import Layout from 'src/components/Layout';
-import Button from 'src/components/Shared/Button';
 import { TGame } from 'src/features/main/domain/models/Game';
 import { IndexContract } from 'src/features/main/Index/IndexContract';
 import { IndexPresenter } from 'src/features/main/Index/IndexPresenter';
 import { Injection } from 'src/features/main/Index/injection/injection';
+import GameList from 'src/features/main/Index/components/GameList';
 import '@styles/pages/index.scss';
 
 interface IndexViewProps {}
 interface IndexViewState {
   games: TGame[];
-  swiperParams: any;
 }
 
 class IndexView extends React.Component<IndexViewProps, IndexViewState>
@@ -27,19 +24,6 @@ class IndexView extends React.Component<IndexViewProps, IndexViewState>
 
     this.state = {
       games: [],
-      swiperParams: {
-        slidesPerView: 4,
-        spaceBetween: 30,
-        pagination: {
-          el: '.swiper-pagination',
-          clickable: true,
-          dynamicBullets: true,
-        },
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        },
-      }
     };
 
     this.presenter = new IndexPresenter(
@@ -56,47 +40,17 @@ class IndexView extends React.Component<IndexViewProps, IndexViewState>
   render() {
     const {
       games,
-      swiperParams,
     } = this.state;
 
     return (
       <Layout id="home">
-        <div className="section-heading">
+        <Box className="section-heading">
           <h2>All Games</h2>
-        </div>
-        <div className="lobby_box">
-          <Swiper {...swiperParams} shouldSwiperUpdate>
-            {games.map((game: TGame) => (
-              <div key={game.id}>
-                <div className="game-card">
-                  <img
-                    className="game-image"
-                    src={`${game.imgURL}/home.png`}
-                    alt={game.name}
-                    width="100%"
-                    height="100%"
-                  />
-                  <div className="game-block">
-                    <div className="center">
-                      <h2>{game.name}</h2>
-                      <Button
-                        className="game-enter"
-                        title="Enter"
-                        onClick={() => this.chooseGameHandler(game.id)}
-                      />
-                      <div className="rates">
-                        <div className="stars">
-                          <FontAwesomeIcon icon={faStar} />
-                          <b>9.5 分</b>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </Swiper>
-        </div>
+        </Box>
+        <GameList
+          games={games}
+          onChooseGame={(id) => this.chooseGameHandler(id)}
+        />
       </Layout>
     )
   }
