@@ -8,7 +8,6 @@ import { TRoom } from "src/features/main/domain/models/Room";
 
 export namespace LeaveRoom {
   export interface InputData extends UseCaseInputData {
-    userID: string;
     roomID: number;
   }
 

@@ -4,7 +4,7 @@ import {
   SuccessWithoutResultCallback
 } from "src/domain/source/base/RepositoryCallbacks";
 import { TGame } from "src/features/main/domain/models/Game";
-import { TRoom } from "../models/Room";
+import { TRoom, TRoomUser } from "../models/Room";
 
 export namespace Games {
   export interface DataSource {
@@ -20,6 +20,11 @@ export namespace Games {
       callbacks: Games.CreateRoomCallbacks
     ): void;
     getRooms(callbacks: Games.GetRoomsCallbacks): void;
+
+    joinRoom(roomID: number, callbacks: Games.JoinRoomCallbacks): void;
+    leaveRoom(roomID: number, callbacks: Games.LeaveRoomCallbacks): void;
+    readyGame(roomID: number, callbacks: Games.ReadyGameCallbacks): void;
+    startGame(roomID: number, roomMode: number, callbacks: Games.StartGameCallbacks): void;
   }
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}
@@ -28,4 +33,9 @@ export namespace Games {
   export interface ConnectSocketCallbacks extends SuccessWithoutResultCallback, ErrorCallback {}
   export interface CreateRoomCallbacks extends SuccessCallback<number>, ErrorCallback {}
   export interface GetRoomsCallbacks extends SuccessCallback<TRoom[]>, ErrorCallback {}
+
+  export interface JoinRoomCallbacks extends SuccessCallback<TRoom>, ErrorCallback {}
+  export interface LeaveRoomCallbacks extends SuccessCallback<TRoom>, ErrorCallback {}
+  export interface ReadyGameCallbacks extends SuccessCallback<TRoomUser[]>, ErrorCallback {}
+  export interface StartGameCallbacks extends SuccessCallback<TRoom>, ErrorCallback {}
 }

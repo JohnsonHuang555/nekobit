@@ -1,28 +1,21 @@
-import { App } from "src/domain/source/AppDataSource";
-import { SocketEvent } from "src/types/Socket";
 import { LeaveRoom } from "./base/LeaveRoomUseCaseItf";
+import { Games } from "../../domain/source/GamesDataSource";
 
 export class LeaveRoomUseCase implements LeaveRoom.UseCase {
-  private repository: App.DataSource;
+  private repository: Games.DataSource;
 
-  constructor(repository: App.DataSource) {
+  constructor(repository: Games.DataSource) {
     this.repository = repository;
   }
 
   execute(inputData: LeaveRoom.InputData, callbacks: LeaveRoom.Callbacks) {
     const {
-      userID,
       roomID,
     } = inputData;
 
-    const data = {
-      name,
-      roomID,
-    };
-
-    this.repository.sendSocket({ userID, event: SocketEvent.LeaveRoom, data } , {
+    this.repository.leaveRoom(roomID, {
       onSuccess: (result) => {
-        callbacks.onSuccess({ roomInfo: result.roomInfo });
+        callbacks.onSuccess({ roomInfo: result });
       },
       onError: callbacks.onError,
     });

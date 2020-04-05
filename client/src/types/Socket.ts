@@ -9,4 +9,6 @@ export enum SocketEvent {
   JoinRoom = 'joinRoom',
   LeaveRoom = 'leaveRoom',
   CreateRoom = 'createRoom',
+  ReadyGame = 'readyGame',
+  StartGame = 'startGame',
 }

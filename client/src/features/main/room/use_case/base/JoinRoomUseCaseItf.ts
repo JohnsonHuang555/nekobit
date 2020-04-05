@@ -8,8 +8,6 @@ import { TRoom } from "src/features/main/domain/models/Room";
 
 export namespace JoinRoom {
   export interface InputData extends UseCaseInputData {
-    userID: string;
-    name: string;
     roomID: number;
   }
 

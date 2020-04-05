@@ -2,7 +2,6 @@ import { GameContract } from "src/features/main/game/GameContract";
 import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { GetGameInfo } from "src/features/main/game/use_cases/base/GetGameInfoUseCaseItf";
 import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseItf";
-import { TUser } from "src/types/Account";
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
 import { ConnectSocket } from "./use_cases/base/ConnectSocketUseCaseItf";
 

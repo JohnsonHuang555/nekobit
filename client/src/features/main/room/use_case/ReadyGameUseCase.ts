@@ -1,28 +1,21 @@
-import { App } from "src/domain/source/AppDataSource";
-import { SocketEvent } from "src/types/Socket";
 import { ReadyGame } from "./base/ReadyGameUseCaseItf";
+import { Games } from "../../domain/source/GamesDataSource";
 
 export class ReadyGameUseCase implements ReadyGame.UseCase {
-  private repository: App.DataSource;
+  private repository: Games.DataSource;
 
-  constructor(repository: App.DataSource) {
+  constructor(repository: Games.DataSource) {
     this.repository = repository;
   }
 
   execute(inputData: ReadyGame.InputData, callbacks: ReadyGame.Callbacks) {
     const {
-      userID,
       roomID,
     } = inputData;
 
-    const data = {
-      name,
-      roomID,
-    };
-
-    this.repository.sendSocket({ userID, event: SocketEvent.LeaveRoom, data } , {
+    this.repository.readyGame(roomID, {
       onSuccess: (result) => {
-        callbacks.onSuccess({ gameData: result.roomInfo.gameData });
+        callbacks.onSuccess({ roomUserList: result });
       },
       onError: callbacks.onError,
     });

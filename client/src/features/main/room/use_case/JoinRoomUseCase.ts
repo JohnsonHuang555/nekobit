@@ -1,29 +1,21 @@
 import { JoinRoom } from "./base/JoinRoomUseCaseItf";
-import { App } from "src/domain/source/AppDataSource";
-import { SocketEvent } from "src/types/Socket";
+import { Games } from "../../domain/source/GamesDataSource";
 
 export class JoinRoomUseCase implements JoinRoom.UseCase {
-  private repository: App.DataSource;
+  private repository: Games.DataSource;
 
-  constructor(repository: App.DataSource) {
+  constructor(repository: Games.DataSource) {
     this.repository = repository;
   }
 
   execute(inputData: JoinRoom.InputData, callbacks: JoinRoom.Callbacks) {
     const {
-      userID,
-      name,
       roomID,
     } = inputData;
 
-    const data = {
-      name,
-      roomID,
-    };
-
-    this.repository.sendSocket({ userID, event: SocketEvent.JoinRoom, data } , {
+    this.repository.joinRoom(roomID, {
       onSuccess: (result) => {
-        callbacks.onSuccess({ roomInfo: result.roomInfo });
+        callbacks.onSuccess({ roomInfo: result });
       },
       onError: callbacks.onError,
     });

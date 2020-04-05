@@ -3,7 +3,7 @@ import { IFetcher } from "src/api/Fetcher";
 import { NetGame } from "src/features/main/domain/remote/NetGame";
 import { GameFactory } from "src/features/main/domain/factories/GameFactory";
 import { SocketEvent } from "src/types/Socket";
-import { TRoom } from "../models/Room";
+import { TRoom, TRoomUser } from "../models/Room";
 import { TUser } from "src/types/Account";
 
 export default class GamesRepository implements Games.DataSource {
@@ -84,5 +84,74 @@ export default class GamesRepository implements Games.DataSource {
         onError: e => callbacks.onError(e),
       }
     );
+  }
+
+  joinRoom(roomID: number, callbacks: Games.JoinRoomCallbacks): void {
+    this.fetcher.sendSocket(
+      {
+        userID: this.userInfo?.id,
+        event: SocketEvent.JoinRoom,
+        data: {
+          roomID,
+        }
+      },
+      {
+        onSuccess: (result: { roomInfo: TRoom }) => {
+          callbacks.onSuccess(result.roomInfo);
+        },
+        onError: e => callbacks.onError(e)
+      });
+  }
+
+  leaveRoom(roomID: number, callbacks: Games.LeaveRoomCallbacks): void {
+    this.fetcher.sendSocket(
+      {
+        userID: this.userInfo?.id,
+        event: SocketEvent.LeaveRoom,
+        data: {
+          roomID,
+        }
+      },
+      {
+        onSuccess: (result: { roomInfo: TRoom }) => {
+          callbacks.onSuccess(result.roomInfo);
+        },
+        onError: e => callbacks.onError(e)
+      });
+  }
+
+  readyGame(roomID: number, callbacks: Games.ReadyGameCallbacks): void {
+    this.fetcher.sendSocket(
+      {
+        userID: this.userInfo?.id,
+        event: SocketEvent.ReadyGame,
+        data: {
+          roomID,
+        }
+      },
+      {
+        onSuccess: (result: { roomUserList: TRoomUser[] }) => {
+          callbacks.onSuccess(result.roomUserList);
+        },
+        onError: e => callbacks.onError(e)
+      });
+  }
+
+  startGame(roomID: number, roomMode: number, callbacks: Games.StartGameCallbacks): void {
+    this.fetcher.sendSocket(
+      {
+        userID: this.userInfo?.id,
+        event: SocketEvent.StartGame,
+        data: {
+          roomID,
+          roomMode,
+        }
+      },
+      {
+        onSuccess: (result: { roomInfo: TRoom }) => {
+          callbacks.onSuccess(result.roomInfo);
+        },
+        onError: e => callbacks.onError(e)
+      });
   }
 }
