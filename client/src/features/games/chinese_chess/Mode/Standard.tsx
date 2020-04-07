@@ -1,7 +1,7 @@
 import React from 'react';
 import { IChineseChess } from 'src/interfaces/ChineseChess';
 import { TChineseChess } from 'src/types/ChineseChess';
-import ChessMapItem from 'src/components/Games/ChineseChess/ChessMapItem';
+import ChessMapItem from 'src/features/games/chinese_chess/ChessMapItem';
 
 interface StandardProps extends IChineseChess {
   mode: number;

@@ -9,7 +9,7 @@ import { GamePresenter } from 'src/features/main/game/GamePresenter';
 import { Injection } from 'src/features/main/game/injection/injection';
 import { TGame } from 'src/features/main/domain/models/Game';
 import { TRoom } from 'src/features/main/domain/models/Room';
-import { GameListMode } from 'src/components/Games/ChineseChess/ModeList';
+import { GameListMode } from 'src/features/games/chinese_chess/ModeList';
 import { Box } from '@material-ui/core';
 import '@styles/pages/game.scss';
 
