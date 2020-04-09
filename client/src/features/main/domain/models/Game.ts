@@ -18,3 +18,7 @@ export const GameMode = {
     {label: '暗棋(小盤)', value: GameModeCode.Hidden}
   ],
 };
+
+export enum GameList {
+  ChineseChess = '象棋',
+}

@@ -8,6 +8,7 @@ import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import '@styles/pages/room.scss';
+import GameScreen from 'src/features/main/room/components/GameScreen';
 
 interface RoomViewProps {}
 interface RoomViewState {
@@ -89,9 +90,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
             } */}
           </div>
           {roomInfo && roomInfo.status === 1 && (
-            <div className="game-screen">
-              {/* <ShowGameArea /> */}
-            </div>
+            <GameScreen roomInfo={roomInfo}/>
           )}
         </div>
       </Layout>
@@ -113,10 +112,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   private readyGame(): void {
 
   }
-
-
 }
-
 
 // const Room = () => {
 //   const router = useRouter();
