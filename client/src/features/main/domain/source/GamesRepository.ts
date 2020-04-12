@@ -17,6 +17,15 @@ export default class GamesRepository implements Games.DataSource {
     }
   }
 
+  getUserInfo(callbacks: Games.GetUserInfoCallbacks): void {
+    if (this.userInfo) {
+      callbacks.onSuccess(this.userInfo);
+    } else {
+      const error = new Error();
+      callbacks.onError(error);
+    }
+  }
+
   getGames(callbacks: Games.GetGamesCallbacks): void {
     this.fetcher.get('/getAllGames', {
       onSuccess: (result: NetGame[]) => {
@@ -48,6 +57,15 @@ export default class GamesRepository implements Games.DataSource {
     });
   }
 
+  getSocketMessage(callbacks: Games.GetSocketMessageCallbacks): void {
+    this.fetcher.getSocketMessage({
+      onSuccess: (result) => {
+        callbacks.onSuccess(result);
+      },
+      onError: e => callbacks.onError(e)
+    });
+  }
+
   getRooms(callbacks: Games.GetRoomsCallbacks): void {
     this.fetcher.sendSocket({ event: SocketEvent.GetRooms }, {
       onSuccess: (result: { rooms: TRoom[] }) => {
@@ -64,7 +82,6 @@ export default class GamesRepository implements Games.DataSource {
     roomMode: number,
     callbacks: Games.CreateRoomCallbacks
   ): void {
-    console.log(this.userInfo)
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,

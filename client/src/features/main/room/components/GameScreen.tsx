@@ -24,7 +24,8 @@ const GameScreen = (props: GameScreenProps) => {
 
   return (
     <Box className="game-screen">
-      {playGame[roomInfo.gameName as GameList]}
+      {/* {playGame[roomInfo.gameName as GameList]} */}
+      123456
     </Box>
   );
 };

@@ -4,7 +4,7 @@ type BaseType = {
 };
 
 export type TGuest = BaseType;
-export type TUser = BaseType & {
+export type TLogin = BaseType & {
   account: string;
   password: string;
 };

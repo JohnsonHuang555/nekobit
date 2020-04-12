@@ -7,12 +7,15 @@ import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
-import '@styles/pages/room.scss';
 import GameScreen from 'src/features/main/room/components/GameScreen';
+import '@styles/pages/room.scss';
+import { TUser } from 'src/types/Account';
+import { Button } from '@material-ui/core';
 
 interface RoomViewProps {}
 interface RoomViewState {
   roomInfo?: TRoom;
+  userInfo?: TUser;
 }
 
 class RoomView extends React.Component<RoomViewProps, RoomViewState>
@@ -24,6 +27,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     super(props);
     this.state = {
       roomInfo: undefined,
+      userInfo: undefined,
     }
 
     this.presenter = new RoomPresenter(
@@ -34,6 +38,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       Injection.provideLeaveRoomUseCase(),
       Injection.provideReadyGameUseCase(),
       Injection.provideStartGameUseCase(),
+      Injection.provideGetUserInfoUseCase(),
     )
   }
 
@@ -74,20 +79,24 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
           </div>
           <div className="col-md-4">
             <div className="settings-block"></div>
-            {/* {
-              this.isMaster() ?
-              <Button
-                className="start"
-                disabled={disabledStart()}
-                onClick={() => this.startGame()}
-                title="Start"
-              /> :
-              <Button
-                className="ready"
-                onClick={() => this.readyGame()}
-                title={isPlayerReady()}
-              />
-            } */}
+            {roomInfo &&
+              this.isMaster() ? (
+                <Button
+                  className="start"
+                  onClick={() => this.startGame(roomInfo.mode)}
+                  disabled={this.disabledStart()}
+                >
+                  Start
+                </Button>
+              ) : (
+                <Button
+                  className="ready"
+                  onClick={() => this.readyGame()}
+                >
+                  {this.isPlayerReady()}
+                </Button>
+              )
+            }
           </div>
           {roomInfo && roomInfo.status === 1 && (
             <GameScreen roomInfo={roomInfo}/>
@@ -99,18 +108,66 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   nowLoading(): void {
   }
+
   finishLoading(): void {
   }
+
   setRoomInfo(roomInfo: TRoom): void {
-    this.setState({ roomInfo });
+    // this.setState({ roomInfo });
   }
 
-  private startGame(): void {
+  setUserInfo(userInfo: TUser): void {
+    this.setState({ userInfo });
+  }
 
+  private isMaster(): boolean {
+    const {
+      userInfo,
+      roomInfo
+    } = this.state;
+
+    if (userInfo && roomInfo) {
+      const user = roomInfo.userList.find(u => {
+        return u.id === userInfo.id;
+      });
+
+      return user ? user.isMaster : false;
+    }
+    return false;
+  }
+
+  private isPlayerReady(): string {
+    const {
+      userInfo,
+      roomInfo
+    } = this.state;
+
+    if (userInfo && roomInfo) {
+      const user = roomInfo.userList.find(u => {
+        return u.id === userInfo.id;
+      });
+
+      return (user && user.isReady) ? 'Cancel' : 'Ready';
+    }
+    return 'Ready';
+  }
+
+  private disabledStart(): boolean {
+    const {
+      roomInfo
+    } = this.state;
+
+    return roomInfo && roomInfo.userList.find(u => {
+      return u.isReady === false;
+    }) ? true : false;
+  }
+
+  private startGame(mode: number): void {
+    this.presenter.startGame(mode);
   }
 
   private readyGame(): void {
-
+    this.presenter.readyGame();
   }
 }
 
