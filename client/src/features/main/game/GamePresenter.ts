@@ -4,6 +4,7 @@ import { GetGameInfo } from "src/features/main/game/use_cases/base/GetGameInfoUs
 import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseItf";
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
 import { ConnectSocket } from "./use_cases/base/ConnectSocketUseCaseItf";
+import { GetSocketMessage } from "./use_cases/base/GetSocketMessageUseCaseItf";
 
 const SOCKET_PATH = 'game_page';
 
@@ -11,6 +12,7 @@ export class GamePresenter implements GameContract.Presenter {
   private readonly view: GameContract.View;
   private readonly useCaseHandler: UseCaseHandler;
   private readonly connectSocketUseCase: ConnectSocket.UseCase;
+  private readonly getSocketMessageUseCase: GetSocketMessage.UseCase;
   private readonly getGameInfoUseCase: GetGameInfo.UseCase;
   private readonly getRoomsUseCase: GetRooms.UseCase;
   private readonly createRoomUseCase: CreateRoom.UseCase;
@@ -19,6 +21,7 @@ export class GamePresenter implements GameContract.Presenter {
     view: GameContract.View,
     useCaseHandler: UseCaseHandler,
     connectSocketUseCase: ConnectSocket.UseCase,
+    getSocketMessageUseCase: GetSocketMessage.UseCase,
     getGameInfoUseCase: GetGameInfo.UseCase,
     getRoomsUseCase: GetRooms.UseCase,
     createRoomUseCase: CreateRoom.UseCase,
@@ -26,6 +29,7 @@ export class GamePresenter implements GameContract.Presenter {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
     this.connectSocketUseCase = connectSocketUseCase;
+    this.getSocketMessageUseCase = getSocketMessageUseCase;
     this.getGameInfoUseCase = getGameInfoUseCase;
     this.getRoomsUseCase = getRoomsUseCase;
     this.createRoomUseCase = createRoomUseCase;
@@ -52,15 +56,7 @@ export class GamePresenter implements GameContract.Presenter {
 
   getRooms(): void {
     this.view.nowLoading();
-    this.useCaseHandler.execute(this.getRoomsUseCase, {}, {
-      onSuccess: (result) => {
-        this.view.setRooms(result.rooms);
-        this.view.finishLoading();
-      },
-      onError: () => {
-        this.view.finishLoading();
-      }
-    });
+    this.useCaseHandler.execute(this.getRoomsUseCase, {});
   }
 
   createRoom(
@@ -75,16 +71,23 @@ export class GamePresenter implements GameContract.Presenter {
         roomMode,
         roomTitle,
         roomPassword,
-      },
-      {
-        onSuccess: (result) => {
+      }
+    );
+  }
+
+  getMessageHandler(): void {
+    this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
+      onSuccess: (result) => {
+        if (result.rooms) {
+          this.view.setRooms(result.rooms);
+        } else if (result.roomID) {
           this.view.setRoomID(result.roomID);
-          this.view.finishLoading();
-        },
-        onError: () => {
-          this.view.finishLoading();
         }
-      });
+      },
+      onError: () => {
+        // error toast
+      }
+    });
   }
 
   private connectSocket(path: string): void {
@@ -93,6 +96,7 @@ export class GamePresenter implements GameContract.Presenter {
       onSuccess: () => {
         // TODO: Toast Message
         console.log('connected successfully...')
+        this.getMessageHandler();
         this.getRooms();
       },
       onError: () => {

@@ -66,13 +66,8 @@ export default class GamesRepository implements Games.DataSource {
     });
   }
 
-  getRooms(callbacks: Games.GetRoomsCallbacks): void {
-    this.fetcher.sendSocket({ event: SocketEvent.GetRooms }, {
-      onSuccess: (result: { rooms: TRoom[] }) => {
-        callbacks.onSuccess(result.rooms);
-      },
-      onError: e => callbacks.onError(e),
-    });
+  getRooms(): void {
+    this.fetcher.sendSocket({ event: SocketEvent.GetRooms });
   }
 
   createRoom(
@@ -80,7 +75,6 @@ export default class GamesRepository implements Games.DataSource {
     roomPassword: string,
     roomTitle: string,
     roomMode: number,
-    callbacks: Games.CreateRoomCallbacks
   ): void {
     this.fetcher.sendSocket(
       {
@@ -94,16 +88,10 @@ export default class GamesRepository implements Games.DataSource {
           name: this.userInfo?.name
         }
       },
-      {
-        onSuccess: (result: { roomID: number }) => {
-          callbacks.onSuccess(result.roomID);
-        },
-        onError: e => callbacks.onError(e),
-      }
     );
   }
 
-  joinRoom(roomID: number, callbacks: Games.JoinRoomCallbacks): void {
+  joinRoom(roomID: number): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -112,15 +100,10 @@ export default class GamesRepository implements Games.DataSource {
           roomID,
         }
       },
-      {
-        onSuccess: (result: { roomInfo: TRoom }) => {
-          callbacks.onSuccess(result.roomInfo);
-        },
-        onError: e => callbacks.onError(e)
-      });
+    );
   }
 
-  leaveRoom(roomID: number, callbacks: Games.LeaveRoomCallbacks): void {
+  leaveRoom(roomID: number): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -129,15 +112,10 @@ export default class GamesRepository implements Games.DataSource {
           roomID,
         }
       },
-      {
-        onSuccess: (result: { roomInfo: TRoom }) => {
-          callbacks.onSuccess(result.roomInfo);
-        },
-        onError: e => callbacks.onError(e)
-      });
+    );
   }
 
-  readyGame(roomID: number, callbacks: Games.ReadyGameCallbacks): void {
+  readyGame(roomID: number): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -146,15 +124,10 @@ export default class GamesRepository implements Games.DataSource {
           roomID,
         }
       },
-      {
-        onSuccess: (result: { roomUserList: TRoomUser[] }) => {
-          callbacks.onSuccess(result.roomUserList);
-        },
-        onError: e => callbacks.onError(e)
-      });
+    );
   }
 
-  startGame(roomID: number, roomMode: number, callbacks: Games.StartGameCallbacks): void {
+  startGame(roomID: number, roomMode: number): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -164,11 +137,6 @@ export default class GamesRepository implements Games.DataSource {
           roomMode,
         }
       },
-      {
-        onSuccess: (result: { roomInfo: TRoom }) => {
-          callbacks.onSuccess(result.roomInfo);
-        },
-        onError: e => callbacks.onError(e)
-      });
+    );
   }
 }

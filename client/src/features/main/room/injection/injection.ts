@@ -13,6 +13,8 @@ import { ConnectSocket } from "../../game/use_cases/base/ConnectSocketUseCaseItf
 import { ConnectSocketUseCase } from "../../game/use_cases/ConnectSocketUseCase";
 import { GetUserInfo } from "../use_case/base/GetUserInfoUseCaseItf";
 import { GetUserInfoUseCase } from "../use_case/GetUserInfoUseCase";
+import { GetSocketMessage } from "../use_case/base/GetSocketMessageUseCaseItf";
+import { GetSocketMessageUseCase } from "../use_case/GetSocketMessageUseCase";
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -45,5 +47,9 @@ export class Injection {
 
   static provideGetUserInfoUseCase(): GetUserInfo.UseCase {
     return new GetUserInfoUseCase(this.provideGamesRepository());
+  }
+
+  static provideGetSocketMessageUseCase(): GetSocketMessage.UseCase {
+    return new GetSocketMessageUseCase(this.provideGamesRepository());
   }
 }

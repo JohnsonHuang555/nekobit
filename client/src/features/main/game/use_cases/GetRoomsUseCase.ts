@@ -9,11 +9,6 @@ export class GetRoomsUseCase implements GetRooms.UseCase {
   }
 
   execute(inputData: GetRooms.InputData, callbacks: GetRooms.Callbacks) {
-    this.repository.getRooms({
-      onSuccess: (result) => {
-        callbacks.onSuccess({ rooms: result });
-      },
-      onError: callbacks.onError,
-    });
+    this.repository.getRooms();
   }
 }

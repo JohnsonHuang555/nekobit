@@ -34,6 +34,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       this,
       Injection.provideUseCaseHandler(),
       Injection.provideConnectSocketUseCase(),
+      Injection.provideGetSocketMessageUseCase(),
       Injection.provideJoinRoomUseCase(),
       Injection.provideLeaveRoomUseCase(),
       Injection.provideReadyGameUseCase(),
@@ -113,7 +114,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
 
   setRoomInfo(roomInfo: TRoom): void {
-    // this.setState({ roomInfo });
+    this.setState({ roomInfo });
   }
 
   setUserInfo(userInfo: TUser): void {

@@ -12,15 +12,15 @@ const GameScreen = (props: GameScreenProps) => {
     roomInfo,
   } = props;
 
-  const playGame = {
-    [GameList.ChineseChess]:
-      <ChineseChess
-        userID="test"
-        roomInfo={roomInfo}
-        onChangeRoomInfo={() => {}}
-        ws={new WebSocket('')}
-      />
-  };
+  // const playGame = {
+  //   [GameList.ChineseChess]:
+  //     <ChineseChess
+  //       userID="test"
+  //       roomInfo={roomInfo}
+  //       onChangeRoomInfo={() => {}}
+  //       ws={new WebSocket('')}
+  //     />
+  // };
 
   return (
     <Box className="game-screen">

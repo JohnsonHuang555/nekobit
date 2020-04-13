@@ -8,5 +8,5 @@ export interface UseCaseCallbacks<R> {
 }
 
 export abstract class UseCase<I extends UseCaseInputData, O extends UseCaseOutputData> {
-  abstract execute(inputData: I, callbacks: UseCaseCallbacks<O>): void;
+  abstract execute(inputData: I, callbacks?: UseCaseCallbacks<O>): void;
 }

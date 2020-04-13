@@ -8,16 +8,11 @@ export class LeaveRoomUseCase implements LeaveRoom.UseCase {
     this.repository = repository;
   }
 
-  execute(inputData: LeaveRoom.InputData, callbacks: LeaveRoom.Callbacks) {
+  execute(inputData: LeaveRoom.InputData) {
     const {
       roomID,
     } = inputData;
 
-    this.repository.leaveRoom(roomID, {
-      onSuccess: (result) => {
-        callbacks.onSuccess({ roomInfo: result });
-      },
-      onError: callbacks.onError,
-    });
+    this.repository.leaveRoom(roomID);
   }
 }

@@ -4,16 +4,15 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
+import { TRoom } from "src/features/main/domain/models/Room";
 
-export namespace CreateRoom {
-  export interface InputData extends UseCaseInputData {
-    gameName: string;
-    roomPassword: string;
-    roomTitle: string;
-    roomMode: number;
+export namespace GetSocketMessage {
+  export interface InputData extends UseCaseInputData {}
+
+  export interface OutputData extends UseCaseOutputData {
+    rooms?: TRoom[];
+    roomID?: number;
   }
-
-  export interface OutputData extends UseCaseOutputData {}
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
 

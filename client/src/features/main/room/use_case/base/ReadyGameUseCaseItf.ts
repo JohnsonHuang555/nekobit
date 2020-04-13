@@ -11,9 +11,7 @@ export namespace ReadyGame {
     roomID: number;
   }
 
-  export interface OutputData extends UseCaseOutputData {
-    roomUserList: TRoomUser[];
-  }
+  export interface OutputData extends UseCaseOutputData {}
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
 

@@ -6,6 +6,7 @@ export namespace RoomContract {
   export interface Presenter {
     mount(params: RoomPageParams): void;
     getUserInfo(): void;
+    getMessageHandler(): void;
     joinRoom(): void;
     leaveRoom(): void;
     readyGame(): void;

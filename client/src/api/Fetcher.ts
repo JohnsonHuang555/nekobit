@@ -13,7 +13,6 @@ interface FetcherCallbacks<T> {
 }
 
 interface CreateSocketCallbacks extends SuccessWithoutResultCallback, ErrorCallback {}
-interface SendSocketCallbacks extends SuccessWithoutResultCallback, ErrorCallback {}
 interface GetSocketMessageCallbacks extends SuccessCallback<TSocket>, ErrorCallback {}
 
 export interface IFetcher {
@@ -22,7 +21,7 @@ export interface IFetcher {
   put<T = any>(path: string, callbacks: FetcherCallbacks<T>, body?: any): Promise<void>;
   delete<T = any>(path: string, callbacks: FetcherCallbacks<T>, body?: any): Promise<void>;
   createSocket(path: string, callbacks: CreateSocketCallbacks): void;
-  sendSocket(data: TSocket, callbacks: SendSocketCallbacks): void;
+  sendSocket(data: TSocket): void;
   getSocketMessage(callbacks: GetSocketMessageCallbacks): void;
 }
 
@@ -103,13 +102,9 @@ export default class Fetcher implements IFetcher {
     }
   }
 
-  sendSocket(data: TSocket, callbacks: SendSocketCallbacks): void {
+  sendSocket(data: TSocket): void {
     if (this.socket) {
       this.socket.send(JSON.stringify(data));
-      callbacks.onSuccess();
-    } else {
-      const error = new Error('Connect failed. Please try again...');
-      callbacks.onError(error);
     }
   }
 
