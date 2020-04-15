@@ -11,9 +11,7 @@ export namespace LeaveRoom {
     roomID: number;
   }
 
-  export interface OutputData extends UseCaseOutputData {
-    roomInfo: TRoom;
-  }
+  export interface OutputData extends UseCaseOutputData {}
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
 

@@ -13,7 +13,7 @@ interface FetcherCallbacks<T> {
 }
 
 interface CreateSocketCallbacks extends SuccessWithoutResultCallback, ErrorCallback {}
-interface SendSocketCallbacks extends SuccessCallback<any>, ErrorCallback {}
+interface GetSocketMessageCallbacks extends SuccessCallback<TSocket>, ErrorCallback {}
 
 export interface IFetcher {
   get<T = any>(path: string, callbacks: FetcherCallbacks<T>, config?: FetcherRequestConfig): Promise<void>;
@@ -21,7 +21,8 @@ export interface IFetcher {
   put<T = any>(path: string, callbacks: FetcherCallbacks<T>, body?: any): Promise<void>;
   delete<T = any>(path: string, callbacks: FetcherCallbacks<T>, body?: any): Promise<void>;
   createSocket(path: string, callbacks: CreateSocketCallbacks): void;
-  sendSocket(data: TSocket, callbacks: SendSocketCallbacks): void;
+  sendSocket(data: TSocket): void;
+  getSocketMessage(callbacks: GetSocketMessageCallbacks): void;
 }
 
 const DOMAIN = 'localhost:8080'
@@ -101,26 +102,17 @@ export default class Fetcher implements IFetcher {
     }
   }
 
-  sendSocket(data: TSocket, callbacks: SendSocketCallbacks): void {
+  sendSocket(data: TSocket): void {
     if (this.socket) {
       this.socket.send(JSON.stringify(data));
-      this.getSocketMessage({
-        onSuccess: (result) => {
-          callbacks.onSuccess(result);
-        },
-        onError: e => callbacks.onError(e)
-      });
-    } else {
-      const error = new Error('Connect failed. Please try again...');
-      callbacks.onError(error);
     }
   }
 
-  private getSocketMessage(callbacks: SendSocketCallbacks): void {
+  getSocketMessage(callbacks: GetSocketMessageCallbacks): void {
     if (this.socket) {
       this.socket.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
-        callbacks.onSuccess(wsData.data);
+        callbacks.onSuccess(wsData);
       }
     } else {
       const error = new Error('Connect failed. Please try again...');

@@ -19,8 +19,12 @@ export class UseCaseHandler {
   execute<I extends UseCaseInputData, O extends UseCaseOutputData>(
     useCase: UseCase<I, O>,
     inputData: I,
-    useCaseCallbacks: UseCaseCallbacks<O>
+    useCaseCallbacks?: UseCaseCallbacks<O>
   ): void {
-    useCase.execute(inputData, useCaseCallbacks);
+    if (useCaseCallbacks) {
+      useCase.execute(inputData, useCaseCallbacks);
+    } else {
+      useCase.execute(inputData);
+    }
   }
 }

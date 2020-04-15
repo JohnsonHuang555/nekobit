@@ -8,17 +8,12 @@ export class StartGameUseCase implements StartGame.UseCase {
     this.repository = repository;
   }
 
-  execute(inputData: StartGame.InputData, callbacks: StartGame.Callbacks) {
+  execute(inputData: StartGame.InputData) {
     const {
       roomID,
       roomMode
     } = inputData;
 
-    this.repository.startGame(roomID, roomMode, {
-      onSuccess: (result) => {
-        callbacks.onSuccess({ roomInfo: result });
-      },
-      onError: callbacks.onError,
-    });
+    this.repository.startGame(roomID, roomMode);
   }
 }

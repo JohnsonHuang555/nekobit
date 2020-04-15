@@ -8,16 +8,11 @@ export class JoinRoomUseCase implements JoinRoom.UseCase {
     this.repository = repository;
   }
 
-  execute(inputData: JoinRoom.InputData, callbacks: JoinRoom.Callbacks) {
+  execute(inputData: JoinRoom.InputData) {
     const {
       roomID,
     } = inputData;
 
-    this.repository.joinRoom(roomID, {
-      onSuccess: (result) => {
-        callbacks.onSuccess({ roomInfo: result });
-      },
-      onError: callbacks.onError,
-    });
+    this.repository.joinRoom(roomID);
   }
 }

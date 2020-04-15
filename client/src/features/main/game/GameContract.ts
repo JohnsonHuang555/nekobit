@@ -5,6 +5,7 @@ export namespace GameContract {
   export type GamePageParams = { id: string };
   export interface Presenter {
     mount(params: GamePageParams): void;
+    getMessageHandler(): void;
     getGameInfo(id: string): void;
     getRooms(): void;
     createRoom(

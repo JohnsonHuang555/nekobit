@@ -16,11 +16,6 @@ export class CreateRoomUseCase implements CreateRoom.UseCase {
       roomTitle,
     } = inputData;
 
-    this.repository.createRoom(gameName, roomPassword, roomTitle, roomMode, {
-      onSuccess: (result) => {
-        callbacks.onSuccess({ roomID: result });
-      },
-      onError: callbacks.onError,
-    });
+    this.repository.createRoom(gameName, roomPassword, roomTitle, roomMode);
   }
 }

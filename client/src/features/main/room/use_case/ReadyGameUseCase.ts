@@ -8,16 +8,11 @@ export class ReadyGameUseCase implements ReadyGame.UseCase {
     this.repository = repository;
   }
 
-  execute(inputData: ReadyGame.InputData, callbacks: ReadyGame.Callbacks) {
+  execute(inputData: ReadyGame.InputData) {
     const {
       roomID,
     } = inputData;
 
-    this.repository.readyGame(roomID, {
-      onSuccess: (result) => {
-        callbacks.onSuccess({ roomUserList: result });
-      },
-      onError: callbacks.onError,
-    });
+    this.repository.readyGame(roomID);
   }
 }

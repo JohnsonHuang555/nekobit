@@ -9,6 +9,8 @@ import { CreateRoom } from "../use_cases/base/CreateRoomUseCaseItf";
 import { CreateRoomUseCase } from "../use_cases/CreateRoomUseCase";
 import { ConnectSocket } from "../use_cases/base/ConnectSocketUseCaseItf";
 import { ConnectSocketUseCase } from "../use_cases/ConnectSocketUseCase";
+import { GetSocketMessage } from "../use_cases/base/GetSocketMessageUseCaseItf";
+import { GetSocketMessageUseCase } from "../use_cases/GetSocketMessageUseCase";
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -34,5 +36,9 @@ export class Injection {
 
   static provideCreateRoomUseCase(): CreateRoom.UseCase {
     return new CreateRoomUseCase(this.provideGamesRepository());
+  }
+
+  static provideGetSocketMessageUseCase(): GetSocketMessage.UseCase {
+    return new GetSocketMessageUseCase(this.provideGamesRepository());
   }
 }

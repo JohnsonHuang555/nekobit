@@ -47,6 +47,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       this,
       Injection.provideUseCaseHandler(),
       Injection.provideConnectSocketUseCase(),
+      Injection.provideGetSocketMessageUseCase(),
       Injection.provideGetGameInfoUseCase(),
       Injection.provideGetRoomsUseCase(),
       Injection.provideCreateRoomUseCase(),
