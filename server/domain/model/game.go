@@ -1,23 +1,18 @@
 package model
 
+import "time"
+
 // Game schema structure
 type Game struct {
-	id           string
-	name         string
-	maxPlayers   int
-	rules        []string
-	brief        string
-	description  string
-	imgURL       string
-	estimateTime int
-	createdDate  string
-}
-
-func (g *Game) GetGame() *Game {
-	return &Game{
-		id:         g.id,
-		name:       g.name,
-		maxPlayers: g.maxPlayers,
-		rules:      g.rules,
-	}
+	ID           string    `json:"id,omitempty"`
+	Name         string    `json:"name"`
+	MaxPlayers   int       `json:"max_players"`
+	Rules        []string  `json:"rules"`
+	Brief        string    `json:"brief"`
+	Description  string    `json:"description"`
+	ImgURL       string    `json:"img_url"`
+	EstimateTime int       `json:"estimate_time"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	DeletedAt    time.Time `json:"deleted_at"`
 }
