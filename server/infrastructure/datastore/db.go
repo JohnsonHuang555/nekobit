@@ -11,11 +11,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// DbCollection means all db collections
 type DbCollection struct {
 	GameCollection *mongo.Collection
 	RoomCollection *mongo.Collection
 }
 
+// NewDB initial db settings
 func NewDB() *DbCollection {
 	// Set client options
 	clientOptions := options.Client().ApplyURI(config.C.Database.ConnectionString)

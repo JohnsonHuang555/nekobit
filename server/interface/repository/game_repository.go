@@ -7,6 +7,7 @@ import (
 	"server/infrastructure/datastore"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type gameRepository struct {
@@ -15,6 +16,7 @@ type gameRepository struct {
 
 type GameRepository interface {
 	FindAll(g []*model.Game) ([]*model.Game, error)
+	FindOne(id string) (*model.Game, error)
 }
 
 func NewGameRepository(db *datastore.DbCollection) GameRepository {
@@ -44,4 +46,17 @@ func (gr *gameRepository) FindAll(g []*model.Game) ([]*model.Game, error) {
 
 	cur.Close(context.Background())
 	return g, nil
+}
+
+func (gr *gameRepository) FindOne(id string) (*model.Game, error) {
+	var game *model.Game
+	gameID, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": gameID}
+	err := gr.db.GameCollection.FindOne(context.Background(), filter).Decode(&game)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return game, err
 }

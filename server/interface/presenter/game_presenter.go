@@ -7,6 +7,7 @@ type gamePresenter struct {
 
 type GamePresenter interface {
 	ResponseGames(g []*model.Game) []*model.Game
+	ResponseOneGame(g *model.Game) *model.Game
 }
 
 func NewGamePresenter() GamePresenter {
@@ -20,4 +21,8 @@ func (gp *gamePresenter) ResponseGames(games []*model.Game) []*model.Game {
 	}
 
 	return games
+}
+
+func (gp *gamePresenter) ResponseOneGame(game *model.Game) *model.Game {
+	return game
 }

@@ -12,6 +12,7 @@ func NewRouter(e *echo.Echo, c controller.AppController) *echo.Echo {
 	e.Use(middleware.Recover())
 
 	e.GET("/api/getAllGames", func(context echo.Context) error { return c.GetGames(context) })
+	e.GET("/api/getGameInfo", func(context echo.Context) error { return c.GetGameInfo(context) })
 
 	return e
 }
