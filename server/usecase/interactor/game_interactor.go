@@ -1,3 +1,4 @@
+// interactor is in charge of Input Port
 package interactor
 
 import (

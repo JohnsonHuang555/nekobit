@@ -27,7 +27,7 @@ import (
 func main() {
 	config.ReadConfig()
 	db := datastore.NewDB()
-	r := registry.NewRegistry(db.GameCollection)
+	r := registry.NewRegistry(db)
 
 	e := echo.New()
 	e = router.NewRouter(e, r.NewAppController())

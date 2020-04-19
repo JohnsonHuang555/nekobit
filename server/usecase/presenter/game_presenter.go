@@ -1,3 +1,4 @@
+// presenter is in charge of Output Port
 package presenter
 
 import "server/domain/model"

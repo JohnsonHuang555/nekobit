@@ -1,20 +1,19 @@
 package registry
 
 import (
+	"server/infrastructure/datastore"
 	"server/interface/controller"
-
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type registry struct {
-	db *mongo.Collection
+	db *datastore.DbCollection
 }
 
 type Registry interface {
 	NewAppController() controller.AppController
 }
 
-func NewRegistry(db *mongo.Collection) Registry {
+func NewRegistry(db *datastore.DbCollection) Registry {
 	return &registry{db}
 }
 

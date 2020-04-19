@@ -4,25 +4,26 @@ import (
 	"context"
 	"log"
 	"server/domain/model"
+	"server/infrastructure/datastore"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type gameRepository struct {
-	db *mongo.Collection
+	db *datastore.DbCollection
 }
 
 type GameRepository interface {
 	FindAll(g []*model.Game) ([]*model.Game, error)
 }
 
-func NewGameRepository(db *mongo.Collection) GameRepository {
+func NewGameRepository(db *datastore.DbCollection) GameRepository {
 	return &gameRepository{db}
 }
 
+// FindAll is an actual implementation of the interface in usecase/repository/game_repository.go
 func (gr *gameRepository) FindAll(g []*model.Game) ([]*model.Game, error) {
-	cur, err := gr.db.Find(context.Background(), bson.M{})
+	cur, err := gr.db.GameCollection.Find(context.Background(), bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
