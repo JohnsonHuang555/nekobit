@@ -33,9 +33,9 @@ func (gc *gameController) GetGames(c Context) error {
 
 func (gc *gameController) GetGameInfo(c Context) error {
 	var g *model.Game
-	// name := c.QueryParam("name")
+	id := c.QueryParam("id")
 
-	g, err := gc.gameInteractor.GetOne(g.ID.Hex())
+	g, err := gc.gameInteractor.GetOne(id)
 	if err != nil {
 		return err
 	}
