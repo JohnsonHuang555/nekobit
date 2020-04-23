@@ -39,7 +39,3 @@ func (gi *gameInteractor) GetOne(id string) (*model.Game, error) {
 
 	return gi.GamePresenter.ResponseOneGame(g), nil
 }
-
-func (gi *gameInteractor) RemoveOne() {
-
-}
