@@ -30,7 +30,7 @@ func (rr *roomRepository) FindAll(r []*model.Room) ([]*model.Room, error) {
 }
 
 func (rr *roomRepository) FindByID(id string) (*model.Room, error) {
-	index := rr.findByID(id)
+	index := rr.findIndexByID(id)
 	if index == -1 {
 		return nil, errors.New("Room not found")
 	}
@@ -38,7 +38,7 @@ func (rr *roomRepository) FindByID(id string) (*model.Room, error) {
 }
 
 func (rr *roomRepository) DeleteByID(id string) error {
-	index := rr.findByID(id)
+	index := rr.findIndexByID(id)
 	if index == -1 {
 		return errors.New("Room not found")
 	}
@@ -48,7 +48,7 @@ func (rr *roomRepository) DeleteByID(id string) error {
 
 func (rr *roomRepository) UpdateByID(id string, room *model.Room) (*model.Room, error) {
 	var r *model.Room
-	index := rr.findByID(id)
+	index := rr.findIndexByID(id)
 	if index == -1 {
 		return r, errors.New("Room not found")
 	}
@@ -64,8 +64,8 @@ func (rr *roomRepository) Create(title string, mode int, password string, gameID
 	return nil
 }
 
-// findByID if not found return -1
-func (rr *roomRepository) findByID(id string) int {
+// findIndexByID if not found return -1
+func (rr *roomRepository) findIndexByID(id string) int {
 	// for each
 	index := -1
 	for i := 0; i < len(rr.rooms); i++ {
