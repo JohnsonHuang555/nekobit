@@ -1,4 +1,4 @@
-package model
+package domain
 
 import (
 	"time"
@@ -18,5 +18,16 @@ type Game struct {
 	EstimateTime int                `json:"estimate_time"`
 	CreatedAt    time.Time          `json:"created_at"`
 	UpdatedAt    time.Time          `json:"updated_at"`
-	DeletedAt    time.Time          `json:"deleted_at"`
+}
+
+// GameUseCase represent the game's useacses
+type GameUseCase interface {
+	GetGames() ([]*Game, error)
+	GetGameInfo(id string) (*Game, error)
+}
+
+// GameRepository represent the game's repository contract
+type GameRepository interface {
+	FindAll(g []*Game) ([]*Game, error)
+	FindOne(id string) (*Game, error)
 }
