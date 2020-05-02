@@ -23,7 +23,7 @@ type RoomUseCase interface {
 	JoinRoom(id string, userID string, userName string) ([]*User, error)
 	LeaveRoom(id string, userID string) ([]*User, error)
 	ReadyGame(id string, userID string) ([]*User, error)
-	StartGame(id string) error
+	StartGame(id string) (*Room, error)
 	CreateRoom(title string, mode int, password string, gameID string) (string, error)
 }
 
@@ -32,6 +32,19 @@ type RoomRepository interface {
 	FindAll(r []*Room) ([]*Room, error)
 	FindByID(id string) (*Room, error)
 	DeleteByID(id string) error
-	UpdateByID(id string, room *Room) (*Room, error)
-	Create(*Room) (string, error)
+	Create(r *Room) (string, error)
+
+	UpdateStatusByID(id string, status int) (*Room, error)
+	UpdatePasswordByID(id string, password string) (*Room, error)
+	UpdateModeByID(id string, mode int) (*Room, error)
+	UpdateNowTurnByID(id string, nowTurn string) (*Room, error)
+	UpdateGameIDByID(id string, gameID string) (*Room, error)
+
+	AddUser(roomID string, u *User) ([]*User, error)
+	RemoveUser(roomID string, userID string) ([]*User, error)
+
+	UpdateUserIsReady(roomID string, userID string) ([]*User, error)
+	UpdateUserIsMaster(roomID string, userID string, isMaster bool) ([]*User, error)
+	UpdateUserPlayOrder(roomID string, userID string, playOrder int) ([]*User, error)
+	UpdateUserSide(roomID string, userID string, side string) ([]*User, error)
 }

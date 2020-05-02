@@ -1,4 +1,4 @@
-package router
+package middleware
 
 type message struct {
 	data MsgData

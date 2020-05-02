@@ -1,4 +1,4 @@
-package http
+package delivery
 
 import (
 	"net/http"
@@ -8,12 +8,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// ResponseError represent the reseponse error struct
+// ResponseError represent the response error struct
 type ResponseError struct {
 	Message string `json:"message"`
 }
 
-// GameHandler  represent the httphandler for article
+// GameHandler represent the httphandler for game
 type GameHandler struct {
 	GUseCase domain.GameUseCase
 }
