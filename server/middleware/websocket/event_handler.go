@@ -9,7 +9,7 @@ func SocketEventHandler(msg MsgData, usc usecases.AppUseCase) MsgData {
 		rooms, _ := usc.GetRooms()
 		msg.Data.Rooms = rooms
 	case "joinRoom":
-		users, _ := usc.JoinRoom(msg.Data.RoomID, msg.UserID, msg.Data.Name)
+		users, _ := usc.JoinRoom(msg.Data.RoomID, msg.UserID, msg.Data.UserName)
 		msg.Data.RoomUserList = users
 	case "leaveRoom":
 		users, _ := usc.LeaveRoom(msg.Data.RoomID, msg.UserID)

@@ -36,12 +36,10 @@ type MsgData struct {
 }
 
 type Attachment struct {
-	Name         string         `json:"name,omitempty"`
+	UserName     string         `json:"userName,omitempty"`
 	IsMaster     bool           `json:"isMaster,omitempty"`
 	IsReady      bool           `json:"isReady,omitempty"`
-	ChessID      int            `json:"chessID,omitempty"`
 	GameData     interface{}    `json:"gameData,omitempty"`
-	GameName     string         `json:"gameName,omitempty"`
 	RoomPassword string         `json:"roomPassword,omitempty"`
 	RoomTitle    string         `json:"roomTitle,omitempty"`
 	RoomMode     int            `json:"roomMode,omitempty"`
@@ -51,11 +49,23 @@ type Attachment struct {
 	RoomID       string         `json:"roomID,omitempty"`
 	RoomInfo     *domain.Room   `json:"roomInfo,omitempty"`
 
-	// chines chess
-	NewLocation  int `json:"newLocation,omitempty"`
-	LocationX    int `json:"locationX,omitempty"`
-	LocationY    int `json:"locationY,omitempty"`
-	EatenChessID int `json:"eatenChessID,omitempty"`
+	domain.ChineseChess
+}
+
+// WebsocketHandler handles websocket requests from the peer.
+func WebsocketHandler(ucs usecases.AppUseCase, c echo.Context, roomID string) {
+	go h.run()
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	conn := &connection{send: make(chan MsgData), ws: ws}
+	s := subscription{conn, roomID}
+	h.register <- s
+	go s.writePump()
+	s.readPump(ucs)
 }
 
 // ReadPump pumps messages from the websocket connection to the hub.
@@ -106,20 +116,4 @@ func (s *subscription) writePump() {
 			}
 		}
 	}
-}
-
-// WebsocketHandler handles websocket requests from the peer.
-func WebsocketHandler(ucs usecases.AppUseCase, c echo.Context, roomID string) {
-	go h.run()
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID}
-	h.register <- s
-	go s.writePump()
-	s.readPump(ucs)
 }
