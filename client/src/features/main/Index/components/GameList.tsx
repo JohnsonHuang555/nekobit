@@ -38,7 +38,7 @@ const GameList = (props: GameListProps) => {
             <Box className="game-card">
               <img
                 className="game-image"
-                src={`${game.imgURL}/home.png`}
+                src={`${game.imgUrl}/home.png`}
                 alt={game.name}
                 width="100%"
                 height="100%"

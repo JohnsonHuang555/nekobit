@@ -2,7 +2,7 @@ import { GameModeCode } from "src/types/ChineseChess";
 
 export type TGame = {
   id: string;
-  imgURL: string;
+  imgUrl: string;
   name: string;
   brief: string;
   description: string;

@@ -30,6 +30,7 @@ export default class GamesRepository implements Games.DataSource {
     this.fetcher.get('/getAllGames', {
       onSuccess: (result: NetGame[]) => {
         const games = GameFactory.createArrayFromNet(result);
+        console.log(games)
         callbacks.onSuccess(games);
       },
       onError: (e) => {
@@ -39,7 +40,7 @@ export default class GamesRepository implements Games.DataSource {
   }
 
   getGameInfo(id: string, callbacks: Games.GetGameInfoCallbacks): void {
-    this.fetcher.get(`/getGameInfo/${id}`, {
+    this.fetcher.get(`/getGameInfo`, {
       onSuccess:(result: NetGame) => {
         const game = GameFactory.createFromNet(result);
         callbacks.onSuccess(game);
@@ -47,7 +48,7 @@ export default class GamesRepository implements Games.DataSource {
       onError:(e) => {
         callbacks.onError(e);
       }
-    });
+    }, { params: {id}});
   }
 
   connectSocket(path: string, callbacks: Games.ConnectSocketCallbacks): void {
