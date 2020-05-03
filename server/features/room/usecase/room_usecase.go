@@ -1,6 +1,9 @@
 package usecase
 
-import "server/domain"
+import (
+	"fmt"
+	"server/domain"
+)
 
 type roomUseCase struct {
 	roomRepo domain.RoomRepository
@@ -26,6 +29,7 @@ func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameI
 	room.Mode = mode
 	room.Password = password
 	room.GameID = gameID
+	fmt.Println(room, "rooooom")
 	id, err := ru.roomRepo.Create(room)
 	if err != nil {
 		return "", err

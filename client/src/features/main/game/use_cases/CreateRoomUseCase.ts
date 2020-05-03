@@ -10,12 +10,16 @@ export class CreateRoomUseCase implements CreateRoom.UseCase {
 
   execute(inputData: CreateRoom.InputData, callbacks: CreateRoom.Callbacks) {
     const {
-      gameName,
-      roomMode,
-      roomPassword,
-      roomTitle,
+      gameID,
+      mode,
+      password,
+      title,
     } = inputData;
-
-    this.repository.createRoom(gameName, roomPassword, roomTitle, roomMode);
+    this.repository.createRoom(gameID, password, title, mode, {
+      onSuccess: (result) => {
+        callbacks.onSuccess({ id: result });
+      },
+      onError: callbacks.onError
+    })
   }
 }

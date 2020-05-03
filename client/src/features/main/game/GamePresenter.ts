@@ -60,19 +60,28 @@ export class GamePresenter implements GameContract.Presenter {
   }
 
   createRoom(
-    gameName: string,
-    roomMode: number,
-    roomPassword: string,
-    roomTitle: string): void {
+    gameID: string,
+    mode: number,
+    password: string,
+    title: string): void {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.createRoomUseCase,
       {
-        gameName,
-        roomMode,
-        roomTitle,
-        roomPassword,
+        gameID,
+        mode,
+        password,
+        title,
+      },
+      {
+        onSuccess: (result) => {
+          this.view.setRoomID(result.id);
+          this.view.finishLoading();
+        },
+        onError: () => {
+          this.view.finishLoading();
+        }
       }
-    );
+    )
   }
 
   getMessageHandler(): void {
@@ -80,8 +89,6 @@ export class GamePresenter implements GameContract.Presenter {
       onSuccess: (result) => {
         if (result.rooms) {
           this.view.setRooms(result.rooms);
-        } else if (result.roomID) {
-          this.view.setRoomID(result.roomID);
         }
       },
       onError: () => {

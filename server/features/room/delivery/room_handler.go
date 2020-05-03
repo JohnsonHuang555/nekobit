@@ -2,9 +2,9 @@ package delivery
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"server/domain"
-	"server/infrastructure/usecases"
 	socket "server/middleware/websocket"
 
 	"github.com/labstack/echo"
@@ -18,7 +18,7 @@ type ResponseError struct {
 
 // RoomHandler represent the httphandler for room
 type RoomHandler struct {
-	RUseCase usecases.AppUseCase
+	RUseCase domain.RoomUseCase
 }
 
 type createRoomParams struct {
@@ -29,25 +29,29 @@ type createRoomParams struct {
 }
 
 // NewRoomHandler will initialize the rooms/ resources endpoint
-func NewRoomHandler(e *echo.Echo, us usecases.AppUseCase) {
+func NewRoomHandler(e *echo.Echo, us domain.RoomUseCase) {
 	handler := &RoomHandler{
 		RUseCase: us,
 	}
-	e.GET("/api/createRoom", handler.CreateRoom)
+	e.POST("/api/createRoom", handler.CreateRoom)
 	e.GET("/ws/:roomID", handler.socketHandler)
 }
 
 func (r *RoomHandler) CreateRoom(c echo.Context) error {
-	params := new(createRoomParams)
-	if err := c.Bind(params); err != nil {
-		return err
-	}
-	id, err := r.RUseCase.CreateRoom(params.Title, params.Mode, params.Password, params.GameID)
+	var params *createRoomParams
+	err := c.Bind(&params)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, id)
+	id, err := r.RUseCase.CreateRoom(params.Title, params.Mode, params.Password, params.GameID)
+
+	fmt.Println(id)
+	if err != nil {
+		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusCreated, "123")
 }
 
 func (r *RoomHandler) socketHandler(c echo.Context) error {

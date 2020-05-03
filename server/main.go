@@ -14,23 +14,27 @@ import (
 	_roomRepo "server/features/room/repository"
 	_roomUseCase "server/features/room/usecase"
 
-	_httpDeliveryMiddleware "server/middleware/http"
-
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func main() {
+	var rooms []*domain.Room
+	var roomNum int = 0
+
 	config.ReadConfig()
 	db := datastore.NewDB()
+
 	e := echo.New()
-	middL := _httpDeliveryMiddleware.InitMiddleware()
-	e.Use(middL.CORS)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
 	gameRepo := _gameRepo.NewGameRepository(db)
 	gameUseCase := _gameUseCase.NewGameUseCase(gameRepo)
 	_gameDelivery.NewGameHandler(e, gameUseCase)
 
-	var rooms []*domain.Room
-	var roomNum int = 0
 	roomRepo := _roomRepo.NewRoomRepository(rooms, roomNum)
 	roomUseCase := _roomUseCase.NewRoomUseCase(roomRepo)
 	_roomDelivery.NewRoomHandler(e, roomUseCase)

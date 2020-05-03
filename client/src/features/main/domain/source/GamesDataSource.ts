@@ -19,10 +19,11 @@ export namespace Games {
 
     // socket events
     createRoom(
-      gameName: string,
-      roomPassword: string,
-      roomTitle: string,
-      roomMode: number,
+      gameID: string,
+      password: string,
+      title: string,
+      mode: number,
+      callbacks: Games.CreateRoomCallbacks
     ): void;
     getRooms(): void;
     joinRoom(roomID: number): void;
@@ -34,6 +35,7 @@ export namespace Games {
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}
   export interface GetGameInfoCallbacks extends SuccessCallback<TGame>, ErrorCallback {}
+  export interface CreateRoomCallbacks extends SuccessCallback<string>, ErrorCallback {}
   export interface GetUserInfoCallbacks extends SuccessCallback<TUser>, ErrorCallback {}
 
   export interface ConnectSocketCallbacks extends SuccessWithoutResultCallback, ErrorCallback {}

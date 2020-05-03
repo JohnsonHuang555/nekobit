@@ -7,13 +7,15 @@ import {
 
 export namespace CreateRoom {
   export interface InputData extends UseCaseInputData {
-    gameName: string;
-    roomPassword: string;
-    roomTitle: string;
-    roomMode: number;
+    gameID: string;
+    password: string;
+    title: string;
+    mode: number;
   }
 
-  export interface OutputData extends UseCaseOutputData {}
+  export interface OutputData extends UseCaseOutputData {
+    id: string;
+  }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
 

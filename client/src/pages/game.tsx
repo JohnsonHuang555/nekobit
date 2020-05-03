@@ -23,6 +23,7 @@ interface GameViewState {
   isShowRoomList: boolean;
   isOnCreateRoom: boolean;
   isShowCreateRoomModal: boolean;
+  gameID: string;
 }
 
 class GameView extends React.Component<GameViewProps, GameViewState>
@@ -41,6 +42,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       isShowRoomList: false,
       isOnCreateRoom: false,
       isShowCreateRoomModal: false,
+      gameID: ''
     }
 
     this.presenter = new GamePresenter(
@@ -56,6 +58,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
 
   componentDidMount() {
     const id = location.search.substr(4);
+    this.setState({ gameID: id })
     this.presenter.mount({ id });
   }
 
@@ -103,7 +106,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     this.setState({ rooms });
   }
 
-  setRoomID(id: number): void {
+  setRoomID(id: string): void {
     this.presenter.getRooms();
     if (id) {
       Router.push({
@@ -114,8 +117,9 @@ class GameView extends React.Component<GameViewProps, GameViewState>
   }
 
   private createRoom({ roomMode, roomPassword, roomTitle}: TCreateRoom): void {
-    const gameName = this.state.gameInfo?.name || '';
-    this.presenter.createRoom(gameName, roomMode, roomPassword, roomTitle);
+    const gameID = this.state.gameID || '';
+    this.presenter.createRoom(gameID, roomMode, roomPassword, roomTitle);
+    this.presenter.getRooms();
   }
 
   private setIsShowCreateRoomModal(show: boolean): void {

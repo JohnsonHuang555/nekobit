@@ -3,7 +3,6 @@ import { IFetcher } from "src/api/Fetcher";
 import { NetGame } from "src/features/main/domain/remote/NetGame";
 import { GameFactory } from "src/features/main/domain/factories/GameFactory";
 import { SocketEvent } from "src/types/Socket";
-import { TRoom, TRoomUser } from "../models/Room";
 import { TUser } from "src/types/Account";
 
 export default class GamesRepository implements Games.DataSource {
@@ -30,7 +29,6 @@ export default class GamesRepository implements Games.DataSource {
     this.fetcher.get('/getAllGames', {
       onSuccess: (result: NetGame[]) => {
         const games = GameFactory.createArrayFromNet(result);
-        console.log(games)
         callbacks.onSuccess(games);
       },
       onError: (e) => {
@@ -72,24 +70,19 @@ export default class GamesRepository implements Games.DataSource {
   }
 
   createRoom(
-    gameName: string,
-    roomPassword: string,
-    roomTitle: string,
-    roomMode: number,
+    gameID: string,
+    password: string,
+    title: string,
+    mode: number,
+    callbacks: Games.CreateRoomCallbacks
   ): void {
-    this.fetcher.sendSocket(
-      {
-        userID: this.userInfo?.id,
-        event: SocketEvent.CreateRoom,
-        data: {
-          gameName,
-          roomPassword,
-          roomTitle,
-          roomMode,
-          name: this.userInfo?.name
-        }
+    this.fetcher.post('/createRoom', {
+      onSuccess: (result: string) => {
+        console.log(result)
+        callbacks.onSuccess(result);
       },
-    );
+      onError: e => callbacks.onError(e)
+    }, { gameID, password, title, mode });
   }
 
   joinRoom(roomID: number): void {

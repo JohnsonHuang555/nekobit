@@ -9,7 +9,7 @@ export namespace GameContract {
     getGameInfo(id: string): void;
     getRooms(): void;
     createRoom(
-      gameName: string,
+      gameID: string,
       roomMode: number,
       roomPassword: string,
       roomTitle: string
@@ -21,6 +21,6 @@ export namespace GameContract {
     finishLoading(): void;
     setGameInfo(gameInfo: TGame): void;
     setRooms(rooms: TRoom[]): void;
-    setRoomID(id: number): void;
+    setRoomID(id: string): void;
   }
 }
