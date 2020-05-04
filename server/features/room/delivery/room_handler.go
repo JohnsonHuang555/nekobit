@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"server/domain"
-	"server/infrastructure/usecases"
 	socket "server/middleware/websocket"
 
 	"github.com/labstack/echo"
@@ -18,7 +17,7 @@ type ResponseError struct {
 
 // RoomHandler represent the httphandler for room
 type RoomHandler struct {
-	RUseCase usecases.AppUseCase
+	RUseCase domain.RoomUseCase
 }
 
 type createRoomParams struct {
@@ -29,11 +28,11 @@ type createRoomParams struct {
 }
 
 // NewRoomHandler will initialize the rooms/ resources endpoint
-func NewRoomHandler(e *echo.Echo, us usecases.AppUseCase) {
+func NewRoomHandler(e *echo.Echo, us domain.RoomUseCase) {
 	handler := &RoomHandler{
 		RUseCase: us,
 	}
-	e.GET("/api/createRoom", handler.CreateRoom)
+	e.POST("/api/createRoom", handler.CreateRoom)
 	e.GET("/ws/:roomID", handler.socketHandler)
 }
 
