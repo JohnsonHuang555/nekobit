@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	"server/domain"
 )
 
@@ -24,12 +23,12 @@ func (ru *roomUseCase) GetRooms() ([]*domain.Room, error) {
 }
 
 func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID string) (string, error) {
-	var room *domain.Room
-	room.Title = title
-	room.Mode = mode
-	room.Password = password
-	room.GameID = gameID
-	fmt.Println(room, "rooooom")
+	room := &domain.Room{
+		Title:    title,
+		Mode:     mode,
+		Password: password,
+		GameID:   gameID,
+	}
 	id, err := ru.roomRepo.Create(room)
 	if err != nil {
 		return "", err
