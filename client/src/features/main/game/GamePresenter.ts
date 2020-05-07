@@ -3,8 +3,8 @@ import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { GetGameInfo } from "src/features/main/game/use_cases/base/GetGameInfoUseCaseItf";
 import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseItf";
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
-import { ConnectSocket } from "./use_cases/base/ConnectSocketUseCaseItf";
-import { GetSocketMessage } from "./use_cases/base/GetSocketMessageUseCaseItf";
+import { ConnectSocket } from "src/features/main/game/use_cases/base/ConnectSocketUseCaseItf";
+import { GetSocketMessage } from "src/features/main/game/use_cases/base/GetSocketMessageUseCaseItf";
 
 const SOCKET_PATH = 'game_page';
 
@@ -74,6 +74,7 @@ export class GamePresenter implements GameContract.Presenter {
       },
       {
         onSuccess: (result) => {
+          this.getRooms();
           this.view.setRoomID(result.id);
           this.view.finishLoading();
         },

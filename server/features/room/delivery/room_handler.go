@@ -2,7 +2,6 @@ package delivery
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"server/domain"
 	socket "server/middleware/websocket"
@@ -34,7 +33,7 @@ func NewRoomHandler(e *echo.Echo, us domain.RoomUseCase) {
 		RUseCase: us,
 	}
 	e.POST("/api/createRoom", handler.CreateRoom)
-	e.GET("/ws/:roomID", handler.socketHandler)
+	e.GET("/ws/:roomID", handler.SocketHandler)
 }
 
 func (r *RoomHandler) CreateRoom(c echo.Context) error {
@@ -45,16 +44,14 @@ func (r *RoomHandler) CreateRoom(c echo.Context) error {
 	}
 
 	id, err := r.RUseCase.CreateRoom(params.Title, params.Mode, params.Password, params.GameID)
-
-	fmt.Println(id)
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusCreated, "123")
+	return c.JSON(http.StatusCreated, id)
 }
 
-func (r *RoomHandler) socketHandler(c echo.Context) error {
+func (r *RoomHandler) SocketHandler(c echo.Context) error {
 	roomID := c.Param("roomID")
 	if roomID != "" {
 		socket.WebsocketHandler(r.RUseCase, c, roomID)

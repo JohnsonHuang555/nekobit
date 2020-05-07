@@ -1,10 +1,10 @@
 package middleware
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"server/domain"
-	"server/infrastructure/usecases"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -46,14 +46,13 @@ type Attachment struct {
 	RoomStatus   int            `json:"roomStatus,omitempty"`
 	RoomUserList []*domain.User `json:"roomUserList,omitempty"`
 	Rooms        []*domain.Room `json:"rooms,omitempty"`
-	RoomID       string         `json:"roomID,omitempty"`
 	RoomInfo     *domain.Room   `json:"roomInfo,omitempty"`
 
 	domain.ChineseChess
 }
 
 // WebsocketHandler handles websocket requests from the peer.
-func WebsocketHandler(ucs usecases.AppUseCase, c echo.Context, roomID string) {
+func WebsocketHandler(ru domain.RoomUseCase, c echo.Context, roomID string) {
 	go h.run()
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
@@ -62,14 +61,14 @@ func WebsocketHandler(ucs usecases.AppUseCase, c echo.Context, roomID string) {
 		return
 	}
 	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID}
+	s := subscription{conn, roomID, ru}
 	h.register <- s
 	go s.writePump()
-	s.readPump(ucs)
+	s.readPump()
 }
 
 // ReadPump pumps messages from the websocket connection to the hub.
-func (s subscription) readPump(ucs usecases.AppUseCase) {
+func (s subscription) readPump() {
 	c := s.conn
 	defer func() {
 		h.unregister <- s
@@ -81,7 +80,8 @@ func (s subscription) readPump(ucs usecases.AppUseCase) {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-		newMsg := SocketEventHandler(msg, ucs)
+		fmt.Println(msg.Event)
+		newMsg := SocketEventHandler(msg, s.room, s.roomUseCase)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("error: %v", err)

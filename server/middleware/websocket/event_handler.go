@@ -1,24 +1,26 @@
 package middleware
 
-import "server/infrastructure/usecases"
+import (
+	"server/domain"
+)
 
 // SocketEventHandler handle every event from client
-func SocketEventHandler(msg MsgData, usc usecases.AppUseCase) MsgData {
+func SocketEventHandler(msg MsgData, roomID string, ru domain.RoomUseCase) MsgData {
 	switch msg.Event {
 	case "getRooms":
-		rooms, _ := usc.GetRooms()
+		rooms, _ := ru.GetRooms()
 		msg.Data.Rooms = rooms
 	case "joinRoom":
-		users, _ := usc.JoinRoom(msg.Data.RoomID, msg.UserID, msg.Data.UserName)
+		users, _ := ru.JoinRoom(roomID, msg.UserID, msg.Data.UserName)
 		msg.Data.RoomUserList = users
 	case "leaveRoom":
-		users, _ := usc.LeaveRoom(msg.Data.RoomID, msg.UserID)
+		users, _ := ru.LeaveRoom(roomID, msg.UserID)
 		msg.Data.RoomUserList = users
 	case "readyGame":
-		users, _ := usc.ReadyGame(msg.Data.RoomID, msg.UserID)
+		users, _ := ru.ReadyGame(roomID, msg.UserID)
 		msg.Data.RoomUserList = users
 	case "startGame":
-		room, _ := usc.StartGame(msg.Data.RoomID)
+		room, _ := ru.StartGame(roomID)
 		msg.Data.RoomInfo = room
 	}
 	return msg
