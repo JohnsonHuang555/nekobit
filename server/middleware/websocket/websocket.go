@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"server/domain"
@@ -80,7 +79,6 @@ func (s subscription) readPump() {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-		fmt.Println(msg.Event)
 		newMsg := SocketEventHandler(msg, s.room, s.roomUseCase)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {

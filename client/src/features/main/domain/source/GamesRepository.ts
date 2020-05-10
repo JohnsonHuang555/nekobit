@@ -78,7 +78,6 @@ export default class GamesRepository implements Games.DataSource {
   ): void {
     this.fetcher.post('/createRoom', {
       onSuccess: (result: string) => {
-        console.log(result)
         callbacks.onSuccess(result);
       },
       onError: e => callbacks.onError(e)

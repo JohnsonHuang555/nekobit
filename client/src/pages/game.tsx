@@ -107,13 +107,12 @@ class GameView extends React.Component<GameViewProps, GameViewState>
   }
 
   setRoomID(id: string): void {
-    console.log(id)
-    // if (id) {
-    //   Router.push({
-    //     pathname: '/room',
-    //     query: { id }
-    //   });
-    // }
+    if (id) {
+      Router.push({
+        pathname: '/room',
+        query: { id }
+      });
+    }
   }
 
   private createRoom({ roomMode, roomPassword, roomTitle}: TCreateRoom): void {

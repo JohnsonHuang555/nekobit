@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"server/domain"
 )
 
@@ -37,12 +38,14 @@ func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameI
 }
 
 func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) ([]*domain.User, error) {
-	var user *domain.User
-	user.ID = userID
-	user.Name = userName
-	user.PlayOrder = 0
+	user := &domain.User{
+		ID:        userID,
+		Name:      userName,
+		PlayOrder: 0,
+	}
 
 	users, err := ru.roomRepo.AddUser(id, user)
+	fmt.Println(users, "Users")
 	if err != nil {
 		return nil, err
 	}

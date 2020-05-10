@@ -19,7 +19,7 @@ func NewRoomRepository(rooms []*domain.Room, roomNumber int) domain.RoomReposito
 }
 
 func (rr *roomRepository) FindAll(r []*domain.Room) ([]*domain.Room, error) {
-	return r, nil
+	return rr.rooms, nil
 }
 
 func (rr *roomRepository) FindByID(id string) (*domain.Room, error) {

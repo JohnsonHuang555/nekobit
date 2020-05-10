@@ -70,11 +70,11 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
                   <FontAwesomeIcon icon={faDoorOpen}/>
                 </span>
               </div>
-              <div className="content">
+              {/* <div className="content">
                 {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
                   <RoomUser key={user.id} user={user}/>
                 ))}
-              </div>
+              </div> */}
             </div>
             <div className="chat-block"></div>
           </div>
@@ -127,13 +127,13 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       roomInfo
     } = this.state;
 
-    if (userInfo && roomInfo) {
-      const user = roomInfo.userList.find(u => {
-        return u.id === userInfo.id;
-      });
+    // if (userInfo && roomInfo) {
+    //   const user = roomInfo.userList.find(u => {
+    //     return u.id === userInfo.id;
+    //   });
 
-      return user ? user.isMaster : false;
-    }
+    //   return user ? user.isMaster : false;
+    // }
     return false;
   }
 
@@ -143,13 +143,13 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       roomInfo
     } = this.state;
 
-    if (userInfo && roomInfo) {
-      const user = roomInfo.userList.find(u => {
-        return u.id === userInfo.id;
-      });
+    // if (userInfo && roomInfo) {
+    //   const user = roomInfo.userList.find(u => {
+    //     return u.id === userInfo.id;
+    //   });
 
-      return (user && user.isReady) ? 'Cancel' : 'Ready';
-    }
+    //   return (user && user.isReady) ? 'Cancel' : 'Ready';
+    // }
     return 'Ready';
   }
 
@@ -158,9 +158,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       roomInfo
     } = this.state;
 
-    return roomInfo && roomInfo.userList.find(u => {
-      return u.isReady === false;
-    }) ? true : false;
+    // return roomInfo && roomInfo.userList.find(u => {
+    //   return u.isReady === false;
+    // }) ? true : false;
+    return false;
   }
 
   private startGame(mode: number): void {
