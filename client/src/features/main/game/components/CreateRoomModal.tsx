@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GamePlayButton, { borderClass } from 'src/components/GamePlayButton';
+import { Button } from '@material-ui/core';
 import { faTimes, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '@styles/components/modals/modal.scss';
@@ -89,12 +89,12 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
                   onChange={(e) => setRoomPassword(e.target.value)}
                 />
               </div>
-              <GamePlayButton
-                className={"create"}
-                text={'Create'}
-                borderClass={borderClass.THICKBLUE}
+              <Button
+                className="create"
                 onClick={onSubmit}
-              />
+              >
+                Create
+              </Button>
             </div>
           </div>
         </div>
