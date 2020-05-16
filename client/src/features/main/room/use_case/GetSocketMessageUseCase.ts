@@ -1,6 +1,7 @@
 import { Games } from "../../domain/source/GamesDataSource";
 import { GetSocketMessage } from "./base/GetSocketMessageUseCaseItf";
 import { SocketEvent } from "src/types/Socket";
+import { UserFactory } from "../../domain/factories/UserFactory";
 
 export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   private repository: Games.DataSource;
@@ -16,8 +17,8 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
         let newRoomInfo = {...roomInfo};
         switch (result.event) {
           case SocketEvent.JoinRoom:
-            console.log(result.data)
-            // newRoomInfo.userList = result.data;
+            const roomUserList = UserFactory.createArrayFromNet(result.data.roomUserList);
+            newRoomInfo.userList = roomUserList;
             break;
           case SocketEvent.LeaveRoom:
             newRoomInfo = result.data.roomInfo;

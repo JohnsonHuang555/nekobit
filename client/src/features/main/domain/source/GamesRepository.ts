@@ -91,6 +91,7 @@ export default class GamesRepository implements Games.DataSource {
         event: SocketEvent.JoinRoom,
         data: {
           roomID,
+          userName: this.userInfo?.name
         }
       },
     );
