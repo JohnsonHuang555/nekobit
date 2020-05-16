@@ -1,7 +1,8 @@
-import { Games } from "../../domain/source/GamesDataSource";
-import { GetSocketMessage } from "./base/GetSocketMessageUseCaseItf";
+import { Games } from "src/features/main/domain/source/GamesDataSource";
+import { GetSocketMessage } from "src/features/main/room/use_case/base/GetSocketMessageUseCaseItf";
 import { SocketEvent } from "src/types/Socket";
-import { UserFactory } from "../../domain/factories/UserFactory";
+import { UserFactory } from "src/features/main/domain/factories/UserFactory";
+import { RoomFactory } from "../../domain/factories/RoomFactory";
 
 export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   private repository: Games.DataSource;
@@ -16,19 +17,27 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
       onSuccess: (result) => {
         let newRoomInfo = {...roomInfo};
         switch (result.event) {
-          case SocketEvent.JoinRoom:
+          case SocketEvent.JoinRoom: {
+            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
+            console.log(roomInfo);
+            newRoomInfo = roomInfo;
+            break;
+          }
+          case SocketEvent.LeaveRoom: {
+            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
+            newRoomInfo = roomInfo;
+            break;
+          }
+          case SocketEvent.ReadyGame: {
             const roomUserList = UserFactory.createArrayFromNet(result.data.roomUserList);
             newRoomInfo.userList = roomUserList;
             break;
-          case SocketEvent.LeaveRoom:
-            newRoomInfo = result.data.roomInfo;
+          }
+          case SocketEvent.StartGame: {
+            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
+            newRoomInfo = roomInfo;
             break;
-          case SocketEvent.ReadyGame:
-            newRoomInfo.userList = result.data.roomUserList;
-            break;
-          case SocketEvent.StartGame:
-            newRoomInfo = result.data.roomInfo;
-            break;
+          }
         }
         callbacks.onSuccess({ roomInfo: newRoomInfo });
       },

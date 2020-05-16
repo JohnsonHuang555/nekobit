@@ -8,9 +8,9 @@ import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import GameScreen from 'src/features/main/room/components/GameScreen';
-import '@styles/pages/room.scss';
 import { TUser } from 'src/types/Account';
 import { Button } from '@material-ui/core';
+import '@styles/pages/room.scss';
 
 interface RoomViewProps {}
 interface RoomViewState {
@@ -161,7 +161,6 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     return roomInfo && roomInfo.userList.find(u => {
       return u.isReady === false;
     }) ? true : false;
-    return false;
   }
 
   private startGame(mode: number): void {

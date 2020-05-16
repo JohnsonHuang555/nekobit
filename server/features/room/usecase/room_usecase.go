@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	"server/domain"
 )
 
@@ -37,7 +36,7 @@ func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameI
 	return id, nil
 }
 
-func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) ([]*domain.User, error) {
+func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) (*domain.Room, error) {
 	user := &domain.User{
 		ID:        userID,
 		Name:      userName,
@@ -45,12 +44,13 @@ func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) ([]*d
 	}
 
 	users, err := ru.roomRepo.AddUser(id, user)
-	fmt.Println(users, "Users")
+	room, err := ru.roomRepo.FindByID(id)
+	room.UserList = users
 	if err != nil {
 		return nil, err
 	}
 
-	return users, nil
+	return room, nil
 }
 
 func (ru *roomUseCase) LeaveRoom(id string, userID string) ([]*domain.User, error) {

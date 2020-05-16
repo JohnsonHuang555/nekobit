@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { NetUser } from 'src/features/main/domain/remote/NetUser';
-import { TRoomUser } from '../models/Room';
+import { TRoomUser } from 'src/features/main/domain/models/Room';
 
 export class UserFactory {
   static createFromNet(netUser: NetUser): TRoomUser {

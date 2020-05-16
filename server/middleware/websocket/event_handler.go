@@ -11,8 +11,8 @@ func SocketEventHandler(msg MsgData, roomID string, ru domain.RoomUseCase) MsgDa
 		rooms, _ := ru.GetRooms()
 		msg.Data.Rooms = rooms
 	case "joinRoom":
-		users, _ := ru.JoinRoom(roomID, msg.UserID, msg.Data.UserName)
-		msg.Data.RoomUserList = users
+		room, _ := ru.JoinRoom(roomID, msg.UserID, msg.Data.UserName)
+		msg.Data.RoomInfo = room
 	case "leaveRoom":
 		users, _ := ru.LeaveRoom(roomID, msg.UserID)
 		msg.Data.RoomUserList = users

@@ -1,3 +1,5 @@
+import { Moment } from 'moment';
+
 export type TRoom = {
   id: number;
   title: string;
@@ -7,6 +9,9 @@ export type TRoom = {
   nowTurn: string;
   gameData: any;
   gameID: string;
+  roomNumber: number;
+  password: string;
+  createAt: Moment;
 }
 
 export type TRoomUser = {

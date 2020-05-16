@@ -4,7 +4,6 @@ import {
   SuccessWithoutResultCallback
 } from "src/domain/source/base/RepositoryCallbacks";
 import { TGame } from "src/features/main/domain/models/Game";
-import { TRoom, TRoomUser } from "../models/Room";
 import { TUser } from "src/types/Account";
 import { TSocket } from "src/types/Socket";
 

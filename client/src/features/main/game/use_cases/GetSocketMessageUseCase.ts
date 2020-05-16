@@ -1,6 +1,7 @@
-import { Games } from "../../domain/source/GamesDataSource";
+import { Games } from "src/features/main/domain/source/GamesDataSource";
 import { SocketEvent } from "src/types/Socket";
-import { GetSocketMessage } from "./base/GetSocketMessageUseCaseItf";
+import { GetSocketMessage } from "src/features/main/game/use_cases/base/GetSocketMessageUseCaseItf";
+import { RoomFactory } from "src/features/main/domain/factories/RoomFactory";
 
 export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   private repository: Games.DataSource;
@@ -14,7 +15,8 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
       onSuccess: (result) => {
         switch (result.event) {
           case SocketEvent.GetRooms:
-            callbacks.onSuccess({ rooms: result.data.rooms });
+            const rooms = RoomFactory.createArrayFromNet(result.data.rooms || []);
+            callbacks.onSuccess({ rooms });
             break;
           case SocketEvent.CreateRoom:
             callbacks.onSuccess({ roomID: result.data.roomID });

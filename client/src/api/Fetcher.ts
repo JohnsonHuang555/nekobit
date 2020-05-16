@@ -63,7 +63,6 @@ export default class Fetcher implements IFetcher {
   async post<T = any>(path: string, callbacks: FetcherCallbacks<T>, body?: any): Promise<void> {
     await this.client.post(path, body)
       .then(res => {
-        console.log(res)
         callbacks.onSuccess(res.data)
       })
       .catch(error => callbacks.onError(error));
