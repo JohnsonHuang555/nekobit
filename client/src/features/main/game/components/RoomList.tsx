@@ -1,6 +1,6 @@
 import React from 'react';
 import Router from 'next/router';
-import Room from 'src/components/RoomList/Room';
+import Room from 'src/features/main/room/components/Room';
 import { TRoom } from 'src/types/Room';
 import '@styles/components/rooms/roomList.scss';
 
