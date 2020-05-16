@@ -20,7 +20,7 @@ type Room struct {
 // RoomUseCase represent the room's usecases
 type RoomUseCase interface {
 	GetRooms() ([]*Room, error)
-	JoinRoom(id string, userID string, userName string) ([]*User, error)
+	JoinRoom(id string, userID string, userName string) (*Room, error)
 	LeaveRoom(id string, userID string) ([]*User, error)
 	ReadyGame(id string, userID string) ([]*User, error)
 	StartGame(id string) (*Room, error)

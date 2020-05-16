@@ -3,7 +3,6 @@ import { IFetcher } from "src/api/Fetcher";
 import { NetGame } from "src/features/main/domain/remote/NetGame";
 import { GameFactory } from "src/features/main/domain/factories/GameFactory";
 import { SocketEvent } from "src/types/Socket";
-import { TRoom, TRoomUser } from "../models/Room";
 import { TUser } from "src/types/Account";
 
 export default class GamesRepository implements Games.DataSource {
@@ -39,7 +38,7 @@ export default class GamesRepository implements Games.DataSource {
   }
 
   getGameInfo(id: string, callbacks: Games.GetGameInfoCallbacks): void {
-    this.fetcher.get(`/getGameInfo/${id}`, {
+    this.fetcher.get(`/getGameInfo`, {
       onSuccess:(result: NetGame) => {
         const game = GameFactory.createFromNet(result);
         callbacks.onSuccess(game);
@@ -47,7 +46,7 @@ export default class GamesRepository implements Games.DataSource {
       onError:(e) => {
         callbacks.onError(e);
       }
-    });
+    }, { params: {id}});
   }
 
   connectSocket(path: string, callbacks: Games.ConnectSocketCallbacks): void {
@@ -71,24 +70,18 @@ export default class GamesRepository implements Games.DataSource {
   }
 
   createRoom(
-    gameName: string,
-    roomPassword: string,
-    roomTitle: string,
-    roomMode: number,
+    gameID: string,
+    password: string,
+    title: string,
+    mode: number,
+    callbacks: Games.CreateRoomCallbacks
   ): void {
-    this.fetcher.sendSocket(
-      {
-        userID: this.userInfo?.id,
-        event: SocketEvent.CreateRoom,
-        data: {
-          gameName,
-          roomPassword,
-          roomTitle,
-          roomMode,
-          name: this.userInfo?.name
-        }
+    this.fetcher.post('/createRoom', {
+      onSuccess: (result: string) => {
+        callbacks.onSuccess(result);
       },
-    );
+      onError: e => callbacks.onError(e)
+    }, { gameID, password, title, mode });
   }
 
   joinRoom(roomID: number): void {
@@ -98,6 +91,7 @@ export default class GamesRepository implements Games.DataSource {
         event: SocketEvent.JoinRoom,
         data: {
           roomID,
+          userName: this.userInfo?.name
         }
       },
     );

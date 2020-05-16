@@ -1,11 +1,11 @@
 export type NetGame = {
   _id: string;
-  imgURL: string;
+  img_url: string;
   name: string;
   brief: string;
   description: string;
-  createdDate: string;
+  created_at: string;
   rules: [];
-  maxPlayers: number;
-  estimateTime: number;
+  max_players: number;
+  estimate_time: number;
 }

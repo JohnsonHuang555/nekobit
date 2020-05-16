@@ -3,8 +3,8 @@ import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { GetGameInfo } from "src/features/main/game/use_cases/base/GetGameInfoUseCaseItf";
 import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseItf";
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
-import { ConnectSocket } from "./use_cases/base/ConnectSocketUseCaseItf";
-import { GetSocketMessage } from "./use_cases/base/GetSocketMessageUseCaseItf";
+import { ConnectSocket } from "src/features/main/game/use_cases/base/ConnectSocketUseCaseItf";
+import { GetSocketMessage } from "src/features/main/game/use_cases/base/GetSocketMessageUseCaseItf";
 
 const SOCKET_PATH = 'game_page';
 
@@ -60,19 +60,29 @@ export class GamePresenter implements GameContract.Presenter {
   }
 
   createRoom(
-    gameName: string,
-    roomMode: number,
-    roomPassword: string,
-    roomTitle: string): void {
+    gameID: string,
+    mode: number,
+    password: string,
+    title: string): void {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.createRoomUseCase,
       {
-        gameName,
-        roomMode,
-        roomTitle,
-        roomPassword,
+        gameID,
+        mode,
+        password,
+        title,
+      },
+      {
+        onSuccess: (result) => {
+          this.getRooms();
+          this.view.setRoomID(result.id);
+          this.view.finishLoading();
+        },
+        onError: () => {
+          this.view.finishLoading();
+        }
       }
-    );
+    )
   }
 
   getMessageHandler(): void {
@@ -80,8 +90,6 @@ export class GamePresenter implements GameContract.Presenter {
       onSuccess: (result) => {
         if (result.rooms) {
           this.view.setRooms(result.rooms);
-        } else if (result.roomID) {
-          this.view.setRoomID(result.roomID);
         }
       },
       onError: () => {

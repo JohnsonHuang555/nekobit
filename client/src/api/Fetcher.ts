@@ -36,13 +36,12 @@ export default class Fetcher implements IFetcher {
   private socketPath: string;
 
   constructor() {
-    this.client = axios.create({
-      baseURL: `http://${DOMAIN}/api`,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
+    axios.defaults.baseURL = `http://${DOMAIN}/api`;
+    axios.defaults.headers.common.Accept = 'application/json';
+    axios.defaults.headers.common['Content-Type'] = 'application/json';
+    axios.defaults.timeout = 60000;
 
+    this.client = axios
     this.socket = null;
     this.socketPath = '';
   }
@@ -63,7 +62,9 @@ export default class Fetcher implements IFetcher {
 
   async post<T = any>(path: string, callbacks: FetcherCallbacks<T>, body?: any): Promise<void> {
     await this.client.post(path, body)
-      .then(res => callbacks.onSuccess(res.data))
+      .then(res => {
+        callbacks.onSuccess(res.data)
+      })
       .catch(error => callbacks.onError(error));
   }
 

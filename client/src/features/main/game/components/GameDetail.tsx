@@ -35,7 +35,7 @@ const GameDetail = (props: GameDetailProps) => {
         </div>
         <div className="row main">
           <div className="col-md-7 game-image">
-            <img src={`${gameInfo.imgURL}/game.png`} alt={gameInfo.name} width="100%" />
+            <img src={`${gameInfo.imgUrl}/game.png`} alt={gameInfo.name} width="100%" />
           </div>
           <div className="col-md-5 game-info">
             <div className="game_title">

@@ -1,13 +1,16 @@
 package middleware
 
+import "server/domain"
+
 type message struct {
 	data MsgData
 	room string
 }
 
 type subscription struct {
-	conn *connection
-	room string
+	conn        *connection
+	room        string
+	roomUseCase domain.RoomUseCase
 }
 
 // hub maintains the set of active connections and broadcasts messages to the

@@ -19,7 +19,7 @@ func NewRoomRepository(rooms []*domain.Room, roomNumber int) domain.RoomReposito
 }
 
 func (rr *roomRepository) FindAll(r []*domain.Room) ([]*domain.Room, error) {
-	return r, nil
+	return rr.rooms, nil
 }
 
 func (rr *roomRepository) FindByID(id string) (*domain.Room, error) {
@@ -114,10 +114,8 @@ func (rr *roomRepository) AddUser(roomID string, u *domain.User) ([]*domain.User
 	if userIndex == -1 {
 		// 不在則新增
 		rr.rooms[index].UserList = append(rr.rooms[index].UserList, u)
-		return rr.rooms[index].UserList, nil
 	}
-	err := errors.New("User is already in room")
-	return nil, err
+	return rr.rooms[index].UserList, nil
 }
 
 func (rr *roomRepository) RemoveUser(roomID string, userID string) ([]*domain.User, error) {

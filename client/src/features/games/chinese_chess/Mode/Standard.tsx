@@ -283,7 +283,6 @@ const Standard = (props: StandardProps) => {
   }
 
   const findChessByLocation = (x: number, y:number) => {
-    console.log(x, y)
     return gameData.find(chess => {
       return chess.locationX === x && chess.locationY === y;
     });

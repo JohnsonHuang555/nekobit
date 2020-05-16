@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"server/models"
 	"server/utils"
 )
@@ -160,7 +159,6 @@ func (r *RoomService) OnEat(userID string, roomID int, chessID int, newLocation 
 }
 
 func (r *RoomService) OnEatStandard(userID string, roomID int, chessID int, locationX int, locationY int, eatenChessID int) {
-	fmt.Println(chessID, locationX, locationY, eatenChessID)
 	roomIndex := r.FindByID(roomID)
 	chesses := r.rooms[roomIndex].GameData.([]models.ChineseChess)
 	for i := 0; i < len(chesses); i++ {

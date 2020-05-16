@@ -1,5 +1,5 @@
 import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseItf";
-import { Games } from "../../domain/source/GamesDataSource";
+import { Games } from "src/features/main/domain/source/GamesDataSource";
 
 export class GetRoomsUseCase implements GetRooms.UseCase {
   private repository: Games.DataSource;

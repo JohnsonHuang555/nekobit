@@ -1,6 +1,8 @@
 package usecase
 
-import "server/domain"
+import (
+	"server/domain"
+)
 
 type roomUseCase struct {
 	roomRepo domain.RoomRepository
@@ -21,11 +23,12 @@ func (ru *roomUseCase) GetRooms() ([]*domain.Room, error) {
 }
 
 func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID string) (string, error) {
-	var room *domain.Room
-	room.Title = title
-	room.Mode = mode
-	room.Password = password
-	room.GameID = gameID
+	room := &domain.Room{
+		Title:    title,
+		Mode:     mode,
+		Password: password,
+		GameID:   gameID,
+	}
 	id, err := ru.roomRepo.Create(room)
 	if err != nil {
 		return "", err
@@ -33,18 +36,21 @@ func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameI
 	return id, nil
 }
 
-func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) ([]*domain.User, error) {
-	var user *domain.User
-	user.ID = userID
-	user.Name = userName
-	user.PlayOrder = 0
+func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) (*domain.Room, error) {
+	user := &domain.User{
+		ID:        userID,
+		Name:      userName,
+		PlayOrder: 0,
+	}
 
 	users, err := ru.roomRepo.AddUser(id, user)
+	room, err := ru.roomRepo.FindByID(id)
+	room.UserList = users
 	if err != nil {
 		return nil, err
 	}
 
-	return users, nil
+	return room, nil
 }
 
 func (ru *roomUseCase) LeaveRoom(id string, userID string) ([]*domain.User, error) {
