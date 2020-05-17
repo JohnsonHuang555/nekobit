@@ -1,24 +1,51 @@
 import { IFetcher } from "src/api/Fetcher";
-import { ChineseChess } from "./ChineseChessDataSource";
+import { ChineseChess } from "src/features/games/chinese_chess/source/ChineseChessDataSource";
 import { SocketEvent } from "src/types/Socket";
+import { TUser } from "src/types/Account";
 
 export default class ChineseChessRepository implements ChineseChess.DataSource {
   private fetcher: IFetcher;
+  private userInfo: TUser | null = null;
 
   constructor(fetcher: IFetcher) {
     this.fetcher = fetcher;
+    if (typeof window !== 'undefined' && localStorage.getItem('userInfo')) {
+      this.userInfo = JSON.parse(localStorage.getItem('userInfo') || '');
+    }
   }
 
-  flipChess(id: number): void {
-    throw new Error("Method not implemented.");
-  }
-  eatChess(id: number, targetID: number): void {
-    throw new Error("Method not implemented.");
-  }
-  moveChess(id: number, locationX: number, locationY: number): void {
+  flipChess(roomID: string, chessID: number): void {
     this.fetcher.sendSocket({
-      event: SocketEvent.MoveChess
-    })
+      userID: this.userInfo?.id,
+      event: SocketEvent.MoveChess,
+      data: {
+        roomID,
+        chessID,
+      }
+    });
+  }
+  eatChess(roomID: string, chessID: number, targetID: number): void {
+    this.fetcher.sendSocket({
+      userID: this.userInfo?.id,
+      event: SocketEvent.MoveChess,
+      data: {
+        roomID,
+        chessID,
+        targetID,
+      }
+    });
+  }
+  moveChess(roomID: string, chessID: number, locationX: number, locationY: number): void {
+    this.fetcher.sendSocket({
+      userID: this.userInfo?.id,
+      event: SocketEvent.MoveChess,
+      data: {
+        roomID,
+        chessID,
+        locationX,
+        locationY,
+      }
+    });
   }
   getSocketMessage(callbacks: ChineseChess.GetSocketMessageCallbacks): void {
     this.fetcher.getSocketMessage({

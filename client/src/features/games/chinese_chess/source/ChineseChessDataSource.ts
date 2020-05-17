@@ -6,9 +6,9 @@ import { TSocket } from "src/types/Socket";
 
 export namespace ChineseChess {
   export interface DataSource {
-    flipChess(id: number): void;
-    eatChess(id: number, targetID: number): void;
-    moveChess(id: number, locationX: number, locationY: number ): void;
+    flipChess(roomID: string, chessID: number): void;
+    eatChess(roomID: string, chessID: number, targetID: number): void;
+    moveChess(roomID: string, chessID: number, locationX: number, locationY: number): void;
 
     getSocketMessage(callbacks: ChineseChess.GetSocketMessageCallbacks): void;
   }
