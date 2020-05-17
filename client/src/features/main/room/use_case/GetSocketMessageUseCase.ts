@@ -19,7 +19,6 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
         switch (result.event) {
           case SocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
-            console.log(roomInfo);
             newRoomInfo = roomInfo;
             break;
           }

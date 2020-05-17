@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { TChineseChess, GameModeCode } from 'src/types/ChineseChess';
 import { TRoom, TRoomUser } from 'src/types/Room';
 import { TSocket } from 'src/types/Socket';
-import Standard from 'src/features/games/chinese_chess/Mode/Standard';
-import Hidden from 'src/features/games/chinese_chess/Mode/Hidden';
+import Standard from 'src/features/games/chinese_chess/components/Mode/Standard';
+import Hidden from 'src/features/games/chinese_chess/components/Mode/Hidden';
 import '@styles/games/chineseChess.scss';
 
 type ChineseChessProps = {

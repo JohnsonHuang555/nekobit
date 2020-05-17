@@ -1,6 +1,6 @@
 import { TRoom } from "../../domain/models/Room";
 import { Box } from "@material-ui/core";
-import ChineseChess from "src/features/games/chinese_chess/ChineseChess";
+import ChineseChess from "src/features/games/chinese_chess/components/ChineseChess";
 import { GameList } from "../../domain/models/Game";
 
 type GameScreenProps = {

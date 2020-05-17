@@ -47,7 +47,7 @@ type Attachment struct {
 	Rooms        []*domain.Room `json:"rooms,omitempty"`
 	RoomInfo     *domain.Room   `json:"roomInfo,omitempty"`
 
-	domain.ChineseChess
+	domain.NetChineseChess
 }
 
 // WebsocketHandler handles websocket requests from the peer.

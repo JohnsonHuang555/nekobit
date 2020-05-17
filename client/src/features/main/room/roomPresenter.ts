@@ -20,7 +20,7 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly startGameUseCase: StartGame.UseCase;
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
 
-  private roomID: number = 0;
+  private roomID = '';
   private roomInfo: TRoom | null = null;
 
   constructor(
@@ -47,7 +47,7 @@ export class RoomPresenter implements RoomContract.Presenter {
 
   mount(params: RoomContract.RoomPageParams): void {
     const { id } = params;
-    this.roomID = Number(id);
+    this.roomID = id;
     this.connectSocket(id);
     this.getUserInfo();
   }
@@ -93,6 +93,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, { roomInfo: this.roomInfo }, {
       onSuccess: (result) => {
         if (result.roomInfo) {
+          console.log(result.roomInfo)
           this.view.setRoomInfo(result.roomInfo);
         }
       },
