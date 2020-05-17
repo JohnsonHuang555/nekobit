@@ -61,7 +61,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               <div className="header">
                 {roomInfo && (
                   <div className="title">
-                    <span>{roomInfo.id}.</span>
+                    <span>{roomInfo.roomNumber}.</span>
                     <span>{roomInfo.title}</span>
                   </div>
                 )}

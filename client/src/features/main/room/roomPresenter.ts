@@ -21,7 +21,6 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
 
   private roomID = '';
-  private roomInfo: TRoom | null = null;
 
   constructor(
     view: RoomContract.View,
@@ -90,10 +89,9 @@ export class RoomPresenter implements RoomContract.Presenter {
   }
 
   getMessageHandler(): void {
-    this.useCaseHandler.execute(this.getSocketMessageUseCase, { roomInfo: this.roomInfo }, {
+    this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
         if (result.roomInfo) {
-          console.log(result.roomInfo)
           this.view.setRoomInfo(result.roomInfo);
         }
       },

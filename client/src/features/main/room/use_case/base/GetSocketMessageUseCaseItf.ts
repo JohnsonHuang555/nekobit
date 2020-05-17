@@ -7,9 +7,7 @@ import {
 import { TRoom } from "src/features/main/domain/models/Room";
 
 export namespace GetSocketMessage {
-  export interface InputData extends UseCaseInputData {
-    roomInfo: TRoom;
-  }
+  export interface InputData extends UseCaseInputData {}
 
   export interface OutputData extends UseCaseOutputData {
     roomInfo: TRoom;
