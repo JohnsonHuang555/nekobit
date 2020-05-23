@@ -4,10 +4,14 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
-import { TRoom } from "src/features/main/domain/models/Room";
 
-export namespace GetSocketMessage {
-  export interface InputData extends UseCaseInputData {}
+export namespace MoveChess {
+  export interface InputData extends UseCaseInputData {
+    roomID: string;
+    chessID: number;
+    targetX: number;
+    targetY: number;
+  }
 
   export interface OutputData extends UseCaseOutputData {}
 

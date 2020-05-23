@@ -5,7 +5,6 @@ import { JoinRoom } from './use_case/base/JoinRoomUseCaseItf';
 import { LeaveRoom } from './use_case/base/LeaveRoomUseCaseItf';
 import { ReadyGame } from './use_case/base/ReadyGameUseCaseItf';
 import { StartGame } from './use_case/base/StartGameUseCaseItf';
-import { TRoom } from '../domain/models/Room';
 import { GetUserInfo } from './use_case/base/GetUserInfoUseCaseItf';
 import { GetSocketMessage } from './use_case/base/GetSocketMessageUseCaseItf';
 

@@ -7,9 +7,7 @@ import {
 import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
 
 export namespace GetSocketMessage {
-  export interface InputData extends UseCaseInputData {
-    chesses: TChineseChess[];
-  }
+  export interface InputData extends UseCaseInputData {}
 
   export interface OutputData extends UseCaseOutputData {
     chesses: TChineseChess[];
