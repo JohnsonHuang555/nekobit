@@ -13,12 +13,12 @@ export type TGame = {
 }
 
 export const GameMode = {
-  '象棋': [
+  '5d62a35bd986c21bc010c00b': [
     {label: '標準(大盤)', value: GameModeCode.Standard},
     {label: '暗棋(小盤)', value: GameModeCode.Hidden}
   ],
 };
 
 export enum GameList {
-  ChineseChess = '象棋',
+  ChineseChess = '5d62a35bd986c21bc010c00b',
 }

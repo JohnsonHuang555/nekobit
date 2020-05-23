@@ -11,7 +11,7 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   execute(inputData: GetSocketMessage.InputData, callbacks: GetSocketMessage.Callbacks) {
     this.repository.getSocketMessage({
       onSuccess: (result) => {
-        const chesses = ChineseChessFactory.createArrayFromNet(result.data.gameData);
+        const chesses = ChineseChessFactory.createArrayFromNet(result.data.gameData || []);
         callbacks.onSuccess({ chesses });
       },
       onError: callbacks.onError,

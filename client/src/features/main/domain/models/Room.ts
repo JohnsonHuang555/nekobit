@@ -8,7 +8,7 @@ export type TRoom = {
   userList: TRoomUser[];
   nowTurn: string;
   gameData: any;
-  gameID: string;
+  gameId: string;
   roomNumber: number;
   password: string;
   createAt: Moment;
