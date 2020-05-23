@@ -5,6 +5,7 @@ import { Injection } from './injection/injection';
 import { TChineseChess } from '../domain/models/ChineseChess';
 
 interface ChineseChessViewProps {
+  roomID: string;
   chesses: TChineseChess[];
   updateChinessChess: (c: TChineseChess[]) => void;
 }
@@ -24,6 +25,16 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
       Injection.provideEatChessUseCase(),
       Injection.provideFlipChessUseCase(),
     )
+  }
+
+  componentDidMount() {
+    this.presenter.mount(this.props.roomID);
+  }
+
+  render() {
+    return (
+      <div>456789</div>
+    );
   }
 
   nowLoading(): void {
