@@ -100,7 +100,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
             }
           </div>
           {roomInfo && roomInfo.status === 1 && (
-            <GameScreen roomInfo={roomInfo}/>
+            <GameScreen
+              roomInfo={roomInfo}
+              updateRoomInfo={(rf) => this.setRoomInfo(rf)}
+            />
           )}
         </div>
       </Layout>

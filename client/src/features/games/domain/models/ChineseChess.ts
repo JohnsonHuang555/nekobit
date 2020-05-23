@@ -3,7 +3,6 @@ export type TChineseChess = {
   side: string;
   name: string;
 	isFlipped: boolean;
-	location: number;
 	locationX: number;
 	locationY: number;
 	rank: number;

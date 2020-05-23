@@ -1,26 +1,38 @@
 import { TRoom } from "../../domain/models/Room";
 import { Box } from "@material-ui/core";
-import ChineseChess from "src/features/games/chinese_chess/components/ChineseChess";
 import { GameList } from "../../domain/models/Game";
+import ChineseChessView from "src/features/games/chinese_chess/chineseChessView";
+import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
 
 type GameScreenProps = {
   roomInfo: TRoom;
+  updateRoomInfo: (rf: TRoom) => void;
 };
 
 const GameScreen = (props: GameScreenProps) => {
   const {
     roomInfo,
+    updateRoomInfo,
   } = props;
 
-  // const playGame = {
-  //   [GameList.ChineseChess]:
-  //     <ChineseChess
-  //       userID="test"
-  //       roomInfo={roomInfo}
-  //       onChangeRoomInfo={() => {}}
-  //       ws={new WebSocket('')}
-  //     />
-  // };
+  const updateChinessChess = (chesses: TChineseChess[]) => {
+    const newRoomInfo: TRoom = {
+      ...roomInfo,
+      gameData: chesses
+    };
+
+    // 傳遞新的 roomInfo 外部做更新
+    updateRoomInfo(newRoomInfo);
+  };
+
+  const playGame = {
+    [GameList.ChineseChess]:
+      <ChineseChessView
+        roomID={roomInfo.id}
+        chesses={roomInfo.gameData as TChineseChess[]}
+        updateChinessChess={updateChinessChess}
+      />
+  };
 
   return (
     <Box className="game-screen">
