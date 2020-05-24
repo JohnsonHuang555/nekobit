@@ -90,6 +90,16 @@ func (rr *roomRepository) UpdateGameIDByID(id string, gameID string) (*domain.Ro
 	return rr.rooms[index], nil
 }
 
+func (rr *roomRepository) UpdateGameData(roomID string, gameData interface{}) (interface{}, error) {
+	index := rr.findIndexByID(roomID)
+	if index == -1 {
+		return nil, errors.New("No room found")
+	}
+
+	rr.rooms[index].GameData = gameData
+	return rr.rooms[index].GameData, nil
+}
+
 func (rr *roomRepository) Create(room *domain.Room) (string, error) {
 	rr.roomNumber++
 	room.RoomNumber = rr.roomNumber

@@ -17,7 +17,8 @@ type ResponseError struct {
 
 // RoomHandler represent the httphandler for room
 type RoomHandler struct {
-	RUseCase domain.RoomUseCase
+	RUseCase  domain.RoomUseCase
+	CCUseCase domain.ChineseChessUseCae
 }
 
 type createRoomParams struct {
@@ -28,9 +29,10 @@ type createRoomParams struct {
 }
 
 // NewRoomHandler will initialize the rooms/ resources endpoint
-func NewRoomHandler(e *echo.Echo, us domain.RoomUseCase) {
+func NewRoomHandler(e *echo.Echo, ru domain.RoomUseCase, ccu domain.ChineseChessUseCae) {
 	handler := &RoomHandler{
-		RUseCase: us,
+		RUseCase:  ru,
+		CCUseCase: ccu,
 	}
 	e.POST("/api/createRoom", handler.CreateRoom)
 	e.GET("/ws/:roomID", handler.SocketHandler)
@@ -51,10 +53,15 @@ func (r *RoomHandler) CreateRoom(c echo.Context) error {
 	return c.JSON(http.StatusCreated, id)
 }
 
-func (r *RoomHandler) SocketHandler(c echo.Context) error {
-	roomID := c.Param("roomID")
+func (r *RoomHandler) SocketHandler(context echo.Context) error {
+	roomID := context.Param("roomID")
 	if roomID != "" {
-		socket.WebsocketHandler(r.RUseCase, c, roomID)
+		socket.WebsocketHandler(
+			r.RUseCase,
+			r.CCUseCase,
+			context,
+			roomID,
+		)
 		return nil
 	}
 	return errors.New("Websocket connect error")

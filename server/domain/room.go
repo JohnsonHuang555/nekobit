@@ -25,6 +25,8 @@ type RoomUseCase interface {
 	ReadyGame(id string, userID string) ([]*User, error)
 	StartGame(id string) (*Room, error)
 	CreateRoom(title string, mode int, password string, gameID string) (string, error)
+
+	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
 }
 
 // RoomRepository represent the room's repository contract
@@ -39,6 +41,7 @@ type RoomRepository interface {
 	UpdateModeByID(id string, mode int) (*Room, error)
 	UpdateNowTurnByID(id string, nowTurn string) (*Room, error)
 	UpdateGameIDByID(id string, gameID string) (*Room, error)
+	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
 
 	AddUser(roomID string, u *User) ([]*User, error)
 	RemoveUser(roomID string, userID string) ([]*User, error)

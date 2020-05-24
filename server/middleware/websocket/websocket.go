@@ -51,7 +51,12 @@ type Attachment struct {
 }
 
 // WebsocketHandler handles websocket requests from the peer.
-func WebsocketHandler(ru domain.RoomUseCase, c echo.Context, roomID string) {
+func WebsocketHandler(
+	ru domain.RoomUseCase,
+	ccu domain.ChineseChessUseCae,
+	c echo.Context,
+	roomID string,
+) {
 	go h.run()
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
@@ -60,7 +65,7 @@ func WebsocketHandler(ru domain.RoomUseCase, c echo.Context, roomID string) {
 		return
 	}
 	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID, ru}
+	s := subscription{conn, roomID, ru, ccu}
 	h.register <- s
 	go s.writePump()
 	s.readPump()
@@ -79,7 +84,12 @@ func (s subscription) readPump() {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-		newMsg := SocketEventHandler(msg, s.room, s.roomUseCase)
+		newMsg := SocketEventHandler(
+			msg,
+			s.room,
+			s.roomUseCase,
+			s.chineseChessUseCase,
+		)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("error: %v", err)

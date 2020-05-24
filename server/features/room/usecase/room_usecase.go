@@ -69,6 +69,14 @@ func (ru *roomUseCase) ReadyGame(id string, userID string) ([]*domain.User, erro
 	return users, nil
 }
 
+func (ru *roomUseCase) UpdateGameData(roomID string, gameData interface{}) (interface{}, error) {
+	gd, err := ru.roomRepo.UpdateGameData(roomID, gameData)
+	if err != nil {
+		return nil, err
+	}
+	return gd, nil
+}
+
 func (ru *roomUseCase) StartGame(id string) (*domain.Room, error) {
 	// FIXME: setPlayOrder
 	status := 1
