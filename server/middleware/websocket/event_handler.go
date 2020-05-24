@@ -25,7 +25,9 @@ func SocketEventHandler(
 		users, _ := ru.ReadyGame(roomID, msg.UserID)
 		msg.Data.RoomUserList = users
 	case "startGame":
-		room, _ := ru.StartGame(roomID)
+		gd, _ := ccu.GetNewChess()
+		gameData, _ := ru.UpdateGameData(roomID, gd)
+		room, _ := ru.StartGame(roomID, gameData)
 		msg.Data.RoomInfo = room
 
 	// chinese chess

@@ -23,9 +23,10 @@ type RoomUseCase interface {
 	JoinRoom(id string, userID string, userName string) (*Room, error)
 	LeaveRoom(id string, userID string) ([]*User, error)
 	ReadyGame(id string, userID string) ([]*User, error)
-	StartGame(id string) (*Room, error)
+	StartGame(id string, gameData interface{}) (*Room, error)
 	CreateRoom(title string, mode int, password string, gameID string) (string, error)
 
+	GetRoomInfo(roomID string) (*Room, error)
 	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
 }
 

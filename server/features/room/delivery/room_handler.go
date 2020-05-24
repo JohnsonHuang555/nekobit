@@ -6,6 +6,9 @@ import (
 	"server/domain"
 	socket "server/middleware/websocket"
 
+	_chineseChessRepo "server/features/chinese_chess/repository"
+	_chineseChessUseCase "server/features/chinese_chess/usecase"
+
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 )
@@ -17,8 +20,7 @@ type ResponseError struct {
 
 // RoomHandler represent the httphandler for room
 type RoomHandler struct {
-	RUseCase  domain.RoomUseCase
-	CCUseCase domain.ChineseChessUseCae
+	RUseCase domain.RoomUseCase
 }
 
 type createRoomParams struct {
@@ -29,10 +31,9 @@ type createRoomParams struct {
 }
 
 // NewRoomHandler will initialize the rooms/ resources endpoint
-func NewRoomHandler(e *echo.Echo, ru domain.RoomUseCase, ccu domain.ChineseChessUseCae) {
+func NewRoomHandler(e *echo.Echo, ru domain.RoomUseCase) {
 	handler := &RoomHandler{
-		RUseCase:  ru,
-		CCUseCase: ccu,
+		RUseCase: ru,
 	}
 	e.POST("/api/createRoom", handler.CreateRoom)
 	e.GET("/ws/:roomID", handler.SocketHandler)
@@ -55,10 +56,19 @@ func (r *RoomHandler) CreateRoom(c echo.Context) error {
 
 func (r *RoomHandler) SocketHandler(context echo.Context) error {
 	roomID := context.Param("roomID")
+	roomInfo, err := r.RUseCase.GetRoomInfo(roomID)
+	if err != nil {
+		return err
+	}
+
+	// Games
+	chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
+	chineseChessUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+
 	if roomID != "" {
 		socket.WebsocketHandler(
 			r.RUseCase,
-			r.CCUseCase,
+			chineseChessUseCase,
 			context,
 			roomID,
 		)

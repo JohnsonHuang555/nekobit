@@ -14,9 +14,6 @@ import (
 	_roomRepo "server/features/room/repository"
 	_roomUseCase "server/features/room/usecase"
 
-	_chineseChessRepo "server/features/chinese_chess/repository"
-	_chineseChessUseCase "server/features/chinese_chess/usecase"
-
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -38,13 +35,9 @@ func main() {
 	gameUseCase := _gameUseCase.NewGameUseCase(gameRepo)
 	_gameDelivery.NewGameHandler(e, gameUseCase)
 
-	// Games
-	chineseChessRepo := _chineseChessRepo.NewChineseChessRepository()
-	chineseChessUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
-
 	roomRepo := _roomRepo.NewRoomRepository(rooms, roomNum)
 	roomUseCase := _roomUseCase.NewRoomUseCase(roomRepo)
-	_roomDelivery.NewRoomHandler(e, roomUseCase, chineseChessUseCase)
+	_roomDelivery.NewRoomHandler(e, roomUseCase)
 
 	if err := e.Start(":" + config.C.Server.Address); err != nil {
 		log.Fatalln(err)

@@ -22,6 +22,14 @@ func (ru *roomUseCase) GetRooms() ([]*domain.Room, error) {
 	return rooms, nil
 }
 
+func (ru *roomUseCase) GetRoomInfo(roomID string) (*domain.Room, error) {
+	room, err := ru.roomRepo.FindByID(roomID)
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
+}
+
 func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID string) (string, error) {
 	room := &domain.Room{
 		Title:    title,
@@ -77,10 +85,12 @@ func (ru *roomUseCase) UpdateGameData(roomID string, gameData interface{}) (inte
 	return gd, nil
 }
 
-func (ru *roomUseCase) StartGame(id string) (*domain.Room, error) {
+func (ru *roomUseCase) StartGame(id string, gameData interface{}) (*domain.Room, error) {
 	// FIXME: setPlayOrder
 	status := 1
-	room, err := ru.roomRepo.UpdateStatusByID(id, status)
+	ru.roomRepo.UpdateStatusByID(id, status)
+	ru.roomRepo.UpdateGameData(id, gameData)
+	room, err := ru.roomRepo.FindByID(id)
 	if err != nil {
 		return nil, err
 	}

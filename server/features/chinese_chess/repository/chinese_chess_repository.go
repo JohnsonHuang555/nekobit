@@ -9,8 +9,8 @@ type chineseChessRepository struct {
 	chesses []*domain.ChineseChess
 }
 
-func NewChineseChessRepository() domain.ChineseChessRepository {
-	return &chineseChessRepository{}
+func NewChineseChessRepository(chesses []*domain.ChineseChess) domain.ChineseChessRepository {
+	return &chineseChessRepository{chesses}
 }
 
 func (c *chineseChessRepository) Create() ([]*domain.ChineseChess, error) {
