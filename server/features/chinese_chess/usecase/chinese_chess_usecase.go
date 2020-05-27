@@ -1,6 +1,8 @@
 package usecase
 
-import "server/domain"
+import (
+	"server/domain"
+)
 
 type chineseChessUseCase struct {
 	chineseChessRepo domain.ChineseChessRepository

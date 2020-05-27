@@ -39,6 +39,7 @@ type Attachment struct {
 	IsMaster     bool           `json:"isMaster,omitempty"`
 	IsReady      bool           `json:"isReady,omitempty"`
 	GameData     interface{}    `json:"gameData,omitempty"`
+	GameID       string         `json:"gameID,omitempty"`
 	RoomPassword string         `json:"roomPassword,omitempty"`
 	RoomTitle    string         `json:"roomTitle,omitempty"`
 	RoomMode     int            `json:"roomMode,omitempty"`

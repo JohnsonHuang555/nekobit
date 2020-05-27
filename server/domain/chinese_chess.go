@@ -45,7 +45,7 @@ type ChineseChessRepository interface {
 
 // CreateChesses 建立象棋
 func CreateChessesHidden() []*ChineseChess {
-	gameData := []*ChineseChess{}
+	var gameData []*ChineseChess
 
 	var chesses = map[int]*ChineseChess{
 		0: {

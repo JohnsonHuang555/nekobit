@@ -1,7 +1,6 @@
 package delivery
 
 import (
-	"errors"
 	"net/http"
 	"server/domain"
 	socket "server/middleware/websocket"
@@ -30,6 +29,8 @@ type createRoomParams struct {
 	Mode     int    `json:"mode"`
 }
 
+var chineseChessUseCase domain.ChineseChessUseCae
+
 // NewRoomHandler will initialize the rooms/ resources endpoint
 func NewRoomHandler(e *echo.Echo, ru domain.RoomUseCase) {
 	handler := &RoomHandler{
@@ -56,25 +57,25 @@ func (r *RoomHandler) CreateRoom(c echo.Context) error {
 
 func (r *RoomHandler) SocketHandler(context echo.Context) error {
 	roomID := context.Param("roomID")
-	roomInfo, err := r.RUseCase.GetRoomInfo(roomID)
-	if err != nil {
-		return err
+	roomInfo, _ := r.RUseCase.GetRoomInfo(roomID)
+
+	// 判斷是否在房間內，而非大廳
+	if roomInfo != nil {
+		// 判斷是否開始遊戲
+		if roomInfo.GameData != nil {
+			// Games
+			chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
+			chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+		}
 	}
 
-	// Games
-	chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
-	chineseChessUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
-
-	if roomID != "" {
-		socket.WebsocketHandler(
-			r.RUseCase,
-			chineseChessUseCase,
-			context,
-			roomID,
-		)
-		return nil
-	}
-	return errors.New("Websocket connect error")
+	socket.WebsocketHandler(
+		r.RUseCase,
+		chineseChessUseCase,
+		context,
+		roomID,
+	)
+	return nil
 }
 
 func getStatusCode(err error) int {

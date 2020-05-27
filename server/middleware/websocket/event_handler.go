@@ -25,7 +25,15 @@ func SocketEventHandler(
 		users, _ := ru.ReadyGame(roomID, msg.UserID)
 		msg.Data.RoomUserList = users
 	case "startGame":
-		gd, _ := ccu.GetNewChess()
+		var gd interface{}
+		switch msg.Data.GameID {
+		case "5d62a35bd986c21bc010c00b":
+			// 1 大盤, 2 小盤
+			if msg.Data.RoomMode == 2 {
+				gd = domain.CreateChessesHidden()
+			}
+		}
+
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		room, _ := ru.StartGame(roomID, gameData)
 		msg.Data.RoomInfo = room
