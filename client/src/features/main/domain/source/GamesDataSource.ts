@@ -28,7 +28,7 @@ export namespace Games {
     joinRoom(roomID: string): void;
     leaveRoom(roomID: string): void;
     readyGame(roomID: string): void;
-    startGame(roomID: string, roomMode: number): void;
+    startGame(roomID: string, roomMode: number, gameID: string): void;
 
   }
 

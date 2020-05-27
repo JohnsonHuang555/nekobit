@@ -10,7 +10,7 @@ export namespace RoomContract {
     joinRoom(): void;
     leaveRoom(): void;
     readyGame(): void;
-    startGame(mode: number): void;
+    startGame(mode: number, gameId: string): void;
   }
 
   export interface View {

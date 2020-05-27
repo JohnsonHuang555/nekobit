@@ -77,11 +77,12 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.useCaseHandler.execute(this.readyGameUseCase, { roomID: this.roomID });
   }
 
-  startGame(mode: number): void {
+  startGame(mode: number, gameId: string): void {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.startGameUseCase,
       {
         roomID: this.roomID,
+        gameID: gameId,
         roomMode: mode,
       }
     );

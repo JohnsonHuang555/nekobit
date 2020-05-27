@@ -36,6 +36,7 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
           }
           case SocketEvent.StartGame: {
             const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
+            console.log(roomInfo);
             this.roomInfo = roomInfo;
             break;
           }

@@ -84,7 +84,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               this.isMaster() ? (
                 <Button
                   className="start"
-                  onClick={() => this.startGame(roomInfo.mode)}
+                  onClick={() => this.startGame(roomInfo.mode, roomInfo.gameId)}
                   disabled={this.disabledStart()}
                 >
                   Start
@@ -166,8 +166,8 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     }) ? true : false;
   }
 
-  private startGame(mode: number): void {
-    this.presenter.startGame(mode);
+  private startGame(mode: number, gameId: string): void {
+    this.presenter.startGame(mode, gameId);
   }
 
   private readyGame(): void {

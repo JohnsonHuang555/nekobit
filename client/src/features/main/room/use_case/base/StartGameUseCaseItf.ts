@@ -9,6 +9,7 @@ export namespace StartGame {
   export interface InputData extends UseCaseInputData {
     roomID: string;
     roomMode: number;
+    gameID: string;
   }
 
   export interface OutputData extends UseCaseOutputData {}
