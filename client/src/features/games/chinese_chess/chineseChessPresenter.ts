@@ -48,6 +48,10 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     });
   }
 
+  onSelect(id: number): void {
+    // TODO: 選擇棋子
+  }
+
   onFlip(id: number): void {
     // TODO:判斷翻牌
     this.useCaseHandler.execute(this.flipChessUseCase, {

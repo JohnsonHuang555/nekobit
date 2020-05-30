@@ -10,9 +10,9 @@ type ChineseChess struct {
 	ID        int    `json:"id"`
 	Side      string `json:"side"`
 	Name      string `json:"name"`
-	IsFlipped bool   `json:"is_flipped"`
-	LocationX int    `json:"location_x"`
-	LocationY int    `json:"location_y"`
+	IsFlipped bool   `json:"isFlipped"`
+	LocationX int    `json:"locationX"`
+	LocationY int    `json:"locationY"`
 	Rank      int    `json:"rank"`
 	Alive     bool   `json:"alive"`
 }

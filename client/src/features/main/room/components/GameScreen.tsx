@@ -30,6 +30,7 @@ const GameScreen = (props: GameScreenProps) => {
       <ChineseChessView
         roomID={roomInfo.id}
         chesses={roomInfo.gameData as TChineseChess[]}
+        mode={roomInfo.mode}
         updateChinessChess={updateChinessChess}
       />
   };

@@ -4,6 +4,7 @@ export namespace ChineseChessContract {
     mount(roomID: string): void;
     getMessageHandler(): void;
 
+    onSelect(id: number): void;
     onFlip(id: number): void;
     onEat(id: number, targetId: number): void;
     onMove(id: number, targetX: number, targetY: number): void;
@@ -13,5 +14,6 @@ export namespace ChineseChessContract {
     finishLoading(): void;
 
     setChesses(chesses: TChineseChess[]): void;
+    setSelectedChess(chess: TChineseChess): void;
   }
 }

@@ -3,19 +3,27 @@ import { ChineseChessContract } from "./chineseChessContract";
 import { ChineseChessPresenter } from './chineseChessPresenter';
 import { Injection } from './injection/injection';
 import { TChineseChess } from '../domain/models/ChineseChess';
+import Hidden from './components/mode/Hidden';
 
 interface ChineseChessViewProps {
   roomID: string;
   chesses: TChineseChess[];
+  mode: number;
   updateChinessChess: (c: TChineseChess[]) => void;
 }
-interface ChineseChessViewState {}
+interface ChineseChessViewState {
+  selectedChess?: TChineseChess;
+}
 
 class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChessViewState>
   implements ChineseChessContract.View {
   private presenter: ChineseChessContract.Presenter;
   constructor(props: ChineseChessViewProps) {
     super(props);
+
+    this.state = {
+      selectedChess: undefined,
+    }
 
     this.presenter = new ChineseChessPresenter(
       this,
@@ -25,6 +33,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
       Injection.provideEatChessUseCase(),
       Injection.provideFlipChessUseCase(),
     )
+
   }
 
   componentDidMount() {
@@ -33,7 +42,9 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
 
   render() {
     return (
-      <div>456789</div>
+      <div className="chinese-chess-container">
+        {this.renderMode()}
+      </div>
     );
   }
 
@@ -45,6 +56,51 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
   setChesses(chesses: TChineseChess[]): void {
     // 透過事件向上傳遞更新 roomInfo's gameData
     this.props.updateChinessChess(chesses);
+  }
+
+  setSelectedChess(selectedChess: TChineseChess): void {
+    this.setState({ selectedChess });
+  }
+
+  private renderMode() {
+    const {
+      mode,
+      chesses,
+    } = this.props;
+    switch (mode) {
+      case 1:
+        return <div>Standard</div>
+      case 2:
+        return (
+          <Hidden
+            chesses={chesses}
+            onSelect={(id) => this.onSelect(id)}
+            onMove={(id, tX, tY) => this.onMove(id, tX, tY)}
+            onFlip={(id) => this.onFlip(id)}
+            onEat={(id, tId) => this.onEat(id, tId)}
+          />
+        )
+      default:
+        return (
+          <div>Game not found. Please report bug...</div>
+        )
+    }
+  }
+
+  private onSelect(id: number) {
+    this.presenter.onSelect(id);
+  }
+
+  private onMove(id: number, targetX: number, targetY: number) {
+    this.presenter.onMove(id, targetX, targetY);
+  }
+
+  private onFlip(id: number) {
+    this.presenter.onFlip(id);
+  }
+
+  private onEat(id: number, targetId: number) {
+    this.presenter.onEat(id, targetId);
   }
 }
 
