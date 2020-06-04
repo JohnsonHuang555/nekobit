@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"server/domain"
 )
 
@@ -40,6 +41,7 @@ func SocketEventHandler(
 
 	// chinese chess
 	case "flipChess":
+		fmt.Println("flip")
 		gd, _ := ccu.FlipChess(msg.Data.ChessID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		msg.Data.GameData = gameData

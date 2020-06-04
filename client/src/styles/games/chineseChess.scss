@@ -25,18 +25,20 @@
       font-family: '標楷體';
       cursor: pointer;
       box-shadow: 0 6px 1px #dadada;
+      position: absolute;
+      transition: all .2s;
       &:hover {
-        opacity: .7;
+        background: #4da862;;
       }
     }
-    .isFliped {
+    .is-flipped {
       background-color: #fff;
       position: relative;
     }
     .active {
       background-color: #e69c43;
     }
-    .red {
+    .side-red {
       color: #be1010;
       &::before {
         content: "";
@@ -49,7 +51,7 @@
         left: 0;
       }
     }
-    .black {
+    .side-black {
       color: black;
       &::before {
         content: "";

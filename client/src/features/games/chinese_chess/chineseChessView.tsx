@@ -4,6 +4,7 @@ import { ChineseChessPresenter } from './chineseChessPresenter';
 import { Injection } from './injection/injection';
 import { TChineseChess } from '../domain/models/ChineseChess';
 import Hidden from './components/mode/Hidden';
+import '@styles/games/chineseChess.scss';
 
 interface ChineseChessViewProps {
   roomID: string;

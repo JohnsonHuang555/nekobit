@@ -1,6 +1,6 @@
 export type TChineseChess = {
   id: number;
-  side: string;
+  side: ChessSide;
   name: string;
 	isFlipped: boolean;
 	locationX: number;
@@ -12,4 +12,9 @@ export type TChineseChess = {
 export enum GameModeCode {
 	Standard = 1,
 	Hidden = 2,
+}
+
+export enum ChessSide {
+  Red = 'RED',
+  Black = 'BLACK'
 }

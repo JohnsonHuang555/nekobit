@@ -1,9 +1,11 @@
 package delivery
 
 import (
+	"fmt"
 	"net/http"
 	"server/domain"
 	socket "server/middleware/websocket"
+	"server/utils"
 
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
@@ -59,15 +61,21 @@ func (r *RoomHandler) SocketHandler(context echo.Context) error {
 	roomID := context.Param("roomID")
 	roomInfo, _ := r.RUseCase.GetRoomInfo(roomID)
 
+	fmt.Println(roomInfo, "first line")
 	// 判斷是否在房間內，而非大廳
-	if roomInfo != nil {
+	if !utils.IsNil(roomInfo) {
 		// 判斷是否開始遊戲
+		fmt.Println(roomInfo, "second line")
+
 		if roomInfo.GameData != nil {
+			fmt.Println(roomInfo.GameData, "third line")
 			// Games
 			chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
 			chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 		}
 	}
+
+	fmt.Println(roomInfo, "fourth line")
 
 	socket.WebsocketHandler(
 		r.RUseCase,
