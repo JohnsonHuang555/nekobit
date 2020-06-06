@@ -8,10 +8,9 @@ type message struct {
 }
 
 type subscription struct {
-	conn                *connection
-	room                string
-	roomUseCase         domain.RoomUseCase
-	chineseChessUseCase domain.ChineseChessUseCae
+	conn        *connection
+	room        string
+	roomUseCase domain.RoomUseCase
 }
 
 // hub maintains the set of active connections and broadcasts messages to the

@@ -3,14 +3,14 @@ import { ChineseChessContract } from "./chineseChessContract";
 import { ChineseChessPresenter } from './chineseChessPresenter';
 import { Injection } from './injection/injection';
 import { TChineseChess } from '../domain/models/ChineseChess';
-import Hidden from './components/mode/Hidden';
+import Hidden from './components/Mode/Hidden';
 import '@styles/games/chineseChess.scss';
 
 interface ChineseChessViewProps {
   roomID: string;
   chesses: TChineseChess[];
   mode: number;
-  updateChinessChess: (c: TChineseChess[]) => void;
+  updateChineseChess: (c: TChineseChess[]) => void;
 }
 interface ChineseChessViewState {
   selectedChess?: TChineseChess;
@@ -56,7 +56,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
 
   setChesses(chesses: TChineseChess[]): void {
     // 透過事件向上傳遞更新 roomInfo's gameData
-    this.props.updateChinessChess(chesses);
+    this.props.updateChineseChess(chesses);
   }
 
   setSelectedChess(selectedChess: TChineseChess): void {

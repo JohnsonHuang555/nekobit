@@ -17,7 +17,7 @@ export default class ChineseChessRepository implements ChineseChess.DataSource {
   flipChess(roomID: string, chessID: number): void {
     this.fetcher.sendSocket({
       userID: this.userInfo?.id,
-      event: SocketEvent.MoveChess,
+      event: SocketEvent.FlipChess,
       data: {
         roomID,
         chessID,

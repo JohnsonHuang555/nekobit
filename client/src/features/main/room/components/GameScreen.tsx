@@ -15,7 +15,7 @@ const GameScreen = (props: GameScreenProps) => {
     updateRoomInfo,
   } = props;
 
-  const updateChinessChess = (chesses: TChineseChess[]) => {
+  const updateChineseChess = (chesses: TChineseChess[]) => {
     const newRoomInfo: TRoom = {
       ...roomInfo,
       gameData: chesses
@@ -31,7 +31,7 @@ const GameScreen = (props: GameScreenProps) => {
         roomID={roomInfo.id}
         chesses={roomInfo.gameData as TChineseChess[]}
         mode={roomInfo.mode}
-        updateChinessChess={updateChinessChess}
+        updateChineseChess={updateChineseChess}
       />
   };
 

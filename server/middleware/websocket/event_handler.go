@@ -1,17 +1,29 @@
 package middleware
 
 import (
-	"fmt"
 	"server/domain"
+	_chineseChessRepo "server/features/chinese_chess/repository"
+	_chineseChessUseCase "server/features/chinese_chess/usecase"
+	"server/utils"
 )
+
+var chineseChessUseCase domain.ChineseChessUseCae
 
 // SocketEventHandler handle every event from client
 func SocketEventHandler(
 	msg MsgData,
 	roomID string,
 	ru domain.RoomUseCase,
-	ccu domain.ChineseChessUseCae,
 ) MsgData {
+	roomInfo, _ := ru.GetRoomInfo(roomID)
+	if !utils.IsNil(roomInfo) {
+		// 判斷是否開始遊戲
+		if roomInfo.GameData != nil {
+			// Games
+			chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
+			chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+		}
+	}
 	switch msg.Event {
 	case "getRooms":
 		rooms, _ := ru.GetRooms()
@@ -28,29 +40,27 @@ func SocketEventHandler(
 	case "startGame":
 		var gd interface{}
 		switch msg.Data.GameID {
-		case "5d62a35bd986c21bc010c00b":
+		case "5de1f7ddac5b6c1002ece8f1": // FIXME:
 			// 1 大盤, 2 小盤
 			if msg.Data.RoomMode == 2 {
 				gd = domain.CreateChessesHidden()
 			}
 		}
 
-		gameData, _ := ru.UpdateGameData(roomID, gd)
-		room, _ := ru.StartGame(roomID, gameData)
+		room, _ := ru.StartGame(roomID, gd)
 		msg.Data.RoomInfo = room
 
 	// chinese chess
 	case "flipChess":
-		fmt.Println("flip")
-		gd, _ := ccu.FlipChess(msg.Data.ChessID)
+		gd, _ := chineseChessUseCase.FlipChess(msg.Data.ChessID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		msg.Data.GameData = gameData
 	case "moveChess":
-		gd, _ := ccu.MoveChess(msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
+		gd, _ := chineseChessUseCase.MoveChess(msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		msg.Data.GameData = gameData
 	case "eatChess":
-		gd, _ := ccu.EatChess(msg.Data.ChessID, msg.Data.TargetID)
+		gd, _ := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		msg.Data.GameData = gameData
 	}

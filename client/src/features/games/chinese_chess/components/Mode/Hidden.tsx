@@ -19,7 +19,6 @@ const Hidden = (props: HiddenProps) => {
     onMove,
   } = props;
 
-  console.log(chesses)
   const chessMap = () => {
     let map = [];
     for (let i = 0; i < 4; i++) {

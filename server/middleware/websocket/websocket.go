@@ -54,7 +54,6 @@ type Attachment struct {
 // WebsocketHandler handles websocket requests from the peer.
 func WebsocketHandler(
 	ru domain.RoomUseCase,
-	ccu domain.ChineseChessUseCae,
 	c echo.Context,
 	roomID string,
 ) {
@@ -66,7 +65,7 @@ func WebsocketHandler(
 		return
 	}
 	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID, ru, ccu}
+	s := subscription{conn, roomID, ru}
 	h.register <- s
 	go s.writePump()
 	s.readPump()
@@ -89,7 +88,6 @@ func (s subscription) readPump() {
 			msg,
 			s.room,
 			s.roomUseCase,
-			s.chineseChessUseCase,
 		)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
