@@ -35,10 +35,14 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     this.roomID = roomID;
     this.getMessageHandler();
   }
+
   getMessageHandler(): void {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
-        if (result.chesses) {
+        if (result.roomInfo) {
+          this.view.setNowTurn(result.roomInfo.nowTurn);
+          this.view.setUserList(result.roomInfo.userList);
+        } else if (result.chesses) {
           this.view.setChesses(result.chesses);
         }
       },

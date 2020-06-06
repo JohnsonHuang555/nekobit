@@ -94,5 +94,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    .set-play-order {
+      position: absolute;
+      width: 300px;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+    }
   }
 }

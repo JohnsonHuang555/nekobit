@@ -1,4 +1,5 @@
 import { TChineseChess } from 'src/features/games/domain/models/ChineseChess';
+import { TRoomUser } from 'src/features/main/domain/models/Room';
 export namespace ChineseChessContract {
   export interface Presenter {
     mount(roomID: string): void;
@@ -13,7 +14,9 @@ export namespace ChineseChessContract {
     nowLoading(): void;
     finishLoading(): void;
 
-    setChesses(chesses: TChineseChess[]): void;
+    setChesses(gameData: TChineseChess[]): void;
     setSelectedChess(chess: TChineseChess): void;
+    setNowTurn(nowTurn: string): void;
+    setUserList(userList: TRoomUser[]): void;
   }
 }

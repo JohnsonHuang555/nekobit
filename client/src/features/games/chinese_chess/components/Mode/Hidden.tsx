@@ -1,6 +1,7 @@
 import React from 'react';
 import { TChineseChess } from 'src/features/games/domain/models/ChineseChess';
 import MapItem from '../MapItem';
+import { Button } from '@material-ui/core';
 
 type HiddenProps = {
   chesses: TChineseChess[];

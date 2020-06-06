@@ -50,6 +50,10 @@ func SocketEventHandler(
 		room, _ := ru.StartGame(roomID, gd)
 		msg.Data.RoomInfo = room
 
+	case "setPlayOrder":
+		rooms, _ := ru.SetPlayOrder(roomID)
+		msg.Data.RoomInfo = rooms
+
 	// chinese chess
 	case "flipChess":
 		gd, _ := chineseChessUseCase.FlipChess(msg.Data.ChessID)

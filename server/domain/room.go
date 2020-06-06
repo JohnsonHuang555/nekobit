@@ -28,6 +28,7 @@ type RoomUseCase interface {
 
 	GetRoomInfo(roomID string) (*Room, error)
 	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
+	SetPlayOrder(id string) (*Room, error)
 }
 
 // RoomRepository represent the room's repository contract
@@ -43,12 +44,12 @@ type RoomRepository interface {
 	UpdateNowTurnByID(id string, nowTurn string) (*Room, error)
 	UpdateGameIDByID(id string, gameID string) (*Room, error)
 	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
+	UpdateUsersPlayOrder(roomID string) ([]*User, error)
 
 	AddUser(roomID string, u *User) ([]*User, error)
 	RemoveUser(roomID string, userID string) ([]*User, error)
 
 	UpdateUserIsReady(roomID string, userID string) ([]*User, error)
 	UpdateUserIsMaster(roomID string, userID string, isMaster bool) ([]*User, error)
-	UpdateUserPlayOrder(roomID string, userID string, playOrder int) ([]*User, error)
 	UpdateUserSide(roomID string, userID string, side string) ([]*User, error)
 }

@@ -86,11 +86,28 @@ func (ru *roomUseCase) UpdateGameData(roomID string, gameData interface{}) (inte
 }
 
 func (ru *roomUseCase) StartGame(id string, gameData interface{}) (*domain.Room, error) {
-	// FIXME: setPlayOrder
 	status := 1
 	ru.roomRepo.UpdateStatusByID(id, status)
 	ru.roomRepo.UpdateGameData(id, gameData)
 	room, err := ru.roomRepo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
+}
+
+func (ru *roomUseCase) SetPlayOrder(id string) (*domain.Room, error) {
+	users, err := ru.roomRepo.UpdateUsersPlayOrder(id)
+	if err != nil {
+		return nil, err
+	}
+	playerOne := users[0]
+	for i := 0; i < len(users); i++ {
+		if users[i].PlayOrder < playerOne.PlayOrder {
+			playerOne = users[i]
+		}
+	}
+	room, err := ru.roomRepo.UpdateNowTurnByID(id, playerOne.ID)
 	if err != nil {
 		return nil, err
 	}

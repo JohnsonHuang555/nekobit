@@ -39,6 +39,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       Injection.provideLeaveRoomUseCase(),
       Injection.provideReadyGameUseCase(),
       Injection.provideStartGameUseCase(),
+      Injection.provideSetPlayOrderUseCase(),
       Injection.provideGetUserInfoUseCase(),
     )
   }
@@ -102,6 +103,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
           {roomInfo && roomInfo.status === 1 && (
             <GameScreen
               roomInfo={roomInfo}
+              onSetPlayOrder={() => this.onSetPlayOrder()}
               updateRoomInfo={(rf) => this.setRoomInfo(rf)}
             />
           )}
@@ -117,6 +119,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
 
   setRoomInfo(roomInfo: TRoom): void {
+    // console.log(roomInfo)
     this.setState({ roomInfo });
   }
 
@@ -172,6 +175,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   private readyGame(): void {
     this.presenter.readyGame();
+  }
+
+  private onSetPlayOrder(): void {
+    this.presenter.setPlayOrder();
   }
 }
 

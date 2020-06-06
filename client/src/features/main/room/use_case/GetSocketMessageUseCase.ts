@@ -39,6 +39,11 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
             this.roomInfo = roomInfo;
             break;
           }
+          case SocketEvent.SetPlayOrder: {
+            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
+            this.roomInfo = roomInfo;
+            break;
+          }
         }
         callbacks.onSuccess({ roomInfo: this.roomInfo as TRoom });
       },

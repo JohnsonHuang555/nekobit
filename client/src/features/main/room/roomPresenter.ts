@@ -7,6 +7,7 @@ import { ReadyGame } from './use_case/base/ReadyGameUseCaseItf';
 import { StartGame } from './use_case/base/StartGameUseCaseItf';
 import { GetUserInfo } from './use_case/base/GetUserInfoUseCaseItf';
 import { GetSocketMessage } from './use_case/base/GetSocketMessageUseCaseItf';
+import { SetPlayOrder } from './use_case/base/SetPlayOrderUseCaseItf';
 
 export class RoomPresenter implements RoomContract.Presenter {
   private readonly view: RoomContract.View;
@@ -16,6 +17,7 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly joinRoomUseCase: JoinRoom.UseCase;
   private readonly leaveRoomUseCase: LeaveRoom.UseCase;
   private readonly readyGameUseCase: ReadyGame.UseCase;
+  private readonly setPlayOrderUseCase: SetPlayOrder.UseCase;
   private readonly startGameUseCase: StartGame.UseCase;
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
 
@@ -30,6 +32,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     leaveRoomUseCase: LeaveRoom.UseCase,
     readyGameUseCase: ReadyGame.UseCase,
     startGameUseCase: StartGame.UseCase,
+    setPlayOrderUseCase: SetPlayOrder.UseCase,
     getUserInfoUseCase: GetUserInfo.UseCase,
   ) {
     this.view = view;
@@ -40,6 +43,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.leaveRoomUseCase = leaveRoomUseCase;
     this.readyGameUseCase = readyGameUseCase;
     this.startGameUseCase = startGameUseCase;
+    this.setPlayOrderUseCase = setPlayOrderUseCase;
     this.getUserInfoUseCase = getUserInfoUseCase;
   }
 
@@ -75,6 +79,12 @@ export class RoomPresenter implements RoomContract.Presenter {
   readyGame(): void {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.readyGameUseCase, { roomID: this.roomID });
+  }
+
+  setPlayOrder(): void {
+    this.useCaseHandler.execute(this.setPlayOrderUseCase, {
+      roomID: this.roomID
+    });
   }
 
   startGame(mode: number, gameId: string): void {

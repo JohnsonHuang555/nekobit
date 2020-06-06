@@ -4,13 +4,16 @@ import { ChineseChessPresenter } from './chineseChessPresenter';
 import { Injection } from './injection/injection';
 import { TChineseChess } from '../domain/models/ChineseChess';
 import Hidden from './components/Mode/Hidden';
+import { TRoomUser, TRoom } from 'src/features/main/domain/models/Room';
 import '@styles/games/chineseChess.scss';
 
 interface ChineseChessViewProps {
   roomID: string;
   chesses: TChineseChess[];
   mode: number;
-  updateChineseChess: (c: TChineseChess[]) => void;
+  updateChineseChess: (rf: Partial<TRoom>) => void;
+  updateNowTurn: (rf: Partial<TRoom>) => void;
+  updateUserList: (rf: Partial<TRoom>) => void;
 }
 interface ChineseChessViewState {
   selectedChess?: TChineseChess;
@@ -54,9 +57,20 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
   finishLoading(): void {
   }
 
-  setChesses(chesses: TChineseChess[]): void {
-    // 透過事件向上傳遞更新 roomInfo's gameData
-    this.props.updateChineseChess(chesses);
+  // 透過事件向上傳遞更新 roomInfo's gameData
+  setChesses(gameData: TChineseChess[]): void {
+    this.props.updateChineseChess({ gameData });
+  }
+
+  // 透過事件向上傳遞更新 roomInfo's nowTurn
+  setNowTurn(nowTurn: string): void {
+    console.log(nowTurn)
+    this.props.updateNowTurn({ nowTurn });
+  }
+
+  // 透過事件向上傳遞更新 roomInfo's userList
+  setUserList(userList: TRoomUser[]): void {
+    this.props.updateUserList({ userList });
   }
 
   setSelectedChess(selectedChess: TChineseChess): void {

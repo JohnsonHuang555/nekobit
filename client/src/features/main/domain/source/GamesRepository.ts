@@ -134,4 +134,16 @@ export default class GamesRepository implements Games.DataSource {
       },
     );
   }
+
+  setPlayOrder(roomID: string): void {
+    this.fetcher.sendSocket(
+      {
+        userID: this.userInfo?.id,
+        event: SocketEvent.SetPlayOrder,
+        data: {
+          roomID,
+        }
+      }
+    )
+  }
 }

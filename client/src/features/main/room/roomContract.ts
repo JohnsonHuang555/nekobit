@@ -5,6 +5,7 @@ export namespace RoomContract {
   export type RoomPageParams = { id: string };
   export interface Presenter {
     mount(params: RoomPageParams): void;
+    setPlayOrder(): void;
     getUserInfo(): void;
     getMessageHandler(): void;
     joinRoom(): void;

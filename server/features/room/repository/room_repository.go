@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"server/domain"
+	"server/utils"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -173,16 +174,18 @@ func (rr *roomRepository) UpdateUserIsMaster(roomID string, userID string, isMas
 	return rr.rooms[roomIndex].UserList, nil
 }
 
-func (rr *roomRepository) UpdateUserPlayOrder(roomID string, userID string, playOrder int) ([]*domain.User, error) {
+func (rr *roomRepository) UpdateUsersPlayOrder(roomID string) ([]*domain.User, error) {
 	roomIndex := rr.findIndexByID(roomID)
-	userIndex := rr.findUserByID(userID, roomIndex)
-	if roomIndex == -1 || userIndex == -1 {
-		return nil, errors.New("User not exist")
+	if roomIndex == -1 {
+		return nil, errors.New("Room not exist")
 	}
 
-	// ID, Name 不覆寫, 保護成員
-	userList := rr.rooms[roomIndex].UserList
-	userList[userIndex].PlayOrder = playOrder
+	nowUsers := rr.rooms[roomIndex].UserList
+	// random update
+	randUser := utils.RandomShuffle(len(nowUsers))
+	for i := 0; i < len(nowUsers); i++ {
+		nowUsers[i].PlayOrder = randUser[i]
+	}
 
 	return rr.rooms[roomIndex].UserList, nil
 }

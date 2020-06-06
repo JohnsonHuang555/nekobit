@@ -9,10 +9,16 @@ import { EatChessUseCase } from "../use_cases/EatChessUseCase";
 import { FlipChess } from "../use_cases/base/FlipChessUseCaseItf";
 import { FlipChessUseCase } from "../use_cases/FlipChessUseCase";
 import { GetSocketMessageUseCase } from '../use_cases/GetSocketMessageUseCase';
+import { SetPlayOrderUseCase } from 'src/features/main/room/use_case/SetPlayOrderUseCase';
+import { Games } from 'src/features/main/domain/source/GamesDataSource';
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
     return UseCaseHandler.INSTANCE;
+  }
+
+  static provideGamesRepository(): Games.DataSource {
+    return appProvider.gamesRepository;
   }
 
   static provideChineseChessRepository(): ChineseChess.DataSource {

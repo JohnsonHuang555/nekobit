@@ -29,7 +29,7 @@ export namespace Games {
     leaveRoom(roomID: string): void;
     readyGame(roomID: string): void;
     startGame(roomID: string, roomMode: number, gameID: string): void;
-
+    setPlayOrder(roomID: string): void;
   }
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}
