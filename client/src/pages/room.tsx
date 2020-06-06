@@ -52,6 +52,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   render() {
     const {
       roomInfo,
+      userInfo,
     } = this.state;
 
     return (
@@ -100,9 +101,11 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               )
             }
           </div>
-          {roomInfo && roomInfo.status === 1 && (
+          {roomInfo && roomInfo.status === 1 && userInfo && (
             <GameScreen
               roomInfo={roomInfo}
+              userID={userInfo.id}
+              isMaster={this.isMaster()}
               onSetPlayOrder={() => this.onSetPlayOrder()}
               updateRoomInfo={(rf) => this.setRoomInfo(rf)}
             />
@@ -119,7 +122,6 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
 
   setRoomInfo(roomInfo: TRoom): void {
-    // console.log(roomInfo)
     this.setState({ roomInfo });
   }
 

@@ -64,7 +64,6 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
 
   // 透過事件向上傳遞更新 roomInfo's nowTurn
   setNowTurn(nowTurn: string): void {
-    console.log(nowTurn)
     this.props.updateNowTurn({ nowTurn });
   }
 

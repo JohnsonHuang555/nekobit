@@ -1,4 +1,4 @@
-import { TRoom, TRoomUser } from "../../domain/models/Room";
+import { TRoom } from "../../domain/models/Room";
 import { Box, Button } from "@material-ui/core";
 import { GameList } from "../../domain/models/Game";
 import ChineseChessView from "src/features/games/chinese_chess/chineseChessView";
@@ -6,6 +6,8 @@ import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
 
 type GameScreenProps = {
   roomInfo: TRoom;
+  userID: string;
+  isMaster: boolean;
   onSetPlayOrder: () => void;
   updateRoomInfo: (rf: TRoom) => void;
 };
@@ -13,12 +15,13 @@ type GameScreenProps = {
 const GameScreen = (props: GameScreenProps) => {
   const {
     roomInfo,
+    userID,
+    isMaster,
     onSetPlayOrder,
     updateRoomInfo,
   } = props;
 
   const updateRoomInfoHandler = (rf: Partial<TRoom>) => {
-    console.log(rf)
     const newRoomInfo: TRoom = {
       ...roomInfo,
       ...rf,
@@ -27,26 +30,6 @@ const GameScreen = (props: GameScreenProps) => {
     // 傳遞新的 roomInfo 外部做更新
     updateRoomInfo(newRoomInfo);
   };
-
-  // const updateNowTurn = (nowTurn: string) => {
-  //   const newRoomInfo: TRoom = {
-  //     ...roomInfo,
-  //     nowTurn,
-  //   };
-
-  //   // 傳遞新的 roomInfo 外部做更新
-  //   updateRoomInfo(newRoomInfo);
-  // };
-
-  // const updateUserList = (userList: TRoomUser[]) => {
-  //   const newRoomInfo: TRoom = {
-  //     ...roomInfo,
-  //     userList,
-  //   }
-
-  //   // 傳遞新的 roomInfo 外部做更新
-  //   updateRoomInfo(newRoomInfo);
-  // };
 
   const playGame = {
     [GameList.ChineseChess]:
@@ -62,7 +45,14 @@ const GameScreen = (props: GameScreenProps) => {
 
   return (
     <Box className="game-screen">
-      <Button className="set-play-order" onClick={onSetPlayOrder}>決定順序</Button>
+      {!roomInfo.nowTurn && isMaster && (
+        <Button className="set-play-order" onClick={onSetPlayOrder}>
+          決定順序
+        </Button>
+      )}
+      {roomInfo.nowTurn && userID === roomInfo.nowTurn && (
+        <div className="your-turn">你的回合</div>
+      )}
       {playGame[roomInfo.gameId as GameList]}
     </Box>
   );
