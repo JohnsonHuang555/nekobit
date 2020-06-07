@@ -40,7 +40,7 @@ func SocketEventHandler(
 	case "startGame":
 		var gd interface{}
 		switch msg.Data.GameID {
-		case "5de1f7ddac5b6c1002ece8f1": // FIXME:
+		case "5d62a35bd986c21bc010c00b": // FIXME:
 			// 1 大盤, 2 小盤
 			if msg.Data.RoomMode == 2 {
 				gd = domain.CreateChessesHidden()

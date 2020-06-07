@@ -25,10 +25,9 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
             break;
           }
           default: {
-            console.log(result.data)
             const chesses = ChineseChessFactory.createArrayFromNet(result.data.gameData || []);
-            // const nowTurn = result.data.nowTurn;
-            callbacks.onSuccess({ chesses });
+            const nowTurn = result.data.nowTurn || '';
+            callbacks.onSuccess({ chesses, nowTurn });
             break;
           }
         }

@@ -28,11 +28,14 @@
       position: absolute;
       transition: all .2s;
       &:hover {
-        background: #4da862;;
+        background-color: #4da862;;
       }
     }
     .is-flipped {
       background-color: #fff;
+      &:hover {
+        background-color: #ccc;
+      }
     }
     .active {
       background-color: #e69c43;

@@ -41,8 +41,9 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
       onSuccess: (result) => {
         if (result.userList?.length && result.nowTurn) {
           this.view.setPlayOrder(result.nowTurn, result.userList)
-        } else if (result.chesses) {
+        } else if (result.chesses && result.nowTurn) {
           this.view.setChesses(result.chesses);
+          this.view.changePlayer(result.nowTurn);
         }
       },
       onError: () => {

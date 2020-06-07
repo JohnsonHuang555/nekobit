@@ -73,6 +73,10 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
     this.setState({ selectedChess });
   }
 
+  changePlayer(nowTurn: string): void {
+    this.props.updateNowTurn({ nowTurn });
+  }
+
   private renderMode() {
     const {
       mode,
