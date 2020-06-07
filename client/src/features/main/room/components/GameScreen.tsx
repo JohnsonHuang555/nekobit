@@ -21,6 +21,8 @@ const GameScreen = (props: GameScreenProps) => {
     updateRoomInfo,
   } = props;
 
+  const yourTurn = roomInfo.nowTurn && userID === roomInfo.nowTurn ? true : false;
+
   const updateRoomInfoHandler = (rf: Partial<TRoom>) => {
     const newRoomInfo: TRoom = {
       ...roomInfo,
@@ -37,6 +39,7 @@ const GameScreen = (props: GameScreenProps) => {
         roomID={roomInfo.id}
         chesses={roomInfo.gameData as TChineseChess[]}
         mode={roomInfo.mode}
+        yourTurn={yourTurn}
         updateChineseChess={updateRoomInfoHandler}
         updateNowTurn={updateRoomInfoHandler}
         updateUserList={updateRoomInfoHandler}
@@ -50,7 +53,7 @@ const GameScreen = (props: GameScreenProps) => {
           決定順序
         </Button>
       )}
-      {roomInfo.nowTurn && userID === roomInfo.nowTurn && (
+      {yourTurn && (
         <div className="your-turn">你的回合</div>
       )}
       {playGame[roomInfo.gameId as GameList]}

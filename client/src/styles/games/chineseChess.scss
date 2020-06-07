@@ -21,7 +21,7 @@
       font-size: 40px;
       border: 3px solid #eee;
       border-radius: 50px;
-      background: #6eb47e;
+      background-color: #6eb47e;
       font-family: '標楷體';
       cursor: pointer;
       box-shadow: 0 6px 1px #dadada;
@@ -33,7 +33,6 @@
     }
     .is-flipped {
       background-color: #fff;
-      position: relative;
     }
     .active {
       background-color: #e69c43;

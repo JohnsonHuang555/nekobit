@@ -12,7 +12,7 @@ const Chess = (props: ChessProps) => {
     isFlipped,
   } = props;
   return (
-    <div className="chess">
+    <div className={`chess ${isFlipped ? 'is-flipped' : ''}`}>
       {isFlipped && (
         <span className={side === ChessSide.Red ? ' side-red' : ' side-black'}>{name}</span>
       )}

@@ -1,10 +1,10 @@
 import React from 'react';
 import { TChineseChess } from 'src/features/games/domain/models/ChineseChess';
 import MapItem from '../MapItem';
-import { Button } from '@material-ui/core';
 
 type HiddenProps = {
   chesses: TChineseChess[];
+  yourTurn: boolean;
   onSelect: (id: number) => void;
   onMove: (id: number, targetX: number, targetY: number) => void;
   onEat: (id: number, targetId: number) => void;
@@ -14,6 +14,7 @@ type HiddenProps = {
 const Hidden = (props: HiddenProps) => {
   const {
     chesses,
+    yourTurn,
     onSelect,
     onEat,
     onFlip,
@@ -30,7 +31,7 @@ const Hidden = (props: HiddenProps) => {
 
         const onMapClick = () => {
           if (chessInfo) {
-            if (!chessInfo.isFlipped) {
+            if (!chessInfo.isFlipped && yourTurn) {
               onFlip(chessInfo.id);
             }
           }

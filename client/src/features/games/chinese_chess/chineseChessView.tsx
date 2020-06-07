@@ -11,6 +11,7 @@ interface ChineseChessViewProps {
   roomID: string;
   chesses: TChineseChess[];
   mode: number;
+  yourTurn: boolean;
   updateChineseChess: (rf: Partial<TRoom>) => void;
   updateNowTurn: (rf: Partial<TRoom>) => void;
   updateUserList: (rf: Partial<TRoom>) => void;
@@ -88,6 +89,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
             onMove={(id, tX, tY) => this.onMove(id, tX, tY)}
             onFlip={(id) => this.onFlip(id)}
             onEat={(id, tId) => this.onEat(id, tId)}
+            yourTurn={this.props.yourTurn}
           />
         )
       default:

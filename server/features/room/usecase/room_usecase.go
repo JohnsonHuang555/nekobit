@@ -113,3 +113,23 @@ func (ru *roomUseCase) SetPlayOrder(id string) (*domain.Room, error) {
 	}
 	return room, nil
 }
+
+func (ru *roomUseCase) ChangePlayerTurn(roomID string, nowPlayerID string) (string, error) {
+	user, err := ru.roomRepo.FindUserByID(roomID, nowPlayerID)
+	room, err := ru.roomRepo.FindByID(roomID)
+	if err != nil {
+		return "", err
+	}
+
+	nowPlayerOrder := user.PlayOrder + 1
+	// 代表 p1 重新開始
+	if nowPlayerOrder > len(room.UserList) {
+		nowPlayerOrder = 1
+	}
+	newUser, err := ru.roomRepo.FindUserByPlayOrder(roomID, nowPlayerOrder)
+	room, err = ru.roomRepo.UpdateNowTurnByID(roomID, newUser.ID)
+	if err != nil {
+		return "", err
+	}
+	return room.NowTurn, nil
+}
