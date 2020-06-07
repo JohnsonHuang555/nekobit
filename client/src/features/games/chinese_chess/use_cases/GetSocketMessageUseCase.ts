@@ -3,6 +3,7 @@ import { ChineseChess } from "src/features/games/chinese_chess/source/ChineseChe
 import { ChineseChessFactory } from "src/features/games/domain/factories/ChineseChessFactory";
 import { SocketEvent } from "src/types/Socket";
 import { RoomFactory } from "src/features/main/domain/factories/RoomFactory";
+import { UserFactory } from "src/features/main/domain/factories/UserFactory";
 
 export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   private repository: ChineseChess.DataSource;
@@ -15,8 +16,12 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
       onSuccess: (result) => {
         switch (result.event) {
           case SocketEvent.SetPlayOrder: {
-            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
-            callbacks.onSuccess({ roomInfo });
+            const userList = UserFactory.createArrayFromNet(result.data.roomInfo.user_list);
+            const nowTurn = result.data.roomInfo.now_turn;
+            callbacks.onSuccess({
+              userList,
+              nowTurn,
+            });
             break;
           }
           default: {
