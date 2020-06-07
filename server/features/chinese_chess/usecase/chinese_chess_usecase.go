@@ -47,12 +47,13 @@ func (cu *chineseChessUseCase) MoveChess(id int, locationX int, locationY int) (
 	return chesses, nil
 }
 
-func (cu *chineseChessUseCase) FlipChess(id int) ([]*domain.ChineseChess, error) {
-	err := cu.chineseChessRepo.UpdateIsFlipped(id)
+// FlipChess 翻棋並回傳玩家的陣營
+func (cu *chineseChessUseCase) FlipChess(id int) ([]*domain.ChineseChess, string, error) {
+	side, err := cu.chineseChessRepo.UpdateIsFlipped(id)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	chesses := cu.chineseChessRepo.FindAll()
-	return chesses, nil
+	return chesses, side, nil
 }

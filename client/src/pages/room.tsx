@@ -106,6 +106,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               roomInfo={roomInfo}
               userID={userInfo.id}
               isMaster={this.isMaster()}
+              playerSide={this.playerSide}
               onSetPlayOrder={() => this.onSetPlayOrder()}
               updateRoomInfo={(rf) => this.setRoomInfo(rf)}
             />
@@ -171,6 +172,14 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     }) ? true : false;
   }
 
+  private get playerSide(): string {
+    const user = this.findUser;
+    if (user) {
+      return user.side
+    }
+    return '';
+  }
+
   private startGame(mode: number, gameId: string): void {
     this.presenter.startGame(mode, gameId);
   }
@@ -181,6 +190,17 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   private onSetPlayOrder(): void {
     this.presenter.setPlayOrder();
+  }
+
+  private get findUser(): TRoomUser | undefined {
+    const {
+      roomInfo,
+      userInfo,
+    } = this.state;
+
+    return roomInfo && roomInfo.userList.find(u => {
+      return u.id === userInfo?.id
+    });
   }
 }
 

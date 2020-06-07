@@ -101,11 +101,15 @@
       left: 10px;
       z-index: 1000;
     }
-    .your-turn {
+    .your-turn, .your-side {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 1000;
+    }
+    .your-side {
+      top: 30px;
+      left: 10px;
     }
   }
 }

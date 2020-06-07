@@ -63,18 +63,16 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
     this.props.updateChineseChess({ gameData });
   }
 
-  // 透過事件向上傳遞更新 roomInfo's nowTurn and userList
-  setPlayOrder(nowTurn: string, userList: TRoomUser[]): void {
-    this.props.updateNowTurn({ nowTurn });
-    this.props.updateUserList({ userList });
-  }
-
   setSelectedChess(selectedChess: TChineseChess): void {
     this.setState({ selectedChess });
   }
 
-  changePlayer(nowTurn: string): void {
+  setNowTurn(nowTurn: string): void {
     this.props.updateNowTurn({ nowTurn });
+  }
+
+  setUserList(userList: TRoomUser[]): void {
+    this.props.updateUserList({ userList });
   }
 
   private renderMode() {

@@ -6,6 +6,7 @@ import {
 } from "src/domain/usecases/base/UseCase";
 import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
 import { TRoomUser } from "src/features/main/domain/models/Room";
+import { SocketEvent } from "src/types/Socket";
 
 export namespace GetSocketMessage {
   export interface InputData extends UseCaseInputData {}
@@ -14,6 +15,7 @@ export namespace GetSocketMessage {
     chesses?: TChineseChess[];
     userList?: TRoomUser[];
     nowTurn?: string;
+    event: SocketEvent;
   }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}

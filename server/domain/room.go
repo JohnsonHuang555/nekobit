@@ -30,6 +30,7 @@ type RoomUseCase interface {
 	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
 	SetPlayOrder(id string) (*Room, error)
 	ChangePlayerTurn(id string, userID string) (string, error)
+	SetPlayerSide(id string, userID string, side string) ([]*User, error)
 }
 
 // RoomRepository represent the room's repository contract

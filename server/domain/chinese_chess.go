@@ -31,7 +31,7 @@ type ChineseChessUseCae interface {
 	GetNewChess() ([]*ChineseChess, error)
 	EatChess(id int, targetID int) ([]*ChineseChess, error)
 	MoveChess(id int, locationX int, locationY int) ([]*ChineseChess, error)
-	FlipChess(id int) ([]*ChineseChess, error)
+	FlipChess(id int) ([]*ChineseChess, string, error)
 }
 
 type ChineseChessRepository interface {
@@ -39,7 +39,7 @@ type ChineseChessRepository interface {
 	FindAll() []*ChineseChess
 	GetChessLocation(chessID int) (int, int)
 	UpdateLocation(chessID int, locationX int, locationY int) error
-	UpdateIsFlipped(chessID int) error
+	UpdateIsFlipped(chessID int) (string, error)
 	UpdateAlive(chessID int, isAlive bool) error
 }
 

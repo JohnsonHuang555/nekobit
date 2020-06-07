@@ -133,3 +133,11 @@ func (ru *roomUseCase) ChangePlayerTurn(roomID string, nowPlayerID string) (stri
 	}
 	return room.NowTurn, nil
 }
+
+func (ru *roomUseCase) SetPlayerSide(roomID string, userID string, side string) ([]*domain.User, error) {
+	users, err := ru.roomRepo.UpdateUserSide(roomID, userID, side)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}

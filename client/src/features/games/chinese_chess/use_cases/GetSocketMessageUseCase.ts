@@ -21,13 +21,20 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
             callbacks.onSuccess({
               userList,
               nowTurn,
+              event: SocketEvent.SetPlayOrder,
             });
             break;
           }
-          default: {
+          case SocketEvent.FlipChess: {
+            const userList = UserFactory.createArrayFromNet(result.data.roomUserList);
             const chesses = ChineseChessFactory.createArrayFromNet(result.data.gameData || []);
             const nowTurn = result.data.nowTurn || '';
-            callbacks.onSuccess({ chesses, nowTurn });
+            callbacks.onSuccess({
+              chesses,
+              nowTurn,
+              userList,
+              event: SocketEvent.FlipChess
+            });
             break;
           }
         }

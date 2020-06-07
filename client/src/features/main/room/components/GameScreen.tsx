@@ -8,6 +8,7 @@ type GameScreenProps = {
   roomInfo: TRoom;
   userID: string;
   isMaster: boolean;
+  playerSide: string;
   onSetPlayOrder: () => void;
   updateRoomInfo: (rf: TRoom) => void;
 };
@@ -17,6 +18,7 @@ const GameScreen = (props: GameScreenProps) => {
     roomInfo,
     userID,
     isMaster,
+    playerSide,
     onSetPlayOrder,
     updateRoomInfo,
   } = props;
@@ -56,6 +58,7 @@ const GameScreen = (props: GameScreenProps) => {
       {yourTurn && (
         <div className="your-turn">你的回合</div>
       )}
+      <div className="your-side">{playerSide}</div>
       {playGame[roomInfo.gameId as GameList]}
     </Box>
   );

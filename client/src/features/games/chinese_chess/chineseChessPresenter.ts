@@ -4,6 +4,7 @@ import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { MoveChess } from './use_cases/base/MoveChessUseCaseItf';
 import { EatChess } from './use_cases/base/EatChessUseCaseItf';
 import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
+import { SocketEvent } from 'src/types/Socket';
 
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
@@ -39,11 +40,20 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   getMessageHandler(): void {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
-        if (result.userList?.length && result.nowTurn) {
-          this.view.setPlayOrder(result.nowTurn, result.userList)
-        } else if (result.chesses && result.nowTurn) {
-          this.view.setChesses(result.chesses);
-          this.view.changePlayer(result.nowTurn);
+        switch (result.event) {
+          case SocketEvent.SetPlayOrder:
+            if (result.userList?.length && result.nowTurn) {
+              this.view.setNowTurn(result.nowTurn);
+              this.view.setUserList(result.userList);
+            }
+            break;
+          case SocketEvent.FlipChess:
+            if (result.chesses && result.nowTurn && result.userList?.length) {
+              this.view.setChesses(result.chesses);
+              this.view.setNowTurn(result.nowTurn);
+              this.view.setUserList(result.userList);
+            }
+            break;
         }
       },
       onError: () => {

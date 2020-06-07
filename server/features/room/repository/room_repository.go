@@ -199,7 +199,18 @@ func (rr *roomRepository) UpdateUserSide(roomID string, userID string, side stri
 
 	// ID, Name 不覆寫, 保護成員
 	userList := rr.rooms[roomIndex].UserList
-	userList[userIndex].Side = side
+	if userList[userIndex].Side == "" {
+		isSideExist := false
+		for i := 0; i < len(userList); i++ {
+			if userList[i].Side == side {
+				isSideExist = true
+			}
+		}
+		// not exist side
+		if !isSideExist {
+			userList[userIndex].Side = side
+		}
+	}
 
 	return rr.rooms[roomIndex].UserList, nil
 }

@@ -37,13 +37,13 @@ func (c *chineseChessRepository) UpdateLocation(chessID int, locationX int, loca
 	return nil
 }
 
-func (c *chineseChessRepository) UpdateIsFlipped(chessID int) error {
+func (c *chineseChessRepository) UpdateIsFlipped(chessID int) (string, error) {
 	chessIndex := c.findIndexByID(chessID)
 	if chessIndex == -1 {
-		return errors.New("Chess not exist")
+		return "", errors.New("Chess not exist")
 	}
 	c.chesses[chessIndex].IsFlipped = !c.chesses[chessIndex].IsFlipped
-	return nil
+	return c.chesses[chessIndex].Side, nil
 }
 
 func (c *chineseChessRepository) UpdateAlive(chessID int, isAlive bool) error {

@@ -56,9 +56,11 @@ func SocketEventHandler(
 
 	// chinese chess
 	case "flipChess":
-		gd, _ := chineseChessUseCase.FlipChess(msg.Data.ChessID)
+		gd, side, _ := chineseChessUseCase.FlipChess(msg.Data.ChessID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		nowPlayer, _ := ru.ChangePlayerTurn(roomID, msg.UserID)
+		users, _ := ru.SetPlayerSide(roomID, msg.UserID, side)
+		msg.Data.RoomUserList = users
 		msg.Data.GameData = gameData
 		msg.Data.NowTurn = nowPlayer
 	case "moveChess":
