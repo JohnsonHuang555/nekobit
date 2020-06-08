@@ -51,6 +51,7 @@ const Hidden = (props: HiddenProps) => {
         map.push(
           <MapItem
             key={`x-${x}/y-${y}`}
+            isSelected={selectedChess ? true : false}
             chessInfo={chessInfo}
             onMapClick={onMapClick}
             onChessClick={onChessClick}

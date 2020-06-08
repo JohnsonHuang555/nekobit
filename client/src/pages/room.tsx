@@ -147,8 +147,12 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
 
   private get disabledStart(): boolean {
-    const user = this.findUser;
-    if (user && user.isReady) {
+    const {
+      roomInfo,
+    } = this.state;
+
+    const notReady = roomInfo?.userList.filter(u => !u.isReady) || [];
+    if (notReady.length) {
       return true;
     }
     return false;

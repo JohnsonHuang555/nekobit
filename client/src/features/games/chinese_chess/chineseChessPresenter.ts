@@ -70,7 +70,12 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   }
 
   onSelect(id: number): void {
-    // TODO: 選擇棋子
+    const selectedChess = this.chesses.find(chess => {
+      return chess.id === id;
+    });
+    if (selectedChess) {
+      this.view.setSelectedChess(selectedChess);
+    }
   }
 
   onFlip(id: number): void {

@@ -67,6 +67,9 @@
       }
     }
   }
+  .is-selected {
+    border: 1px solid #be1010;
+  }
   .standard {
     width: calc(100% / 9);
     height: 60px;

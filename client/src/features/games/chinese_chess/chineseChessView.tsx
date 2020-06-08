@@ -100,6 +100,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
         return (
           <Hidden
             chesses={chesses}
+            selectedChess={this.state.selectedChess}
             onSelect={(id) => this.onSelect(id)}
             onMove={(id, tX, tY) => this.onMove(id, tX, tY)}
             onFlip={(id) => this.onFlip(id)}
