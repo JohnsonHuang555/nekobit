@@ -3,13 +3,15 @@ import Chess from './Chess';
 
 type MapItemProps = {
   chessInfo?: TChineseChess;
-  onMapClick: () => void;
+  onMapClick: () => void; // Move chess 用
+  onChessClick: () => void;
 }
 
 const MapItem = (props: MapItemProps) => {
   const {
     chessInfo,
     onMapClick,
+    onChessClick,
   } = props;
   return (
     <div className="map-item" onClick={onMapClick}>
@@ -18,6 +20,7 @@ const MapItem = (props: MapItemProps) => {
           name={chessInfo.name}
           side={chessInfo.side}
           isFlipped={chessInfo.isFlipped}
+          onChessClick={onChessClick}
         />
       )}
     </div>

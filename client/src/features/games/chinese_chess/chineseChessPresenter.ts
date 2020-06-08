@@ -5,6 +5,7 @@ import { MoveChess } from './use_cases/base/MoveChessUseCaseItf';
 import { EatChess } from './use_cases/base/EatChessUseCaseItf';
 import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
+import { TChineseChess } from '../domain/models/ChineseChess';
 
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
@@ -15,6 +16,7 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly flipChessUseCase: FlipChess.UseCase;
 
   private roomID = '';
+  private chesses: TChineseChess[] = [];
 
   constructor(
     view: ChineseChessContract.View,
@@ -32,8 +34,9 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     this.flipChessUseCase = flipChessUseCase;
   }
 
-  mount(roomID: string): void {
+  mount(roomID: string, chesses: TChineseChess[]): void {
     this.roomID = roomID;
+    this.chesses = chesses;
     this.getMessageHandler();
   }
 
@@ -60,6 +63,10 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
         // error toast
       }
     });
+  }
+
+  updateChesses(chesses: TChineseChess[]): void {
+    this.chesses = chesses;
   }
 
   onSelect(id: number): void {

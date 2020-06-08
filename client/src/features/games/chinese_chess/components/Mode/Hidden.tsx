@@ -5,6 +5,7 @@ import MapItem from '../MapItem';
 type HiddenProps = {
   chesses: TChineseChess[];
   yourTurn: boolean;
+  selectedChess?: TChineseChess;
   onSelect: (id: number) => void;
   onMove: (id: number, targetX: number, targetY: number) => void;
   onEat: (id: number, targetId: number) => void;
@@ -15,6 +16,7 @@ const Hidden = (props: HiddenProps) => {
   const {
     chesses,
     yourTurn,
+    selectedChess,
     onSelect,
     onEat,
     onFlip,
@@ -23,25 +25,35 @@ const Hidden = (props: HiddenProps) => {
 
   const chessMap = () => {
     let map = [];
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 8; j++) {
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 8; x++) {
         const chessInfo = [...chesses].find(c => {
-          return c.locationX === j && c.locationY === i
+          return c.locationX === x && c.locationY === y
         });
 
         const onMapClick = () => {
-          if (chessInfo) {
-            if (!chessInfo.isFlipped && yourTurn) {
-              onFlip(chessInfo.id);
-            }
+          if (!chessInfo && selectedChess) {
+            onMove(selectedChess.id, x, y);
+          }
+        };
+
+        const onChessClick = () => {
+          if (!chessInfo || !yourTurn) { return; }
+          if (!chessInfo.isFlipped) {
+            onFlip(chessInfo.id);
+          } else if (!selectedChess) {
+            onSelect(chessInfo.id);
+          } else {
+            onEat(chessInfo.id, selectedChess.id);
           }
         };
 
         map.push(
           <MapItem
-            key={`x-${j}/y-${i}`}
+            key={`x-${x}/y-${y}`}
             chessInfo={chessInfo}
             onMapClick={onMapClick}
+            onChessClick={onChessClick}
           />
         );
       }

@@ -42,7 +42,20 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
   }
 
   componentDidMount() {
-    this.presenter.mount(this.props.roomID);
+    const {
+      roomID,
+      chesses,
+    } = this.props;
+    this.presenter.mount(roomID, chesses);
+  }
+
+  // 當 props 改變，更新 chesses
+  componentDidUpdate() {
+    this.presenter.updateChesses(this.props.chesses);
+  }
+
+  componentWillUnmount() {
+    // TODO: disconnect socket
   }
 
   render() {

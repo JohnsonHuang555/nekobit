@@ -2,8 +2,9 @@ import { TChineseChess } from 'src/features/games/domain/models/ChineseChess';
 import { TRoomUser } from 'src/features/main/domain/models/Room';
 export namespace ChineseChessContract {
   export interface Presenter {
-    mount(roomID: string): void;
+    mount(roomID: string, chesses: TChineseChess[]): void;
     getMessageHandler(): void;
+    updateChesses(chesses: TChineseChess[]): void;
 
     onSelect(id: number): void;
     onFlip(id: number): void;

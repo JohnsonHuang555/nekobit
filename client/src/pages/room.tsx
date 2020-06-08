@@ -83,11 +83,11 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
           <div className="col-md-4">
             <div className="settings-block"></div>
             {roomInfo &&
-              this.isMaster() ? (
+              this.isMaster ? (
                 <Button
                   className="start"
                   onClick={() => this.startGame(roomInfo.mode, roomInfo.gameId)}
-                  disabled={this.disabledStart()}
+                  disabled={this.disabledStart}
                 >
                   Start
                 </Button>
@@ -96,7 +96,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
                   className="ready"
                   onClick={() => this.readyGame()}
                 >
-                  {this.isPlayerReady()}
+                  {this.isPlayerReady}
                 </Button>
               )
             }
@@ -105,7 +105,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
             <GameScreen
               roomInfo={roomInfo}
               userID={userInfo.id}
-              isMaster={this.isMaster()}
+              isMaster={this.isMaster}
               playerSide={this.playerSide}
               onSetPlayOrder={() => this.onSetPlayOrder()}
               updateRoomInfo={(rf) => this.setRoomInfo(rf)}
@@ -130,46 +130,28 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     this.setState({ userInfo });
   }
 
-  private isMaster(): boolean {
-    const {
-      userInfo,
-      roomInfo
-    } = this.state;
-
-    if (userInfo && roomInfo) {
-      const user = roomInfo.userList.find(u => {
-        return u.id === userInfo.id;
-      });
-
-      return user ? user.isMaster : false;
+  private get isMaster(): boolean {
+    const user = this.findUser;
+    if (user && user.isMaster) {
+      return true;
     }
     return false;
   }
 
-  private isPlayerReady(): string {
-    const {
-      userInfo,
-      roomInfo
-    } = this.state;
-
-    if (userInfo && roomInfo) {
-      const user = roomInfo.userList.find(u => {
-        return u.id === userInfo.id;
-      });
-
-      return (user && user.isReady) ? 'Cancel' : 'Ready';
+  private get isPlayerReady(): string {
+    const user = this.findUser;
+    if (user && user.isReady) {
+      return 'Cancel';
     }
     return 'Ready';
   }
 
-  private disabledStart(): boolean {
-    const {
-      roomInfo
-    } = this.state;
-
-    return roomInfo && roomInfo.userList.find(u => {
-      return u.isReady === false;
-    }) ? true : false;
+  private get disabledStart(): boolean {
+    const user = this.findUser;
+    if (user && user.isReady) {
+      return true;
+    }
+    return false;
   }
 
   private get playerSide(): string {
@@ -198,7 +180,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       userInfo,
     } = this.state;
 
-    return roomInfo && roomInfo.userList.find(u => {
+    return roomInfo?.userList.find(u => {
       return u.id === userInfo?.id
     });
   }
