@@ -2,13 +2,13 @@ import { TRoom } from "../../domain/models/Room";
 import { Box, Button } from "@material-ui/core";
 import { GameList } from "../../domain/models/Game";
 import ChineseChessView from "src/features/games/chinese_chess/chineseChessView";
-import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
+import { TChineseChess, ChessSide } from "src/features/games/domain/models/ChineseChess";
 
 type GameScreenProps = {
   roomInfo: TRoom;
   userID: string;
   isMaster: boolean;
-  playerSide: string;
+  playerSide: ChessSide;
   onSetPlayOrder: () => void;
   updateRoomInfo: (rf: TRoom) => void;
 };
@@ -42,6 +42,7 @@ const GameScreen = (props: GameScreenProps) => {
         chesses={roomInfo.gameData as TChineseChess[]}
         mode={roomInfo.mode}
         yourTurn={yourTurn}
+        playerSide={playerSide}
         updateChineseChess={updateRoomInfoHandler}
         updateNowTurn={updateRoomInfoHandler}
         updateUserList={updateRoomInfoHandler}

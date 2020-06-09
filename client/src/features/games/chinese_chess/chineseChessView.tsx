@@ -2,7 +2,7 @@ import React from 'react';
 import { ChineseChessContract } from "./chineseChessContract";
 import { ChineseChessPresenter } from './chineseChessPresenter';
 import { Injection } from './injection/injection';
-import { TChineseChess } from '../domain/models/ChineseChess';
+import { TChineseChess, ChessSide } from '../domain/models/ChineseChess';
 import Hidden from './components/Mode/Hidden';
 import { TRoomUser, TRoom } from 'src/features/main/domain/models/Room';
 import '@styles/games/chineseChess.scss';
@@ -12,6 +12,7 @@ interface ChineseChessViewProps {
   chesses: TChineseChess[];
   mode: number;
   yourTurn: boolean;
+  playerSide: ChessSide;
   updateChineseChess: (rf: Partial<TRoom>) => void;
   updateNowTurn: (rf: Partial<TRoom>) => void;
   updateUserList: (rf: Partial<TRoom>) => void;
@@ -101,6 +102,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
           <Hidden
             chesses={chesses}
             selectedChess={this.state.selectedChess}
+            playerSide={this.props.playerSide}
             onSelect={(id) => this.onSelect(id)}
             onMove={(id, tX, tY) => this.onMove(id, tX, tY)}
             onFlip={(id) => this.onFlip(id)}
@@ -116,6 +118,10 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
   }
 
   private onSelect(id: number) {
+    if (this.state.selectedChess?.id === id) {
+      this.setState({ selectedChess: undefined });
+      return;
+    }
     this.presenter.onSelect(id);
   }
 

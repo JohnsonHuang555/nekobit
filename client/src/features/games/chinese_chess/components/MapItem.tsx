@@ -16,7 +16,7 @@ const MapItem = (props: MapItemProps) => {
     onChessClick,
   } = props;
   return (
-    <div className={'map-item' + (isSelected ? 'is-selected' : '')} onClick={onMapClick}>
+    <div className={'map-item' + (isSelected ? ' is-selected' : '')} onClick={onMapClick}>
       {chessInfo && (
         <Chess
           name={chessInfo.name}

@@ -1,11 +1,12 @@
 import React from 'react';
-import { TChineseChess } from 'src/features/games/domain/models/ChineseChess';
+import { TChineseChess, ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import MapItem from '../MapItem';
 
 type HiddenProps = {
   chesses: TChineseChess[];
   yourTurn: boolean;
   selectedChess?: TChineseChess;
+  playerSide: ChessSide;
   onSelect: (id: number) => void;
   onMove: (id: number, targetX: number, targetY: number) => void;
   onEat: (id: number, targetId: number) => void;
@@ -17,12 +18,14 @@ const Hidden = (props: HiddenProps) => {
     chesses,
     yourTurn,
     selectedChess,
+    playerSide,
     onSelect,
     onEat,
     onFlip,
     onMove,
   } = props;
 
+  console.log(selectedChess)
   const chessMap = () => {
     let map = [];
     for (let y = 0; y < 4; y++) {
@@ -41,17 +44,27 @@ const Hidden = (props: HiddenProps) => {
           if (!chessInfo || !yourTurn) { return; }
           if (!chessInfo.isFlipped) {
             onFlip(chessInfo.id);
-          } else if (!selectedChess) {
+          } else if (playerSide === chessInfo.side) {
             onSelect(chessInfo.id);
-          } else {
+          } else if (selectedChess && selectedChess.side !== chessInfo.side) {
             onEat(chessInfo.id, selectedChess.id);
           }
+        };
+
+        const isSelected = (): boolean => {
+          if (selectedChess && chessInfo) {
+            if (selectedChess.id === chessInfo.id) {
+              return true;
+            }
+            return false;
+          }
+          return false;
         };
 
         map.push(
           <MapItem
             key={`x-${x}/y-${y}`}
-            isSelected={selectedChess ? true : false}
+            isSelected={isSelected()}
             chessInfo={chessInfo}
             onMapClick={onMapClick}
             onChessClick={onChessClick}
