@@ -25,13 +25,12 @@ const Hidden = (props: HiddenProps) => {
     onMove,
   } = props;
 
-  console.log(selectedChess)
   const chessMap = () => {
     let map = [];
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
         const chessInfo = [...chesses].find(c => {
-          return c.locationX === x && c.locationY === y
+          return c.locationX === x && c.locationY === y && c.alive
         });
 
         const onMapClick = () => {
@@ -47,7 +46,7 @@ const Hidden = (props: HiddenProps) => {
           } else if (playerSide === chessInfo.side) {
             onSelect(chessInfo.id);
           } else if (selectedChess && selectedChess.side !== chessInfo.side) {
-            onEat(chessInfo.id, selectedChess.id);
+            onEat(selectedChess.id, chessInfo.id);
           }
         };
 

@@ -44,19 +44,29 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
         switch (result.event) {
-          case SocketEvent.SetPlayOrder:
+          case SocketEvent.SetPlayOrder: {
             if (result.userList?.length && result.nowTurn) {
               this.view.setNowTurn(result.nowTurn);
               this.view.setUserList(result.userList);
             }
             break;
-          case SocketEvent.FlipChess:
+          }
+          case SocketEvent.FlipChess: {
             if (result.chesses && result.nowTurn && result.userList?.length) {
               this.view.setChesses(result.chesses);
               this.view.setNowTurn(result.nowTurn);
               this.view.setUserList(result.userList);
             }
             break;
+          }
+          case SocketEvent.EatChess: {
+            if (result.chesses && result.nowTurn) {
+              this.view.setSelectedChess(undefined);
+              this.view.setChesses(result.chesses);
+              this.view.setNowTurn(result.nowTurn);
+            }
+            break;
+          }
         }
       },
       onError: () => {
@@ -79,7 +89,6 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   }
 
   onFlip(id: number): void {
-    // TODO:判斷翻牌
     this.useCaseHandler.execute(this.flipChessUseCase, {
       roomID: this.roomID,
       chessID: id,

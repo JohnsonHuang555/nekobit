@@ -70,7 +70,9 @@ func SocketEventHandler(
 	case "eatChess":
 		gd, _ := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
+		nowPlayer, _ := ru.ChangePlayerTurn(roomID, msg.UserID)
 		msg.Data.GameData = gameData
+		msg.Data.NowTurn = nowPlayer
 	}
 	return msg
 }

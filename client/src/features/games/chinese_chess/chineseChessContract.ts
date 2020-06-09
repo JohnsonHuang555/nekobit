@@ -16,7 +16,7 @@ export namespace ChineseChessContract {
     finishLoading(): void;
 
     setChesses(gameData: TChineseChess[]): void;
-    setSelectedChess(chess: TChineseChess): void;
+    setSelectedChess(chess?: TChineseChess): void;
     setNowTurn(nowTurn: string): void;
     setUserList(userList: TRoomUser[]): void;
   }

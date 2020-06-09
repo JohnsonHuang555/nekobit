@@ -27,7 +27,7 @@ export default class ChineseChessRepository implements ChineseChess.DataSource {
   eatChess(roomID: string, chessID: number, targetID: number): void {
     this.fetcher.sendSocket({
       userID: this.userInfo?.id,
-      event: SocketEvent.MoveChess,
+      event: SocketEvent.EatChess,
       data: {
         roomID,
         chessID,

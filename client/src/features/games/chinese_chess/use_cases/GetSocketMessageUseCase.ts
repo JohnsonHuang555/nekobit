@@ -37,6 +37,16 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
             });
             break;
           }
+          case SocketEvent.EatChess: {
+            const chesses = ChineseChessFactory.createArrayFromNet(result.data.gameData || []);
+            const nowTurn = result.data.nowTurn || '';
+            callbacks.onSuccess({
+              chesses,
+              nowTurn,
+              event: SocketEvent.EatChess
+            });
+            break;
+          }
         }
       },
       onError: callbacks.onError,
