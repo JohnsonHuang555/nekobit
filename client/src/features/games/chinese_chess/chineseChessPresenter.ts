@@ -59,7 +59,8 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
             }
             break;
           }
-          case SocketEvent.EatChess: {
+          case SocketEvent.EatChess:
+          case SocketEvent.MoveChess: {
             if (result.chesses && result.nowTurn) {
               this.view.setSelectedChess(undefined);
               this.view.setChesses(result.chesses);

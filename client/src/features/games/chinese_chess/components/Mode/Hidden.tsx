@@ -55,7 +55,6 @@ const Hidden = (props: HiddenProps) => {
             if (selectedChess.id === chessInfo.id) {
               return true;
             }
-            return false;
           }
           return false;
         };

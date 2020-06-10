@@ -55,10 +55,6 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
     this.presenter.updateChesses(this.props.chesses);
   }
 
-  componentWillUnmount() {
-    // TODO: disconnect socket
-  }
-
   render() {
     return (
       <div className="chinese-chess-container">
