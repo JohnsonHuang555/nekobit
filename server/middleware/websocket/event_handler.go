@@ -66,7 +66,9 @@ func SocketEventHandler(
 	case "moveChess":
 		gd, _ := chineseChessUseCase.MoveChess(msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
+		nowPlayer, _ := ru.ChangePlayerTurn(roomID, msg.UserID)
 		msg.Data.GameData = gameData
+		msg.Data.NowTurn = nowPlayer
 	case "eatChess":
 		gd, _ := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
