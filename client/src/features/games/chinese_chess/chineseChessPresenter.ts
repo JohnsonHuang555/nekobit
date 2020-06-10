@@ -7,6 +7,11 @@ import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
 import { TChineseChess } from '../domain/models/ChineseChess';
 
+type TRange = {
+  x: number;
+  y: number;
+}
+
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
   private readonly useCaseHandler: UseCaseHandler;
@@ -106,12 +111,54 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   }
 
   onMove(id: number, targetX: number, targetY: number): void {
-    // TODO:判斷移動
+    const selectedChess = this.findChessById(id);
+    if (!selectedChess) { return; }
+
+    const range = this.chessShortCrossRange(selectedChess.locationX, selectedChess.locationY);
+    const canMove = this.canChessMoved(range, targetX, targetY);
+    if (!canMove) { return; }
+
     this.useCaseHandler.execute(this.moveChessUseCase, {
       roomID: this.roomID,
       chessID: id,
       targetX,
       targetY,
-    })
+    });
+  }
+
+  // 短十字的步數範圍
+  private chessShortCrossRange(currentX: number, currentY: number): TRange[] {
+    const range: TRange[] = [];
+    range.push({ x: currentX + 1, y: currentY });
+    range.push({ x: currentX - 1, y: currentY });
+    range.push({ x: currentX, y: currentY + 1 });
+    range.push({ x: currentX, y: currentY - 1 });
+    return range;
+  }
+
+  // 砲的步數範圍
+  private chessCannonRange(): TRange[] {
+    const range: TRange[] = [];
+    return range;
+  }
+
+  // 判斷棋子是否可以移動
+  private canChessMoved(range: TRange[], targetX: number, targetY: number): boolean {
+    const canMove = range.find(r => {
+      return r.x === targetX && r.y === targetY;
+    });
+    return canMove ? true : false;
+  }
+
+  // 判斷棋子階級是否可以吃
+  private canChessEaten(): boolean {
+    return false;
+  }
+
+  private findChessById(id: number): TChineseChess | undefined {
+    const chess = this.chesses.find(c => {
+      return c.id === id;
+    });
+    return chess;
   }
 };
