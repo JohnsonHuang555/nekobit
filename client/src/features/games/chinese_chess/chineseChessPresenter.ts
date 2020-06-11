@@ -7,16 +7,28 @@ import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
 import { TChineseChess } from '../domain/models/ChineseChess';
 
-type TRange = {
-  x: number;
-  y: number;
+enum ChessName {
+  KingBlack = '將',
+  KingRed = '帥',
+  GuardsBlack = '士',
+  GuardsRed = '仕',
+  MinisterBlack = '象',
+  MinisterRed = '相',
+  ChariotsBlack = '車',
+  ChariotsRed = '俥',
+  CannonsBlack = '包',
+  CannonsRed = '炮',
+  HorsesBlack = '馬',
+  HorsesRed = '傌',
+  SoldiersBlack = '卒',
+  SoldiersRed = '兵',
 }
 
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
   private readonly useCaseHandler: UseCaseHandler;
   private readonly getSocketMessageUseCase: GetSocketMessage.UseCase;
-  private readonly moveChessUseCase: MoveChess.UseCase;
+  private readonly shortCrossMoveUseCase: MoveChess.UseCase;
   private readonly eatChessUseCase: EatChess.UseCase;
   private readonly flipChessUseCase: FlipChess.UseCase;
 
@@ -27,14 +39,14 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     view: ChineseChessContract.View,
     useCaseHandler: UseCaseHandler,
     getSocketMessageUseCase: GetSocketMessage.UseCase,
-    moveChessUseCase: MoveChess.UseCase,
+    shortCrossMoveUseCase: MoveChess.UseCase,
     eatChessUseCase: EatChess.UseCase,
     flipChessUseCase: FlipChess.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
     this.getSocketMessageUseCase = getSocketMessageUseCase;
-    this.moveChessUseCase = moveChessUseCase;
+    this.shortCrossMoveUseCase = shortCrossMoveUseCase;
     this.eatChessUseCase = eatChessUseCase;
     this.flipChessUseCase = flipChessUseCase;
   }
@@ -102,57 +114,31 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   }
 
   onEat(id: number, targetID: number): void {
-    // TODO:判斷吃
     this.useCaseHandler.execute(this.eatChessUseCase, {
       roomID: this.roomID,
       chessID: id,
       targetChessID: targetID
-    })
+    });
   }
 
   onMove(id: number, targetX: number, targetY: number): void {
     const selectedChess = this.findChessById(id);
     if (!selectedChess) { return; }
 
-    const range = this.chessShortCrossRange(selectedChess.locationX, selectedChess.locationY);
-    const canMove = this.canChessMoved(range, targetX, targetY);
-    if (!canMove) { return; }
-
-    this.useCaseHandler.execute(this.moveChessUseCase, {
-      roomID: this.roomID,
-      chessID: id,
-      targetX,
-      targetY,
-    });
-  }
-
-  // 短十字的步數範圍
-  private chessShortCrossRange(currentX: number, currentY: number): TRange[] {
-    const range: TRange[] = [];
-    range.push({ x: currentX + 1, y: currentY });
-    range.push({ x: currentX - 1, y: currentY });
-    range.push({ x: currentX, y: currentY + 1 });
-    range.push({ x: currentX, y: currentY - 1 });
-    return range;
-  }
-
-  // 砲的步數範圍
-  private chessCannonRange(): TRange[] {
-    const range: TRange[] = [];
-    return range;
-  }
-
-  // 判斷棋子是否可以移動
-  private canChessMoved(range: TRange[], targetX: number, targetY: number): boolean {
-    const canMove = range.find(r => {
-      return r.x === targetX && r.y === targetY;
-    });
-    return canMove ? true : false;
-  }
-
-  // 判斷棋子階級是否可以吃
-  private canChessEaten(): boolean {
-    return false;
+    this.useCaseHandler.execute(this.shortCrossMoveUseCase,
+      {
+        targetX,
+        targetY,
+        selectedChess,
+        roomID: this.roomID,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          // error toast
+        }
+      }
+    )
   }
 
   private findChessById(id: number): TChineseChess | undefined {

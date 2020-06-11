@@ -35,7 +35,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
       this,
       Injection.provideUseCaseHandler(),
       Injection.provideGetSocketMessageUseCase(),
-      Injection.provideMoveChessUseCase(),
+      Injection.provideShortCrossMoveChessUseCase(),
       Injection.provideEatChessUseCase(),
       Injection.provideFlipChessUseCase(),
     )

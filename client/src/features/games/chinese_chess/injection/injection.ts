@@ -3,14 +3,13 @@ import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import appProvider from "src/provider/AppProvider";
 import { ChineseChess } from "../source/ChineseChessDataSource";
 import { MoveChess } from "../use_cases/base/MoveChessUseCaseItf";
-import { MoveChessUseCase } from "../use_cases/MoveChessUseCase";
 import { EatChess } from "../use_cases/base/EatChessUseCaseItf";
 import { EatChessUseCase } from "../use_cases/EatChessUseCase";
 import { FlipChess } from "../use_cases/base/FlipChessUseCaseItf";
 import { FlipChessUseCase } from "../use_cases/FlipChessUseCase";
 import { GetSocketMessageUseCase } from '../use_cases/GetSocketMessageUseCase';
-import { SetPlayOrderUseCase } from 'src/features/main/room/use_case/SetPlayOrderUseCase';
 import { Games } from 'src/features/main/domain/source/GamesDataSource';
+import { ShortCrossMoveUseCase } from '../use_cases/ShortCrossMoveUseCase';
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -25,8 +24,8 @@ export class Injection {
     return appProvider.chineseChessRepository;
   }
 
-  static provideMoveChessUseCase(): MoveChess.UseCase {
-    return new MoveChessUseCase(this.provideChineseChessRepository());
+  static provideShortCrossMoveChessUseCase(): MoveChess.UseCase {
+    return new ShortCrossMoveUseCase(this.provideChineseChessRepository());
   }
 
   static provideEatChessUseCase(): EatChess.UseCase {

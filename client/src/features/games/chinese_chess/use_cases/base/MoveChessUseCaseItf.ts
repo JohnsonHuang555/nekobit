@@ -1,3 +1,4 @@
+import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
 import {
   UseCaseInputData,
   UseCaseOutputData,
@@ -8,7 +9,7 @@ import {
 export namespace MoveChess {
   export interface InputData extends UseCaseInputData {
     roomID: string;
-    chessID: number;
+    selectedChess: TChineseChess;
     targetX: number;
     targetY: number;
   }
