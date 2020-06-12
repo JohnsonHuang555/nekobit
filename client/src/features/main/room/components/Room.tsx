@@ -5,12 +5,13 @@ import { TRoomUser } from 'src/types/Room';
 import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {
-  id: number;
+  id: string;
   title: string;
   mode: number;
   status: number;
   userList: TRoomUser[];
-  onChooseRoom: (id: number) => void;
+  roomNumber: number;
+  onChooseRoom: (id: string) => void;
 };
 
 const Room = (props: RoomListProps) => {
@@ -20,10 +21,11 @@ const Room = (props: RoomListProps) => {
     mode,
     status,
     userList,
+    roomNumber,
     onChooseRoom,
   } = props;
 
-  const onChoose = (id: number) => {
+  const onChoose = (id: string) => {
     if (userList.length === 2) {
       return;
     }
@@ -34,7 +36,7 @@ const Room = (props: RoomListProps) => {
     <div className="room">
       <div className="top">
         <div className="info">
-          <span className="id">{id}.</span>
+          <span className="id">{roomNumber}.</span>
           <span className="title">{title}</span>
         </div>
         <div className="key">

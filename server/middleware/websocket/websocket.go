@@ -39,6 +39,7 @@ type Attachment struct {
 	IsMaster     bool           `json:"isMaster,omitempty"`
 	IsReady      bool           `json:"isReady,omitempty"`
 	GameData     interface{}    `json:"gameData,omitempty"`
+	GameID       string         `json:"gameID,omitempty"`
 	RoomPassword string         `json:"roomPassword,omitempty"`
 	RoomTitle    string         `json:"roomTitle,omitempty"`
 	RoomMode     int            `json:"roomMode,omitempty"`
@@ -46,12 +47,17 @@ type Attachment struct {
 	RoomUserList []*domain.User `json:"roomUserList,omitempty"`
 	Rooms        []*domain.Room `json:"rooms,omitempty"`
 	RoomInfo     *domain.Room   `json:"roomInfo,omitempty"`
+	NowTurn      string         `json:"nowTurn,omitempty"`
 
-	domain.ChineseChess
+	domain.NetChineseChess
 }
 
 // WebsocketHandler handles websocket requests from the peer.
-func WebsocketHandler(ru domain.RoomUseCase, c echo.Context, roomID string) {
+func WebsocketHandler(
+	ru domain.RoomUseCase,
+	c echo.Context,
+	roomID string,
+) {
 	go h.run()
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
@@ -79,7 +85,11 @@ func (s subscription) readPump() {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-		newMsg := SocketEventHandler(msg, s.room, s.roomUseCase)
+		newMsg := SocketEventHandler(
+			msg,
+			s.room,
+			s.roomUseCase,
+		)
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("error: %v", err)

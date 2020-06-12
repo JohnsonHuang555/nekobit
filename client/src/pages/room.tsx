@@ -39,6 +39,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       Injection.provideLeaveRoomUseCase(),
       Injection.provideReadyGameUseCase(),
       Injection.provideStartGameUseCase(),
+      Injection.provideSetPlayOrderUseCase(),
       Injection.provideGetUserInfoUseCase(),
     )
   }
@@ -51,6 +52,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   render() {
     const {
       roomInfo,
+      userInfo,
     } = this.state;
 
     return (
@@ -61,7 +63,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               <div className="header">
                 {roomInfo && (
                   <div className="title">
-                    <span>{roomInfo.id}.</span>
+                    <span>{roomInfo.roomNumber}.</span>
                     <span>{roomInfo.title}</span>
                   </div>
                 )}
@@ -81,11 +83,11 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
           <div className="col-md-4">
             <div className="settings-block"></div>
             {roomInfo &&
-              this.isMaster() ? (
+              this.isMaster ? (
                 <Button
                   className="start"
-                  onClick={() => this.startGame(roomInfo.mode)}
-                  disabled={this.disabledStart()}
+                  onClick={() => this.startGame(roomInfo.mode, roomInfo.gameId)}
+                  disabled={this.disabledStart}
                 >
                   Start
                 </Button>
@@ -94,13 +96,20 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
                   className="ready"
                   onClick={() => this.readyGame()}
                 >
-                  {this.isPlayerReady()}
+                  {this.isPlayerReady}
                 </Button>
               )
             }
           </div>
-          {roomInfo && roomInfo.status === 1 && (
-            <GameScreen roomInfo={roomInfo}/>
+          {roomInfo && roomInfo.status === 1 && userInfo && (
+            <GameScreen
+              roomInfo={roomInfo}
+              userID={userInfo.id}
+              isMaster={this.isMaster}
+              playerSide={this.playerSide}
+              onSetPlayOrder={() => this.onSetPlayOrder()}
+              updateRoomInfo={(rf) => this.setRoomInfo(rf)}
+            />
           )}
         </div>
       </Layout>
@@ -121,54 +130,63 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     this.setState({ userInfo });
   }
 
-  private isMaster(): boolean {
-    const {
-      userInfo,
-      roomInfo
-    } = this.state;
-
-    if (userInfo && roomInfo) {
-      const user = roomInfo.userList.find(u => {
-        return u.id === userInfo.id;
-      });
-
-      return user ? user.isMaster : false;
+  private get isMaster(): boolean {
+    const user = this.findUser;
+    if (user && user.isMaster) {
+      return true;
     }
     return false;
   }
 
-  private isPlayerReady(): string {
-    const {
-      userInfo,
-      roomInfo
-    } = this.state;
-
-    if (userInfo && roomInfo) {
-      const user = roomInfo.userList.find(u => {
-        return u.id === userInfo.id;
-      });
-
-      return (user && user.isReady) ? 'Cancel' : 'Ready';
+  private get isPlayerReady(): string {
+    const user = this.findUser;
+    if (user && user.isReady) {
+      return 'Cancel';
     }
     return 'Ready';
   }
 
-  private disabledStart(): boolean {
+  private get disabledStart(): boolean {
     const {
-      roomInfo
+      roomInfo,
     } = this.state;
 
-    return roomInfo && roomInfo.userList.find(u => {
-      return u.isReady === false;
-    }) ? true : false;
+    const notReady = roomInfo?.userList.filter(u => !u.isReady) || [];
+    if (notReady.length) {
+      return true;
+    }
+    return false;
   }
 
-  private startGame(mode: number): void {
-    this.presenter.startGame(mode);
+  private get playerSide(): string {
+    const user = this.findUser;
+    if (user) {
+      return user.side
+    }
+    return '';
+  }
+
+  private startGame(mode: number, gameId: string): void {
+    this.presenter.startGame(mode, gameId);
   }
 
   private readyGame(): void {
     this.presenter.readyGame();
+  }
+
+  private onSetPlayOrder(): void {
+    this.presenter.setPlayOrder();
+  }
+
+  private get findUser(): TRoomUser | undefined {
+    const {
+      roomInfo,
+      userInfo,
+    } = this.state;
+
+    return roomInfo?.userList.find(u => {
+      return u.id === userInfo?.id
+    });
   }
 }
 

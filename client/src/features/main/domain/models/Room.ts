@@ -1,14 +1,14 @@
 import { Moment } from 'moment';
 
 export type TRoom = {
-  id: number;
+  id: string;
   title: string;
   mode: number;
   status: number;
   userList: TRoomUser[];
   nowTurn: string;
   gameData: any;
-  gameID: string;
+  gameId: string;
   roomNumber: number;
   password: string;
   createAt: Moment;

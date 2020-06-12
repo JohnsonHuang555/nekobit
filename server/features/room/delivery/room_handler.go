@@ -1,9 +1,9 @@
 package delivery
 
 import (
-	"errors"
 	"net/http"
 	"server/domain"
+
 	socket "server/middleware/websocket"
 
 	"github.com/labstack/echo"
@@ -28,9 +28,9 @@ type createRoomParams struct {
 }
 
 // NewRoomHandler will initialize the rooms/ resources endpoint
-func NewRoomHandler(e *echo.Echo, us domain.RoomUseCase) {
+func NewRoomHandler(e *echo.Echo, ru domain.RoomUseCase) {
 	handler := &RoomHandler{
-		RUseCase: us,
+		RUseCase: ru,
 	}
 	e.POST("/api/createRoom", handler.CreateRoom)
 	e.GET("/ws/:roomID", handler.SocketHandler)
@@ -51,13 +51,14 @@ func (r *RoomHandler) CreateRoom(c echo.Context) error {
 	return c.JSON(http.StatusCreated, id)
 }
 
-func (r *RoomHandler) SocketHandler(c echo.Context) error {
-	roomID := c.Param("roomID")
-	if roomID != "" {
-		socket.WebsocketHandler(r.RUseCase, c, roomID)
-		return nil
-	}
-	return errors.New("Websocket connect error")
+func (r *RoomHandler) SocketHandler(context echo.Context) error {
+	roomID := context.Param("roomID")
+	socket.WebsocketHandler(
+		r.RUseCase,
+		context,
+		roomID,
+	)
+	return nil
 }
 
 func getStatusCode(err error) int {

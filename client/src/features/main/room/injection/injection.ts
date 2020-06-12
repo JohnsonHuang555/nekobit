@@ -15,6 +15,8 @@ import { GetUserInfo } from "../use_case/base/GetUserInfoUseCaseItf";
 import { GetUserInfoUseCase } from "../use_case/GetUserInfoUseCase";
 import { GetSocketMessage } from "../use_case/base/GetSocketMessageUseCaseItf";
 import { GetSocketMessageUseCase } from "../use_case/GetSocketMessageUseCase";
+import { SetPlayOrderUseCase } from "../use_case/SetPlayOrderUseCase";
+import { SetPlayOrder } from "../use_case/base/SetPlayOrderUseCaseItf";
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -43,6 +45,10 @@ export class Injection {
 
   static provideStartGameUseCase(): StartGame.UseCase {
     return new StartGameUseCase(this.provideGamesRepository());
+  }
+
+  static provideSetPlayOrderUseCase(): SetPlayOrder.UseCase {
+    return new SetPlayOrderUseCase(this.provideGamesRepository());
   }
 
   static provideGetUserInfoUseCase(): GetUserInfo.UseCase {

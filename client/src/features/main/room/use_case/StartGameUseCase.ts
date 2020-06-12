@@ -11,9 +11,10 @@ export class StartGameUseCase implements StartGame.UseCase {
   execute(inputData: StartGame.InputData) {
     const {
       roomID,
-      roomMode
+      roomMode,
+      gameID,
     } = inputData;
 
-    this.repository.startGame(roomID, roomMode);
+    this.repository.startGame(roomID, roomMode, gameID);
   }
 }

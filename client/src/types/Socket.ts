@@ -11,4 +11,10 @@ export enum SocketEvent {
   CreateRoom = 'createRoom',
   ReadyGame = 'readyGame',
   StartGame = 'startGame',
+  SetPlayOrder = 'setPlayOrder',
+
+  // Chinese Chess
+  MoveChess = 'moveChess',
+  EatChess = 'eatChess',
+  FlipChess = 'flipChess',
 }

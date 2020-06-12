@@ -224,9 +224,9 @@ func CreateChessesHidden() []models.ChineseChess {
 	return gameData
 }
 
-func CreateChessesStandard() []models.ChineseChess {
-	var chesses = []models.ChineseChess{
-		models.ChineseChess{
+func CreateChessesStandard() []*models.ChineseChess {
+	var chesses = []*models.ChineseChess{
+		{
 			ID:        1,
 			Side:      "BLACK",
 			Name:      "將",
@@ -235,7 +235,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        2,
 			Side:      "BLACK",
 			Name:      "士",
@@ -244,7 +244,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        3,
 			Side:      "BLACK",
 			Name:      "士",
@@ -253,7 +253,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        4,
 			Side:      "BLACK",
 			Name:      "象",
@@ -262,7 +262,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        5,
 			Side:      "BLACK",
 			Name:      "象",
@@ -271,7 +271,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        6,
 			Side:      "BLACK",
 			Name:      "車",
@@ -280,7 +280,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        7,
 			Side:      "BLACK",
 			Name:      "車",
@@ -289,7 +289,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        8,
 			Side:      "BLACK",
 			Name:      "馬",
@@ -298,7 +298,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        9,
 			Side:      "BLACK",
 			Name:      "馬",
@@ -307,7 +307,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        10,
 			Side:      "BLACK",
 			Name:      "卒",
@@ -316,7 +316,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        11,
 			Side:      "BLACK",
 			Name:      "卒",
@@ -325,7 +325,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        12,
 			Side:      "BLACK",
 			Name:      "卒",
@@ -334,7 +334,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        13,
 			Side:      "BLACK",
 			Name:      "卒",
@@ -343,7 +343,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        14,
 			Side:      "BLACK",
 			Name:      "卒",
@@ -352,7 +352,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        15,
 			Side:      "BLACK",
 			Name:      "包",
@@ -361,7 +361,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        16,
 			Side:      "BLACK",
 			Name:      "包",
@@ -370,7 +370,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        17,
 			Side:      "RED",
 			Name:      "帥",
@@ -379,7 +379,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        18,
 			Side:      "RED",
 			Name:      "仕",
@@ -388,7 +388,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        19,
 			Side:      "RED",
 			Name:      "仕",
@@ -397,7 +397,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        20,
 			Side:      "RED",
 			Name:      "相",
@@ -406,7 +406,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        21,
 			Side:      "RED",
 			Name:      "相",
@@ -415,7 +415,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        22,
 			Side:      "RED",
 			Name:      "俥",
@@ -424,7 +424,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        23,
 			Side:      "RED",
 			Name:      "俥",
@@ -433,7 +433,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        24,
 			Side:      "RED",
 			Name:      "傌",
@@ -442,7 +442,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        25,
 			Side:      "RED",
 			Name:      "傌",
@@ -451,7 +451,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        26,
 			Side:      "RED",
 			Name:      "兵",
@@ -460,7 +460,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        27,
 			Side:      "RED",
 			Name:      "兵",
@@ -469,7 +469,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        28,
 			Side:      "RED",
 			Name:      "兵",
@@ -478,7 +478,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        29,
 			Side:      "RED",
 			Name:      "兵",
@@ -487,7 +487,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        30,
 			Side:      "RED",
 			Name:      "兵",
@@ -496,7 +496,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        31,
 			Side:      "RED",
 			Name:      "炮",
@@ -505,7 +505,7 @@ func CreateChessesStandard() []models.ChineseChess {
 			IsFliped:  true,
 			Alive:     true,
 		},
-		models.ChineseChess{
+		{
 			ID:        32,
 			Side:      "RED",
 			Name:      "炮",

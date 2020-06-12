@@ -4,11 +4,10 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
-import { TRoomUser } from "src/features/main/domain/models/Room";
 
 export namespace ReadyGame {
   export interface InputData extends UseCaseInputData {
-    roomID: number;
+    roomID: string;
   }
 
   export interface OutputData extends UseCaseOutputData {}

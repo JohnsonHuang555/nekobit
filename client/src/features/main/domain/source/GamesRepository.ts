@@ -84,7 +84,7 @@ export default class GamesRepository implements Games.DataSource {
     }, { gameID, password, title, mode });
   }
 
-  joinRoom(roomID: number): void {
+  joinRoom(roomID: string): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -97,7 +97,7 @@ export default class GamesRepository implements Games.DataSource {
     );
   }
 
-  leaveRoom(roomID: number): void {
+  leaveRoom(roomID: string): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -109,7 +109,7 @@ export default class GamesRepository implements Games.DataSource {
     );
   }
 
-  readyGame(roomID: number): void {
+  readyGame(roomID: string): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -121,7 +121,7 @@ export default class GamesRepository implements Games.DataSource {
     );
   }
 
-  startGame(roomID: number, roomMode: number): void {
+  startGame(roomID: string, roomMode: number, gameID: string): void {
     this.fetcher.sendSocket(
       {
         userID: this.userInfo?.id,
@@ -129,8 +129,21 @@ export default class GamesRepository implements Games.DataSource {
         data: {
           roomID,
           roomMode,
+          gameID,
         }
       },
     );
+  }
+
+  setPlayOrder(roomID: string): void {
+    this.fetcher.sendSocket(
+      {
+        userID: this.userInfo?.id,
+        event: SocketEvent.SetPlayOrder,
+        data: {
+          roomID,
+        }
+      }
+    )
   }
 }

@@ -22,6 +22,14 @@ func (ru *roomUseCase) GetRooms() ([]*domain.Room, error) {
 	return rooms, nil
 }
 
+func (ru *roomUseCase) GetRoomInfo(roomID string) (*domain.Room, error) {
+	room, err := ru.roomRepo.FindByID(roomID)
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
+}
+
 func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID string) (string, error) {
 	room := &domain.Room{
 		Title:    title,
@@ -69,12 +77,67 @@ func (ru *roomUseCase) ReadyGame(id string, userID string) ([]*domain.User, erro
 	return users, nil
 }
 
-func (ru *roomUseCase) StartGame(id string) (*domain.Room, error) {
-	// FIXME: setPlayOrder
+func (ru *roomUseCase) UpdateGameData(roomID string, gameData interface{}) (interface{}, error) {
+	gd, err := ru.roomRepo.UpdateGameData(roomID, gameData)
+	if err != nil {
+		return nil, err
+	}
+	return gd, nil
+}
+
+func (ru *roomUseCase) StartGame(id string, gameData interface{}) (*domain.Room, error) {
 	status := 1
-	room, err := ru.roomRepo.UpdateStatusByID(id, status)
+	ru.roomRepo.UpdateStatusByID(id, status)
+	ru.roomRepo.UpdateGameData(id, gameData)
+	room, err := ru.roomRepo.FindByID(id)
 	if err != nil {
 		return nil, err
 	}
 	return room, nil
+}
+
+func (ru *roomUseCase) SetPlayOrder(id string) (*domain.Room, error) {
+	users, err := ru.roomRepo.UpdateUsersPlayOrder(id)
+	if err != nil {
+		return nil, err
+	}
+	playerOne := users[0]
+	for i := 0; i < len(users); i++ {
+		if users[i].PlayOrder < playerOne.PlayOrder {
+			playerOne = users[i]
+		}
+	}
+	room, err := ru.roomRepo.UpdateNowTurnByID(id, playerOne.ID)
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
+}
+
+func (ru *roomUseCase) ChangePlayerTurn(roomID string, nowPlayerID string) (string, error) {
+	user, err := ru.roomRepo.FindUserByID(roomID, nowPlayerID)
+	room, err := ru.roomRepo.FindByID(roomID)
+	if err != nil {
+		return "", err
+	}
+
+	nowPlayerOrder := user.PlayOrder + 1
+	// 代表 p1 重新開始
+	if nowPlayerOrder > len(room.UserList)-1 {
+		nowPlayerOrder = 0
+	}
+	newUser, err := ru.roomRepo.FindUserByPlayOrder(roomID, nowPlayerOrder)
+	room, err = ru.roomRepo.UpdateNowTurnByID(roomID, newUser.ID)
+	if err != nil {
+		return "", err
+	}
+	return room.NowTurn, nil
+}
+
+func (ru *roomUseCase) SetPlayerSide(roomID string, userID string, side string) ([]*domain.User, error) {
+	users, err := ru.roomRepo.UpdateUserSide(roomID, userID, side)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }

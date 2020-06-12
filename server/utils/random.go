@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-// 陣列隨機排序
+// 陣列隨機排序 從'0'開始
 func RandomShuffle(maxVal int) []int {
 	slice := []int{}
 	for i := 0; i < maxVal; i++ {
-		slice = append(slice, i+1)
+		slice = append(slice, i)
 	}
 
 	randLocation := slice

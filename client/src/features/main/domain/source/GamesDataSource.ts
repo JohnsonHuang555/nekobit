@@ -25,11 +25,11 @@ export namespace Games {
       callbacks: Games.CreateRoomCallbacks
     ): void;
     getRooms(): void;
-    joinRoom(roomID: number): void;
-    leaveRoom(roomID: number): void;
-    readyGame(roomID: number): void;
-    startGame(roomID: number, roomMode: number): void;
-
+    joinRoom(roomID: string): void;
+    leaveRoom(roomID: string): void;
+    readyGame(roomID: string): void;
+    startGame(roomID: string, roomMode: number, gameID: string): void;
+    setPlayOrder(roomID: string): void;
   }
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}

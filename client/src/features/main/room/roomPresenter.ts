@@ -5,9 +5,9 @@ import { JoinRoom } from './use_case/base/JoinRoomUseCaseItf';
 import { LeaveRoom } from './use_case/base/LeaveRoomUseCaseItf';
 import { ReadyGame } from './use_case/base/ReadyGameUseCaseItf';
 import { StartGame } from './use_case/base/StartGameUseCaseItf';
-import { TRoom } from '../domain/models/Room';
 import { GetUserInfo } from './use_case/base/GetUserInfoUseCaseItf';
 import { GetSocketMessage } from './use_case/base/GetSocketMessageUseCaseItf';
+import { SetPlayOrder } from './use_case/base/SetPlayOrderUseCaseItf';
 
 export class RoomPresenter implements RoomContract.Presenter {
   private readonly view: RoomContract.View;
@@ -17,11 +17,11 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly joinRoomUseCase: JoinRoom.UseCase;
   private readonly leaveRoomUseCase: LeaveRoom.UseCase;
   private readonly readyGameUseCase: ReadyGame.UseCase;
+  private readonly setPlayOrderUseCase: SetPlayOrder.UseCase;
   private readonly startGameUseCase: StartGame.UseCase;
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
 
-  private roomID: number = 0;
-  private roomInfo: TRoom | null = null;
+  private roomID = '';
 
   constructor(
     view: RoomContract.View,
@@ -32,6 +32,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     leaveRoomUseCase: LeaveRoom.UseCase,
     readyGameUseCase: ReadyGame.UseCase,
     startGameUseCase: StartGame.UseCase,
+    setPlayOrderUseCase: SetPlayOrder.UseCase,
     getUserInfoUseCase: GetUserInfo.UseCase,
   ) {
     this.view = view;
@@ -42,12 +43,13 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.leaveRoomUseCase = leaveRoomUseCase;
     this.readyGameUseCase = readyGameUseCase;
     this.startGameUseCase = startGameUseCase;
+    this.setPlayOrderUseCase = setPlayOrderUseCase;
     this.getUserInfoUseCase = getUserInfoUseCase;
   }
 
   mount(params: RoomContract.RoomPageParams): void {
     const { id } = params;
-    this.roomID = Number(id);
+    this.roomID = id;
     this.connectSocket(id);
     this.getUserInfo();
   }
@@ -79,18 +81,25 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.useCaseHandler.execute(this.readyGameUseCase, { roomID: this.roomID });
   }
 
-  startGame(mode: number): void {
+  setPlayOrder(): void {
+    this.useCaseHandler.execute(this.setPlayOrderUseCase, {
+      roomID: this.roomID
+    });
+  }
+
+  startGame(mode: number, gameId: string): void {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.startGameUseCase,
       {
         roomID: this.roomID,
+        gameID: gameId,
         roomMode: mode,
       }
     );
   }
 
   getMessageHandler(): void {
-    this.useCaseHandler.execute(this.getSocketMessageUseCase, { roomInfo: this.roomInfo }, {
+    this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
         if (result.roomInfo) {
           this.view.setRoomInfo(result.roomInfo);

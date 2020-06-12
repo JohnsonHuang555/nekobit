@@ -1,5 +1,5 @@
 import React from 'react';
-import ChessItem from 'src/features/games/chinese_chess/ChessItem';
+import ChessItem from 'src/components/ChessItem';
 import { TChineseChess } from 'src/types/ChineseChess';
 
 type ChessMapItemProps = {

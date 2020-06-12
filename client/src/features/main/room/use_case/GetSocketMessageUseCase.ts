@@ -3,43 +3,49 @@ import { GetSocketMessage } from "src/features/main/room/use_case/base/GetSocket
 import { SocketEvent } from "src/types/Socket";
 import { UserFactory } from "src/features/main/domain/factories/UserFactory";
 import { RoomFactory } from "../../domain/factories/RoomFactory";
+import { TRoom } from "../../domain/models/Room";
 
 export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   private repository: Games.DataSource;
+  private roomInfo: TRoom | null = null;
 
   constructor(repository: Games.DataSource) {
     this.repository = repository;
   }
 
   execute(inputData: GetSocketMessage.InputData, callbacks: GetSocketMessage.Callbacks) {
-    const { roomInfo } = inputData;
     this.repository.getSocketMessage({
       onSuccess: (result) => {
-        let newRoomInfo = {...roomInfo};
         switch (result.event) {
           case SocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
-            console.log(roomInfo);
-            newRoomInfo = roomInfo;
+            this.roomInfo = roomInfo;
             break;
           }
           case SocketEvent.LeaveRoom: {
             const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
-            newRoomInfo = roomInfo;
+            this.roomInfo = roomInfo;
             break;
           }
           case SocketEvent.ReadyGame: {
             const roomUserList = UserFactory.createArrayFromNet(result.data.roomUserList);
-            newRoomInfo.userList = roomUserList;
+            if (this.roomInfo) {
+              this.roomInfo.userList = roomUserList;
+            }
             break;
           }
           case SocketEvent.StartGame: {
             const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
-            newRoomInfo = roomInfo;
+            this.roomInfo = roomInfo;
+            break;
+          }
+          case SocketEvent.SetPlayOrder: {
+            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
+            this.roomInfo = roomInfo;
             break;
           }
         }
-        callbacks.onSuccess({ roomInfo: newRoomInfo });
+        callbacks.onSuccess({ roomInfo: this.roomInfo as TRoom });
       },
       onError: callbacks.onError,
     });
