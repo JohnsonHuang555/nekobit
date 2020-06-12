@@ -1,14 +1,14 @@
 import { ChineseChess } from "src/features/games/chinese_chess/source/ChineseChessDataSource";
-import { MoveChess } from "./base/MoveChessUseCaseItf";
+import { MoveChess as RangeChess } from "./base/MoveChessUseCaseItf";
 import { CheckMoveRange } from "../../helpers/CheckMoveRange";
 
-export class ShortCrossMoveUseCase implements MoveChess.UseCase {
+export class ShortCrossUseCase implements RangeChess.UseCase {
   private repository: ChineseChess.DataSource;
   constructor(repository: ChineseChess.DataSource) {
     this.repository = repository;
   }
 
-  execute(inputData: MoveChess.InputData, callbacks: MoveChess.Callbacks) {
+  execute(inputData: RangeChess.InputData, callbacks: RangeChess.Callbacks) {
     const {
       roomID,
       selectedChess,

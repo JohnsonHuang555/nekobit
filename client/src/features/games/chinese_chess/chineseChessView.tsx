@@ -2,7 +2,7 @@ import React from 'react';
 import { ChineseChessContract } from "./chineseChessContract";
 import { ChineseChessPresenter } from './chineseChessPresenter';
 import { Injection } from './injection/injection';
-import { TChineseChess, ChessSide } from '../domain/models/ChineseChess';
+import { TChineseChess, ChessSide, GameModeCode } from '../domain/models/ChineseChess';
 import Hidden from './components/Mode/Hidden';
 import { TRoomUser, TRoom } from 'src/features/main/domain/models/Room';
 import '@styles/games/chineseChess.scss';
@@ -100,7 +100,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
             selectedChess={this.state.selectedChess}
             playerSide={this.props.playerSide}
             onSelect={(id) => this.onSelect(id)}
-            onMove={(id, tX, tY) => this.onMove(id, tX, tY)}
+            onMove={(id, tX, tY) => this.onMove(id, tX, tY, GameModeCode.Hidden)}
             onFlip={(id) => this.onFlip(id)}
             onEat={(id, tId) => this.onEat(id, tId)}
             yourTurn={this.props.yourTurn}
@@ -121,8 +121,8 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
     this.presenter.onSelect(id);
   }
 
-  private onMove(id: number, targetX: number, targetY: number) {
-    this.presenter.onMove(id, targetX, targetY);
+  private onMove(id: number, targetX: number, targetY: number, gameMode: GameModeCode) {
+    this.presenter.onMove(id, targetX, targetY, gameMode);
   }
 
   private onFlip(id: number) {

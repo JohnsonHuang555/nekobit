@@ -5,7 +5,7 @@ import { MoveChess } from './use_cases/base/MoveChessUseCaseItf';
 import { EatChess } from './use_cases/base/EatChessUseCaseItf';
 import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
-import { TChineseChess } from '../domain/models/ChineseChess';
+import { TChineseChess, GameModeCode } from '../domain/models/ChineseChess';
 
 enum ChessName {
   KingBlack = '將',
@@ -121,24 +121,34 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     });
   }
 
-  onMove(id: number, targetX: number, targetY: number): void {
+  onMove(id: number, targetX: number, targetY: number, gameMode: GameModeCode): void {
     const selectedChess = this.findChessById(id);
     if (!selectedChess) { return; }
 
-    this.useCaseHandler.execute(this.shortCrossMoveUseCase,
-      {
-        targetX,
-        targetY,
-        selectedChess,
-        roomID: this.roomID,
-      },
-      {
-        onSuccess: () => {},
-        onError: () => {
-          // error toast
+    if (gameMode === GameModeCode.Hidden) {
+      this.useCaseHandler.execute(this.shortCrossMoveUseCase,
+        {
+          targetX,
+          targetY,
+          selectedChess,
+          roomID: this.roomID,
+        },
+        {
+          onSuccess: () => {},
+          onError: () => {
+            // error toast
+          }
         }
+      )
+    } else {
+      // TODO: 大盤步法判斷
+      switch (selectedChess.name) {
+        case ChessName.CannonsBlack:
+          break;
+        default:
+          break;
       }
-    )
+    }
   }
 
   private findChessById(id: number): TChineseChess | undefined {

@@ -9,7 +9,7 @@ import { FlipChess } from "../use_cases/base/FlipChessUseCaseItf";
 import { FlipChessUseCase } from "../use_cases/FlipChessUseCase";
 import { GetSocketMessageUseCase } from '../use_cases/GetSocketMessageUseCase';
 import { Games } from 'src/features/main/domain/source/GamesDataSource';
-import { ShortCrossMoveUseCase } from '../use_cases/ShortCrossMoveUseCase';
+import { ShortCrossUseCase } from '../use_cases/ShortCrossUseCase';
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -25,7 +25,7 @@ export class Injection {
   }
 
   static provideShortCrossMoveChessUseCase(): MoveChess.UseCase {
-    return new ShortCrossMoveUseCase(this.provideChineseChessRepository());
+    return new ShortCrossUseCase(this.provideChineseChessRepository());
   }
 
   static provideEatChessUseCase(): EatChess.UseCase {
