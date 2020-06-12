@@ -19,9 +19,12 @@ func SocketEventHandler(
 	if !utils.IsNil(roomInfo) {
 		// 判斷是否開始遊戲
 		if roomInfo.GameData != nil {
-			// Games
-			chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
-			chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+			switch roomInfo.GameID {
+			// 象棋
+			case "5d62a35bd986c21bc010c00b":
+				chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
+				chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+			}
 		}
 	}
 	switch msg.Event {
