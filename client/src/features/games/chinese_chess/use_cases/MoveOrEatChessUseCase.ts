@@ -1,24 +1,7 @@
 import { ChineseChess } from "src/features/games/chinese_chess/source/ChineseChessDataSource";
 import { MoveOrEatChess, MoveOrEatCode } from "./base/MoveOrEatChessUseCaseItf";
 import { CheckMoveRange } from "../../helpers/CheckMoveRange";
-import { GameModeCode, TChineseChess } from "../../domain/models/ChineseChess";
-
-enum ChessName {
-  KingBlack = '將',
-  KingRed = '帥',
-  GuardsBlack = '士',
-  GuardsRed = '仕',
-  MinisterBlack = '象',
-  MinisterRed = '相',
-  ChariotsBlack = '車',
-  ChariotsRed = '俥',
-  CannonsBlack = '包',
-  CannonsRed = '炮',
-  HorsesBlack = '馬',
-  HorsesRed = '傌',
-  SoldiersBlack = '卒',
-  SoldiersRed = '兵',
-}
+import { GameModeCode, TChineseChess, ChessName } from "../../domain/models/ChineseChess";
 
 export class MoveOrEatChessUseCase implements MoveOrEatChess.UseCase {
   private repository: ChineseChess.DataSource;
@@ -78,8 +61,7 @@ export class MoveOrEatChessUseCase implements MoveOrEatChess.UseCase {
 
             const isInRange = CheckMoveRange.isInRange(range, targetChess.locationX, targetChess.locationY);
 
-            if (isInRange) {
-              // 其餘棋子則以階級判斷
+            if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
               if (this.isEatable(selectedChess, targetChess)) {
                 this.repository.eatChess(roomID, selectedChess.id, targetChess.id);
                 callbacks.onSuccess({});

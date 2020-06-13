@@ -4,7 +4,7 @@ import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
 import { MoveOrEatChess, MoveOrEatCode } from './use_cases/base/MoveOrEatChessUseCaseItf';
 import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
-import { TChineseChess, GameModeCode } from '../domain/models/ChineseChess';
+import { TChineseChess, GameModeCode, ChessName } from '../domain/models/ChineseChess';
 
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
@@ -90,12 +90,39 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
       roomID: this.roomID,
       chessID: id,
     });
+    this.view.setSelectedChess(undefined);
   }
 
   onEat(id: number, targetID: number, gameMode: GameModeCode): void {
     const selectedChess = this.findChessById(id);
     const targetChess = this.findChessById(targetID);
     if (!selectedChess || !targetChess) { return; }
+
+    // 炮 要判斷中間是否隔一個
+    if (selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
+      if (selectedChess.locationX === targetChess.locationX) {
+        const middelChesses = this.chesses.filter(c => {
+          return c.locationX === targetChess.locationX &&
+                 c.locationY > Math.min(targetChess.locationY, selectedChess.locationY) &&
+                 c.locationY < Math.max(targetChess.locationY, selectedChess.locationY) &&
+                 c.alive
+        });
+        if (middelChesses.length !== 1) {
+          return;
+        }
+      }
+      if (selectedChess.locationY === targetChess.locationY) {
+        const middelChesses = this.chesses.filter(c => {
+          return c.locationY === targetChess.locationY &&
+                 c.locationX > Math.min(targetChess.locationX, selectedChess.locationX) &&
+                 c.locationX < Math.max(targetChess.locationX, selectedChess.locationX) &&
+                 c.alive
+        });
+        if (middelChesses.length !== 1) {
+          return;
+        }
+      }
+    }
 
     this.useCaseHandler.execute(this.moveOrEatChessUseCase,
       {
