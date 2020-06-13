@@ -28,7 +28,7 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
   private readonly useCaseHandler: UseCaseHandler;
   private readonly getSocketMessageUseCase: GetSocketMessage.UseCase;
-  private readonly shortCrossMoveUseCase: MoveChess.UseCase;
+  private readonly moveChessUseCase: MoveChess.UseCase;
   private readonly eatChessUseCase: EatChess.UseCase;
   private readonly flipChessUseCase: FlipChess.UseCase;
 
@@ -39,14 +39,14 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     view: ChineseChessContract.View,
     useCaseHandler: UseCaseHandler,
     getSocketMessageUseCase: GetSocketMessage.UseCase,
-    shortCrossMoveUseCase: MoveChess.UseCase,
+    moveChessUseCase: MoveChess.UseCase,
     eatChessUseCase: EatChess.UseCase,
     flipChessUseCase: FlipChess.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
     this.getSocketMessageUseCase = getSocketMessageUseCase;
-    this.shortCrossMoveUseCase = shortCrossMoveUseCase;
+    this.moveChessUseCase = moveChessUseCase;
     this.eatChessUseCase = eatChessUseCase;
     this.flipChessUseCase = flipChessUseCase;
   }
@@ -125,30 +125,21 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     const selectedChess = this.findChessById(id);
     if (!selectedChess) { return; }
 
-    if (gameMode === GameModeCode.Hidden) {
-      this.useCaseHandler.execute(this.shortCrossMoveUseCase,
-        {
-          targetX,
-          targetY,
-          selectedChess,
-          roomID: this.roomID,
-        },
-        {
-          onSuccess: () => {},
-          onError: () => {
-            // error toast
-          }
+    this.useCaseHandler.execute(this.moveChessUseCase,
+      {
+        gameMode,
+        targetX,
+        targetY,
+        selectedChess,
+        roomID: this.roomID,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          // error toast
         }
-      )
-    } else {
-      // TODO: 大盤步法判斷
-      switch (selectedChess.name) {
-        case ChessName.CannonsBlack:
-          break;
-        default:
-          break;
       }
-    }
+    );
   }
 
   private findChessById(id: number): TChineseChess | undefined {

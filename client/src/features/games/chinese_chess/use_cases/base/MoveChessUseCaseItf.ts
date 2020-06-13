@@ -1,4 +1,4 @@
-import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
+import { TChineseChess, GameModeCode } from "src/features/games/domain/models/ChineseChess";
 import {
   UseCaseInputData,
   UseCaseOutputData,
@@ -12,6 +12,7 @@ export namespace MoveChess {
     selectedChess: TChineseChess;
     targetX: number;
     targetY: number;
+    gameMode: GameModeCode;
   }
 
   export interface OutputData extends UseCaseOutputData {}
