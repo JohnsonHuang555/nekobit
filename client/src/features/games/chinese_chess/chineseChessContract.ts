@@ -8,7 +8,7 @@ export namespace ChineseChessContract {
 
     onSelect(id: number): void;
     onFlip(id: number): void;
-    onEat(id: number, targetId: number): void;
+    onEat(id: number, targetId: number, gameMode: GameModeCode): void;
     onMove(id: number, targetX: number, targetY: number, gameMode: GameModeCode): void;
   }
   export interface View {

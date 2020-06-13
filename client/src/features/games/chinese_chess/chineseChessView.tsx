@@ -35,8 +35,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
       this,
       Injection.provideUseCaseHandler(),
       Injection.provideGetSocketMessageUseCase(),
-      Injection.provideShortCrossMoveChessUseCase(),
-      Injection.provideEatChessUseCase(),
+      Injection.provideMoveOrEatChessUseCase(),
       Injection.provideFlipChessUseCase(),
     )
 
@@ -102,7 +101,7 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
             onSelect={(id) => this.onSelect(id)}
             onMove={(id, tX, tY) => this.onMove(id, tX, tY, GameModeCode.Hidden)}
             onFlip={(id) => this.onFlip(id)}
-            onEat={(id, tId) => this.onEat(id, tId)}
+            onEat={(id, tId) => this.onEat(id, tId, GameModeCode.Hidden)}
             yourTurn={this.props.yourTurn}
           />
         )
@@ -129,8 +128,8 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
     this.presenter.onFlip(id);
   }
 
-  private onEat(id: number, targetId: number) {
-    this.presenter.onEat(id, targetId);
+  private onEat(id: number, targetId: number, gameMode: GameModeCode) {
+    this.presenter.onEat(id, targetId, gameMode);
   }
 }
 

@@ -6,13 +6,20 @@ import {
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
 
-export namespace MoveChess {
+export enum MoveOrEatCode {
+  Move = 'move',
+  Eat = 'eat',
+}
+
+export namespace MoveOrEatChess {
   export interface InputData extends UseCaseInputData {
     roomID: string;
     selectedChess: TChineseChess;
-    targetX: number;
-    targetY: number;
+    targetChess?: TChineseChess;
+    targetX?: number;
+    targetY?: number;
     gameMode: GameModeCode;
+    action: MoveOrEatCode;
   }
 
   export interface OutputData extends UseCaseOutputData {}

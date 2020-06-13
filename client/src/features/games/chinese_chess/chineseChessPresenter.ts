@@ -1,35 +1,16 @@
 import { GetSocketMessage } from 'src/features/games/chinese_chess/use_cases/base/GetSocketMessageUseCaseItf';
 import { ChineseChessContract } from "./chineseChessContract";
 import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
-import { MoveChess } from './use_cases/base/MoveChessUseCaseItf';
-import { EatChess } from './use_cases/base/EatChessUseCaseItf';
+import { MoveOrEatChess, MoveOrEatCode } from './use_cases/base/MoveOrEatChessUseCaseItf';
 import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
 import { TChineseChess, GameModeCode } from '../domain/models/ChineseChess';
-
-enum ChessName {
-  KingBlack = '將',
-  KingRed = '帥',
-  GuardsBlack = '士',
-  GuardsRed = '仕',
-  MinisterBlack = '象',
-  MinisterRed = '相',
-  ChariotsBlack = '車',
-  ChariotsRed = '俥',
-  CannonsBlack = '包',
-  CannonsRed = '炮',
-  HorsesBlack = '馬',
-  HorsesRed = '傌',
-  SoldiersBlack = '卒',
-  SoldiersRed = '兵',
-}
 
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
   private readonly useCaseHandler: UseCaseHandler;
   private readonly getSocketMessageUseCase: GetSocketMessage.UseCase;
-  private readonly moveChessUseCase: MoveChess.UseCase;
-  private readonly eatChessUseCase: EatChess.UseCase;
+  private readonly moveOrEatChessUseCase: MoveOrEatChess.UseCase;
   private readonly flipChessUseCase: FlipChess.UseCase;
 
   private roomID = '';
@@ -39,15 +20,13 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     view: ChineseChessContract.View,
     useCaseHandler: UseCaseHandler,
     getSocketMessageUseCase: GetSocketMessage.UseCase,
-    moveChessUseCase: MoveChess.UseCase,
-    eatChessUseCase: EatChess.UseCase,
+    moveOrEatChessUseCase: MoveOrEatChess.UseCase,
     flipChessUseCase: FlipChess.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
     this.getSocketMessageUseCase = getSocketMessageUseCase;
-    this.moveChessUseCase = moveChessUseCase;
-    this.eatChessUseCase = eatChessUseCase;
+    this.moveOrEatChessUseCase = moveOrEatChessUseCase;
     this.flipChessUseCase = flipChessUseCase;
   }
 
@@ -113,25 +92,40 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     });
   }
 
-  onEat(id: number, targetID: number): void {
-    this.useCaseHandler.execute(this.eatChessUseCase, {
-      roomID: this.roomID,
-      chessID: id,
-      targetChessID: targetID
-    });
+  onEat(id: number, targetID: number, gameMode: GameModeCode): void {
+    const selectedChess = this.findChessById(id);
+    const targetChess = this.findChessById(targetID);
+    if (!selectedChess || !targetChess) { return; }
+
+    this.useCaseHandler.execute(this.moveOrEatChessUseCase,
+      {
+        gameMode,
+        targetChess,
+        selectedChess,
+        roomID: this.roomID,
+        action: MoveOrEatCode.Eat,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          // error toast
+        }
+      }
+    );
   }
 
   onMove(id: number, targetX: number, targetY: number, gameMode: GameModeCode): void {
     const selectedChess = this.findChessById(id);
     if (!selectedChess) { return; }
 
-    this.useCaseHandler.execute(this.moveChessUseCase,
+    this.useCaseHandler.execute(this.moveOrEatChessUseCase,
       {
         gameMode,
+        selectedChess,
         targetX,
         targetY,
-        selectedChess,
         roomID: this.roomID,
+        action: MoveOrEatCode.Move,
       },
       {
         onSuccess: () => {},
