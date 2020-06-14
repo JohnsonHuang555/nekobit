@@ -16,6 +16,7 @@ interface ChineseChessViewProps {
   updateChineseChess: (rf: Partial<TRoom>) => void;
   updateNowTurn: (rf: Partial<TRoom>) => void;
   updateUserList: (rf: Partial<TRoom>) => void;
+  onGameOver: (iyw: boolean) => void;
 }
 interface ChineseChessViewState {
   selectedChess?: TChineseChess;
@@ -82,6 +83,11 @@ class ChineseChessView extends React.Component<ChineseChessViewProps, ChineseChe
 
   setUserList(userList: TRoomUser[]): void {
     this.props.updateUserList({ userList });
+  }
+
+  setIsGameOver(winnerSide: ChessSide): void {
+    const isYouWin = winnerSide === this.props.playerSide ? true : false;
+    this.props.onGameOver(isYouWin);
   }
 
   private renderMode() {

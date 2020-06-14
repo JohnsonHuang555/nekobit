@@ -1,8 +1,9 @@
-import { GetSocketMessage } from "src/features/games/chinese_chess/use_cases/base/GetSocketMessageUseCaseItf";
+import { GetSocketMessage, TGameOver } from "src/features/games/chinese_chess/use_cases/base/GetSocketMessageUseCaseItf";
 import { ChineseChess } from "src/features/games/chinese_chess/source/ChineseChessDataSource";
 import { ChineseChessFactory } from "src/features/games/domain/factories/ChineseChessFactory";
 import { SocketEvent } from "src/types/Socket";
 import { UserFactory } from "src/features/main/domain/factories/UserFactory";
+import { ChessSide } from "../../domain/models/ChineseChess";
 
 export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
   private repository: ChineseChess.DataSource;
@@ -40,10 +41,28 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
           case SocketEvent.MoveChess: {
             const chesses = ChineseChessFactory.createArrayFromNet(result.data.gameData || []);
             const nowTurn = result.data.nowTurn || '';
+
+            const redAliveChesses = chesses.filter(c => c.alive && c.side === ChessSide.Red);
+            const blackAliveChesses = chesses.filter(c => c.alive && c.side === ChessSide.Black);
+            let gameOverObj: TGameOver = {
+              isGameOver: false,
+            };
+
+            if (!redAliveChesses.length) {
+              gameOverObj.isGameOver = true;
+              gameOverObj.winnerSide = ChessSide.Black;
+            }
+
+            if (!blackAliveChesses.length) {
+              gameOverObj.isGameOver = true;
+              gameOverObj.winnerSide = ChessSide.Red;
+            }
+
             callbacks.onSuccess({
               chesses,
               nowTurn,
-              event: SocketEvent.EatChess
+              gameOverObj,
+              event: SocketEvent.EatChess,
             });
             break;
           }

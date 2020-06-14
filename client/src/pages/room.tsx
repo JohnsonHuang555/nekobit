@@ -8,14 +8,17 @@ import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import GameScreen from 'src/features/main/room/components/GameScreen';
-import { TUser } from 'src/types/Account';
-import { Button } from '@material-ui/core';
+import { Button, Modal, Fade, Backdrop } from '@material-ui/core';
 import '@styles/pages/room.scss';
+import { TUser } from 'src/features/main/domain/models/User';
+import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
 
 interface RoomViewProps {}
 interface RoomViewState {
   roomInfo?: TRoom;
   userInfo?: TUser;
+  showGameOverModal: boolean;
+  isYouWin: boolean;
 }
 
 class RoomView extends React.Component<RoomViewProps, RoomViewState>
@@ -28,6 +31,8 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     this.state = {
       roomInfo: undefined,
       userInfo: undefined,
+      showGameOverModal: false,
+      isYouWin: false,
     }
 
     this.presenter = new RoomPresenter(
@@ -41,6 +46,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       Injection.provideStartGameUseCase(),
       Injection.provideSetPlayOrderUseCase(),
       Injection.provideGetUserInfoUseCase(),
+      Injection.provideGameOverUseCase(),
     )
   }
 
@@ -53,6 +59,8 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     const {
       roomInfo,
       userInfo,
+      showGameOverModal,
+      isYouWin,
     } = this.state;
 
     return (
@@ -106,12 +114,31 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               roomInfo={roomInfo}
               userID={userInfo.id}
               isMaster={this.isMaster}
-              playerSide={this.playerSide}
+              playerSide={this.playerSide as ChessSide}
               onSetPlayOrder={() => this.onSetPlayOrder()}
               updateRoomInfo={(rf) => this.setRoomInfo(rf)}
+              onGameOver={(iyw) => this.onGameOver(iyw)}
             />
           )}
         </div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className="game-over-modal"
+          open={showGameOverModal}
+          onClose={() => this.updateGameOverStatus()}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={showGameOverModal}>
+            <div className="content">
+              <span>{isYouWin ? '你贏了' : '你輸了'}</span>
+            </div>
+          </Fade>
+        </Modal>
       </Layout>
     )
   }
@@ -176,6 +203,14 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   private onSetPlayOrder(): void {
     this.presenter.setPlayOrder();
+  }
+
+  private onGameOver(isYouWin: boolean): void {
+    this.setState({ isYouWin, showGameOverModal: true });
+  }
+
+  private updateGameOverStatus(): void {
+    this.presenter.gameOver();
   }
 
   private get findUser(): TRoomUser | undefined {

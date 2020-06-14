@@ -1,5 +1,5 @@
 import { TRoom } from "../domain/models/Room";
-import { TUser } from "src/types/Account";
+import { TUser } from "../domain/models/User";
 
 export namespace RoomContract {
   export type RoomPageParams = { id: string };
@@ -12,6 +12,7 @@ export namespace RoomContract {
     leaveRoom(): void;
     readyGame(): void;
     startGame(mode: number, gameId: string): void;
+    gameOver(): void;
   }
 
   export interface View {

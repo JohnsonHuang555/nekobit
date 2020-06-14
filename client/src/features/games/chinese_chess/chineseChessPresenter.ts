@@ -61,6 +61,13 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
               this.view.setSelectedChess(undefined);
               this.view.setChesses(result.chesses);
               this.view.setNowTurn(result.nowTurn);
+              if (
+                result.gameOverObj &&
+                result.gameOverObj.isGameOver &&
+                result.gameOverObj.winnerSide
+              ) {
+                this.view.setIsGameOver(result.gameOverObj.winnerSide);
+              }
             }
             break;
           }

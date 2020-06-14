@@ -1,4 +1,4 @@
-import { TChineseChess, GameModeCode } from 'src/features/games/domain/models/ChineseChess';
+import { TChineseChess, GameModeCode, ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import { TRoomUser } from 'src/features/main/domain/models/Room';
 export namespace ChineseChessContract {
   export interface Presenter {
@@ -19,5 +19,6 @@ export namespace ChineseChessContract {
     setSelectedChess(chess?: TChineseChess): void;
     setNowTurn(nowTurn: string): void;
     setUserList(userList: TRoomUser[]): void;
+    setIsGameOver(winnerSide: ChessSide): void;
   }
 }

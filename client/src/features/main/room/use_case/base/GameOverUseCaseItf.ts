@@ -4,14 +4,13 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
-import { TUser } from "src/features/main/domain/models/User";
 
-export namespace GetUserInfo {
-  export interface InputData extends UseCaseInputData {}
-
-  export interface OutputData extends UseCaseOutputData {
-    userInfo: TUser;
+export namespace GameOver {
+  export interface InputData extends UseCaseInputData {
+    roomID: string;
   }
+
+  export interface OutputData extends UseCaseOutputData {}
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
 
