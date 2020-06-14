@@ -141,3 +141,13 @@ func (ru *roomUseCase) SetPlayerSide(roomID string, userID string, side string) 
 	}
 	return users, nil
 }
+
+func (ru *roomUseCase) GameOver(roomID string) (*domain.Room, error) {
+	status := 2
+	ru.roomRepo.UpdateGameData(roomID, nil)
+	room, err := ru.roomRepo.UpdateStatusByID(roomID, status)
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
+}
