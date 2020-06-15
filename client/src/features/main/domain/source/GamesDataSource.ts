@@ -4,8 +4,8 @@ import {
   SuccessWithoutResultCallback
 } from "src/domain/source/base/RepositoryCallbacks";
 import { TGame } from "src/features/main/domain/models/Game";
-import { TUser } from "src/types/Account";
 import { TSocket } from "src/types/Socket";
+import { TUser } from "../models/User";
 
 export namespace Games {
   export interface DataSource {
@@ -30,6 +30,7 @@ export namespace Games {
     readyGame(roomID: string): void;
     startGame(roomID: string, roomMode: number, gameID: string): void;
     setPlayOrder(roomID: string): void;
+    gameOver(roomID: string): void;
   }
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}

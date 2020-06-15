@@ -3,7 +3,7 @@ import { IFetcher } from "src/api/Fetcher";
 import { NetGame } from "src/features/main/domain/remote/NetGame";
 import { GameFactory } from "src/features/main/domain/factories/GameFactory";
 import { SocketEvent } from "src/types/Socket";
-import { TUser } from "src/types/Account";
+import { TUser } from "../models/User";
 
 export default class GamesRepository implements Games.DataSource {
   private fetcher: IFetcher;
@@ -145,5 +145,15 @@ export default class GamesRepository implements Games.DataSource {
         }
       }
     )
+  }
+
+  gameOver(roomID: String): void {
+    this.fetcher.sendSocket({
+      userID: this.userInfo?.id,
+      event: SocketEvent.GameOver,
+      data: {
+        roomID,
+      }
+    })
   }
 }

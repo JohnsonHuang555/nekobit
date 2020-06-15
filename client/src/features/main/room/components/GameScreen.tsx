@@ -11,6 +11,7 @@ type GameScreenProps = {
   playerSide: ChessSide;
   onSetPlayOrder: () => void;
   updateRoomInfo: (rf: TRoom) => void;
+  onGameOver: (iyw: boolean) => void;
 };
 
 const GameScreen = (props: GameScreenProps) => {
@@ -21,6 +22,7 @@ const GameScreen = (props: GameScreenProps) => {
     playerSide,
     onSetPlayOrder,
     updateRoomInfo,
+    onGameOver,
   } = props;
 
   const yourTurn = roomInfo.nowTurn && userID === roomInfo.nowTurn ? true : false;
@@ -46,6 +48,7 @@ const GameScreen = (props: GameScreenProps) => {
         updateChineseChess={updateRoomInfoHandler}
         updateNowTurn={updateRoomInfoHandler}
         updateUserList={updateRoomInfoHandler}
+        onGameOver={onGameOver}
       />
   };
 

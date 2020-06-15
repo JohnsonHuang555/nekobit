@@ -1,4 +1,4 @@
-import { TChineseChess } from 'src/features/games/domain/models/ChineseChess';
+import { TChineseChess, GameModeCode, ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import { TRoomUser } from 'src/features/main/domain/models/Room';
 export namespace ChineseChessContract {
   export interface Presenter {
@@ -8,8 +8,8 @@ export namespace ChineseChessContract {
 
     onSelect(id: number): void;
     onFlip(id: number): void;
-    onEat(id: number, targetId: number): void;
-    onMove(id: number, targetX: number, targetY: number): void;
+    onEat(id: number, targetId: number, gameMode: GameModeCode): void;
+    onMove(id: number, targetX: number, targetY: number, gameMode: GameModeCode): void;
   }
   export interface View {
     nowLoading(): void;
@@ -19,5 +19,6 @@ export namespace ChineseChessContract {
     setSelectedChess(chess?: TChineseChess): void;
     setNowTurn(nowTurn: string): void;
     setUserList(userList: TRoomUser[]): void;
+    setIsGameOver(winnerSide: ChessSide): void;
   }
 }

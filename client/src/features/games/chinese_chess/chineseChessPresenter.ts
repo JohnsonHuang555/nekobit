@@ -1,35 +1,16 @@
 import { GetSocketMessage } from 'src/features/games/chinese_chess/use_cases/base/GetSocketMessageUseCaseItf';
 import { ChineseChessContract } from "./chineseChessContract";
 import { UseCaseHandler } from "src/domain/usecases/base/UseCaseHandler";
-import { MoveChess } from './use_cases/base/MoveChessUseCaseItf';
-import { EatChess } from './use_cases/base/EatChessUseCaseItf';
+import { MoveOrEatChess, MoveOrEatCode } from './use_cases/base/MoveOrEatChessUseCaseItf';
 import { FlipChess } from './use_cases/base/FlipChessUseCaseItf';
 import { SocketEvent } from 'src/types/Socket';
-import { TChineseChess } from '../domain/models/ChineseChess';
-
-enum ChessName {
-  KingBlack = '將',
-  KingRed = '帥',
-  GuardsBlack = '士',
-  GuardsRed = '仕',
-  MinisterBlack = '象',
-  MinisterRed = '相',
-  ChariotsBlack = '車',
-  ChariotsRed = '俥',
-  CannonsBlack = '包',
-  CannonsRed = '炮',
-  HorsesBlack = '馬',
-  HorsesRed = '傌',
-  SoldiersBlack = '卒',
-  SoldiersRed = '兵',
-}
+import { TChineseChess, GameModeCode, ChessName } from '../domain/models/ChineseChess';
 
 export class ChineseChessPresenter implements ChineseChessContract.Presenter {
   private readonly view: ChineseChessContract.View;
   private readonly useCaseHandler: UseCaseHandler;
   private readonly getSocketMessageUseCase: GetSocketMessage.UseCase;
-  private readonly shortCrossMoveUseCase: MoveChess.UseCase;
-  private readonly eatChessUseCase: EatChess.UseCase;
+  private readonly moveOrEatChessUseCase: MoveOrEatChess.UseCase;
   private readonly flipChessUseCase: FlipChess.UseCase;
 
   private roomID = '';
@@ -39,15 +20,13 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
     view: ChineseChessContract.View,
     useCaseHandler: UseCaseHandler,
     getSocketMessageUseCase: GetSocketMessage.UseCase,
-    shortCrossMoveUseCase: MoveChess.UseCase,
-    eatChessUseCase: EatChess.UseCase,
+    moveOrEatChessUseCase: MoveOrEatChess.UseCase,
     flipChessUseCase: FlipChess.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
     this.getSocketMessageUseCase = getSocketMessageUseCase;
-    this.shortCrossMoveUseCase = shortCrossMoveUseCase;
-    this.eatChessUseCase = eatChessUseCase;
+    this.moveOrEatChessUseCase = moveOrEatChessUseCase;
     this.flipChessUseCase = flipChessUseCase;
   }
 
@@ -82,6 +61,13 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
               this.view.setSelectedChess(undefined);
               this.view.setChesses(result.chesses);
               this.view.setNowTurn(result.nowTurn);
+              if (
+                result.gameOverObj &&
+                result.gameOverObj.isGameOver &&
+                result.gameOverObj.winnerSide
+              ) {
+                this.view.setIsGameOver(result.gameOverObj.winnerSide);
+              }
             }
             break;
           }
@@ -111,26 +97,47 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
       roomID: this.roomID,
       chessID: id,
     });
+    this.view.setSelectedChess(undefined);
   }
 
-  onEat(id: number, targetID: number): void {
-    this.useCaseHandler.execute(this.eatChessUseCase, {
-      roomID: this.roomID,
-      chessID: id,
-      targetChessID: targetID
-    });
-  }
-
-  onMove(id: number, targetX: number, targetY: number): void {
+  onEat(id: number, targetID: number, gameMode: GameModeCode): void {
     const selectedChess = this.findChessById(id);
-    if (!selectedChess) { return; }
+    const targetChess = this.findChessById(targetID);
+    if (!selectedChess || !targetChess) { return; }
 
-    this.useCaseHandler.execute(this.shortCrossMoveUseCase,
+    // 炮 要判斷中間是否隔一個
+    if (selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
+      if (selectedChess.locationX === targetChess.locationX) {
+        const middelChesses = this.chesses.filter(c => {
+          return c.locationX === targetChess.locationX &&
+                 c.locationY > Math.min(targetChess.locationY, selectedChess.locationY) &&
+                 c.locationY < Math.max(targetChess.locationY, selectedChess.locationY) &&
+                 c.alive
+        });
+        if (middelChesses.length !== 1) {
+          return;
+        }
+      }
+      if (selectedChess.locationY === targetChess.locationY) {
+        const middelChesses = this.chesses.filter(c => {
+          return c.locationY === targetChess.locationY &&
+                 c.locationX > Math.min(targetChess.locationX, selectedChess.locationX) &&
+                 c.locationX < Math.max(targetChess.locationX, selectedChess.locationX) &&
+                 c.alive
+        });
+        if (middelChesses.length !== 1) {
+          return;
+        }
+      }
+    }
+
+    this.useCaseHandler.execute(this.moveOrEatChessUseCase,
       {
-        targetX,
-        targetY,
+        gameMode,
+        targetChess,
         selectedChess,
         roomID: this.roomID,
+        action: MoveOrEatCode.Eat,
       },
       {
         onSuccess: () => {},
@@ -138,7 +145,29 @@ export class ChineseChessPresenter implements ChineseChessContract.Presenter {
           // error toast
         }
       }
-    )
+    );
+  }
+
+  onMove(id: number, targetX: number, targetY: number, gameMode: GameModeCode): void {
+    const selectedChess = this.findChessById(id);
+    if (!selectedChess) { return; }
+
+    this.useCaseHandler.execute(this.moveOrEatChessUseCase,
+      {
+        gameMode,
+        selectedChess,
+        targetX,
+        targetY,
+        roomID: this.roomID,
+        action: MoveOrEatCode.Move,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          // error toast
+        }
+      }
+    );
   }
 
   private findChessById(id: number): TChineseChess | undefined {

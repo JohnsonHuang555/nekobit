@@ -1,6 +1,6 @@
 export type TUser = {
-  id: string;
-  name: string;
   account: string;
+  id: string;
   isLogin: boolean;
+  name: string;
 }

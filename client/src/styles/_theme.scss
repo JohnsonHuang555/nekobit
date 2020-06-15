@@ -95,3 +95,14 @@ button {
     }
   }
 }
+.game-over-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .content {
+    font-size: 20px;
+    padding: 20px;
+    background: aliceblue;
+    border-radius: 5px;
+  }
+}

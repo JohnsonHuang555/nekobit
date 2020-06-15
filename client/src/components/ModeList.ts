@@ -1,4 +1,4 @@
-import { GameModeCode } from "src/types/ChineseChess";
+import { GameModeCode } from "src/features/games/domain/models/ChineseChess";
 
 export const GameListMode: any = {
   '象棋': [

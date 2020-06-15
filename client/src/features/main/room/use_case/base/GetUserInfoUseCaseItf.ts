@@ -4,7 +4,7 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
-import { TUser } from "src/types/Account";
+import { TUser } from "src/features/main/domain/models/User";
 
 export namespace GetUserInfo {
   export interface InputData extends UseCaseInputData {}

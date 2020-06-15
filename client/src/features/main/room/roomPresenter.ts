@@ -8,6 +8,7 @@ import { StartGame } from './use_case/base/StartGameUseCaseItf';
 import { GetUserInfo } from './use_case/base/GetUserInfoUseCaseItf';
 import { GetSocketMessage } from './use_case/base/GetSocketMessageUseCaseItf';
 import { SetPlayOrder } from './use_case/base/SetPlayOrderUseCaseItf';
+import { GameOver } from './use_case/base/GameOverUseCaseItf';
 
 export class RoomPresenter implements RoomContract.Presenter {
   private readonly view: RoomContract.View;
@@ -20,6 +21,7 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly setPlayOrderUseCase: SetPlayOrder.UseCase;
   private readonly startGameUseCase: StartGame.UseCase;
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
+  private readonly gameOverUseCase: GameOver.UseCase;
 
   private roomID = '';
 
@@ -34,6 +36,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     startGameUseCase: StartGame.UseCase,
     setPlayOrderUseCase: SetPlayOrder.UseCase,
     getUserInfoUseCase: GetUserInfo.UseCase,
+    gameOverUseCase: GameOver.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
@@ -45,6 +48,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.startGameUseCase = startGameUseCase;
     this.setPlayOrderUseCase = setPlayOrderUseCase;
     this.getUserInfoUseCase = getUserInfoUseCase;
+    this.gameOverUseCase = gameOverUseCase;
   }
 
   mount(params: RoomContract.RoomPageParams): void {
@@ -98,12 +102,22 @@ export class RoomPresenter implements RoomContract.Presenter {
     );
   }
 
+  gameOver(): void {
+    this.view.nowLoading();
+    this.useCaseHandler.execute(this.gameOverUseCase,
+      {
+        roomID: this.roomID,
+      }
+    );
+  }
+
   getMessageHandler(): void {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
         if (result.roomInfo) {
           this.view.setRoomInfo(result.roomInfo);
         }
+        this.view.finishLoading();
       },
       onError: () => {
         // error toast

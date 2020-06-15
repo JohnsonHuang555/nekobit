@@ -4,9 +4,14 @@ import {
   UseCaseCallbacks,
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
-import { TChineseChess } from "src/features/games/domain/models/ChineseChess";
+import { TChineseChess, ChessSide } from "src/features/games/domain/models/ChineseChess";
 import { TRoomUser } from "src/features/main/domain/models/Room";
 import { SocketEvent } from "src/types/Socket";
+
+export type TGameOver = {
+  isGameOver: boolean;
+  winnerSide?: ChessSide;
+}
 
 export namespace GetSocketMessage {
   export interface InputData extends UseCaseInputData {}
@@ -16,6 +21,7 @@ export namespace GetSocketMessage {
     userList?: TRoomUser[];
     nowTurn?: string;
     event: SocketEvent;
+    gameOverObj?: TGameOver;
   }
 
   export interface Callbacks extends UseCaseCallbacks<OutputData> {}
