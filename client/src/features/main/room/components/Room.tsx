@@ -1,8 +1,8 @@
 import React from 'react';
 import { faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TRoomUser } from 'src/types/Room';
 import '@styles/components/rooms/roomList.scss';
+import { TRoomUser } from '../../domain/models/Room';
 
 type RoomListProps = {
   id: string;

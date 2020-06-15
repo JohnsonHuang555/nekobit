@@ -1,7 +1,7 @@
 import { IFetcher } from "src/api/Fetcher";
 import { ChineseChess } from "src/features/games/chinese_chess/source/ChineseChessDataSource";
 import { SocketEvent } from "src/types/Socket";
-import { TUser } from "src/types/Account";
+import { TUser } from "src/features/main/domain/models/User";
 
 export default class ChineseChessRepository implements ChineseChess.DataSource {
   private fetcher: IFetcher;
