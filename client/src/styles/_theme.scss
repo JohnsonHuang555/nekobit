@@ -95,14 +95,24 @@ button {
     }
   }
 }
-.game-over-modal {
+.gp-modal {
   display: flex;
   align-items: center;
   justify-content: center;
-  .content {
-    font-size: 20px;
-    padding: 20px;
-    background: aliceblue;
+  .modal-container {
+    background: white;
     border-radius: 5px;
+    .header {
+      padding: 10px;
+      border: 1px solid #ccc;
+      h2 {
+        font-size: 22px;
+        margin-bottom: 0;
+      }
+    }
+    .content {
+      font-size: 20px;
+      padding: 16px;
+    }
   }
 }

@@ -6,7 +6,6 @@ import {
   faChess,
   faDoorOpen,
   faGamepad,
-  faStar,
   faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { TGame } from 'src/features/main/domain/models/Game';
@@ -40,14 +39,6 @@ const GameDetail = (props: GameDetailProps) => {
           <div className="col-md-5 game-info">
             <div className="game_title">
               <h2>{gameInfo.name}</h2>
-            </div>
-            <div className="game_stars">
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <span className="points">10 分</span>
             </div>
             <div className="game_description">
               <p>{gameInfo.description}</p>

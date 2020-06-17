@@ -1,63 +1,56 @@
 @import '../../theme';
 @import '../../color';
 
-#create-room-modal {
-  .app-modal-dialog {
-    padding: 60px 40px;
+.create-room-modal {
+  .MuiInputBase-root {
+    width: 100%;
+  }
+  .group {
+    margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    h2 {
-      font-size: 32px;
-      font-style: italic;
-      margin-bottom: 40px;
+    align-items: center;
+    width: 400px;
+    input[type=text], input[type=password] {
+      border: none;
+      border-radius: 3px;
+      padding: 5px 10px;
+      flex: 1;
     }
-    .group {
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      width: 400px;
-      input[type=text], input[type=password] {
-        border: none;
-        border-radius: 3px;
-        padding: 5px 10px;
-        flex: 1;
-      }
-      label {
-        margin: 0;
-        margin-left: 5px;
-        margin-right: 10px;
-      }
-      .room_mode_group {
-        position: relative;
-        flex: 1;
-        #room-mode {
-          border-radius: 0;
-          -webkit-appearance: none;
-          background: none;
-          padding: 5px 30px 0px 10px;
-          cursor: pointer;
-          border-color: $dark-yellow;
-          width: 100%;
-          color: $input-placeholder;
-          transition: all .3s;
-          &:hover {
+    label {
+      margin: 0;
+      margin-left: 5px;
+      margin-right: 10px;
+    }
+    .room_mode_group {
+      position: relative;
+      flex: 1;
+      #room-mode {
+        border-radius: 0;
+        -webkit-appearance: none;
+        background: none;
+        padding: 5px 30px 0px 10px;
+        cursor: pointer;
+        border-color: $dark-yellow;
+        width: 100%;
+        color: $input-placeholder;
+        transition: all .3s;
+        &:hover {
+          color: #bbb;
+          border-color: $button-yellow;
+          box-shadow: 0 0 10px rgba(0, 0, 0, .7);
+          +svg {
             color: #bbb;
-            border-color: $button-yellow;
-            box-shadow: 0 0 10px rgba(0, 0, 0, .7);
-            +svg {
-              color: #bbb;
-            }
           }
         }
-        svg {
-          position: absolute;
-          right: 10px;
-          top: 8px;
-          font-size: 14px;
-          height: 14px;
-          color: $input-placeholder;
-          transition: all .3s;
-        }
+      }
+      svg {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        font-size: 14px;
+        height: 14px;
+        color: $input-placeholder;
+        transition: all .3s;
       }
     }
   }

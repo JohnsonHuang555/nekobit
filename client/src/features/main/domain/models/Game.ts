@@ -12,7 +12,12 @@ export type TGame = {
   estimateTime: number;
 }
 
-export const GameMode = {
+export type TModeVaule = {
+  label: string;
+  value: number;
+};
+
+export const GameMode: { [key: string]: TModeVaule[] } = {
   '5d62a35bd986c21bc010c00b': [
     {label: '標準(大盤)', value: GameModeCode.Standard},
     {label: '暗棋(小盤)', value: GameModeCode.Hidden}
