@@ -19,6 +19,8 @@ export namespace GameContract {
   export interface View {
     nowLoading(): void;
     finishLoading(): void;
+
+    setToastShow(show: boolean, msg?: string): void;
     setGameInfo(gameInfo: TGame): void;
     setRooms(rooms: TRoom[]): void;
     setRoomID(id: string): void;

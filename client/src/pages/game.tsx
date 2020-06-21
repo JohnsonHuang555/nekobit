@@ -16,9 +16,11 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  Snackbar,
+  IconButton
 } from '@material-ui/core';
-// import '@styles/components/modals/createRoomModal.scss';
+import CloseIcon from '@material-ui/icons/Close';
 import '@styles/pages/game.scss';
 
 interface GameViewProps {}
@@ -28,9 +30,14 @@ interface GameViewState {
   ws?: WebSocket;
   rooms: TRoom[];
   roomId: string;
+
   isShowRoomList: boolean;
   isOnCreateRoom: boolean;
   isShowCreateRoomModal: boolean;
+
+  isShowToast: boolean;
+  toastMessage: string;
+
   gameID: string;
   createRoomMode: string;
   createRoomPassword: string;
@@ -51,6 +58,8 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       isShowRoomList: false,
       isOnCreateRoom: false,
       isShowCreateRoomModal: false,
+      isShowToast: false,
+      toastMessage: '',
       gameID: '',
       createRoomMode: '',
       createRoomPassword: '',
@@ -79,6 +88,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       rooms,
       gameInfo,
       createRoomMode,
+      isShowToast,
       isShowRoomList,
       isShowCreateRoomModal,
     } = this.state;
@@ -162,6 +172,28 @@ class GameView extends React.Component<GameViewProps, GameViewState>
               />
           )}
         </Box>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          open={isShowToast}
+          autoHideDuration={4000}
+          onClose={() => this.setToastShow(false)}
+          message={this.state.toastMessage}
+          action={
+            <React.Fragment>
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={() => this.setToastShow(false)}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
       </Layout>
     );
   }
@@ -185,6 +217,13 @@ class GameView extends React.Component<GameViewProps, GameViewState>
         query: { id }
       });
     }
+  }
+
+  setToastShow(show: boolean, msg?: string): void {
+    if (msg) {
+      this.setState({ toastMessage: msg });
+    }
+    this.setState({ isShowToast: show });
   }
 
   private setRoomTitle(title: string): void {
