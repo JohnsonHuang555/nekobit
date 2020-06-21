@@ -8,9 +8,17 @@ import { GamePresenter } from 'src/features/main/game/GamePresenter';
 import { Injection } from 'src/features/main/game/injection/injection';
 import { TGame, GameMode } from 'src/features/main/domain/models/Game';
 import { TRoom } from 'src/features/main/domain/models/Room';
-import { Box, TextField, InputLabel, Select, MenuItem } from '@material-ui/core';
-import AppModal from 'src/components/AppModal';
-import '@styles/components/modals/createRoomModal.scss';
+import {
+  Box,
+  TextField,
+  MenuItem,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@material-ui/core';
+// import '@styles/components/modals/createRoomModal.scss';
 import '@styles/pages/game.scss';
 
 interface GameViewProps {}
@@ -24,7 +32,9 @@ interface GameViewState {
   isOnCreateRoom: boolean;
   isShowCreateRoomModal: boolean;
   gameID: string;
-  selectedGameMode: number;
+  createRoomMode: string;
+  createRoomPassword: string;
+  createRoomTitle: string;
 }
 
 class GameView extends React.Component<GameViewProps, GameViewState>
@@ -42,7 +52,9 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       isOnCreateRoom: false,
       isShowCreateRoomModal: false,
       gameID: '',
-      selectedGameMode: 0,
+      createRoomMode: '',
+      createRoomPassword: '',
+      createRoomTitle: '',
     }
 
     this.presenter = new GamePresenter(
@@ -66,44 +78,77 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     const {
       rooms,
       gameInfo,
-      selectedGameMode,
+      createRoomMode,
       isShowRoomList,
       isShowCreateRoomModal,
     } = this.state;
     return (
       <Layout>
-        {/* <CreateRoomModal
-          show={isShowCreateRoomModal}
-          onCloseMoal={() => this.setIsShowCreateRoomModal(false)}
-        /> */}
-        <AppModal
-          show={isShowCreateRoomModal}
+        <Dialog
+          fullWidth
+          open={isShowCreateRoomModal}
           onClose={() => this.setIsShowCreateRoomModal(false)}
-          className="create-room-modal"
-          header={(
-            <h2>新建房間</h2>
-          )}
+          aria-labelledby="create-room-modal"
         >
-          <TextField
-            required
-            id="standard-required"
-            label="房間名稱"
-            placeholder="請輸入房間名稱"
-          />
-          <InputLabel id="game-mode">遊戲模式</InputLabel>
-          {gameInfo && (
-            <Select
-              labelId="game-mode"
-              id="game-mode"
-              value={selectedGameMode}
-              onChange={(e) => this.onChangeGameMode(Number(e.target.value))}
+          <DialogTitle id="create-room-modal">創建房間</DialogTitle>
+          <DialogContent>
+            <Box marginBottom={2}>
+              <TextField
+                required
+                fullWidth
+                id="standard-required"
+                label="房間名稱"
+                placeholder="請輸入房間名稱"
+                variant="outlined"
+                onChange={(e) => this.setRoomTitle(e.target.value)}
+              />
+            </Box>
+            <Box marginBottom={2}>
+              <TextField
+                required
+                fullWidth
+                id="standard-required"
+                label="房間密碼"
+                placeholder="請輸入房間密碼"
+                type="password"
+                variant="outlined"
+                onChange={(e) => this.setRoomPassword(e.target.value)}
+              />
+            </Box>
+            <Box marginBottom={2}>
+              {gameInfo && (
+                <TextField
+                  fullWidth
+                  select
+                  label="遊戲模式"
+                  value={createRoomMode}
+                  onChange={(e) => this.onChangeGameMode(String(e.target.value))}
+                  variant="outlined"
+                >
+                  {GameMode[gameInfo.id].map((m, i) => (
+                    <MenuItem key={i} value={m.value}>
+                      {m.label}
+                    </MenuItem >
+                  ))}
+                </TextField>
+              )}
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.setIsShowCreateRoomModal(false)}
+              color="primary"
             >
-              {GameMode[gameInfo.id].map((m, i) => (
-                <MenuItem key={i} value={m.value}>{m.label}</MenuItem>
-              ))}
-            </Select>
-          )}
-        </AppModal>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => this.createRoom()}
+              color="primary"
+            >
+              Create
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Box>
           {isShowRoomList ? (
             <RoomList rooms={rooms}/>
@@ -126,7 +171,6 @@ class GameView extends React.Component<GameViewProps, GameViewState>
   finishLoading(): void {}
 
   setGameInfo(gameInfo: TGame): void {
-    console.log(GameMode[gameInfo.id])
     this.setState({ gameInfo });
   }
 
@@ -143,11 +187,28 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     }
   }
 
-  // private createRoom({ roomMode, roomPassword, roomTitle}: TCreateRoom): void {
-  //   const gameID = this.state.gameID || '';
-  //   this.presenter.createRoom(gameID, roomMode, roomPassword, roomTitle);
-  //   this.presenter.getRooms();
-  // }
+  private setRoomTitle(title: string): void {
+    this.setState({ createRoomTitle: title });
+  }
+
+  private setRoomPassword(password: string): void {
+    this.setState({ createRoomPassword: password });
+  }
+
+  private onChangeGameMode(createRoomMode: string): void {
+    this.setState({ createRoomMode });
+  }
+
+  private createRoom(): void {
+    const gameID = this.state.gameID || '';
+    this.presenter.createRoom(
+      gameID,
+      Number(this.state.createRoomMode),
+      this.state.createRoomPassword,
+      this.state.createRoomTitle
+    );
+    this.presenter.getRooms();
+  }
 
   private setIsShowCreateRoomModal(show: boolean): void {
     this.setState({ isShowCreateRoomModal: show });
@@ -155,10 +216,6 @@ class GameView extends React.Component<GameViewProps, GameViewState>
 
   private setIsShowRoomList(show: boolean): void {
     this.setState({ isShowRoomList: show });
-  }
-
-  private onChangeGameMode(selectedGameMode: number): void {
-    this.setState({ selectedGameMode });
   }
 }
 
