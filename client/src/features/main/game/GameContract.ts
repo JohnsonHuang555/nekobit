@@ -8,6 +8,7 @@ export namespace GameContract {
     getMessageHandler(): void;
     getGameInfo(id: string): void;
     getRooms(): void;
+    enterRoom(id: string, password: string): void;
     createRoom(
       gameID: string,
       roomMode: number,
@@ -24,5 +25,6 @@ export namespace GameContract {
     setGameInfo(gameInfo: TGame): void;
     setRooms(rooms: TRoom[]): void;
     setRoomID(id: string): void;
+    setIsShowEnterPasswordModal(show: boolean): void;
   }
 }

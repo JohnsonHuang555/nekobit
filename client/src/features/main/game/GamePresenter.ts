@@ -5,6 +5,7 @@ import { GetRooms } from "src/features/main/game/use_cases/base/GetRoomsUseCaseI
 import { CreateRoom } from "src/features/main/game/use_cases/base/CreateRoomUseCaseItf";
 import { ConnectSocket } from "src/features/main/game/use_cases/base/ConnectSocketUseCaseItf";
 import { GetSocketMessage } from "src/features/main/game/use_cases/base/GetSocketMessageUseCaseItf";
+import { TRoom } from "../domain/models/Room";
 
 const SOCKET_PATH = 'game_page';
 
@@ -16,6 +17,8 @@ export class GamePresenter implements GameContract.Presenter {
   private readonly getGameInfoUseCase: GetGameInfo.UseCase;
   private readonly getRoomsUseCase: GetRooms.UseCase;
   private readonly createRoomUseCase: CreateRoom.UseCase;
+
+  private rooms: TRoom[] = [];
 
   constructor(
     view: GameContract.View,
@@ -85,15 +88,45 @@ export class GamePresenter implements GameContract.Presenter {
     )
   }
 
+  enterRoom(id: string, password: string): void {
+    const roomInfo = this.rooms.find(r => r.id === id);
+    if (!roomInfo) {
+      this.view.setToastShow(
+        true,
+        'Room not found',
+      );
+      return;
+    }
+
+    if (roomInfo.password && password) {
+      if (roomInfo.password === password) {
+        this.view.setRoomID(id);
+      } else {
+        this.view.setToastShow(
+          true,
+          'Wrong Password',
+        );
+      }
+    } else if (roomInfo.password) {
+      this.view.setIsShowEnterPasswordModal(true);
+    } else {
+      this.view.setRoomID(id);
+    }
+  }
+
   getMessageHandler(): void {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
         if (result.rooms) {
+          this.rooms = result.rooms;
           this.view.setRooms(result.rooms);
         }
       },
       onError: () => {
-        // error toast
+        this.view.setToastShow(
+          true,
+          'Something wrong...',
+        );
       }
     });
   }
