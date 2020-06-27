@@ -2,16 +2,16 @@ import React from 'react';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
-import RoomUser from 'src/features/main/room/components/RoomUser';
+import RoomUser from 'src/features/main/game/components/RoomUser';
 import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import GameScreen from 'src/features/main/room/components/GameScreen';
 import { Button, Modal, Fade, Backdrop } from '@material-ui/core';
-import '@styles/pages/room.scss';
 import { TUser } from 'src/features/main/domain/models/User';
 import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
+import '@styles/pages/room.scss';
 
 interface RoomViewProps {}
 interface RoomViewState {
@@ -124,7 +124,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
-          className="game-over-modal"
+          className="gp-modal"
           open={showGameOverModal}
           onClose={() => this.updateGameOverStatus()}
           closeAfterTransition

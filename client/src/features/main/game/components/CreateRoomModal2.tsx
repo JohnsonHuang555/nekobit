@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Modal, Fade, Backdrop } from '@material-ui/core';
 import { faTimes, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '@styles/components/modals/modal.scss';
@@ -46,8 +46,26 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
   }
 
   return (
-    <>
-      {show && (
+    <Modal
+      aria-labelledby="transition-modal-title"
+      aria-describedby="transition-modal-description"
+      className="gp-modal"
+      open={show}
+      onClose={handleClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 500,
+      }}
+    >
+      <Fade in={show}>
+        <div className="">
+          <h2 id="transition-modal-title">Transition modal</h2>
+          <p id="transition-modal-description">react-transition-group animates me.</p>
+        </div>
+      </Fade>
+    </Modal>
+      {/* {show && (
         <div id="create-room-modal">
           <div className="modal-shadow" />
           <div className="app-modal">
@@ -98,8 +116,8 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
             </div>
           </div>
         </div>
-      )}
-    </>
+      )} */}
+    // </>
   )
 }
 

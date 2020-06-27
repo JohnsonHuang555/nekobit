@@ -102,8 +102,10 @@ export class GamePresenter implements GameContract.Presenter {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.connectSocketUseCase, { path }, {
       onSuccess: () => {
-        // TODO: Toast Message
-        console.log('connected successfully...')
+        this.view.setToastShow(
+          true,
+          'Connect successfully',
+        );
         this.getMessageHandler();
         this.getRooms();
       },

@@ -6,15 +6,13 @@ import {
   faChess,
   faDoorOpen,
   faGamepad,
-  faStar,
   faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { TGame } from 'src/features/main/domain/models/Game';
-import { TRoom } from '../../domain/models/Room';
 
 type GameDetailProps = {
   gameInfo: TGame;
-  rooms: TRoom[];
+  roomsCount: number;
   onShowModal: () => void;
   playNow: () => void;
 };
@@ -22,7 +20,7 @@ type GameDetailProps = {
 const GameDetail = (props: GameDetailProps) => {
   const {
     gameInfo,
-    rooms,
+    roomsCount = 0,
     onShowModal,
     playNow,
   } = props;
@@ -41,14 +39,6 @@ const GameDetail = (props: GameDetailProps) => {
             <div className="game_title">
               <h2>{gameInfo.name}</h2>
             </div>
-            <div className="game_stars">
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <FontAwesomeIcon icon={faStar} />
-              <span className="points">10 分</span>
-            </div>
             <div className="game_description">
               <p>{gameInfo.description}</p>
             </div>
@@ -57,7 +47,7 @@ const GameDetail = (props: GameDetailProps) => {
                 <FontAwesomeIcon icon={faUserFriends} /><b>遊戲需求人數：{gameInfo.maxPlayers}</b>
               </div>
               <div className="rooms">
-                <FontAwesomeIcon icon={faChess} /><b>總房間數：{rooms ? rooms.length : 0}</b>
+                <FontAwesomeIcon icon={faChess} /><b>總房間數：{roomsCount}</b>
               </div>
             </div>
             <div className="buttons">
