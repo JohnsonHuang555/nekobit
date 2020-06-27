@@ -1,16 +1,21 @@
 import React from 'react';
 import Router from 'next/router';
-import Room from 'src/features/main/room/components/Room';
-import '@styles/components/rooms/roomList.scss';
+import Room from 'src/features/main/game/components/Room';
 import { TRoom } from '../../domain/models/Room';
+import { GameMode } from '../../domain/models/Game';
+import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {
   rooms: TRoom[];
+  gameId: string;
+  maxPlayers: number;
 };
 
 const RoomList = (props: RoomListProps) => {
   const {
     rooms,
+    gameId,
+    maxPlayers,
   } = props;
 
   const onChooseRoom = (id: string) => {
@@ -22,26 +27,21 @@ const RoomList = (props: RoomListProps) => {
     });
   }
 
-  const roomList = rooms && rooms.map(({ id, title, mode, status, userList, roomNumber }: TRoom) => (
-    <Room
-      key={id}
-      id={id}
-      title={title}
-      mode={mode}
-      status={status}
-      userList={userList}
-      roomNumber={roomNumber}
-      onChooseRoom={onChooseRoom}
-    />
-  ));
-
   return (
     <div id="room-list" className="row">
       <div className="col-md-9">
         <div className="block">
           <h2>Room List</h2>
           <div className="rooms">
-            {roomList}
+            {rooms.map(room => (
+              <Room
+                key={room.id}
+                roomInfo={room}
+                maxPlayers={maxPlayers}
+                gameMode={GameMode[gameId].find(g => g.value === room.mode)?.label}
+                onChooseRoom={onChooseRoom}
+              />
+            ))}
           </div>
         </div>
         <div className="block chat">

@@ -9,11 +9,10 @@ import {
   faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { TGame } from 'src/features/main/domain/models/Game';
-import { TRoom } from '../../domain/models/Room';
 
 type GameDetailProps = {
   gameInfo: TGame;
-  rooms: TRoom[];
+  roomsCount: number;
   onShowModal: () => void;
   playNow: () => void;
 };
@@ -21,7 +20,7 @@ type GameDetailProps = {
 const GameDetail = (props: GameDetailProps) => {
   const {
     gameInfo,
-    rooms,
+    roomsCount = 0,
     onShowModal,
     playNow,
   } = props;
@@ -48,7 +47,7 @@ const GameDetail = (props: GameDetailProps) => {
                 <FontAwesomeIcon icon={faUserFriends} /><b>遊戲需求人數：{gameInfo.maxPlayers}</b>
               </div>
               <div className="rooms">
-                <FontAwesomeIcon icon={faChess} /><b>總房間數：{rooms ? rooms.length : 0}</b>
+                <FontAwesomeIcon icon={faChess} /><b>總房間數：{roomsCount}</b>
               </div>
             </div>
             <div className="buttons">

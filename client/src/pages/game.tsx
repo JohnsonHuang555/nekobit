@@ -106,7 +106,6 @@ class GameView extends React.Component<GameViewProps, GameViewState>
               <TextField
                 required
                 fullWidth
-                id="standard-required"
                 label="房間名稱"
                 placeholder="請輸入房間名稱"
                 variant="outlined"
@@ -117,7 +116,6 @@ class GameView extends React.Component<GameViewProps, GameViewState>
               <TextField
                 required
                 fullWidth
-                id="standard-required"
                 label="房間密碼"
                 placeholder="請輸入房間密碼"
                 type="password"
@@ -160,13 +158,17 @@ class GameView extends React.Component<GameViewProps, GameViewState>
           </DialogActions>
         </Dialog>
         <Box>
-          {isShowRoomList ? (
-            <RoomList rooms={rooms}/>
+          {gameInfo && isShowRoomList ? (
+            <RoomList
+              rooms={rooms}
+              gameId={gameInfo.id}
+              maxPlayers={gameInfo.maxPlayers}
+            />
           ): (
             gameInfo &&
               <GameDetail
                 gameInfo={gameInfo}
-                rooms={rooms}
+                roomsCount={rooms.length}
                 onShowModal={() => this.setIsShowCreateRoomModal(true)}
                 playNow={() => this.setIsShowRoomList(true)}
               />

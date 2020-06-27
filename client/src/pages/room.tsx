@@ -2,7 +2,7 @@ import React from 'react';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
-import RoomUser from 'src/features/main/room/components/RoomUser';
+import RoomUser from 'src/features/main/game/components/RoomUser';
 import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
