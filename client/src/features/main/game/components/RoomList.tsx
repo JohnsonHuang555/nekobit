@@ -1,5 +1,4 @@
 import React from 'react';
-import Router from 'next/router';
 import Room from 'src/features/main/game/components/Room';
 import { TRoom } from '../../domain/models/Room';
 import { GameMode } from '../../domain/models/Game';
@@ -9,6 +8,7 @@ type RoomListProps = {
   rooms: TRoom[];
   gameId: string;
   maxPlayers: number;
+  onChooseRoom: (id: string) => void;
 };
 
 const RoomList = (props: RoomListProps) => {
@@ -16,16 +16,8 @@ const RoomList = (props: RoomListProps) => {
     rooms,
     gameId,
     maxPlayers,
+    onChooseRoom,
   } = props;
-
-  const onChooseRoom = (id: string) => {
-    Router.push({
-      pathname: '/room',
-      query: {
-        id
-      }
-    });
-  }
 
   return (
     <div id="room-list" className="row">

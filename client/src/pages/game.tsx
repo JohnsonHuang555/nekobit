@@ -34,6 +34,7 @@ interface GameViewState {
   isShowRoomList: boolean;
   isOnCreateRoom: boolean;
   isShowCreateRoomModal: boolean;
+  isShowEnterPasswordModal: boolean;
 
   isShowToast: boolean;
   toastMessage: string;
@@ -42,6 +43,8 @@ interface GameViewState {
   createRoomMode: string;
   createRoomPassword: string;
   createRoomTitle: string;
+
+  enterRoomPassword: string;
 }
 
 class GameView extends React.Component<GameViewProps, GameViewState>
@@ -58,12 +61,16 @@ class GameView extends React.Component<GameViewProps, GameViewState>
       isShowRoomList: false,
       isOnCreateRoom: false,
       isShowCreateRoomModal: false,
+      isShowEnterPasswordModal: false,
       isShowToast: false,
       toastMessage: '',
       gameID: '',
+
       createRoomMode: '',
       createRoomPassword: '',
       createRoomTitle: '',
+
+      enterRoomPassword: '',
     }
 
     this.presenter = new GamePresenter(
@@ -87,10 +94,12 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     const {
       rooms,
       gameInfo,
+      roomId,
       createRoomMode,
       isShowToast,
       isShowRoomList,
       isShowCreateRoomModal,
+      isShowEnterPasswordModal,
     } = this.state;
     return (
       <Layout>
@@ -157,12 +166,41 @@ class GameView extends React.Component<GameViewProps, GameViewState>
             </Button>
           </DialogActions>
         </Dialog>
+        <Dialog
+          open={isShowEnterPasswordModal}
+          onClose={() => this.setIsShowEnterPasswordModal(false)}
+        >
+          <DialogTitle id="enter-password">請輸入房間密碼</DialogTitle>
+          <DialogContent>
+            <Box marginBottom={3}>
+              <TextField
+                required
+                fullWidth
+                margin="dense"
+                label="房間密碼"
+                placeholder="請輸入房間密碼"
+                type="password"
+                variant="outlined"
+                onChange={(e) => this.setEnterRoomPassword(e.target.value)}
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.setIsShowEnterPasswordModal(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => this.onChooseRoom(roomId)} color="primary">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Box>
           {gameInfo && isShowRoomList ? (
             <RoomList
               rooms={rooms}
               gameId={gameInfo.id}
               maxPlayers={gameInfo.maxPlayers}
+              onChooseRoom={(id) => this.onChooseRoom(id)}
             />
           ): (
             gameInfo &&
@@ -221,6 +259,10 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     }
   }
 
+  setIsShowEnterPasswordModal(show: boolean): void {
+    this.setState({ isShowEnterPasswordModal: show });
+  }
+
   setToastShow(show: boolean, msg?: string): void {
     if (msg) {
       this.setState({ toastMessage: msg });
@@ -236,8 +278,17 @@ class GameView extends React.Component<GameViewProps, GameViewState>
     this.setState({ createRoomPassword: password });
   }
 
+  private setEnterRoomPassword(password: string): void {
+    this.setState({ enterRoomPassword: password });
+  }
+
   private onChangeGameMode(createRoomMode: string): void {
     this.setState({ createRoomMode });
+  }
+
+  private onChooseRoom(roomId: string): void {
+    this.setState({ roomId });
+    this.presenter.enterRoom(roomId, this.state.enterRoomPassword);
   }
 
   private createRoom(): void {
