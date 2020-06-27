@@ -35,10 +35,12 @@ const Room = (props: RoomListProps) => {
           <span className="id">{roomInfo.roomNumber}.</span>
           <span className="title">{roomInfo.title}</span>
         </div>
-        <div className="key">
-          <FontAwesomeIcon icon={faKey}/>
-          私密
-        </div>
+        {roomInfo.password && (
+          <div className="key">
+            <FontAwesomeIcon icon={faKey}/>
+            私密
+          </div>
+        )}
       </div>
       <div className="bottom">
         <span className="status">
