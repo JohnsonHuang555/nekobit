@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
@@ -77,7 +78,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
                 )}
                 <span className="icons">
                   <FontAwesomeIcon icon={faPen}/>
-                  <FontAwesomeIcon icon={faDoorOpen}/>
+                  <FontAwesomeIcon
+                    icon={faDoorOpen}
+                    onClick={() => this.onLeaveRoom()}
+                  />
                 </span>
               </div>
               <div className="content">
@@ -211,6 +215,16 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   private updateGameOverStatus(): void {
     this.presenter.gameOver();
+  }
+
+  private onLeaveRoom(): void {
+    if (this.state.roomInfo) {
+      this.presenter.leaveRoom();
+      Router.push({
+        pathname: '/game',
+        query: { id: this.state.roomInfo.gameId }
+      });
+    }
   }
 
   private get findUser(): TRoomUser | undefined {
