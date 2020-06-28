@@ -23,8 +23,10 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
             break;
           }
           case SocketEvent.LeaveRoom: {
-            const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
-            this.roomInfo = roomInfo;
+            const roomUserList = UserFactory.createArrayFromNet(result.data.roomUserList);
+            if (this.roomInfo) {
+              this.roomInfo.userList = roomUserList;
+            }
             break;
           }
           case SocketEvent.ReadyGame: {

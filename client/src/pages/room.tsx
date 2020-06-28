@@ -1,4 +1,5 @@
 import React from 'react';
+import Router from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
@@ -8,7 +9,7 @@ import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import GameScreen from 'src/features/main/room/components/GameScreen';
-import { Button, Modal, Fade, Backdrop } from '@material-ui/core';
+import { Button, Modal, Fade, Backdrop, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { TUser } from 'src/features/main/domain/models/User';
 import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import '@styles/pages/room.scss';
@@ -18,6 +19,7 @@ interface RoomViewState {
   roomInfo?: TRoom;
   userInfo?: TUser;
   showGameOverModal: boolean;
+  showLeaveRoomModal: boolean;
   isYouWin: boolean;
 }
 
@@ -29,10 +31,9 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   constructor(props: RoomViewProps) {
     super(props);
     this.state = {
-      roomInfo: undefined,
-      userInfo: undefined,
       showGameOverModal: false,
       isYouWin: false,
+      showLeaveRoomModal: false,
     }
 
     this.presenter = new RoomPresenter(
@@ -60,6 +61,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       roomInfo,
       userInfo,
       showGameOverModal,
+      showLeaveRoomModal,
       isYouWin,
     } = this.state;
 
@@ -77,7 +79,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
                 )}
                 <span className="icons">
                   <FontAwesomeIcon icon={faPen}/>
-                  <FontAwesomeIcon icon={faDoorOpen}/>
+                  <FontAwesomeIcon
+                    icon={faDoorOpen}
+                    onClick={() => this.setShowLeaveRoomModal(true)}
+                  />
                 </span>
               </div>
               <div className="content">
@@ -139,6 +144,32 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
             </div>
           </Fade>
         </Modal>
+        <Dialog
+          fullWidth
+          open={showLeaveRoomModal}
+          onClose={() => this.setShowLeaveRoomModal(false)}
+        >
+          <DialogTitle id="leave-room-modal">提示</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              確定要離開房間?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.setShowLeaveRoomModal(false)}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => this.onLeaveRoom()}
+              color="primary"
+            >
+              Leave
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Layout>
     )
   }
@@ -213,6 +244,16 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     this.presenter.gameOver();
   }
 
+  private onLeaveRoom(): void {
+    if (this.state.roomInfo) {
+      this.presenter.leaveRoom();
+      Router.push({
+        pathname: '/game',
+        query: { id: this.state.roomInfo.gameId }
+      });
+    }
+  }
+
   private get findUser(): TRoomUser | undefined {
     const {
       roomInfo,
@@ -222,6 +263,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     return roomInfo?.userList.find(u => {
       return u.id === userInfo?.id
     });
+  }
+
+  private setShowLeaveRoomModal(show: boolean): void {
+    this.setState({ showLeaveRoomModal: show });
   }
 }
 
