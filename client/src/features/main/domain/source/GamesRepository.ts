@@ -97,10 +97,10 @@ export default class GamesRepository implements Games.DataSource {
     );
   }
 
-  leaveRoom(roomID: string): void {
+  leaveRoom(roomID: string, userID: string): void {
     this.fetcher.sendSocket(
       {
-        userID: this.userInfo?.id,
+        userID,
         event: SocketEvent.LeaveRoom,
         data: {
           roomID,

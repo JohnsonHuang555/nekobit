@@ -8,6 +8,7 @@ import {
 export namespace LeaveRoom {
   export interface InputData extends UseCaseInputData {
     roomID: string;
+    userID: string;
   }
 
   export interface OutputData extends UseCaseOutputData {}

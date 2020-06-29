@@ -9,7 +9,7 @@ export namespace RoomContract {
     getUserInfo(): void;
     getMessageHandler(): void;
     joinRoom(): void;
-    leaveRoom(): void;
+    leaveRoom(userID: string): void;
     readyGame(): void;
     startGame(mode: number, gameId: string): void;
     gameOver(): void;
@@ -18,6 +18,7 @@ export namespace RoomContract {
   export interface View {
     nowLoading(): void;
     finishLoading(): void;
+    redirectToGamePage(): void;
 
     setRoomInfo(roomInfo: TRoom): void;
     setUserInfo(userInfo: TUser): void;

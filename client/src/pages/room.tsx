@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
-import RoomUser from 'src/features/main/game/components/RoomUser';
+import RoomUser from 'src/features/main/room/components/RoomUser';
 import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
@@ -87,7 +87,12 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               </div>
               <div className="content">
                 {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
-                  <RoomUser key={user.id} user={user}/>
+                  <RoomUser
+                    key={user.id}
+                    user={user}
+                    isMaster={this.isMaster}
+                    onKickOutPlayer={(id) => this.onKickOutPlayer(id)}
+                  />
                 ))}
               </div>
             </div>
@@ -188,6 +193,14 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
     this.setState({ userInfo });
   }
 
+  redirectToGamePage(): void {
+    if (!this.state.roomInfo) { return; }
+    Router.push({
+      pathname: '/game',
+      query: { id: this.state.roomInfo.gameId }
+    });
+  }
+
   private get isMaster(): boolean {
     const user = this.findUser;
     if (user && user.isMaster) {
@@ -245,11 +258,15 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
 
   private onLeaveRoom(): void {
-    if (this.state.roomInfo) {
-      this.presenter.leaveRoom();
+    const {
+      roomInfo,
+      userInfo,
+    } = this.state;
+    if (roomInfo && userInfo) {
+      this.presenter.leaveRoom(userInfo.id);
       Router.push({
         pathname: '/game',
-        query: { id: this.state.roomInfo.gameId }
+        query: { id: roomInfo.gameId }
       });
     }
   }
@@ -267,6 +284,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   private setShowLeaveRoomModal(show: boolean): void {
     this.setState({ showLeaveRoomModal: show });
+  }
+
+  private onKickOutPlayer(userID: string): void {
+    this.presenter.leaveRoom(userID);
   }
 }
 
