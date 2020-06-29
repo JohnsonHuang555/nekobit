@@ -3,13 +3,13 @@ import Router from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
-import RoomUser from 'src/features/main/game/components/RoomUser';
+import RoomUser from 'src/features/main/room/components/RoomUser';
 import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import GameScreen from 'src/features/main/room/components/GameScreen';
-import { Button, Modal, Fade, Backdrop, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Button, Modal, Fade, Backdrop, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, TextField } from '@material-ui/core';
 import { TUser } from 'src/features/main/domain/models/User';
 import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import '@styles/pages/room.scss';
@@ -20,6 +20,8 @@ interface RoomViewState {
   userInfo?: TUser;
   showGameOverModal: boolean;
   showLeaveRoomModal: boolean;
+  showEditModal: boolean;
+  roomPassword: string;
   isYouWin: boolean;
 }
 
@@ -34,6 +36,8 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       showGameOverModal: false,
       isYouWin: false,
       showLeaveRoomModal: false,
+      showEditModal: false,
+      roomPassword: '',
     }
 
     this.presenter = new RoomPresenter(
@@ -48,6 +52,7 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       Injection.provideSetPlayOrderUseCase(),
       Injection.provideGetUserInfoUseCase(),
       Injection.provideGameOverUseCase(),
+      Injection.provideChangePasswordUseCase(),
     )
   }
 
@@ -62,7 +67,9 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
       userInfo,
       showGameOverModal,
       showLeaveRoomModal,
+      showEditModal,
       isYouWin,
+      roomPassword,
     } = this.state;
 
     return (
@@ -78,7 +85,10 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
                   </div>
                 )}
                 <span className="icons">
-                  <FontAwesomeIcon icon={faPen}/>
+                  <FontAwesomeIcon
+                    icon={faPen}
+                    onClick={() => this.setShowEditModal(true)}
+                  />
                   <FontAwesomeIcon
                     icon={faDoorOpen}
                     onClick={() => this.setShowLeaveRoomModal(true)}
@@ -87,7 +97,12 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
               </div>
               <div className="content">
                 {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
-                  <RoomUser key={user.id} user={user}/>
+                  <RoomUser
+                    key={user.id}
+                    user={user}
+                    isMaster={this.isMaster}
+                    onKickOutPlayer={(id) => this.onKickOutPlayer(id)}
+                  />
                 ))}
               </div>
             </div>
@@ -170,6 +185,41 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
             </Button>
           </DialogActions>
         </Dialog>
+        <Dialog
+          fullWidth
+          open={showEditModal}
+          onClose={() => this.setShowEditModal(false)}
+        >
+          <DialogTitle id="leave-room-modal">請輸入房間密碼</DialogTitle>
+          <DialogContent>
+            <Box marginBottom={3}>
+              <TextField
+                required
+                fullWidth
+                margin="dense"
+                label="房間密碼"
+                placeholder="請輸入房間密碼"
+                variant="outlined"
+                value={roomPassword}
+                onChange={(e) => this.setRoomPassword(e.target.value)}
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => this.setShowEditModal(false)}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => this.changePassword()}
+              color="primary"
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Layout>
     )
   }
@@ -186,6 +236,14 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   setUserInfo(userInfo: TUser): void {
     this.setState({ userInfo });
+  }
+
+  redirectToGamePage(): void {
+    if (!this.state.roomInfo) { return; }
+    Router.push({
+      pathname: '/game',
+      query: { id: this.state.roomInfo.gameId }
+    });
   }
 
   private get isMaster(): boolean {
@@ -245,11 +303,15 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
   }
 
   private onLeaveRoom(): void {
-    if (this.state.roomInfo) {
-      this.presenter.leaveRoom();
+    const {
+      roomInfo,
+      userInfo,
+    } = this.state;
+    if (roomInfo && userInfo) {
+      this.presenter.leaveRoom(userInfo.id);
       Router.push({
         pathname: '/game',
-        query: { id: this.state.roomInfo.gameId }
+        query: { id: roomInfo.gameId }
       });
     }
   }
@@ -267,6 +329,23 @@ class RoomView extends React.Component<RoomViewProps, RoomViewState>
 
   private setShowLeaveRoomModal(show: boolean): void {
     this.setState({ showLeaveRoomModal: show });
+  }
+
+  private setShowEditModal(show: boolean): void {
+    this.setState({ showEditModal: show });
+  }
+
+  private onKickOutPlayer(userID: string): void {
+    this.presenter.leaveRoom(userID);
+  }
+
+  private setRoomPassword(password: string): void {
+    this.setState({ roomPassword: password });
+  }
+
+  private changePassword(): void {
+    this.presenter.changePassword(this.state.roomPassword);
+    this.setShowEditModal(false);
   }
 }
 

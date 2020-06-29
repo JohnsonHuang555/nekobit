@@ -11,8 +11,9 @@ export class LeaveRoomUseCase implements LeaveRoom.UseCase {
   execute(inputData: LeaveRoom.InputData) {
     const {
       roomID,
+      userID,
     } = inputData;
 
-    this.repository.leaveRoom(roomID);
+    this.repository.leaveRoom(roomID, userID);
   }
 }

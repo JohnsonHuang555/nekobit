@@ -26,11 +26,12 @@ export namespace Games {
     ): void;
     getRooms(): void;
     joinRoom(roomID: string): void;
-    leaveRoom(roomID: string): void;
+    leaveRoom(roomID: string, userID: string): void;
     readyGame(roomID: string): void;
     startGame(roomID: string, roomMode: number, gameID: string): void;
     setPlayOrder(roomID: string): void;
     gameOver(roomID: string): void;
+    changePassword(roomID: string, password: string): void;
   }
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}

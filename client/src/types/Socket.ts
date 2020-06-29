@@ -13,6 +13,7 @@ export enum SocketEvent {
   StartGame = 'startGame',
   SetPlayOrder = 'setPlayOrder',
   GameOver = 'gameOver',
+  ChangePassword = 'changePassword',
 
   // Chinese Chess
   MoveChess = 'moveChess',

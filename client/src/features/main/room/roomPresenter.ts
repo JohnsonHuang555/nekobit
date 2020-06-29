@@ -9,6 +9,8 @@ import { GetUserInfo } from './use_case/base/GetUserInfoUseCaseItf';
 import { GetSocketMessage } from './use_case/base/GetSocketMessageUseCaseItf';
 import { SetPlayOrder } from './use_case/base/SetPlayOrderUseCaseItf';
 import { GameOver } from './use_case/base/GameOverUseCaseItf';
+import { TUser } from '../domain/models/User';
+import { ChangePassword } from './use_case/base/ChangePasswordUseCaseItf';
 
 export class RoomPresenter implements RoomContract.Presenter {
   private readonly view: RoomContract.View;
@@ -22,8 +24,10 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly startGameUseCase: StartGame.UseCase;
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
   private readonly gameOverUseCase: GameOver.UseCase;
+  private readonly changePasswordUseCase: ChangePassword.UseCase;
 
   private roomID = '';
+  private userInfo: TUser | undefined;
 
   constructor(
     view: RoomContract.View,
@@ -37,6 +41,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     setPlayOrderUseCase: SetPlayOrder.UseCase,
     getUserInfoUseCase: GetUserInfo.UseCase,
     gameOverUseCase: GameOver.UseCase,
+    changePasswordUseCase: ChangePassword.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
@@ -49,6 +54,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.setPlayOrderUseCase = setPlayOrderUseCase;
     this.getUserInfoUseCase = getUserInfoUseCase;
     this.gameOverUseCase = gameOverUseCase;
+    this.changePasswordUseCase = changePasswordUseCase;
   }
 
   mount(params: RoomContract.RoomPageParams): void {
@@ -62,6 +68,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.view.nowLoading();
     this.useCaseHandler.execute(this.getUserInfoUseCase, {}, {
       onSuccess: (result) => {
+        this.userInfo = result.userInfo;
         this.view.setUserInfo(result.userInfo);
       },
       onError: () => {
@@ -75,9 +82,12 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.useCaseHandler.execute(this.joinRoomUseCase, { roomID: this.roomID });
   }
 
-  leaveRoom(): void {
+  leaveRoom(userID: string): void {
     this.view.nowLoading();
-    this.useCaseHandler.execute(this.leaveRoomUseCase, { roomID: this.roomID });
+    this.useCaseHandler.execute(this.leaveRoomUseCase, {
+      userID,
+      roomID: this.roomID,
+    });
   }
 
   readyGame(): void {
@@ -111,11 +121,24 @@ export class RoomPresenter implements RoomContract.Presenter {
     );
   }
 
+  changePassword(password: string): void {
+    this.view.nowLoading();
+    this.useCaseHandler.execute(this.changePasswordUseCase, {
+      roomID: this.roomID,
+      password,
+    })
+  }
+
   getMessageHandler(): void {
     this.useCaseHandler.execute(this.getSocketMessageUseCase, {}, {
       onSuccess: (result) => {
         if (result.roomInfo) {
-          this.view.setRoomInfo(result.roomInfo);
+          const user = result.roomInfo.userList.find(u => u.id === this.userInfo?.id);
+          if (user) {
+            this.view.setRoomInfo(result.roomInfo);
+          } else {
+            this.view.redirectToGamePage();
+          }
         }
         this.view.finishLoading();
       },

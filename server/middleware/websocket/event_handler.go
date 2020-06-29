@@ -61,6 +61,10 @@ func SocketEventHandler(
 		room, _ := ru.GameOver(roomID)
 		msg.Data.RoomInfo = room
 
+	case "changePassword":
+		room, _ := ru.ChangeRoomPassword(roomID, msg.Data.RoomPassword)
+		msg.Data.RoomInfo = room
+
 	// chinese chess
 	case "flipChess":
 		gd, side, _ := chineseChessUseCase.FlipChess(msg.Data.ChessID)

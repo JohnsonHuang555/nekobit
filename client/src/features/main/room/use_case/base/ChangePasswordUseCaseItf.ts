@@ -5,10 +5,10 @@ import {
   UseCase as BaseUseCase
 } from "src/domain/usecases/base/UseCase";
 
-export namespace LeaveRoom {
+export namespace ChangePassword {
   export interface InputData extends UseCaseInputData {
     roomID: string;
-    userID: string;
+    password: string;
   }
 
   export interface OutputData extends UseCaseOutputData {}
