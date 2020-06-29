@@ -156,3 +156,11 @@ func (ru *roomUseCase) GameOver(roomID string) (*domain.Room, error) {
 	}
 	return room, nil
 }
+
+func (ru *roomUseCase) ChangeRoomPassword(roomID string, password string) (*domain.Room, error) {
+	room, err := ru.roomRepo.UpdatePasswordByID(roomID, password)
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
+}

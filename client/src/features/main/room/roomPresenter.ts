@@ -10,6 +10,7 @@ import { GetSocketMessage } from './use_case/base/GetSocketMessageUseCaseItf';
 import { SetPlayOrder } from './use_case/base/SetPlayOrderUseCaseItf';
 import { GameOver } from './use_case/base/GameOverUseCaseItf';
 import { TUser } from '../domain/models/User';
+import { ChangePassword } from './use_case/base/ChangePasswordUseCaseItf';
 
 export class RoomPresenter implements RoomContract.Presenter {
   private readonly view: RoomContract.View;
@@ -23,6 +24,7 @@ export class RoomPresenter implements RoomContract.Presenter {
   private readonly startGameUseCase: StartGame.UseCase;
   private readonly getUserInfoUseCase: GetUserInfo.UseCase;
   private readonly gameOverUseCase: GameOver.UseCase;
+  private readonly changePasswordUseCase: ChangePassword.UseCase;
 
   private roomID = '';
   private userInfo: TUser | undefined;
@@ -39,6 +41,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     setPlayOrderUseCase: SetPlayOrder.UseCase,
     getUserInfoUseCase: GetUserInfo.UseCase,
     gameOverUseCase: GameOver.UseCase,
+    changePasswordUseCase: ChangePassword.UseCase,
   ) {
     this.view = view;
     this.useCaseHandler = useCaseHandler;
@@ -51,6 +54,7 @@ export class RoomPresenter implements RoomContract.Presenter {
     this.setPlayOrderUseCase = setPlayOrderUseCase;
     this.getUserInfoUseCase = getUserInfoUseCase;
     this.gameOverUseCase = gameOverUseCase;
+    this.changePasswordUseCase = changePasswordUseCase;
   }
 
   mount(params: RoomContract.RoomPageParams): void {
@@ -115,6 +119,14 @@ export class RoomPresenter implements RoomContract.Presenter {
         roomID: this.roomID,
       }
     );
+  }
+
+  changePassword(password: string): void {
+    this.view.nowLoading();
+    this.useCaseHandler.execute(this.changePasswordUseCase, {
+      roomID: this.roomID,
+      password,
+    })
   }
 
   getMessageHandler(): void {

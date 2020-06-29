@@ -156,4 +156,15 @@ export default class GamesRepository implements Games.DataSource {
       }
     })
   }
+
+  changePassword(roomID: string, password: string): void {
+    this.fetcher.sendSocket({
+      userID: this.userInfo?.id,
+      event: SocketEvent.ChangePassword,
+      data: {
+        roomID,
+        roomPassword: password,
+      }
+    });
+  }
 }

@@ -31,6 +31,7 @@ export namespace Games {
     startGame(roomID: string, roomMode: number, gameID: string): void;
     setPlayOrder(roomID: string): void;
     gameOver(roomID: string): void;
+    changePassword(roomID: string, password: string): void;
   }
 
   export interface GetGamesCallbacks extends SuccessCallback<TGame[]>, ErrorCallback {}

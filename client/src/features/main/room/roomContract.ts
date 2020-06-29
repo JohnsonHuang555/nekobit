@@ -13,6 +13,7 @@ export namespace RoomContract {
     readyGame(): void;
     startGame(mode: number, gameId: string): void;
     gameOver(): void;
+    changePassword(password: string): void;
   }
 
   export interface View {

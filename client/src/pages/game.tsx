@@ -260,7 +260,7 @@ class GameView extends React.Component<GameViewProps, GameViewState>
   }
 
   setIsShowEnterPasswordModal(show: boolean): void {
-    this.setState({ isShowEnterPasswordModal: show });
+    this.setState({ isShowEnterPasswordModal: show, enterRoomPassword: '' });
   }
 
   setToastShow(show: boolean, msg?: string): void {

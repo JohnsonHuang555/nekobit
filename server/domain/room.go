@@ -31,7 +31,8 @@ type RoomUseCase interface {
 	SetPlayOrder(id string) (*Room, error)
 	ChangePlayerTurn(id string, userID string) (string, error)
 	SetPlayerSide(id string, userID string, side string) ([]*User, error)
-	GameOver(roomID string) (*Room, error)
+	GameOver(id string) (*Room, error)
+	ChangeRoomPassword(id string, password string) (*Room, error)
 }
 
 // RoomRepository represent the room's repository contract

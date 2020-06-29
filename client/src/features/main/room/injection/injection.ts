@@ -19,6 +19,8 @@ import { SetPlayOrderUseCase } from "../use_case/SetPlayOrderUseCase";
 import { SetPlayOrder } from "../use_case/base/SetPlayOrderUseCaseItf";
 import { GameOver } from "../use_case/base/GameOverUseCaseItf";
 import { GameOverUseCase } from "../use_case/GameOverUseCase";
+import { ChangePassword } from "../use_case/base/ChangePasswordUseCaseItf";
+import { ChangePasswordUseCase } from "../use_case/ChangePasswordUseCase";
 
 export class Injection {
   static provideUseCaseHandler(): UseCaseHandler {
@@ -63,5 +65,9 @@ export class Injection {
 
   static provideGameOverUseCase(): GameOver.UseCase {
     return new GameOverUseCase(this.provideGamesRepository());
+  }
+
+  static provideChangePasswordUseCase(): ChangePassword.UseCase {
+    return new ChangePasswordUseCase(this.provideGamesRepository());
   }
 }
