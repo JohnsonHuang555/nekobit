@@ -13,19 +13,19 @@ a {
   }
 }
 
-.lobby_box {
-  position: relative;
-  border-bottom: 1px solid $title-gray;
-  &:after {
-    content: "";
-    display: block;
-    height: 1px;
-    width: 100%;
-    background: $title-gray;
-    position: absolute;
-    bottom: -4px;
-  }
-}
+// .lobby_box {
+//   position: relative;
+//   border-bottom: 1px solid $title-gray;
+//   &:after {
+//     content: "";
+//     display: block;
+//     height: 1px;
+//     width: 100%;
+//     background: $title-gray;
+//     position: absolute;
+//     bottom: -4px;
+//   }
+// }
 .section-heading {
   h2 {
     color: $title-gray;

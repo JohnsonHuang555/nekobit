@@ -2,8 +2,7 @@ import Swiper from 'react-id-swiper';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import { TGame } from 'src/features/main/domain/models/Game';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styles from '@styles/components/gameList.module.scss';
 
 export type GameListProps = {
   games: TGame[];
@@ -31,7 +30,7 @@ const GameList = (props: GameListProps) => {
   };
 
   return (
-    <Box className="lobby-box">
+    <Box className={styles.lobbyBox}>
       <Swiper {...swiperParams} shouldSwiperUpdate>
         {games.map((game: TGame) => (
           <Box key={game.id}>
@@ -53,12 +52,6 @@ const GameList = (props: GameListProps) => {
                   >
                     Enter
                   </Button>
-                  <Box className="rates">
-                    <Box className="stars">
-                      <FontAwesomeIcon icon={faStar} />
-                      <b>9.5 分</b>
-                    </Box>
-                  </Box>
                 </Box>
               </Box>
             </Box>

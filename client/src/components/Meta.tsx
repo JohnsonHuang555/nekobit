@@ -12,7 +12,6 @@ const Meta = ({
   ogsitename = 'Game platform',
   ogurl = '',
   swiper = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css',
-  boostrap = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'
 }) => (
   <Head>
     <title>{title}</title>
@@ -28,7 +27,6 @@ const Meta = ({
     <meta property="og:site_name" content={ogsitename} />
     <meta property="og:url" content={ogurl} />
     <link rel="stylesheet" href={swiper} />
-    <link rel="stylesheet" href={boostrap} />
   </Head>
 );
 
