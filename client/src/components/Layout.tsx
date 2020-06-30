@@ -2,7 +2,7 @@ import React from 'react';
 import dynamic from 'next/dynamic'
 import Meta from 'src/components/Meta';
 import Footer from 'src/components/Footer';
-import '@styles/components/layout.scss';
+// import '@styles/components/layout.scss';
 
 const Header = dynamic(
   () => import('./Header'),
@@ -25,11 +25,11 @@ const Layout = (props: LayoutProps) => {
   return (
     <>
       <Meta {...meta} />
-      <Header />
+      {/* <Header /> */}
       <div id={id} className="container">
         {children}
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 };

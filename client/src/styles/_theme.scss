@@ -5,25 +5,14 @@ body {
   background: $body-black;
   font-family: $core-font;
 }
-h1, h2 {
-  font-weight: bold;
-}
+
 a {
   display: inline-block;
   &:hover {
     text-decoration: none;
   }
 }
-button, input, select {
-  &:focus {
-    outline: none;
-  }
-}
-button {
-  background: none;
-}
-.center { text-align: center; }
-.main {margin-top: 30px;}
+
 .lobby_box {
   position: relative;
   border-bottom: 1px solid $title-gray;
@@ -92,27 +81,6 @@ button {
       border: 3px solid $light-gray;
       width: 20px;
       height: 20px;
-    }
-  }
-}
-.gp-modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  .modal-container {
-    background: white;
-    border-radius: 5px;
-    .header {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-      h2 {
-        font-size: 22px;
-        margin-bottom: 0;
-      }
-    }
-    .content {
-      font-size: 20px;
-      padding: 16px;
     }
   }
 }

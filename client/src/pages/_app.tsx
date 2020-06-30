@@ -1,5 +1,6 @@
 import React from 'react';
 import App from 'next/app';
+import '@styles/_theme.scss';
 
 export default class GamePlayApp extends App {
   render() {

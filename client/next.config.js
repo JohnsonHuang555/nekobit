@@ -2,17 +2,7 @@ const path = require("path");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 const ANALYZE = process.env.ANALYZE;
-const withSass = require("@zeit/next-sass");
-const withPlugins = require("next-compose-plugins");
 const dev = process.env.NODE_ENV !== "production";
-
-const cssModulesConfig = {
-  cssModules: true,
-  cssLoaderOptions: {
-    importLoaders: 2,
-    localIdentName: "[local]_[name]_[hash:base64:5]",
-  },
-};
 
 const nextConfiguration = {
   webpack: (config) => {
@@ -42,9 +32,4 @@ const nextConfiguration = {
   },
 };
 
-module.exports = withPlugins(
-  [
-    [withSass, cssModulesConfig]
-  ],
-  nextConfiguration
-);
+module.exports = nextConfiguration;

@@ -1,7 +1,8 @@
-@import '../theme';
-
 #home {
   margin-top: 68px;
+  .section-heading h2 {
+    font-size: 100px;
+  }
   .lobby-box {
     padding-bottom: 90px;
     .swiper-container {
@@ -69,23 +70,23 @@
               transform: scale(1.1);
             }
           }
-          .rates {
-            margin-top: 28px;
-            .stars {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              b {
-                color: #fff;
-                font-size: 22px;
-              }
-              svg {
-                height: 20px;
-                color: $star-yellow;
-                margin-right: 10px;
-              }
-            }
-          }
+          // .rates {
+          //   margin-top: 28px;
+          //   .stars {
+          //     display: flex;
+          //     align-items: center;
+          //     justify-content: center;
+          //     b {
+          //       color: #fff;
+          //       font-size: 22px;
+          //     }
+          //     svg {
+          //       height: 20px;
+          //       color: $star-yellow;
+          //       margin-right: 10px;
+          //     }
+          //   }
+          // }
         }
       }
     }

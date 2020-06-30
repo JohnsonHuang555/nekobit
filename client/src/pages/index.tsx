@@ -7,7 +7,7 @@ import { IndexContract } from 'src/features/main/Index/IndexContract';
 import { IndexPresenter } from 'src/features/main/Index/IndexPresenter';
 import { Injection } from 'src/features/main/Index/injection/injection';
 import GameList from 'src/features/main/Index/components/GameList';
-import '@styles/pages/index.scss';
+import styles from '@styles/pages/index.module.scss';
 
 interface IndexViewProps {}
 interface IndexViewState {
@@ -43,7 +43,7 @@ class IndexView extends React.Component<IndexViewProps, IndexViewState>
     } = this.state;
 
     return (
-      <Layout id="home">
+      <Layout id={styles.home}>
         <Box className="section-heading">
           <h2>All Games</h2>
         </Box>

@@ -4,7 +4,7 @@ import { TRoom, TRoomUser } from 'src/types/Room';
 import { TSocket } from 'src/types/Socket';
 import Standard from 'src/components/Mode/Standard';
 import Hidden from 'src/components/Mode/Hidden';
-import '@styles/games/chineseChess.scss';
+// import '@styles/games/chineseChess.scss';
 
 type ChineseChessProps = {
   userID: string;
