@@ -24,7 +24,7 @@ const Layout = (props: LayoutProps) => {
   return (
     <>
       <Meta {...meta} />
-      {/* <Header /> */}
+      <Header />
       <Container>
         {children}
       </Container>

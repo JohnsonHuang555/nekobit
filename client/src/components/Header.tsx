@@ -4,7 +4,8 @@ import Router from 'next/router';
 import uuid from 'uuid';
 import LoginModal from 'src/components/Modals/LoginModal';
 import useLocalStorage from 'src/customHook/useLocalStorage';
-// import '@styles/components/header.scss';
+import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import '@styles/components/header.module.scss';
 
 const Header = () => {
   const [isShowLoginModal, setIsShowLoginModal] = useState(false);
@@ -46,7 +47,20 @@ const Header = () => {
         login={login}
         onCloseLogin={onCloseLogin}
       />
-      <nav className="navbar navbar-expand-lg navbar-dark">
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">
+            <Link href="/">
+              <a className="logo">
+                <b className="g">G</b>
+                <b className="play">play</b>
+              </a>
+            </Link>
+          </Typography>
+          <Button color="inherit">Login</Button>
+        </Toolbar>
+      </AppBar>
+      {/* <nav className="navbar navbar-expand-lg navbar-dark">
         <div className="container">
           <Link href="/">
             <a className="logo">
@@ -78,7 +92,7 @@ const Header = () => {
             }
           </div>
         </div>
-      </nav>
+      </nav> */}
     </>
   )
 }
