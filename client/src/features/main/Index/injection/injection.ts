@@ -4,16 +4,6 @@ import appProvider from "src/provider/AppProvider";
 import { GetGames } from "src/features/main/Index/use_cases/base/GetGamesUseCaseItf";
 import { GetGamesUseCase } from "src/features/main/Index/use_cases/GetGamesUseCase";
 
-export class Injection {
-  static provideUseCaseHandler(): UseCaseHandler {
-    return UseCaseHandler.INSTANCE;
-  }
-
-  static provideGamesRepository(): Games.DataSource {
-    return appProvider.gamesRepository;
-  }
-
-  static provideGetGamesUseCase(): GetGames.UseCase {
-    return new GetGamesUseCase(this.provideGamesRepository());
-  }
+const provideGetGamesUseCase: GetGames.UseCase = () => {
+  return new GetGamesUseCase();
 }

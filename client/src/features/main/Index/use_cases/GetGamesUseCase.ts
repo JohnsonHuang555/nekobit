@@ -1,20 +1,21 @@
+import { IFetcher } from 'src/api/Fetcher';
 import { GetGames } from "src/features/main/Index/use_cases/base/GetGamesUseCaseItf";
-import { Games } from "src/features/main/domain/source/GamesDataSource";
-import { TGame } from "src/features/main/domain/models/Game";
+import { GameFactory } from '../../domain/factories/GameFactory';
 
 export class GetGamesUseCase implements GetGames.UseCase {
-  private repository: Games.DataSource;
+  private fetcher: IFetcher
 
-  constructor(repository: Games.DataSource) {
-    this.repository = repository;
+  constructor(fetcher: IFetcher) {
+    this.fetcher = fetcher;
   }
 
   execute(inputData: GetGames.InputData, callbacks: GetGames.Callbacks) {
-    this.repository.getGames({
-      onSuccess: (result: TGame[]) => {
-        callbacks.onSuccess({ games: result });
+    this.fetcher.get('/getAllGames', {
+      onSuccess: (result) => {
+        const games = GameFactory.createArrayFromNet(result);
+        callbacks.onSuccess({ games });
       },
-      onError: callbacks.onError,
+      onError: e => callbacks.onError(e),
     });
   }
 }
