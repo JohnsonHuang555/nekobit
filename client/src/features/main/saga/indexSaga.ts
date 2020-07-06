@@ -4,8 +4,8 @@ import { MainProvider } from '../domain/Provider';
 import { TGame } from '../domain/models/Game';
 import { ActionType as IndexActionType } from '../reducers/indexReducer';
 
-function* fetchData() {
-  const data: TGame[] = yield call(() =>
+function* getGames() {
+  const games: TGame[] = yield call(() =>
     appProvider.useCaseHandler.execute(MainProvider.GetGamesUseCase, {}, {
       onSuccess: ({ games }) => {
         return games;
@@ -13,11 +13,11 @@ function* fetchData() {
       onError: () => {}
     })
   );
-  yield put({ type: IndexActionType.GamesLoaded, payload: { data } });
+  yield put({ type: IndexActionType.GamesLoaded, games });
 }
 
 function* indexSaga() {
-  yield takeEvery(IndexActionType.GamesLoaded, fetchData);
+  yield takeEvery(IndexActionType.GamesLoaded, getGames);
 }
 
 export default indexSaga;
