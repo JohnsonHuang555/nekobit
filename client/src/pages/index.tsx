@@ -1,77 +1,107 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Router from 'next/router';
 import { Box } from '@material-ui/core';
 import Layout from 'src/components/Layout';
 import { TGame } from 'src/features/main/domain/models/Game';
-import { IndexContract } from 'src/features/main/Index/IndexContract';
-import { IndexPresenter } from 'src/features/main/Index/IndexPresenter';
-import { Injection } from 'src/features/main/Index/injection/injection';
 import GameList from 'src/features/main/Index/components/GameList';
+import { useDispatch, useSelector } from 'react-redux';
+import { ActionType } from 'src/features/main/reducers/indexReducer';
+import { gamesSelector } from 'src/features/main/selectors';
 
-interface IndexViewProps {}
-interface IndexViewState {
-  games: TGame[];
-}
+// interface IndexViewProps {}
+// interface IndexViewState {
+//   games: TGame[];
+// }
 
-class IndexView extends React.Component<IndexViewProps, IndexViewState>
-  implements IndexContract.View {
+const IndexContainer = () => {
+  const dispatch = useDispatch();
+  const games = useSelector(gamesSelector);
 
-  private presenter: IndexContract.Presenter;
+  useEffect(() => {
+    dispatch({ type: ActionType.GET_GAMES });
+  }, []);
 
-  constructor(props :IndexViewProps) {
-    super(props);
-
-    this.state = {
-      games: [],
-    };
-
-    this.presenter = new IndexPresenter(
-      this,
-      Injection.provideUseCaseHandler(),
-      Injection.provideGetGamesUseCase(),
-    )
-  }
-
-  componentDidMount() {
-    this.presenter.mount();
-  }
-
-  render() {
-    const {
-      games,
-    } = this.state;
-
-    return (
-      <Layout>
-        <Box className="section-heading">
-          <h2>All Games</h2>
-        </Box>
-        <GameList
-          games={games}
-          onChooseGame={(id) => this.chooseGameHandler(id)}
-        />
-      </Layout>
-    )
-  }
-
-  nowLoading(): void {
-
-  }
-
-  finishLoading(): void {
-
-  }
-
-  setGames(games: TGame[]): void {
-    this.setState({ games });
-  }
-
-  private chooseGameHandler(id: string) {
+  const chooseGameHandler = (id: string) => {
     Router.push({
       pathname: '/game',
       query: { id }
     });
-  }
-}
+  };
 
-export default IndexView;
+  return (
+    <Layout>
+      <Box className="section-heading">
+        <h2>All Games</h2>
+      </Box>
+      <GameList
+        games={games}
+        onChooseGame={(id) => chooseGameHandler(id)}
+      />
+    </Layout>
+  )
+};
+
+export default IndexContainer;
+
+// class IndexView extends React.Component<IndexViewProps, IndexViewState>
+//   implements IndexContract.View {
+
+//   private presenter: IndexContract.Presenter;
+
+//   constructor(props: IndexViewProps) {
+//     super(props);
+
+//     this.state = {
+//       games: [],
+//     };
+
+//     this.presenter = new IndexPresenter(
+//       this,
+//       Injection.provideUseCaseHandler(),
+//       Injection.provideGetGamesUseCase(),
+//     )
+//   }
+
+//   componentDidMount() {
+//     this.presenter.mount();
+//   }
+
+//   render() {
+//     const {
+//       games,
+//     } = this.state;
+
+//     return (
+//       <Layout>
+//         <Box className="section-heading">
+//           <h2>All Games</h2>
+//         </Box>
+//         <GameList
+//           games={games}
+//           onChooseGame={(id) => this.chooseGameHandler(id)}
+//         />
+//       </Layout>
+//     )
+//   }
+
+//   nowLoading(): void {
+
+//   }
+
+//   finishLoading(): void {
+
+//   }
+
+//   setGames(games: TGame[]): void {
+//     this.setState({ games });
+//   }
+
+//   private chooseGameHandler(id: string) {
+//     Router.push({
+//       pathname: '/game',
+//       query: { id }
+//     });
+//   }
+// }
+
+// export default IndexView;

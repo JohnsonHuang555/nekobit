@@ -9,11 +9,12 @@ export const defaultState: State = {
 };
 
 export enum ActionType {
-  GamesLoaded = 'main/index/load_games',
+  GET_GAMES = 'GET_GAMES',
+  GET_GAMES_SUCCESS = 'GET_GAMES_SUCCESS',
 };
 
 export type LoadGamesAction = {
-  type: ActionType.GamesLoaded,
+  type: ActionType.GET_GAMES_SUCCESS,
   games: TGame[],
 };
 
@@ -21,7 +22,7 @@ export type Action = LoadGamesAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
-    case ActionType.GamesLoaded: {
+    case ActionType.GET_GAMES_SUCCESS: {
       return {
         ...state,
         games: action.games,

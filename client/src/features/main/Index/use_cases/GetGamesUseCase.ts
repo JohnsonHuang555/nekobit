@@ -9,13 +9,13 @@ export class GetGamesUseCase implements GetGames.UseCase {
     this.fetcher = fetcher;
   }
 
-  execute(inputData: GetGames.InputData, callbacks: GetGames.Callbacks) {
+  execute(inputData: GetGames.InputData) {
     this.fetcher.get('/getAllGames', {
       onSuccess: (result) => {
         const games = GameFactory.createArrayFromNet(result);
-        callbacks.onSuccess({ games });
+        return games;
       },
-      onError: e => callbacks.onError(e),
+      onError: e => e,
     });
   }
 }
