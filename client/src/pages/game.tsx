@@ -23,292 +23,298 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import '@styles/pages/game.scss';
 
-interface GameViewProps {}
-interface GameViewState {
-  gameInfo?: TGame;
-  userInfo: any;
-  ws?: WebSocket;
-  rooms: TRoom[];
-  roomId: string;
+const GameContainer = () => {
 
-  isShowRoomList: boolean;
-  isOnCreateRoom: boolean;
-  isShowCreateRoomModal: boolean;
-  isShowEnterPasswordModal: boolean;
+};
 
-  isShowToast: boolean;
-  toastMessage: string;
+export default GameContainer;
 
-  gameID: string;
-  createRoomMode: string;
-  createRoomPassword: string;
-  createRoomTitle: string;
+// interface GameViewProps {}
+// interface GameViewState {
+//   gameInfo?: TGame;
+//   userInfo: any;
+//   ws?: WebSocket;
+//   rooms: TRoom[];
+//   roomId: string;
 
-  enterRoomPassword: string;
-}
+//   isShowRoomList: boolean;
+//   isOnCreateRoom: boolean;
+//   isShowCreateRoomModal: boolean;
+//   isShowEnterPasswordModal: boolean;
 
-class GameView extends React.Component<GameViewProps, GameViewState>
-  implements GameContract.View {
+//   isShowToast: boolean;
+//   toastMessage: string;
 
-  private presenter: GameContract.Presenter;
+//   gameID: string;
+//   createRoomMode: string;
+//   createRoomPassword: string;
+//   createRoomTitle: string;
 
-  constructor(props: GameViewProps) {
-    super(props);
-    this.state = {
-      userInfo: null,
-      rooms: [],
-      roomId: '',
-      isShowRoomList: false,
-      isOnCreateRoom: false,
-      isShowCreateRoomModal: false,
-      isShowEnterPasswordModal: false,
-      isShowToast: false,
-      toastMessage: '',
-      gameID: '',
+//   enterRoomPassword: string;
+// }
 
-      createRoomMode: '',
-      createRoomPassword: '',
-      createRoomTitle: '',
+// class GameView extends React.Component<GameViewProps, GameViewState>
+//   implements GameContract.View {
 
-      enterRoomPassword: '',
-    }
+//   private presenter: GameContract.Presenter;
 
-    this.presenter = new GamePresenter(
-      this,
-      Injection.provideUseCaseHandler(),
-      Injection.provideConnectSocketUseCase(),
-      Injection.provideGetSocketMessageUseCase(),
-      Injection.provideGetGameInfoUseCase(),
-      Injection.provideGetRoomsUseCase(),
-      Injection.provideCreateRoomUseCase(),
-    )
-  }
+//   constructor(props: GameViewProps) {
+//     super(props);
+//     this.state = {
+//       userInfo: null,
+//       rooms: [],
+//       roomId: '',
+//       isShowRoomList: false,
+//       isOnCreateRoom: false,
+//       isShowCreateRoomModal: false,
+//       isShowEnterPasswordModal: false,
+//       isShowToast: false,
+//       toastMessage: '',
+//       gameID: '',
 
-  componentDidMount() {
-    const id = location.search.substr(4);
-    this.setState({ gameID: id })
-    this.presenter.mount({ id });
-  }
+//       createRoomMode: '',
+//       createRoomPassword: '',
+//       createRoomTitle: '',
 
-  render() {
-    const {
-      rooms,
-      gameInfo,
-      roomId,
-      createRoomMode,
-      isShowToast,
-      isShowRoomList,
-      isShowCreateRoomModal,
-      isShowEnterPasswordModal,
-    } = this.state;
-    return (
-      <Layout>
-        <Dialog
-          fullWidth
-          open={isShowCreateRoomModal}
-          onClose={() => this.setIsShowCreateRoomModal(false)}
-          aria-labelledby="create-room-modal"
-        >
-          <DialogTitle id="create-room-modal">創建房間</DialogTitle>
-          <DialogContent>
-            <Box marginBottom={2}>
-              <TextField
-                required
-                fullWidth
-                label="房間名稱"
-                placeholder="請輸入房間名稱"
-                variant="outlined"
-                onChange={(e) => this.setRoomTitle(e.target.value)}
-              />
-            </Box>
-            <Box marginBottom={2}>
-              <TextField
-                required
-                fullWidth
-                label="房間密碼"
-                placeholder="請輸入房間密碼"
-                type="password"
-                variant="outlined"
-                onChange={(e) => this.setRoomPassword(e.target.value)}
-              />
-            </Box>
-            <Box marginBottom={2}>
-              {gameInfo && (
-                <TextField
-                  fullWidth
-                  select
-                  label="遊戲模式"
-                  value={createRoomMode}
-                  onChange={(e) => this.onChangeGameMode(String(e.target.value))}
-                  variant="outlined"
-                >
-                  {GameMode[gameInfo.id].map((m, i) => (
-                    <MenuItem key={i} value={m.value}>
-                      {m.label}
-                    </MenuItem >
-                  ))}
-                </TextField>
-              )}
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => this.setIsShowCreateRoomModal(false)}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => this.createRoom()}
-              color="primary"
-            >
-              Create
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={isShowEnterPasswordModal}
-          onClose={() => this.setIsShowEnterPasswordModal(false)}
-        >
-          <DialogTitle id="enter-password">請輸入房間密碼</DialogTitle>
-          <DialogContent>
-            <Box marginBottom={3}>
-              <TextField
-                required
-                fullWidth
-                margin="dense"
-                label="房間密碼"
-                placeholder="請輸入房間密碼"
-                type="password"
-                variant="outlined"
-                onChange={(e) => this.setEnterRoomPassword(e.target.value)}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.setIsShowEnterPasswordModal(false)} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={() => this.onChooseRoom(roomId)} color="primary">
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Box>
-          {gameInfo && isShowRoomList ? (
-            <RoomList
-              rooms={rooms}
-              gameId={gameInfo.id}
-              maxPlayers={gameInfo.maxPlayers}
-              onChooseRoom={(id) => this.onChooseRoom(id)}
-            />
-          ): (
-            gameInfo &&
-              <GameDetail
-                gameInfo={gameInfo}
-                roomsCount={rooms.length}
-                onShowModal={() => this.setIsShowCreateRoomModal(true)}
-                playNow={() => this.setIsShowRoomList(true)}
-              />
-          )}
-        </Box>
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          open={isShowToast}
-          autoHideDuration={4000}
-          onClose={() => this.setToastShow(false)}
-          message={this.state.toastMessage}
-          action={
-            <React.Fragment>
-              <IconButton
-                size="small"
-                aria-label="close"
-                color="inherit"
-                onClick={() => this.setToastShow(false)}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </React.Fragment>
-          }
-        />
-      </Layout>
-    );
-  }
+//       enterRoomPassword: '',
+//     }
 
-  nowLoading(): void {}
+//     this.presenter = new GamePresenter(
+//       this,
+//       Injection.provideUseCaseHandler(),
+//       Injection.provideConnectSocketUseCase(),
+//       Injection.provideGetSocketMessageUseCase(),
+//       Injection.provideGetGameInfoUseCase(),
+//       Injection.provideGetRoomsUseCase(),
+//       Injection.provideCreateRoomUseCase(),
+//     )
+//   }
 
-  finishLoading(): void {}
+//   componentDidMount() {
+//     const id = location.search.substr(4);
+//     this.setState({ gameID: id })
+//     this.presenter.mount({ id });
+//   }
 
-  setGameInfo(gameInfo: TGame): void {
-    this.setState({ gameInfo });
-  }
+//   render() {
+//     const {
+//       rooms,
+//       gameInfo,
+//       roomId,
+//       createRoomMode,
+//       isShowToast,
+//       isShowRoomList,
+//       isShowCreateRoomModal,
+//       isShowEnterPasswordModal,
+//     } = this.state;
+//     return (
+//       <Layout>
+//         <Dialog
+//           fullWidth
+//           open={isShowCreateRoomModal}
+//           onClose={() => this.setIsShowCreateRoomModal(false)}
+//           aria-labelledby="create-room-modal"
+//         >
+//           <DialogTitle id="create-room-modal">創建房間</DialogTitle>
+//           <DialogContent>
+//             <Box marginBottom={2}>
+//               <TextField
+//                 required
+//                 fullWidth
+//                 label="房間名稱"
+//                 placeholder="請輸入房間名稱"
+//                 variant="outlined"
+//                 onChange={(e) => this.setRoomTitle(e.target.value)}
+//               />
+//             </Box>
+//             <Box marginBottom={2}>
+//               <TextField
+//                 required
+//                 fullWidth
+//                 label="房間密碼"
+//                 placeholder="請輸入房間密碼"
+//                 type="password"
+//                 variant="outlined"
+//                 onChange={(e) => this.setRoomPassword(e.target.value)}
+//               />
+//             </Box>
+//             <Box marginBottom={2}>
+//               {gameInfo && (
+//                 <TextField
+//                   fullWidth
+//                   select
+//                   label="遊戲模式"
+//                   value={createRoomMode}
+//                   onChange={(e) => this.onChangeGameMode(String(e.target.value))}
+//                   variant="outlined"
+//                 >
+//                   {GameMode[gameInfo.id].map((m, i) => (
+//                     <MenuItem key={i} value={m.value}>
+//                       {m.label}
+//                     </MenuItem >
+//                   ))}
+//                 </TextField>
+//               )}
+//             </Box>
+//           </DialogContent>
+//           <DialogActions>
+//             <Button
+//               onClick={() => this.setIsShowCreateRoomModal(false)}
+//               color="primary"
+//             >
+//               Cancel
+//             </Button>
+//             <Button
+//               onClick={() => this.createRoom()}
+//               color="primary"
+//             >
+//               Create
+//             </Button>
+//           </DialogActions>
+//         </Dialog>
+//         <Dialog
+//           open={isShowEnterPasswordModal}
+//           onClose={() => this.setIsShowEnterPasswordModal(false)}
+//         >
+//           <DialogTitle id="enter-password">請輸入房間密碼</DialogTitle>
+//           <DialogContent>
+//             <Box marginBottom={3}>
+//               <TextField
+//                 required
+//                 fullWidth
+//                 margin="dense"
+//                 label="房間密碼"
+//                 placeholder="請輸入房間密碼"
+//                 type="password"
+//                 variant="outlined"
+//                 onChange={(e) => this.setEnterRoomPassword(e.target.value)}
+//               />
+//             </Box>
+//           </DialogContent>
+//           <DialogActions>
+//             <Button onClick={() => this.setIsShowEnterPasswordModal(false)} color="primary">
+//               Cancel
+//             </Button>
+//             <Button onClick={() => this.onChooseRoom(roomId)} color="primary">
+//               Submit
+//             </Button>
+//           </DialogActions>
+//         </Dialog>
+//         <Box>
+//           {gameInfo && isShowRoomList ? (
+//             <RoomList
+//               rooms={rooms}
+//               gameId={gameInfo.id}
+//               maxPlayers={gameInfo.maxPlayers}
+//               onChooseRoom={(id) => this.onChooseRoom(id)}
+//             />
+//           ): (
+//             gameInfo &&
+//               <GameDetail
+//                 gameInfo={gameInfo}
+//                 roomsCount={rooms.length}
+//                 onShowModal={() => this.setIsShowCreateRoomModal(true)}
+//                 playNow={() => this.setIsShowRoomList(true)}
+//               />
+//           )}
+//         </Box>
+//         <Snackbar
+//           anchorOrigin={{
+//             vertical: 'bottom',
+//             horizontal: 'right',
+//           }}
+//           open={isShowToast}
+//           autoHideDuration={4000}
+//           onClose={() => this.setToastShow(false)}
+//           message={this.state.toastMessage}
+//           action={
+//             <React.Fragment>
+//               <IconButton
+//                 size="small"
+//                 aria-label="close"
+//                 color="inherit"
+//                 onClick={() => this.setToastShow(false)}
+//               >
+//                 <CloseIcon fontSize="small" />
+//               </IconButton>
+//             </React.Fragment>
+//           }
+//         />
+//       </Layout>
+//     );
+//   }
 
-  setRooms(rooms: TRoom[]): void {
-    this.setState({ rooms });
-  }
+//   nowLoading(): void {}
 
-  setRoomID(id: string): void {
-    if (id) {
-      Router.push({
-        pathname: '/room',
-        query: { id }
-      });
-    }
-  }
+//   finishLoading(): void {}
 
-  setIsShowEnterPasswordModal(show: boolean): void {
-    this.setState({ isShowEnterPasswordModal: show, enterRoomPassword: '' });
-  }
+//   setGameInfo(gameInfo: TGame): void {
+//     this.setState({ gameInfo });
+//   }
 
-  setToastShow(show: boolean, msg?: string): void {
-    if (msg) {
-      this.setState({ toastMessage: msg });
-    }
-    this.setState({ isShowToast: show });
-  }
+//   setRooms(rooms: TRoom[]): void {
+//     this.setState({ rooms });
+//   }
 
-  private setRoomTitle(title: string): void {
-    this.setState({ createRoomTitle: title });
-  }
+//   setRoomID(id: string): void {
+//     if (id) {
+//       Router.push({
+//         pathname: '/room',
+//         query: { id }
+//       });
+//     }
+//   }
 
-  private setRoomPassword(password: string): void {
-    this.setState({ createRoomPassword: password });
-  }
+//   setIsShowEnterPasswordModal(show: boolean): void {
+//     this.setState({ isShowEnterPasswordModal: show, enterRoomPassword: '' });
+//   }
 
-  private setEnterRoomPassword(password: string): void {
-    this.setState({ enterRoomPassword: password });
-  }
+//   setToastShow(show: boolean, msg?: string): void {
+//     if (msg) {
+//       this.setState({ toastMessage: msg });
+//     }
+//     this.setState({ isShowToast: show });
+//   }
 
-  private onChangeGameMode(createRoomMode: string): void {
-    this.setState({ createRoomMode });
-  }
+//   private setRoomTitle(title: string): void {
+//     this.setState({ createRoomTitle: title });
+//   }
 
-  private onChooseRoom(roomId: string): void {
-    this.setState({ roomId });
-    this.presenter.enterRoom(roomId, this.state.enterRoomPassword);
-  }
+//   private setRoomPassword(password: string): void {
+//     this.setState({ createRoomPassword: password });
+//   }
 
-  private createRoom(): void {
-    const gameID = this.state.gameID || '';
-    this.presenter.createRoom(
-      gameID,
-      Number(this.state.createRoomMode),
-      this.state.createRoomPassword,
-      this.state.createRoomTitle
-    );
-    this.presenter.getRooms();
-  }
+//   private setEnterRoomPassword(password: string): void {
+//     this.setState({ enterRoomPassword: password });
+//   }
 
-  private setIsShowCreateRoomModal(show: boolean): void {
-    this.setState({ isShowCreateRoomModal: show });
-  }
+//   private onChangeGameMode(createRoomMode: string): void {
+//     this.setState({ createRoomMode });
+//   }
 
-  private setIsShowRoomList(show: boolean): void {
-    this.setState({ isShowRoomList: show });
-  }
-}
+//   private onChooseRoom(roomId: string): void {
+//     this.setState({ roomId });
+//     this.presenter.enterRoom(roomId, this.state.enterRoomPassword);
+//   }
 
-export default GameView;
+//   private createRoom(): void {
+//     const gameID = this.state.gameID || '';
+//     this.presenter.createRoom(
+//       gameID,
+//       Number(this.state.createRoomMode),
+//       this.state.createRoomPassword,
+//       this.state.createRoomTitle
+//     );
+//     this.presenter.getRooms();
+//   }
+
+//   private setIsShowCreateRoomModal(show: boolean): void {
+//     this.setState({ isShowCreateRoomModal: show });
+//   }
+
+//   private setIsShowRoomList(show: boolean): void {
+//     this.setState({ isShowRoomList: show });
+//   }
+// }
+
+// export default GameView;
