@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Router from 'next/router';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/features/main/game/components/RoomList';
@@ -22,9 +22,19 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import '@styles/pages/game.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { gameInfoSelector } from 'src/features/main/selectors';
+import { ActionType } from 'src/features/main/reducers/gameReducer';
 
 const GameContainer = () => {
+  const dispatch = useDispatch();
+  const gameInfo = useSelector(gameInfoSelector);
 
+  useEffect(() => {
+    dispatch({
+      type: ActionType.GET_GAME_INFO
+    });
+  }, [input])
 };
 
 export default GameContainer;

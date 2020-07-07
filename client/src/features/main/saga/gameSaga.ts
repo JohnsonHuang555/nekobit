@@ -3,6 +3,7 @@ import { takeEvery, call, put } from 'redux-saga/effects';
 import { ActionType as GameActionType, LoadGameInfoAction } from '../reducers/gameReducer';
 import { TGame } from '../domain/models/Game';
 import { GameFactory } from '../domain/factories/GameFactory';
+
 function* getGameInfo(action: LoadGameInfoAction) {
   const gameInfo: TGame = yield call(() => getApi('/getGameInfo')
     .then(res =>
