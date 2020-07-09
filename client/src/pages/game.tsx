@@ -21,7 +21,7 @@ import {
   IconButton
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import '@styles/pages/game.scss';
+// import '@styles/pages/game.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { gameInfoSelector } from 'src/features/main/selectors';
 import { ActionType } from 'src/features/main/reducers/gameReducer';
@@ -31,10 +31,148 @@ const GameContainer = () => {
   const gameInfo = useSelector(gameInfoSelector);
 
   useEffect(() => {
+    const gameId = location.search.substr(4);
     dispatch({
-      type: ActionType.GET_GAME_INFO
+      type: ActionType.GET_GAME_INFO,
+      id: gameId,
     });
-  }, [input])
+  }, []);
+
+  return (
+    <Layout>
+      {/* <Dialog
+        fullWidth
+        open={isShowCreateRoomModal}
+        onClose={() => this.setIsShowCreateRoomModal(false)}
+        aria-labelledby="create-room-modal"
+      >
+        <DialogTitle id="create-room-modal">創建房間</DialogTitle>
+        <DialogContent>
+          <Box marginBottom={2}>
+            <TextField
+              required
+              fullWidth
+              label="房間名稱"
+              placeholder="請輸入房間名稱"
+              variant="outlined"
+              onChange={(e) => this.setRoomTitle(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            <TextField
+              required
+              fullWidth
+              label="房間密碼"
+              placeholder="請輸入房間密碼"
+              type="password"
+              variant="outlined"
+              onChange={(e) => this.setRoomPassword(e.target.value)}
+            />
+          </Box>
+          <Box marginBottom={2}>
+            {gameInfo && (
+              <TextField
+                fullWidth
+                select
+                label="遊戲模式"
+                value={createRoomMode}
+                onChange={(e) => this.onChangeGameMode(String(e.target.value))}
+                variant="outlined"
+              >
+                {GameMode[gameInfo.id].map((m, i) => (
+                  <MenuItem key={i} value={m.value}>
+                    {m.label}
+                  </MenuItem >
+                ))}
+              </TextField>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => this.setIsShowCreateRoomModal(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => this.createRoom()}
+            color="primary"
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog> */}
+      {/* <Dialog
+        open={isShowEnterPasswordModal}
+        onClose={() => this.setIsShowEnterPasswordModal(false)}
+      >
+        <DialogTitle id="enter-password">請輸入房間密碼</DialogTitle>
+        <DialogContent>
+          <Box marginBottom={3}>
+            <TextField
+              required
+              fullWidth
+              margin="dense"
+              label="房間密碼"
+              placeholder="請輸入房間密碼"
+              type="password"
+              variant="outlined"
+              onChange={(e) => this.setEnterRoomPassword(e.target.value)}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => this.setIsShowEnterPasswordModal(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => this.onChooseRoom(roomId)} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog> */}
+      {/* <Box>
+        {gameInfo ? (
+          <RoomList
+            rooms={[]}
+            gameId={gameInfo.id}
+            maxPlayers={gameInfo.maxPlayers}
+            onChooseRoom={(id) => {}}
+          />
+        ): (
+          gameInfo &&
+            <GameDetail
+              gameInfo={gameInfo}
+              roomsCount={0}
+              onShowModal={() => {}}
+              playNow={() => {}}
+            />
+        )}
+      </Box> */}
+      {/* <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        open={isShowToast}
+        autoHideDuration={4000}
+        onClose={() => this.setToastShow(false)}
+        message={this.state.toastMessage}
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => this.setToastShow(false)}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      /> */}
+    </Layout>
+  )
 };
 
 export default GameContainer;

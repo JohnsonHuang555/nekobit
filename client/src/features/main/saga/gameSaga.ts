@@ -6,11 +6,11 @@ import { GameFactory } from '../domain/factories/GameFactory';
 import { GetGameInfoAction } from '../actions/gameAction';
 
 function* getGameInfo(action: GetGameInfoAction) {
-  const gameInfo: TGame = yield call(() => getApi(`/getGameInfo/${action.id}`)
+  const gameInfo: TGame = yield call(() => getApi(`/getGameInfo?id=${action.id}`)
     .then(res =>
       GameFactory.createFromNet(res.data)
     ));
-  yield put({ type: action.type, gameInfo })
+  yield put({ type: ActionType.GET_GAME_INFO_SUCCESS, gameInfo })
 }
 
 function* gameSage() {
