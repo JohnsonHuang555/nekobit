@@ -4,5 +4,9 @@ import { StoreState } from 'src/reducers';
 export const gamesSelector = (store: StoreState) =>
   store.main.index.games;
 
+// game
 export const gameInfoSelector = (store: StoreState) =>
   store.main.game.gameInfo;
+
+export const roomsSelector = (store: StoreState) =>
+  store.main.game.rooms;

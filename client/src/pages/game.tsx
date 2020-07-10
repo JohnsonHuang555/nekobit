@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Router from 'next/router';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/features/main/game/components/RoomList';
@@ -23,20 +23,87 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 // import '@styles/pages/game.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { gameInfoSelector } from 'src/features/main/selectors';
-import { ActionType } from 'src/features/main/reducers/gameReducer';
+import { gameInfoSelector, roomsSelector } from 'src/features/main/selectors';
+import { userInfoSelector, websocketSelector } from 'src/selectors';
+import { ActionType as GameActionType } from 'src/features/main/reducers/gameReducer';
+import { ActionType as AppActionType } from 'src/reducers/appReducer';
+import { TSocket, SocketEvent } from 'src/types/Socket';
+import { TUser } from 'src/features/main/domain/models/User';
+import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 
 const GameContainer = () => {
   const dispatch = useDispatch();
   const gameInfo = useSelector(gameInfoSelector);
+  const rooms = useSelector(roomsSelector);
+  const userInfo = useSelector(userInfoSelector);
+  const ws = useSelector(websocketSelector);
 
   useEffect(() => {
+    dispatch({
+      type: AppActionType.GET_USER_INFO,
+    });
+
+    dispatch({
+      type: AppActionType.CREATE_SOCKET,
+      domain: 'game_page',
+    });
+
     const gameId = location.search.substr(4);
     dispatch({
-      type: ActionType.GET_GAME_INFO,
+      type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
+
+    // const ws = new WebSocket('ws://localhost:8080/ws/game_page');
+    // ws.onopen = () => {
+    //   const socketData: TSocket = {
+    //     userID: userInfo.id,
+    //     event: SocketEvent.GetRooms,
+    //   }
+    //   setWs(ws);
+    //   ws.send(JSON.stringify(socketData));
+    //   console.log('connect successfully');
+    // }
+    // ws.onerror = () => {
+    //   console.log('connect failed');
+    // }
+    return () => {
+      dispatch({
+        type: AppActionType.CLOSE_SOCKET,
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    if (ws && userInfo) {
+      ws.onopen = () => {
+        console.log('connect successfully');
+        const socketData: TSocket = {
+          userID: userInfo.id,
+          event: SocketEvent.GetRooms,
+        }
+        ws.send(JSON.stringify(socketData));
+      }
+      ws.onerror = () => {
+        console.log('connect failed');
+      }
+      ws.onmessage = (webSocket: MessageEvent) => {
+        const wsData: TSocket = JSON.parse(webSocket.data);
+        console.log(wsData);
+        switch (wsData.event) {
+          case SocketEvent.GetRooms: {
+            const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
+            if (rooms.length) {
+              dispatch({
+                type: GameActionType.GET_ROOMS,
+                rooms,
+              });
+            }
+          }
+        }
+      }
+    }
+  }, [ws, userInfo]);
 
   return (
     <Layout>
