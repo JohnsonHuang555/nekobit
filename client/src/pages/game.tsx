@@ -21,9 +21,8 @@ import {
   IconButton
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-// import '@styles/pages/game.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { gameInfoSelector, roomsSelector, isShowRoomListSelector } from 'src/features/main/selectors';
+import { gameInfoSelector, roomsSelector, isShowRoomListSelector, createRoomDataSelector } from 'src/features/main/selectors';
 import { userInfoSelector, websocketSelector } from 'src/selectors';
 import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
@@ -38,6 +37,8 @@ const GameContainer = () => {
   const userInfo = useSelector(userInfoSelector);
   const ws = useSelector(websocketSelector);
   const isShowRoomList = useSelector(isShowRoomListSelector);
+  const createRoomData = useSelector(createRoomDataSelector);
+  const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   useEffect(() => {
     const gameId = location.search.substr(4);
@@ -93,10 +94,10 @@ const GameContainer = () => {
 
   return (
     <Layout>
-      {/* <Dialog
+      <Dialog
         fullWidth
-        open={isShowCreateRoomModal}
-        onClose={() => this.setIsShowCreateRoomModal(false)}
+        open={showCreateRoomModal}
+        onClose={() => setShowCreateRoomModal(false)}
         aria-labelledby="create-room-modal"
       >
         <DialogTitle id="create-room-modal">創建房間</DialogTitle>
@@ -108,7 +109,10 @@ const GameContainer = () => {
               label="房間名稱"
               placeholder="請輸入房間名稱"
               variant="outlined"
-              onChange={(e) => this.setRoomTitle(e.target.value)}
+              onChange={(e) => dispatch({
+                type: ActionType.CREATING_ROOM,
+                createRoomData: { title: e.target.value }
+              })}
             />
           </Box>
           <Box marginBottom={2}>
@@ -119,7 +123,10 @@ const GameContainer = () => {
               placeholder="請輸入房間密碼"
               type="password"
               variant="outlined"
-              onChange={(e) => this.setRoomPassword(e.target.value)}
+              onChange={(e) => dispatch({
+                type: ActionType.CREATING_ROOM,
+                createRoomData: { password: e.target.value }
+              })}
             />
           </Box>
           <Box marginBottom={2}>
@@ -128,9 +135,12 @@ const GameContainer = () => {
                 fullWidth
                 select
                 label="遊戲模式"
-                value={createRoomMode}
-                onChange={(e) => this.onChangeGameMode(String(e.target.value))}
+                value={createRoomData.mode}
                 variant="outlined"
+                onChange={(e) => dispatch({
+                  type: ActionType.CREATING_ROOM,
+                  createRoomData: { mode: Number(e.target.value) }
+                })}
               >
                 {GameMode[gameInfo.id].map((m, i) => (
                   <MenuItem key={i} value={m.value}>
@@ -143,19 +153,22 @@ const GameContainer = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => this.setIsShowCreateRoomModal(false)}
+            onClick={() => setShowCreateRoomModal(false)}
             color="primary"
           >
             Cancel
           </Button>
           <Button
-            onClick={() => this.createRoom()}
+            onClick={() => dispatch({
+              type: ActionType.CREATE_ROOM,
+              createRoomData
+            })}
             color="primary"
           >
             Create
           </Button>
         </DialogActions>
-      </Dialog> */}
+      </Dialog>
       {/* <Dialog
         open={isShowEnterPasswordModal}
         onClose={() => this.setIsShowEnterPasswordModal(false)}
@@ -196,7 +209,7 @@ const GameContainer = () => {
           <GameDetail
             gameInfo={gameInfo}
             roomsCount={0}
-            onShowModal={() => {}}
+            onShowModal={() => setShowCreateRoomModal(true)}
             playNow={() => dispatch({
               type: ActionType.SET_IS_SHOW_ROOM_LIST,
               show: true,

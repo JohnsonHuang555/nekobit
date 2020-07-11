@@ -12,6 +12,12 @@ export type TGame = {
   estimateTime: number;
 }
 
+export type TCreateRoom = {
+  title: string;
+  password?: string;
+  mode: number;
+}
+
 export type TModeVaule = {
   label: string;
   value: number;

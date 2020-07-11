@@ -13,3 +13,6 @@ export const roomsSelector = (store: StoreState) =>
 
 export const isShowRoomListSelector = (store: StoreState) =>
   store.main.game.isShowRoomList;
+
+export const createRoomDataSelector = (store: StoreState) =>
+  store.main.game.createRoomData;
