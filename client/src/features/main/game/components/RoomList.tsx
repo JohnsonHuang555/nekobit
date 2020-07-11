@@ -28,7 +28,7 @@ const RoomList = (props: RoomListProps) => {
       <Grid container spacing={3}>
         <Grid item xs={9}>
           <Box className={styles.block}>
-            <Grid container className={styles.rooms}>
+            <Grid container className={styles.rooms} spacing={1}>
               {rooms.map(room => (
                 <Grid item xs={6} key={room.id}>
                   <Room
