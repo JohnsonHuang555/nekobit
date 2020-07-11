@@ -51,28 +51,36 @@ const GameDetail = (props: GameDetailProps) => {
               <span>{roomsCount}</span>
             </Grid>
           </Grid>
-          <Box>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={
-                <FontAwesomeIcon icon={faDoorOpen} />
-              }
-            >
-              New Room
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={
-                <FontAwesomeIcon icon={faGamepad} />
-              }
-            >
-              PlayNow
-            </Button>
-          </Box>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={onShowModal}
+                fullWidth
+                startIcon={
+                  <FontAwesomeIcon icon={faDoorOpen} />
+                }
+              >
+                New Room
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={playNow}
+                fullWidth
+                startIcon={
+                  <FontAwesomeIcon icon={faGamepad} />
+                }
+              >
+                PlayNow
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       {/* <div className="row main">
