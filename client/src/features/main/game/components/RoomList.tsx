@@ -30,9 +30,8 @@ const RoomList = (props: RoomListProps) => {
           <Box className={styles.block}>
             <Grid container className={styles.rooms}>
               {rooms.map(room => (
-                <Grid item xs={6}>
+                <Grid item xs={6} key={room.id}>
                   <Room
-                    key={room.id}
                     roomInfo={room}
                     maxPlayers={maxPlayers}
                     gameMode={GameMode[gameId].find(g => g.value === room.mode)?.label}

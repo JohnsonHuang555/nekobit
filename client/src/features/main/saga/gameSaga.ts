@@ -20,7 +20,8 @@ function* createRoom(action: CreateRoomAction) {
 }
 
 function* gameSage() {
-  yield takeEvery(ActionType.GET_GAME_INFO, getGameInfo)
+  yield takeEvery(ActionType.GET_GAME_INFO, getGameInfo);
+  yield takeEvery(ActionType.CREATE_ROOM, createRoom);
 }
 
 export default gameSage;

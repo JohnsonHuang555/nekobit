@@ -11,8 +11,5 @@ export const gameInfoSelector = (store: StoreState) =>
 export const roomsSelector = (store: StoreState) =>
   store.main.game.rooms;
 
-export const isShowRoomListSelector = (store: StoreState) =>
-  store.main.game.isShowRoomList;
-
 export const createRoomDataSelector = (store: StoreState) =>
   store.main.game.createRoomData;

@@ -4,14 +4,12 @@ import { TRoom } from '../domain/models/Room';
 export type State = {
   gameInfo?: TGame;
   rooms: TRoom[];
-  isShowRoomList: boolean;
   createRoomData: TCreateRoom;
   createdRoomId: string;
 };
 
 export const defaultState: State = {
   rooms: [],
-  isShowRoomList: false,
   createRoomData: {
     title: '',
     mode: 1,
@@ -23,7 +21,6 @@ export enum ActionType {
   GET_GAME_INFO = 'GET_GAME_INFO',
   GET_GAME_INFO_SUCCESS = 'GET_GAME_INFO_SUCCESS',
   GET_ROOMS = 'GET_ROOMS',
-  SET_IS_SHOW_ROOM_LIST = 'SET_IS_SHOW_ROOM_LIST',
   CREATING_ROOM = 'CREATING_ROOM',
   CREATE_ROOM = 'CREATE_ROOM',
   CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS',
@@ -44,17 +41,12 @@ export type CreatingRoomsAction = {
   createRoomData: Partial<TCreateRoom>;
 };
 
-export type SetIsShowRoomListAction = {
-  type: ActionType.SET_IS_SHOW_ROOM_LIST,
-  show: boolean;
-}
-
 export type CreatedRoomAction = {
   type: ActionType.CREATE_ROOM_SUCCESS,
   id: string;
 }
 
-export type Action = LoadGameInfoAction | LoadRoomsAction | SetIsShowRoomListAction | CreatingRoomsAction | CreatedRoomAction;
+export type Action = LoadGameInfoAction | LoadRoomsAction | CreatingRoomsAction | CreatedRoomAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -68,12 +60,6 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return {
         ...state,
         rooms: action.rooms,
-      }
-    }
-    case ActionType.SET_IS_SHOW_ROOM_LIST: {
-      return {
-        ...state,
-        isShowRoomList: action.show,
       }
     }
     case ActionType.CREATING_ROOM: {

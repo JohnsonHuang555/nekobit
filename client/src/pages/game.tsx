@@ -22,7 +22,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch, useSelector } from 'react-redux';
-import { gameInfoSelector, roomsSelector, isShowRoomListSelector, createRoomDataSelector } from 'src/features/main/selectors';
+import { gameInfoSelector, roomsSelector, createRoomDataSelector } from 'src/features/main/selectors';
 import { userInfoSelector, websocketSelector } from 'src/selectors';
 import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
@@ -36,8 +36,9 @@ const GameContainer = () => {
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
   const ws = useSelector(websocketSelector);
-  const isShowRoomList = useSelector(isShowRoomListSelector);
   const createRoomData = useSelector(createRoomDataSelector);
+
+  const [showRoomList, setShowRoomList] = useState(false);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   useEffect(() => {
@@ -53,10 +54,6 @@ const GameContainer = () => {
     });
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET });
-      dispatch({
-        type: ActionType.SET_IS_SHOW_ROOM_LIST,
-        show: false,
-      });
     }
   }, []);
 
@@ -161,7 +158,7 @@ const GameContainer = () => {
           <Button
             onClick={() => dispatch({
               type: ActionType.CREATE_ROOM,
-              createRoomData
+              createRoomData,
             })}
             color="primary"
           >
@@ -198,7 +195,7 @@ const GameContainer = () => {
         </DialogActions>
       </Dialog> */}
       <Box>
-        {isShowRoomList ? (
+        {showRoomList ? (
           <RoomList
             rooms={rooms}
             gameId={gameInfo.id}
@@ -208,12 +205,9 @@ const GameContainer = () => {
         ): (
           <GameDetail
             gameInfo={gameInfo}
-            roomsCount={0}
+            roomsCount={rooms.length}
             onShowModal={() => setShowCreateRoomModal(true)}
-            playNow={() => dispatch({
-              type: ActionType.SET_IS_SHOW_ROOM_LIST,
-              show: true,
-            })}
+            playNow={() => setShowRoomList(true)}
           />
         )}
       </Box>
