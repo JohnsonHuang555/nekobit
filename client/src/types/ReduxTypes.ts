@@ -1,2 +1,4 @@
-import { Action } from 'redux';
-export type Dispatch = (action: Action) => any;
+export type Ttoast = {
+  show: boolean;
+  message: string;
+};

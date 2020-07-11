@@ -5,3 +5,6 @@ export const userInfoSelector = (store: StoreState) =>
 
 export const websocketSelector = (store: StoreState) =>
   store.app.websocket;
+
+export const showToastSelector = (store: StoreState) =>
+  store.app.showToast;

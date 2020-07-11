@@ -1,19 +1,26 @@
 import { TUser } from './../features/main/domain/models/User';
 import { TSocket } from 'src/types/Socket';
+import { Ttoast } from 'src/types/ReduxTypes';
 
 export type State = {
   websocket?: WebSocket;
   userInfo?: TUser;
   socketMsg?: TSocket;
+  showToast: Ttoast;
 }
 
 export const defaultState: State = {
+  showToast: {
+    show: false,
+    message: '',
+  },
 };
 
 export enum ActionType {
   CREATE_SOCKET = 'CREATE_SOCKET',
   CLOSE_SOCKET = 'CLOSE_SOCKET',
   GET_USER_INFO = 'GET_USER_INFO',
+  SET_SHOW_TOAST = 'SET_SHOW_TOAST',
 };
 
 export type CreateSocketAction = {
@@ -29,7 +36,13 @@ export type LoadUserInfoAction = {
   type: ActionType.GET_USER_INFO,
 };
 
-export type Action = CreateSocketAction | CloseSocketAction | LoadUserInfoAction;
+export type SetShowToastAction = {
+  type: ActionType.SET_SHOW_TOAST,
+  show: boolean,
+  message: string,
+};
+
+export type Action = CreateSocketAction | CloseSocketAction | LoadUserInfoAction | SetShowToastAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -56,6 +69,15 @@ const reducer = (state: State = defaultState, action: Action): State => {
         }
       } else {
         throw Error('Socket not found...');
+      }
+    }
+    case ActionType.SET_SHOW_TOAST: {
+      return {
+        ...state,
+        showToast: {
+          show: action.show,
+          message: action.message,
+        },
       }
     }
     default: {
