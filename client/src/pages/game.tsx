@@ -23,9 +23,9 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 // import '@styles/pages/game.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { gameInfoSelector, roomsSelector } from 'src/features/main/selectors';
+import { gameInfoSelector, roomsSelector, isShowRoomListSelector } from 'src/features/main/selectors';
 import { userInfoSelector, websocketSelector } from 'src/selectors';
-import { ActionType as GameActionType } from 'src/features/main/reducers/gameReducer';
+import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { TUser } from 'src/features/main/domain/models/User';
@@ -37,39 +37,24 @@ const GameContainer = () => {
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
   const ws = useSelector(websocketSelector);
+  const isShowRoomList = useSelector(isShowRoomListSelector);
 
   useEffect(() => {
-    dispatch({
-      type: AppActionType.GET_USER_INFO,
-    });
-
+    const gameId = location.search.substr(4);
+    dispatch({ type: AppActionType.GET_USER_INFO,});
     dispatch({
       type: AppActionType.CREATE_SOCKET,
       domain: 'game_page',
     });
-
-    const gameId = location.search.substr(4);
     dispatch({
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
-
-    // const ws = new WebSocket('ws://localhost:8080/ws/game_page');
-    // ws.onopen = () => {
-    //   const socketData: TSocket = {
-    //     userID: userInfo.id,
-    //     event: SocketEvent.GetRooms,
-    //   }
-    //   setWs(ws);
-    //   ws.send(JSON.stringify(socketData));
-    //   console.log('connect successfully');
-    // }
-    // ws.onerror = () => {
-    //   console.log('connect failed');
-    // }
     return () => {
+      dispatch({ type: AppActionType.CLOSE_SOCKET });
       dispatch({
-        type: AppActionType.CLOSE_SOCKET,
+        type: ActionType.SET_IS_SHOW_ROOM_LIST,
+        show: false,
       });
     }
   }, []);
@@ -89,7 +74,6 @@ const GameContainer = () => {
       }
       ws.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
-        console.log(wsData);
         switch (wsData.event) {
           case SocketEvent.GetRooms: {
             const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
@@ -104,6 +88,8 @@ const GameContainer = () => {
       }
     }
   }, [ws, userInfo]);
+
+  if (!gameInfo) { return null; }
 
   return (
     <Layout>
@@ -198,24 +184,26 @@ const GameContainer = () => {
           </Button>
         </DialogActions>
       </Dialog> */}
-      {/* <Box>
-        {gameInfo ? (
+      <Box>
+        {isShowRoomList ? (
           <RoomList
-            rooms={[]}
+            rooms={rooms}
             gameId={gameInfo.id}
             maxPlayers={gameInfo.maxPlayers}
             onChooseRoom={(id) => {}}
           />
         ): (
-          gameInfo &&
-            <GameDetail
-              gameInfo={gameInfo}
-              roomsCount={0}
-              onShowModal={() => {}}
-              playNow={() => {}}
-            />
+          <GameDetail
+            gameInfo={gameInfo}
+            roomsCount={0}
+            onShowModal={() => {}}
+            playNow={() => dispatch({
+              type: ActionType.SET_IS_SHOW_ROOM_LIST,
+              show: true,
+            })}
+          />
         )}
-      </Box> */}
+      </Box>
       {/* <Snackbar
         anchorOrigin={{
           vertical: 'bottom',

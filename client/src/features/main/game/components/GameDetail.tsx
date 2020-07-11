@@ -26,12 +26,11 @@ const GameDetail = (props: GameDetailProps) => {
   } = props;
 
   return (
-    <div id="game" className="container-fluid">
-      <div className="container">
-        <div className="section-heading">
-          <h2>遊戲介紹</h2>
-        </div>
-        <div className="row main">
+    <>
+      <div className="section-heading">
+        <h2>遊戲介紹</h2>
+      </div>
+      <div className="row main">
           <div className="col-md-7 game-image">
             <img src={`${gameInfo.imgUrl}/game.png`} alt={gameInfo.name} width="100%" />
           </div>
@@ -66,8 +65,7 @@ const GameDetail = (props: GameDetailProps) => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </>
   );
 };
 

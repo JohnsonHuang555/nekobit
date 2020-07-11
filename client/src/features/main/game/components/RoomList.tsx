@@ -2,7 +2,7 @@ import React from 'react';
 import Room from 'src/features/main/game/components/Room';
 import { TRoom } from '../../domain/models/Room';
 import { GameMode } from '../../domain/models/Game';
-import '@styles/components/rooms/roomList.scss';
+// import '@styles/components/rooms/roomList.scss';
 
 type RoomListProps = {
   rooms: TRoom[];
