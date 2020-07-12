@@ -18,6 +18,7 @@ import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import Chat from 'src/components/Chat';
+import GameSettings from 'src/features/main/room/components/GameSettings';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
@@ -65,7 +66,8 @@ const RoomContainer = () => {
             setRoomInfo(roomInfo);
             break;
           }
-          case SocketEvent.LeaveRoom: {
+          case SocketEvent.LeaveRoom:
+          case SocketEvent.ReadyGame: {
             if (!tempRoomInfo) { return; }
             const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const user = roomUserList.find(u => u.id === userInfo.id);
@@ -112,12 +114,28 @@ const RoomContainer = () => {
     });
   };
 
+  const isPlayerReady = (): string => {
+    const user = findUser();
+    if (user && user.isReady) {
+      return 'Cancel';
+    }
+    return 'Ready';
+  }
+
+  const disabledStart = (): boolean => {
+    const notReady = roomInfo.userList.filter(u => !u.isReady) || [];
+    if (notReady.length) {
+      return true;
+    }
+    return false;
+  }
+
   return (
     <Layout>
       <div className="section-heading">
         <h2>{roomInfo.roomNumber}.{roomInfo.title}</h2>
       </div>
-      <Grid container>
+      <Grid container spacing={3}>
         <Grid item xs={8}>
           <UserList
             isYouMaster={isYouMaster()}
@@ -130,7 +148,43 @@ const RoomContainer = () => {
             />
           </Box>
         </Grid>
-        <Grid item xs={4}></Grid>
+        <Grid item xs={4}>
+          <Box className="block">
+            <GameSettings />
+          </Box>
+          {isYouMaster() ? (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              size="large"
+              onClick={() => dispatch({
+                type: AppActionType.SEND_MESSAGE,
+                event: SocketEvent.StartGame,
+                data: {
+                  gameID: roomInfo.gameId,
+                  roomMode: roomInfo.mode,
+                }
+              })}
+              disabled={disabledStart()}
+            >
+              Start
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              size="large"
+              onClick={() => dispatch({
+                type: AppActionType.SEND_MESSAGE,
+                event: SocketEvent.ReadyGame,
+              })}
+            >
+              {isPlayerReady()}
+            </Button>
+          )}
+        </Grid>
       </Grid>
     </Layout>
   )

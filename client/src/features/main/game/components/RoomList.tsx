@@ -2,9 +2,9 @@ import React from 'react';
 import Room from 'src/features/main/game/components/Room';
 import { TRoom } from '../../domain/models/Room';
 import { GameMode } from '../../domain/models/Game';
-import { Box, Grid, TextField, Button } from '@material-ui/core';
-import styles from '@styles/components/roomList.module.scss';
+import { Box, Grid } from '@material-ui/core';
 import Chat from 'src/components/Chat';
+import styles from '@styles/components/roomList.module.scss';
 
 type RoomListProps = {
   rooms: TRoom[];
