@@ -34,6 +34,14 @@ a {
   }
 }
 
+.block {
+  box-shadow: 0 0 8px 0 $basic-black;
+  border: solid 1px $modal-border;
+  background-color: $navbar-bg;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
 // .swiper-button-next, .swiper-button-prev {
 //   background-image: none;
 //   top: 40%;

@@ -27,8 +27,8 @@ const RoomList = (props: RoomListProps) => {
       </div>
       <Grid container spacing={3}>
         <Grid item xs={9}>
-          <Box className={styles.block}>
-            <Grid container className={styles.rooms} spacing={1}>
+          <Box className="block">
+            <Grid container className={styles.rooms} spacing={1} alignContent="flex-start">
               {rooms.map(room => (
                 <Grid item xs={6} key={room.id}>
                   <Room
@@ -41,7 +41,7 @@ const RoomList = (props: RoomListProps) => {
               ))}
             </Grid>
           </Box>
-          <Box className={styles.block}>
+          <Box className="block">
             <Box className={styles.chat}>
             </Box>
             <Box display="flex">
@@ -59,7 +59,7 @@ const RoomList = (props: RoomListProps) => {
           </Box>
         </Grid>
         <Grid item xs={3}>
-          <Box className={styles.block}>
+          <Box className="block">
             <Box className={styles.playerList}>
             </Box>
           </Box>

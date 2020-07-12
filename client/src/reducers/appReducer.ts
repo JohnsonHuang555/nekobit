@@ -1,7 +1,6 @@
 import { TUser } from './../features/main/domain/models/User';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { Ttoast } from 'src/types/ReduxTypes';
-import { WSAEACCES } from 'constants';
 
 export type State = {
   websocket?: WebSocket;

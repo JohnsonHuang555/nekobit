@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Router from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,15 +9,99 @@ import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
 import GameScreen from 'src/features/main/room/components/GameScreen';
-import { Button, Modal, Fade, Backdrop, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, TextField } from '@material-ui/core';
+import { Button, Modal, Fade, Backdrop, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, TextField, Grid } from '@material-ui/core';
 import { TUser } from 'src/features/main/domain/models/User';
 import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
+import { useSelector, useDispatch } from 'react-redux';
+import { websocketSelector, userInfoSelector } from 'src/selectors';
+import { ActionType as AppActionType } from 'src/reducers/appReducer';
+import { SocketEvent, TSocket } from 'src/types/Socket';
+import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
+import UserList from 'src/features/main/room/components/UserList';
 // import '@styles/pages/room.scss';
 
 const RoomContainer = () => {
+  const dispatch = useDispatch();
+  const ws = useSelector(websocketSelector);
+  const userInfo = useSelector(userInfoSelector);
+  const [roomInfo, setRoomInfo] = useState<TRoom>();
+
+  // component did mount
+  useEffect(() => {
+    const id = location.search.substr(4);
+    dispatch({ type: AppActionType.GET_USER_INFO });
+    dispatch({
+      type: AppActionType.CREATE_SOCKET,
+      domain: id,
+    });
+
+    return () => {
+      dispatch({ type: AppActionType.CLOSE_SOCKET });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (ws && userInfo) {
+      ws.onopen = () => {
+        dispatch({
+          type: AppActionType.SET_SHOW_TOAST,
+          show: true,
+          message: 'Join room',
+        });
+        dispatch({
+          type: AppActionType.SEND_MESSAGE,
+          event: SocketEvent.JoinRoom,
+          data: {
+            userName: userInfo.name,
+          }
+        });
+      };
+      ws.onmessage = (webSocket: MessageEvent) => {
+        const wsData: TSocket = JSON.parse(webSocket.data);
+        switch (wsData.event) {
+          case SocketEvent.JoinRoom: {
+            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            setRoomInfo(roomInfo);
+          }
+        }
+      };
+    }
+  }, [ws, userInfo]);
+
+  if (!roomInfo) { return null; }
+
+  // methods
+  const findUser = () => {
+    return roomInfo.userList.find(u => {
+      return u.id === userInfo?.id
+    });
+  };
+
+  const isYouMaster = (): boolean => {
+    const user = findUser();
+    if (user && user.isMaster) {
+      return true;
+    }
+    return false;
+  };
+
+
   return (
     <Layout>
-      123456
+      <div className="section-heading">
+        <h2>{roomInfo.roomNumber}.{roomInfo.title}</h2>
+      </div>
+      <Grid container>
+        <Grid item xs={8}>
+          <UserList
+            isYouMaster={isYouMaster()}
+            userList={roomInfo.userList}
+            onKickOutPlayer={() => {}}
+          />
+          <Box></Box>
+        </Grid>
+        <Grid item xs={4}></Grid>
+      </Grid>
     </Layout>
   )
 };

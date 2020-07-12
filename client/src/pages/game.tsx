@@ -45,7 +45,7 @@ const GameContainer = () => {
   // component did mount
   useEffect(() => {
     const gameId = location.search.substr(4);
-    dispatch({ type: AppActionType.GET_USER_INFO,});
+    dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
       type: AppActionType.CREATE_SOCKET,
       domain: 'game_page',
