@@ -12,341 +12,350 @@ import GameScreen from 'src/features/main/room/components/GameScreen';
 import { Button, Modal, Fade, Backdrop, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, TextField } from '@material-ui/core';
 import { TUser } from 'src/features/main/domain/models/User';
 import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
-import '@styles/pages/room.scss';
+// import '@styles/pages/room.scss';
 
-interface RoomViewProps {}
-interface RoomViewState {
-  roomInfo?: TRoom;
-  userInfo?: TUser;
-  showGameOverModal: boolean;
-  showLeaveRoomModal: boolean;
-  showEditModal: boolean;
-  roomPassword: string;
-  isYouWin: boolean;
-}
+const RoomContainer = () => {
+  return (
+    <Layout>
+      123456
+    </Layout>
+  )
+};
 
-class RoomView extends React.Component<RoomViewProps, RoomViewState>
-  implements RoomContract.View {
+export default RoomContainer;
+// interface RoomViewProps {}
+// interface RoomViewState {
+//   roomInfo?: TRoom;
+//   userInfo?: TUser;
+//   showGameOverModal: boolean;
+//   showLeaveRoomModal: boolean;
+//   showEditModal: boolean;
+//   roomPassword: string;
+//   isYouWin: boolean;
+// }
 
-  private presenter: RoomContract.Presenter;
+// class RoomView extends React.Component<RoomViewProps, RoomViewState>
+//   implements RoomContract.View {
 
-  constructor(props: RoomViewProps) {
-    super(props);
-    this.state = {
-      showGameOverModal: false,
-      isYouWin: false,
-      showLeaveRoomModal: false,
-      showEditModal: false,
-      roomPassword: '',
-    }
+//   private presenter: RoomContract.Presenter;
 
-    this.presenter = new RoomPresenter(
-      this,
-      Injection.provideUseCaseHandler(),
-      Injection.provideConnectSocketUseCase(),
-      Injection.provideGetSocketMessageUseCase(),
-      Injection.provideJoinRoomUseCase(),
-      Injection.provideLeaveRoomUseCase(),
-      Injection.provideReadyGameUseCase(),
-      Injection.provideStartGameUseCase(),
-      Injection.provideSetPlayOrderUseCase(),
-      Injection.provideGetUserInfoUseCase(),
-      Injection.provideGameOverUseCase(),
-      Injection.provideChangePasswordUseCase(),
-    )
-  }
+//   constructor(props: RoomViewProps) {
+//     super(props);
+//     this.state = {
+//       showGameOverModal: false,
+//       isYouWin: false,
+//       showLeaveRoomModal: false,
+//       showEditModal: false,
+//       roomPassword: '',
+//     }
 
-  componentDidMount() {
-    const id = location.search.substr(4);
-    this.presenter.mount({ id });
-  }
+//     this.presenter = new RoomPresenter(
+//       this,
+//       Injection.provideUseCaseHandler(),
+//       Injection.provideConnectSocketUseCase(),
+//       Injection.provideGetSocketMessageUseCase(),
+//       Injection.provideJoinRoomUseCase(),
+//       Injection.provideLeaveRoomUseCase(),
+//       Injection.provideReadyGameUseCase(),
+//       Injection.provideStartGameUseCase(),
+//       Injection.provideSetPlayOrderUseCase(),
+//       Injection.provideGetUserInfoUseCase(),
+//       Injection.provideGameOverUseCase(),
+//       Injection.provideChangePasswordUseCase(),
+//     )
+//   }
 
-  render() {
-    const {
-      roomInfo,
-      userInfo,
-      showGameOverModal,
-      showLeaveRoomModal,
-      showEditModal,
-      isYouWin,
-      roomPassword,
-    } = this.state;
+//   componentDidMount() {
+//     const id = location.search.substr(4);
+//     this.presenter.mount({ id });
+//   }
 
-    return (
-      <Layout id="room-page">
-        <div className="row">
-          <div className="col-md-8">
-            <div className="user-block">
-              <div className="header">
-                {roomInfo && (
-                  <div className="title">
-                    <span>{roomInfo.roomNumber}.</span>
-                    <span>{roomInfo.title}</span>
-                  </div>
-                )}
-                <span className="icons">
-                  <FontAwesomeIcon
-                    icon={faPen}
-                    onClick={() => this.setShowEditModal(true)}
-                  />
-                  <FontAwesomeIcon
-                    icon={faDoorOpen}
-                    onClick={() => this.setShowLeaveRoomModal(true)}
-                  />
-                </span>
-              </div>
-              <div className="content">
-                {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
-                  <RoomUser
-                    key={user.id}
-                    user={user}
-                    isMaster={this.isMaster}
-                    onKickOutPlayer={(id) => this.onKickOutPlayer(id)}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="chat-block"></div>
-          </div>
-          <div className="col-md-4">
-            <div className="settings-block"></div>
-            {roomInfo &&
-              this.isMaster ? (
-                <Button
-                  className="start"
-                  onClick={() => this.startGame(roomInfo.mode, roomInfo.gameId)}
-                  disabled={this.disabledStart}
-                >
-                  Start
-                </Button>
-              ) : (
-                <Button
-                  className="ready"
-                  onClick={() => this.readyGame()}
-                >
-                  {this.isPlayerReady}
-                </Button>
-              )
-            }
-          </div>
-          {roomInfo && roomInfo.status === 1 && userInfo && (
-            <GameScreen
-              roomInfo={roomInfo}
-              userID={userInfo.id}
-              isMaster={this.isMaster}
-              playerSide={this.playerSide as ChessSide}
-              onSetPlayOrder={() => this.onSetPlayOrder()}
-              updateRoomInfo={(rf) => this.setRoomInfo(rf)}
-              onGameOver={(iyw) => this.onGameOver(iyw)}
-            />
-          )}
-        </div>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          className="gp-modal"
-          open={showGameOverModal}
-          onClose={() => this.updateGameOverStatus()}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={showGameOverModal}>
-            <div className="content">
-              <span>{isYouWin ? '你贏了' : '你輸了'}</span>
-            </div>
-          </Fade>
-        </Modal>
-        <Dialog
-          fullWidth
-          open={showLeaveRoomModal}
-          onClose={() => this.setShowLeaveRoomModal(false)}
-        >
-          <DialogTitle id="leave-room-modal">提示</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              確定要離開房間?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => this.setShowLeaveRoomModal(false)}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => this.onLeaveRoom()}
-              color="primary"
-            >
-              Leave
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          fullWidth
-          open={showEditModal}
-          onClose={() => this.setShowEditModal(false)}
-        >
-          <DialogTitle id="leave-room-modal">請輸入房間密碼</DialogTitle>
-          <DialogContent>
-            <Box marginBottom={3}>
-              <TextField
-                required
-                fullWidth
-                margin="dense"
-                label="房間密碼"
-                placeholder="請輸入房間密碼"
-                variant="outlined"
-                value={roomPassword}
-                onChange={(e) => this.setRoomPassword(e.target.value)}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => this.setShowEditModal(false)}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => this.changePassword()}
-              color="primary"
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Layout>
-    )
-  }
+//   render() {
+//     const {
+//       roomInfo,
+//       userInfo,
+//       showGameOverModal,
+//       showLeaveRoomModal,
+//       showEditModal,
+//       isYouWin,
+//       roomPassword,
+//     } = this.state;
 
-  nowLoading(): void {
-  }
+//     return (
+//       <Layout id="room-page">
+//         <div className="row">
+//           <div className="col-md-8">
+//             <div className="user-block">
+//               <div className="header">
+//                 {roomInfo && (
+//                   <div className="title">
+//                     <span>{roomInfo.roomNumber}.</span>
+//                     <span>{roomInfo.title}</span>
+//                   </div>
+//                 )}
+//                 <span className="icons">
+//                   <FontAwesomeIcon
+//                     icon={faPen}
+//                     onClick={() => this.setShowEditModal(true)}
+//                   />
+//                   <FontAwesomeIcon
+//                     icon={faDoorOpen}
+//                     onClick={() => this.setShowLeaveRoomModal(true)}
+//                   />
+//                 </span>
+//               </div>
+//               <div className="content">
+//                 {roomInfo && roomInfo.userList.map((user: TRoomUser) => (
+//                   <RoomUser
+//                     key={user.id}
+//                     user={user}
+//                     isMaster={this.isMaster}
+//                     onKickOutPlayer={(id) => this.onKickOutPlayer(id)}
+//                   />
+//                 ))}
+//               </div>
+//             </div>
+//             <div className="chat-block"></div>
+//           </div>
+//           <div className="col-md-4">
+//             <div className="settings-block"></div>
+//             {roomInfo &&
+//               this.isMaster ? (
+//                 <Button
+//                   className="start"
+//                   onClick={() => this.startGame(roomInfo.mode, roomInfo.gameId)}
+//                   disabled={this.disabledStart}
+//                 >
+//                   Start
+//                 </Button>
+//               ) : (
+//                 <Button
+//                   className="ready"
+//                   onClick={() => this.readyGame()}
+//                 >
+//                   {this.isPlayerReady}
+//                 </Button>
+//               )
+//             }
+//           </div>
+//           {roomInfo && roomInfo.status === 1 && userInfo && (
+//             <GameScreen
+//               roomInfo={roomInfo}
+//               userID={userInfo.id}
+//               isMaster={this.isMaster}
+//               playerSide={this.playerSide as ChessSide}
+//               onSetPlayOrder={() => this.onSetPlayOrder()}
+//               updateRoomInfo={(rf) => this.setRoomInfo(rf)}
+//               onGameOver={(iyw) => this.onGameOver(iyw)}
+//             />
+//           )}
+//         </div>
+//         <Modal
+//           aria-labelledby="transition-modal-title"
+//           aria-describedby="transition-modal-description"
+//           className="gp-modal"
+//           open={showGameOverModal}
+//           onClose={() => this.updateGameOverStatus()}
+//           closeAfterTransition
+//           BackdropComponent={Backdrop}
+//           BackdropProps={{
+//             timeout: 500,
+//           }}
+//         >
+//           <Fade in={showGameOverModal}>
+//             <div className="content">
+//               <span>{isYouWin ? '你贏了' : '你輸了'}</span>
+//             </div>
+//           </Fade>
+//         </Modal>
+//         <Dialog
+//           fullWidth
+//           open={showLeaveRoomModal}
+//           onClose={() => this.setShowLeaveRoomModal(false)}
+//         >
+//           <DialogTitle id="leave-room-modal">提示</DialogTitle>
+//           <DialogContent>
+//             <DialogContentText>
+//               確定要離開房間?
+//             </DialogContentText>
+//           </DialogContent>
+//           <DialogActions>
+//             <Button
+//               onClick={() => this.setShowLeaveRoomModal(false)}
+//               color="primary"
+//             >
+//               Cancel
+//             </Button>
+//             <Button
+//               onClick={() => this.onLeaveRoom()}
+//               color="primary"
+//             >
+//               Leave
+//             </Button>
+//           </DialogActions>
+//         </Dialog>
+//         <Dialog
+//           fullWidth
+//           open={showEditModal}
+//           onClose={() => this.setShowEditModal(false)}
+//         >
+//           <DialogTitle id="leave-room-modal">請輸入房間密碼</DialogTitle>
+//           <DialogContent>
+//             <Box marginBottom={3}>
+//               <TextField
+//                 required
+//                 fullWidth
+//                 margin="dense"
+//                 label="房間密碼"
+//                 placeholder="請輸入房間密碼"
+//                 variant="outlined"
+//                 value={roomPassword}
+//                 onChange={(e) => this.setRoomPassword(e.target.value)}
+//               />
+//             </Box>
+//           </DialogContent>
+//           <DialogActions>
+//             <Button
+//               onClick={() => this.setShowEditModal(false)}
+//               color="primary"
+//             >
+//               Cancel
+//             </Button>
+//             <Button
+//               onClick={() => this.changePassword()}
+//               color="primary"
+//             >
+//               Save
+//             </Button>
+//           </DialogActions>
+//         </Dialog>
+//       </Layout>
+//     )
+//   }
 
-  finishLoading(): void {
-  }
+//   nowLoading(): void {
+//   }
 
-  setRoomInfo(roomInfo: TRoom): void {
-    this.setState({ roomInfo });
-  }
+//   finishLoading(): void {
+//   }
 
-  setUserInfo(userInfo: TUser): void {
-    this.setState({ userInfo });
-  }
+//   setRoomInfo(roomInfo: TRoom): void {
+//     this.setState({ roomInfo });
+//   }
 
-  redirectToGamePage(): void {
-    if (!this.state.roomInfo) { return; }
-    Router.push({
-      pathname: '/game',
-      query: { id: this.state.roomInfo.gameId }
-    });
-  }
+//   setUserInfo(userInfo: TUser): void {
+//     this.setState({ userInfo });
+//   }
 
-  private get isMaster(): boolean {
-    const user = this.findUser;
-    if (user && user.isMaster) {
-      return true;
-    }
-    return false;
-  }
+//   redirectToGamePage(): void {
+//     if (!this.state.roomInfo) { return; }
+//     Router.push({
+//       pathname: '/game',
+//       query: { id: this.state.roomInfo.gameId }
+//     });
+//   }
 
-  private get isPlayerReady(): string {
-    const user = this.findUser;
-    if (user && user.isReady) {
-      return 'Cancel';
-    }
-    return 'Ready';
-  }
+//   private get isMaster(): boolean {
+//     const user = this.findUser;
+//     if (user && user.isMaster) {
+//       return true;
+//     }
+//     return false;
+//   }
 
-  private get disabledStart(): boolean {
-    const {
-      roomInfo,
-    } = this.state;
+//   private get isPlayerReady(): string {
+//     const user = this.findUser;
+//     if (user && user.isReady) {
+//       return 'Cancel';
+//     }
+//     return 'Ready';
+//   }
 
-    const notReady = roomInfo?.userList.filter(u => !u.isReady) || [];
-    if (notReady.length) {
-      return true;
-    }
-    return false;
-  }
+//   private get disabledStart(): boolean {
+//     const {
+//       roomInfo,
+//     } = this.state;
 
-  private get playerSide(): string {
-    const user = this.findUser;
-    if (user) {
-      return user.side
-    }
-    return '';
-  }
+//     const notReady = roomInfo?.userList.filter(u => !u.isReady) || [];
+//     if (notReady.length) {
+//       return true;
+//     }
+//     return false;
+//   }
 
-  private startGame(mode: number, gameId: string): void {
-    this.presenter.startGame(mode, gameId);
-  }
+//   private get playerSide(): string {
+//     const user = this.findUser;
+//     if (user) {
+//       return user.side
+//     }
+//     return '';
+//   }
 
-  private readyGame(): void {
-    this.presenter.readyGame();
-  }
+//   private startGame(mode: number, gameId: string): void {
+//     this.presenter.startGame(mode, gameId);
+//   }
 
-  private onSetPlayOrder(): void {
-    this.presenter.setPlayOrder();
-  }
+//   private readyGame(): void {
+//     this.presenter.readyGame();
+//   }
 
-  private onGameOver(isYouWin: boolean): void {
-    this.setState({ isYouWin, showGameOverModal: true });
-  }
+//   private onSetPlayOrder(): void {
+//     this.presenter.setPlayOrder();
+//   }
 
-  private updateGameOverStatus(): void {
-    this.presenter.gameOver();
-  }
+//   private onGameOver(isYouWin: boolean): void {
+//     this.setState({ isYouWin, showGameOverModal: true });
+//   }
 
-  private onLeaveRoom(): void {
-    const {
-      roomInfo,
-      userInfo,
-    } = this.state;
-    if (roomInfo && userInfo) {
-      this.presenter.leaveRoom(userInfo.id);
-      Router.push({
-        pathname: '/game',
-        query: { id: roomInfo.gameId }
-      });
-    }
-  }
+//   private updateGameOverStatus(): void {
+//     this.presenter.gameOver();
+//   }
 
-  private get findUser(): TRoomUser | undefined {
-    const {
-      roomInfo,
-      userInfo,
-    } = this.state;
+//   private onLeaveRoom(): void {
+//     const {
+//       roomInfo,
+//       userInfo,
+//     } = this.state;
+//     if (roomInfo && userInfo) {
+//       this.presenter.leaveRoom(userInfo.id);
+//       Router.push({
+//         pathname: '/game',
+//         query: { id: roomInfo.gameId }
+//       });
+//     }
+//   }
 
-    return roomInfo?.userList.find(u => {
-      return u.id === userInfo?.id
-    });
-  }
+//   private get findUser(): TRoomUser | undefined {
+//     const {
+//       roomInfo,
+//       userInfo,
+//     } = this.state;
 
-  private setShowLeaveRoomModal(show: boolean): void {
-    this.setState({ showLeaveRoomModal: show });
-  }
+//     return roomInfo?.userList.find(u => {
+//       return u.id === userInfo?.id
+//     });
+//   }
 
-  private setShowEditModal(show: boolean): void {
-    this.setState({ showEditModal: show });
-  }
+//   private setShowLeaveRoomModal(show: boolean): void {
+//     this.setState({ showLeaveRoomModal: show });
+//   }
 
-  private onKickOutPlayer(userID: string): void {
-    this.presenter.leaveRoom(userID);
-  }
+//   private setShowEditModal(show: boolean): void {
+//     this.setState({ showEditModal: show });
+//   }
 
-  private setRoomPassword(password: string): void {
-    this.setState({ roomPassword: password });
-  }
+//   private onKickOutPlayer(userID: string): void {
+//     this.presenter.leaveRoom(userID);
+//   }
 
-  private changePassword(): void {
-    this.presenter.changePassword(this.state.roomPassword);
-    this.setShowEditModal(false);
-  }
-}
+//   private setRoomPassword(password: string): void {
+//     this.setState({ roomPassword: password });
+//   }
 
-export default RoomView;
+//   private changePassword(): void {
+//     this.presenter.changePassword(this.state.roomPassword);
+//     this.setShowEditModal(false);
+//   }
+// }
+
+// export default RoomView;

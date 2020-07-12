@@ -42,6 +42,7 @@ const GameContainer = () => {
   const [editingPassword, setEditingPassword] = useState('');
   const [selectedRoomId, setSelectedRoomId] = useState('');
 
+  // component did mount
   useEffect(() => {
     const gameId = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO,});
@@ -58,6 +59,7 @@ const GameContainer = () => {
     }
   }, []);
 
+  // listening for ws and userInfo
   useEffect(() => {
     if (ws && userInfo) {
       ws.onopen = () => {
@@ -66,11 +68,10 @@ const GameContainer = () => {
           show: true,
           message: 'Connect successfully',
         });
-        const socketData: TSocket = {
-          userID: userInfo.id,
+        dispatch({
+          type: AppActionType.SEND_MESSAGE,
           event: SocketEvent.GetRooms,
-        }
-        ws.send(JSON.stringify(socketData));
+        });
       }
       ws.onerror = () => {
         console.log('connect failed');
@@ -92,13 +93,14 @@ const GameContainer = () => {
     }
   }, [ws, userInfo]);
 
+  // when create room successfully
   useEffect(() => {
     if (createdRoomId && userInfo && ws) {
-      const socketData: TSocket = {
-        userID: userInfo.id,
+      dispatch({
+        type: AppActionType.SEND_MESSAGE,
         event: SocketEvent.GetRooms,
-      }
-      ws.send(JSON.stringify(socketData));
+      });
+      redirectToRoomPage(createdRoomId);
     }
   }, [createdRoomId]);
 

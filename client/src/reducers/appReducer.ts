@@ -1,6 +1,7 @@
 import { TUser } from './../features/main/domain/models/User';
-import { TSocket } from 'src/types/Socket';
+import { TSocket, SocketEvent } from 'src/types/Socket';
 import { Ttoast } from 'src/types/ReduxTypes';
+import { WSAEACCES } from 'constants';
 
 export type State = {
   websocket?: WebSocket;
@@ -19,6 +20,7 @@ export const defaultState: State = {
 export enum ActionType {
   CREATE_SOCKET = 'CREATE_SOCKET',
   CLOSE_SOCKET = 'CLOSE_SOCKET',
+  SEND_MESSAGE = 'SEND_MESSAGE',
   GET_USER_INFO = 'GET_USER_INFO',
   SET_SHOW_TOAST = 'SET_SHOW_TOAST',
 };
@@ -32,6 +34,12 @@ export type CloseSocketAction = {
   type: ActionType.CLOSE_SOCKET,
 };
 
+export type SendMessageAction = {
+  type: ActionType.SEND_MESSAGE,
+  event: SocketEvent;
+  data: any;
+};
+
 export type LoadUserInfoAction = {
   type: ActionType.GET_USER_INFO,
 };
@@ -42,7 +50,11 @@ export type SetShowToastAction = {
   message: string,
 };
 
-export type Action = CreateSocketAction | CloseSocketAction | LoadUserInfoAction | SetShowToastAction;
+export type Action = CreateSocketAction
+                   | CloseSocketAction
+                   | SendMessageAction
+                   | LoadUserInfoAction
+                   | SetShowToastAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -70,6 +82,17 @@ const reducer = (state: State = defaultState, action: Action): State => {
       } else {
         throw Error('Socket not found...');
       }
+    }
+    case ActionType.SEND_MESSAGE: {
+      if (state.websocket && state.userInfo) {
+        const data: TSocket = {
+          userID: state.userInfo.id,
+          event: action.event,
+          data: action.data,
+        }
+        state.websocket.send(JSON.stringify(data));
+      }
+      return state;
     }
     case ActionType.SET_SHOW_TOAST: {
       return {
