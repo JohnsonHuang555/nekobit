@@ -3,8 +3,6 @@ import Router from 'next/router';
 import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
-import RoomUser from 'src/features/main/room/components/RoomUser';
-import { RoomContract } from 'src/features/main/room/roomContract';
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
 import { RoomPresenter } from 'src/features/main/room/roomPresenter';
 import { Injection } from 'src/features/main/room/injection/injection';
@@ -19,13 +17,13 @@ import { SocketEvent, TSocket } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
+import Chat from 'src/components/Chat';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
   const ws = useSelector(websocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const [roomInfo, setRoomInfo] = useState<TRoom>();
-
 
   // component did mount
   useEffect(() => {
@@ -126,7 +124,11 @@ const RoomContainer = () => {
             userList={roomInfo.userList}
             onKickOutPlayer={(id) => kickOutPlayer(id)}
           />
-          <Box></Box>
+          <Box className="block">
+            <Chat
+              onSubmit={() => {}}
+            />
+          </Box>
         </Grid>
         <Grid item xs={4}></Grid>
       </Grid>

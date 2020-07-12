@@ -4,6 +4,7 @@ import { TRoom } from '../../domain/models/Room';
 import { GameMode } from '../../domain/models/Game';
 import { Box, Grid, TextField, Button } from '@material-ui/core';
 import styles from '@styles/components/roomList.module.scss';
+import Chat from 'src/components/Chat';
 
 type RoomListProps = {
   rooms: TRoom[];
@@ -42,20 +43,9 @@ const RoomList = (props: RoomListProps) => {
             </Grid>
           </Box>
           <Box className="block">
-            <Box className={styles.chat}>
-            </Box>
-            <Box display="flex">
-              <TextField
-                label="想說點什麼嗎？..."
-                variant="outlined"
-                color="primary"
-                size="small"
-                fullWidth
-              />
-              <Button variant="contained" color="primary">
-                送出
-              </Button>
-            </Box>
+            <Chat
+              onSubmit={() => {}}
+            />
           </Box>
         </Grid>
         <Grid item xs={3}>

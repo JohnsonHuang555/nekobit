@@ -29,7 +29,7 @@ const UserList = (props: UserListProps) => {
                 <IconButton aria-label="info" size="small">
                   <FontAwesomeIcon icon={faInfoCircle} />
                 </IconButton>
-                {isYouMaster && (
+                {isYouMaster && !user.isMaster && (
                   <IconButton aria-label="kickout" size="small" onClick={() => onKickOutPlayer(user.id)}>
                     <FontAwesomeIcon icon={faUserTimes} />
                   </IconButton>
