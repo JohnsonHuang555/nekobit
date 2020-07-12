@@ -16,6 +16,7 @@ export type TCreateRoom = {
   title: string;
   password?: string;
   mode: number;
+  gameID: string;
 }
 
 export type TModeVaule = {

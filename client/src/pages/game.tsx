@@ -204,7 +204,10 @@ const GameContainer = () => {
           <Button
             onClick={() => dispatch({
               type: ActionType.CREATE_ROOM,
-              createRoomData,
+              createRoomData: {
+                ...createRoomData,
+                gameID: gameInfo.id,
+              },
             })}
             color="primary"
           >

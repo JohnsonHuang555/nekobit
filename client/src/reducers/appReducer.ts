@@ -35,6 +35,7 @@ export type CloseSocketAction = {
 
 export type SendMessageAction = {
   type: ActionType.SEND_MESSAGE,
+  userId: string;
   event: SocketEvent;
   data: any;
 };
@@ -85,7 +86,9 @@ const reducer = (state: State = defaultState, action: Action): State => {
     case ActionType.SEND_MESSAGE: {
       if (state.websocket && state.userInfo) {
         const data: TSocket = {
-          userID: state.userInfo.id,
+          userID: action.userId ?
+          action.userId :
+          state.userInfo.id,
           event: action.event,
           data: action.data,
         }

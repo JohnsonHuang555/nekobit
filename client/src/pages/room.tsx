@@ -18,13 +18,14 @@ import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { SocketEvent, TSocket } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import UserList from 'src/features/main/room/components/UserList';
-// import '@styles/pages/room.scss';
+import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
   const ws = useSelector(websocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const [roomInfo, setRoomInfo] = useState<TRoom>();
+
 
   // component did mount
   useEffect(() => {
@@ -41,6 +42,7 @@ const RoomContainer = () => {
   }, []);
 
   useEffect(() => {
+    let tempRoomInfo: TRoom | undefined;
     if (ws && userInfo) {
       ws.onopen = () => {
         dispatch({
@@ -61,7 +63,26 @@ const RoomContainer = () => {
         switch (wsData.event) {
           case SocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            tempRoomInfo = roomInfo;
             setRoomInfo(roomInfo);
+            break;
+          }
+          case SocketEvent.LeaveRoom: {
+            if (!tempRoomInfo) { return; }
+            const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
+            const user = roomUserList.find(u => u.id === userInfo.id);
+            if (user) {
+              setRoomInfo({
+                ...tempRoomInfo,
+                userList: roomUserList,
+              });
+            } else {
+              Router.push({
+                pathname: '/game',
+                query: { id: tempRoomInfo.gameId }
+              });
+            }
+            break;
           }
         }
       };
@@ -85,6 +106,13 @@ const RoomContainer = () => {
     return false;
   };
 
+  const kickOutPlayer = (id: string) => {
+    dispatch({
+      type: AppActionType.SEND_MESSAGE,
+      userId: id,
+      event: SocketEvent.LeaveRoom,
+    });
+  };
 
   return (
     <Layout>
@@ -96,7 +124,7 @@ const RoomContainer = () => {
           <UserList
             isYouMaster={isYouMaster()}
             userList={roomInfo.userList}
-            onKickOutPlayer={() => {}}
+            onKickOutPlayer={(id) => kickOutPlayer(id)}
           />
           <Box></Box>
         </Grid>
