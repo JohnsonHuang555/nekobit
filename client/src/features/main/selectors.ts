@@ -42,3 +42,11 @@ export const isPlayerReadySelector = (store: StoreState) => {
     }
     return 'Ready';
 }
+
+export const playerSideSelector = (store: StoreState) => {
+  const user = getUserInfo(store);
+  if (user) {
+    return user.side
+  }
+  return '';
+}

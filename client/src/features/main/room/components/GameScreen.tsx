@@ -8,9 +8,8 @@ type GameScreenProps = {
   roomInfo: TRoom;
   userID: string;
   isYouMaster: boolean;
-  playerSide: T;
+  playerSide: string;
   onSetPlayOrder: () => void;
-  updateRoomInfo: (rf: TRoom) => void;
   onGameOver: (iyw: boolean) => void;
 };
 
@@ -21,36 +20,35 @@ const GameScreen = (props: GameScreenProps) => {
     isYouMaster,
     playerSide,
     onSetPlayOrder,
-    updateRoomInfo,
     onGameOver,
   } = props;
 
   const yourTurn = roomInfo.nowTurn && userID === roomInfo.nowTurn ? true : false;
 
   const updateRoomInfoHandler = (rf: Partial<TRoom>) => {
-    const newRoomInfo: TRoom = {
-      ...roomInfo,
-      ...rf,
-    };
+    // const newRoomInfo: TRoom = {
+    //   ...roomInfo,
+    //   ...rf,
+    // };
 
-    // 傳遞新的 roomInfo 外部做更新
-    updateRoomInfo(newRoomInfo);
+    // // 傳遞新的 roomInfo 外部做更新
+    // updateRoomInfo(newRoomInfo);
   };
 
-  const playGame = {
-    [GameList.ChineseChess]:
-      <ChineseChessView
-        roomID={roomInfo.id}
-        chesses={roomInfo.gameData as TChineseChess[]}
-        mode={roomInfo.mode}
-        yourTurn={yourTurn}
-        playerSide={playerSide}
-        updateChineseChess={updateRoomInfoHandler}
-        updateNowTurn={updateRoomInfoHandler}
-        updateUserList={updateRoomInfoHandler}
-        onGameOver={onGameOver}
-      />
-  };
+  // const playGame = {
+  //   [GameList.ChineseChess]:
+  //     <ChineseChessView
+  //       roomID={roomInfo.id}
+  //       chesses={roomInfo.gameData as TChineseChess[]}
+  //       mode={roomInfo.mode}
+  //       yourTurn={yourTurn}
+  //       playerSide={playerSide as ChessSide}
+  //       updateChineseChess={updateRoomInfoHandler}
+  //       updateNowTurn={updateRoomInfoHandler}
+  //       updateUserList={updateRoomInfoHandler}
+  //       onGameOver={onGameOver}
+  //     />
+  // };
 
   return (
     <Box className="game-screen">
@@ -63,7 +61,7 @@ const GameScreen = (props: GameScreenProps) => {
         <div className="your-turn">你的回合</div>
       )}
       <div className="your-side">{playerSide}</div>
-      {playGame[roomInfo.gameId as GameList]}
+      {/* {playGame[roomInfo.gameId as GameList]} */}
     </Box>
   );
 };

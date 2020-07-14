@@ -20,7 +20,12 @@ import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import Chat from 'src/components/Chat';
 import GameSettings from 'src/features/main/room/components/GameSettings';
-import { roomInfoSelector, isYouMasterSelector, isPlayerReadySelector } from 'src/features/main/selectors';
+import {
+  roomInfoSelector,
+  isYouMasterSelector,
+  isPlayerReadySelector,
+  playerSideSelector
+} from 'src/features/main/selectors';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
@@ -29,6 +34,7 @@ const RoomContainer = () => {
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
   const isPlayerReady = useSelector(isPlayerReadySelector);
+  const playerSide = useSelector(playerSideSelector);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showLeaveRoomModal, setShowLeaveRoomModal] = useState(false);
@@ -97,6 +103,7 @@ const RoomContainer = () => {
             }
             break;
           }
+          case SocketEvent.StartGame:
           case SocketEvent.ChangePassword:
           case SocketEvent.SetPlayOrder: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
@@ -150,13 +157,6 @@ const RoomContainer = () => {
   // const gameOver = (isWin: boolean) => {
 
   // };
-
-  const redirectToGamePage = () => {
-    Router.push({
-      pathname: '/game',
-      query: { id: roomInfo.gameId }
-    });
-  }
 
   return (
     <Layout>
@@ -238,20 +238,19 @@ const RoomContainer = () => {
           )}
         </Grid>
       </Grid>
-      {/* {roomInfo.status === 1 && userInfo && (
+      {roomInfo.status === 1 && userInfo && (
         <GameScreen
           roomInfo={roomInfo}
           userID={userInfo.id}
-          isYouMaster={isYouMaster()}
-          playerSide={playerSide as ChessSide}
+          isYouMaster={isYouMaster}
+          playerSide={playerSide}
           onSetPlayOrder={() => dispatch({
             type: AppActionType.SEND_MESSAGE,
             event: SocketEvent.SetPlayOrder,
           })}
-          updateRoomInfo={(rf) => updateRoomInfo(rf)}
           onGameOver={(iyw) => {}}
         />
-      )} */}
+      )}
       <Dialog
         fullWidth
         open={showLeaveRoomModal}
