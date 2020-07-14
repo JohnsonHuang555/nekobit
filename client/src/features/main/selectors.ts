@@ -16,3 +16,7 @@ export const createRoomDataSelector = (store: StoreState) =>
 
 export const createdRoomIdSelector = (store: StoreState) =>
   store.main.game.createdRoomId;
+
+// room
+export const roomInfoSelector = (store: StoreState) =>
+  store.main.room.roomInfo;

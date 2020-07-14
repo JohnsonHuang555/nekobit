@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Router from 'next/router';
-import { faPen, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faDoorOpen, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Layout from "src/components/Layout";
 import { TRoom, TRoomUser } from 'src/features/main/domain/models/Room';
@@ -13,18 +13,20 @@ import { ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import { useSelector, useDispatch } from 'react-redux';
 import { websocketSelector, userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
+import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
 import { SocketEvent, TSocket } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import Chat from 'src/components/Chat';
 import GameSettings from 'src/features/main/room/components/GameSettings';
+import { roomInfoSelector } from 'src/features/main/selectors';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
   const ws = useSelector(websocketSelector);
   const userInfo = useSelector(userInfoSelector);
-  const [roomInfo, setRoomInfo] = useState<TRoom>();
+  const roomInfo = useSelector(roomInfoSelector);
 
   // component did mount
   useEffect(() => {
@@ -41,7 +43,6 @@ const RoomContainer = () => {
   }, []);
 
   useEffect(() => {
-    let tempRoomInfo: TRoom | undefined;
     if (ws && userInfo) {
       ws.onopen = () => {
         dispatch({
@@ -62,24 +63,27 @@ const RoomContainer = () => {
         switch (wsData.event) {
           case SocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
-            tempRoomInfo = roomInfo;
-            setRoomInfo(roomInfo);
+            dispatch({
+              type: RoomActionType.INITIAL_ROOM_INFO,
+              roomInfo,
+            });
             break;
           }
           case SocketEvent.LeaveRoom:
           case SocketEvent.ReadyGame: {
-            if (!tempRoomInfo) { return; }
             const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const user = roomUserList.find(u => u.id === userInfo.id);
             if (user) {
-              setRoomInfo({
-                ...tempRoomInfo,
-                userList: roomUserList,
+              dispatch({
+                type: RoomActionType.UPDATE_ROOM_INFO,
+                roomInfo: {
+                  userList: roomUserList,
+                },
               });
             } else {
               Router.push({
                 pathname: '/game',
-                query: { id: tempRoomInfo.gameId }
+                query: { id: roomInfo?.gameId }
               });
             }
             break;
@@ -130,10 +134,36 @@ const RoomContainer = () => {
     return false;
   }
 
+  // const gameOver = (isWin: boolean) => {
+
+  // };
+
   return (
     <Layout>
       <div className="section-heading">
         <h2>{roomInfo.roomNumber}.{roomInfo.title}</h2>
+        <Box marginBottom={1} display="flex">
+          <Box marginRight={1}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={
+                <FontAwesomeIcon icon={faEdit}/>
+              }
+            >
+              編輯
+            </Button>
+          </Box>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={
+              <FontAwesomeIcon icon={faDoorOpen}/>
+            }
+          >
+            離開
+          </Button>
+        </Box>
       </div>
       <Grid container spacing={3}>
         <Grid item xs={8}>
@@ -186,6 +216,20 @@ const RoomContainer = () => {
           )}
         </Grid>
       </Grid>
+      {/* {roomInfo.status === 1 && userInfo && (
+        <GameScreen
+          roomInfo={roomInfo}
+          userID={userInfo.id}
+          isYouMaster={isYouMaster()}
+          playerSide={playerSide as ChessSide}
+          onSetPlayOrder={() => dispatch({
+            type: AppActionType.SEND_MESSAGE,
+            event: SocketEvent.SetPlayOrder,
+          })}
+          updateRoomInfo={(rf) => updateRoomInfo(rf)}
+          onGameOver={(iyw) => {}}
+        />
+      )} */}
     </Layout>
   )
 };

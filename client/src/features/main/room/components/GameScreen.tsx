@@ -7,8 +7,8 @@ import { TChineseChess, ChessSide } from "src/features/games/domain/models/Chine
 type GameScreenProps = {
   roomInfo: TRoom;
   userID: string;
-  isMaster: boolean;
-  playerSide: ChessSide;
+  isYouMaster: boolean;
+  playerSide: T;
   onSetPlayOrder: () => void;
   updateRoomInfo: (rf: TRoom) => void;
   onGameOver: (iyw: boolean) => void;
@@ -18,7 +18,7 @@ const GameScreen = (props: GameScreenProps) => {
   const {
     roomInfo,
     userID,
-    isMaster,
+    isYouMaster,
     playerSide,
     onSetPlayOrder,
     updateRoomInfo,
@@ -54,7 +54,7 @@ const GameScreen = (props: GameScreenProps) => {
 
   return (
     <Box className="game-screen">
-      {!roomInfo.nowTurn && isMaster && (
+      {!roomInfo.nowTurn && isYouMaster && (
         <Button className="set-play-order" onClick={onSetPlayOrder}>
           決定順序
         </Button>
