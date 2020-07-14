@@ -30,6 +30,10 @@ const RoomContainer = () => {
   const isYouMaster = useSelector(isYouMasterSelector);
   const isPlayerReady = useSelector(isPlayerReadySelector);
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showLeaveRoomModal, setShowLeaveRoomModal] = useState(false);
+  const [editingPassword, setEditingPassword] = useState('');
+
   // component did mount
   useEffect(() => {
     const id = location.search.substr(4);
@@ -46,6 +50,7 @@ const RoomContainer = () => {
 
   useEffect(() => {
     if (ws && userInfo) {
+      let gameId = '';
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -65,14 +70,16 @@ const RoomContainer = () => {
         switch (wsData.event) {
           case SocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            setEditingPassword(roomInfo.password);
             dispatch({
               type: RoomActionType.INITIAL_ROOM_INFO,
               roomInfo,
             });
+            gameId = roomInfo.gameId;
             break;
           }
           case SocketEvent.LeaveRoom:
-          case SocketEvent.ReadyGame: {
+          case SocketEvent.ReadyGame:{
             const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const user = roomUserList.find(u => u.id === userInfo.id);
             if (user) {
@@ -85,10 +92,18 @@ const RoomContainer = () => {
             } else {
               Router.push({
                 pathname: '/game',
-                query: { id: roomInfo?.gameId }
+                query: { id: gameId }
               });
             }
             break;
+          }
+          case SocketEvent.ChangePassword:
+          case SocketEvent.SetPlayOrder: {
+            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo,
+            });
           }
         }
       };
@@ -114,9 +129,34 @@ const RoomContainer = () => {
     return false;
   }
 
+  const onLeaveRoom = () => {
+    dispatch({
+      type: AppActionType.SEND_MESSAGE,
+      event: SocketEvent.LeaveRoom,
+    });
+  };
+
+  const changePassword = () => {
+    dispatch({
+      type: AppActionType.SEND_MESSAGE,
+      event: SocketEvent.ChangePassword,
+      data: {
+        roomPassword: editingPassword,
+      }
+    })
+    setShowEditModal(false);
+  };
+
   // const gameOver = (isWin: boolean) => {
 
   // };
+
+  const redirectToGamePage = () => {
+    Router.push({
+      pathname: '/game',
+      query: { id: roomInfo.gameId }
+    });
+  }
 
   return (
     <Layout>
@@ -130,6 +170,7 @@ const RoomContainer = () => {
               startIcon={
                 <FontAwesomeIcon icon={faEdit}/>
               }
+              onClick={() => setShowEditModal(true)}
             >
               編輯
             </Button>
@@ -140,6 +181,7 @@ const RoomContainer = () => {
             startIcon={
               <FontAwesomeIcon icon={faDoorOpen}/>
             }
+            onClick={() => setShowLeaveRoomModal(true)}
           >
             離開
           </Button>
@@ -210,6 +252,67 @@ const RoomContainer = () => {
           onGameOver={(iyw) => {}}
         />
       )} */}
+      <Dialog
+        fullWidth
+        open={showLeaveRoomModal}
+        onClose={() => setShowLeaveRoomModal(false)}
+      >
+        <DialogTitle id="leave-room-modal">提示</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            確定要離開房間?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowLeaveRoomModal(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => onLeaveRoom()}
+            color="primary"
+          >
+            Leave
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+      >
+        <DialogTitle id="leave-room-modal">請輸入房間密碼</DialogTitle>
+        <DialogContent>
+          <Box marginBottom={3}>
+            <TextField
+              required
+              fullWidth
+              margin="dense"
+              label="房間密碼"
+              placeholder="請輸入房間密碼"
+              variant="outlined"
+              value={editingPassword}
+              onChange={(e) => setEditingPassword(e.target.value)}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowEditModal(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => changePassword()}
+            color="primary"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   )
 };
