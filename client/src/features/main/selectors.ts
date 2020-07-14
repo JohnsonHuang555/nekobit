@@ -18,5 +18,27 @@ export const createdRoomIdSelector = (store: StoreState) =>
   store.main.game.createdRoomId;
 
 // room
+const getUserInfo = (store: StoreState) => {
+  return store.main.room.roomInfo?.userList.find(
+    user => user.id === store.app.userInfo?.id
+  );
+};
+
 export const roomInfoSelector = (store: StoreState) =>
   store.main.room.roomInfo;
+
+export const isYouMasterSelector = (store: StoreState) => {
+  const user = getUserInfo(store);
+  if (user && user.isMaster) {
+    return true;
+  }
+  return false;
+}
+
+export const isPlayerReadySelector = (store: StoreState) => {
+  const user = getUserInfo(store);
+    if (user && user.isReady) {
+      return 'Cancel';
+    }
+    return 'Ready';
+}

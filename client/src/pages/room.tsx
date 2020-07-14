@@ -20,13 +20,15 @@ import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import Chat from 'src/components/Chat';
 import GameSettings from 'src/features/main/room/components/GameSettings';
-import { roomInfoSelector } from 'src/features/main/selectors';
+import { roomInfoSelector, isYouMasterSelector, isPlayerReadySelector } from 'src/features/main/selectors';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
   const ws = useSelector(websocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const roomInfo = useSelector(roomInfoSelector);
+  const isYouMaster = useSelector(isYouMasterSelector);
+  const isPlayerReady = useSelector(isPlayerReadySelector);
 
   // component did mount
   useEffect(() => {
@@ -96,20 +98,6 @@ const RoomContainer = () => {
   if (!roomInfo) { return null; }
 
   // methods
-  const findUser = () => {
-    return roomInfo.userList.find(u => {
-      return u.id === userInfo?.id
-    });
-  };
-
-  const isYouMaster = (): boolean => {
-    const user = findUser();
-    if (user && user.isMaster) {
-      return true;
-    }
-    return false;
-  };
-
   const kickOutPlayer = (id: string) => {
     dispatch({
       type: AppActionType.SEND_MESSAGE,
@@ -117,14 +105,6 @@ const RoomContainer = () => {
       event: SocketEvent.LeaveRoom,
     });
   };
-
-  const isPlayerReady = (): string => {
-    const user = findUser();
-    if (user && user.isReady) {
-      return 'Cancel';
-    }
-    return 'Ready';
-  }
 
   const disabledStart = (): boolean => {
     const notReady = roomInfo.userList.filter(u => !u.isReady) || [];
@@ -168,7 +148,7 @@ const RoomContainer = () => {
       <Grid container spacing={3}>
         <Grid item xs={8}>
           <UserList
-            isYouMaster={isYouMaster()}
+            isYouMaster={isYouMaster}
             userList={roomInfo.userList}
             onKickOutPlayer={(id) => kickOutPlayer(id)}
           />
@@ -182,7 +162,7 @@ const RoomContainer = () => {
           <Box className="block">
             <GameSettings />
           </Box>
-          {isYouMaster() ? (
+          {isYouMaster ? (
             <Button
               variant="contained"
               color="primary"
@@ -211,7 +191,7 @@ const RoomContainer = () => {
                 event: SocketEvent.ReadyGame,
               })}
             >
-              {isPlayerReady()}
+              {isPlayerReady}
             </Button>
           )}
         </Grid>
