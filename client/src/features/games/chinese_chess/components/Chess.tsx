@@ -1,4 +1,5 @@
 import { ChessSide } from "../../domain/models/ChineseChess";
+import styles from '@styles/games/chineseChess.module.scss';
 
 type ChessProps = {
   side: ChessSide;
@@ -13,13 +14,21 @@ const Chess = (props: ChessProps) => {
     isFlipped,
     onChessClick,
   } = props;
+
+  const className = [
+    styles.chess,
+    isFlipped ? styles.isFlipped : '',
+  ].join(' ');
+
   return (
     <div
-      className={`chess ${isFlipped ? 'is-flipped' : ''}`}
+      className={className}
       onClick={onChessClick}
     >
       {isFlipped && (
-        <span className={side === ChessSide.Red ? ' side-red' : ' side-black'}>{name}</span>
+        <span className={side === ChessSide.Red ? ` ${styles.sideRed}` : ` ${styles.sideBlack}`}>
+          {name}
+        </span>
       )}
     </div>
   );

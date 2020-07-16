@@ -24,7 +24,8 @@ import {
   roomInfoSelector,
   isYouMasterSelector,
   isPlayerReadySelector,
-  playerSideSelector
+  gameOverSelector,
+  playerSideSelector,
 } from 'src/features/main/selectors';
 
 const RoomContainer = () => {
@@ -34,6 +35,7 @@ const RoomContainer = () => {
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
   const isPlayerReady = useSelector(isPlayerReadySelector);
+  const gameOver = useSelector(gameOverSelector);
   const playerSide = useSelector(playerSideSelector);
 
   const [showEditModal, setShowEditModal] = useState(false);
@@ -105,7 +107,8 @@ const RoomContainer = () => {
           }
           case SocketEvent.StartGame:
           case SocketEvent.ChangePassword:
-          case SocketEvent.SetPlayOrder: {
+          case SocketEvent.SetPlayOrder:
+          case SocketEvent.GameOver: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -285,6 +288,35 @@ const RoomContainer = () => {
               value={editingPassword}
               onChange={(e) => setEditingPassword(e.target.value)}
             />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowEditModal(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => changePassword()}
+            color="primary"
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth
+        open={gameOver.isGameOver}
+        onClose={() => dispatch({
+          type: AppActionType.SEND_MESSAGE,
+          event: SocketEvent.GameOver,
+        })}
+      >
+        <DialogTitle id="leave-room-modal">提示</DialogTitle>
+        <DialogContent>
+          <Box>
+            你{gameOver.winner === playerSide ? '贏' : '輸'}了
           </Box>
         </DialogContent>
         <DialogActions>

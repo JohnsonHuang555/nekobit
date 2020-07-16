@@ -50,3 +50,6 @@ export const playerSideSelector = (store: StoreState) => {
   }
   return '';
 }
+
+export const gameOverSelector = (store: StoreState) =>
+  store.main.room.gameOver;
