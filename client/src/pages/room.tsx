@@ -239,17 +239,7 @@ const RoomContainer = () => {
         </Grid>
       </Grid>
       {roomInfo.status === 1 && userInfo && (
-        <GameScreen
-          roomInfo={roomInfo}
-          userID={userInfo.id}
-          isYouMaster={isYouMaster}
-          playerSide={playerSide}
-          onSetPlayOrder={() => dispatch({
-            type: AppActionType.SEND_MESSAGE,
-            event: SocketEvent.SetPlayOrder,
-          })}
-          onGameOver={(iyw) => {}}
-        />
+        <GameScreen gameId={roomInfo.gameId} />
       )}
       <Dialog
         fullWidth
