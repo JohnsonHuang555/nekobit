@@ -21,6 +21,7 @@ export enum ActionType {
   CLOSE_SOCKET = 'CLOSE_SOCKET',
   SEND_MESSAGE = 'SEND_MESSAGE',
   GET_USER_INFO = 'GET_USER_INFO',
+  SET_USER_INFO = 'SET_USER_INFO',
   SET_SHOW_TOAST = 'SET_SHOW_TOAST',
 };
 
@@ -44,6 +45,12 @@ export type LoadUserInfoAction = {
   type: ActionType.GET_USER_INFO,
 };
 
+export type SetUserInfoAction = {
+  type: ActionType.SET_USER_INFO,
+  userInfo?: TUser;
+  isLogout?: boolean;
+};
+
 export type SetShowToastAction = {
   type: ActionType.SET_SHOW_TOAST,
   show: boolean,
@@ -54,7 +61,8 @@ export type Action = CreateSocketAction
                    | CloseSocketAction
                    | SendMessageAction
                    | LoadUserInfoAction
-                   | SetShowToastAction;
+                   | SetShowToastAction
+                   | SetUserInfoAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -66,10 +74,28 @@ const reducer = (state: State = defaultState, action: Action): State => {
       }
     }
     case ActionType.GET_USER_INFO: {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo') || '');
-      return {
-        ...state,
-        userInfo,
+      const userInfo = localStorage.getItem('userInfo');
+      if (userInfo) {
+        return {
+          ...state,
+          userInfo: JSON.parse(userInfo),
+        }
+      }
+      return state;
+    }
+    case ActionType.SET_USER_INFO: {
+      if (action.isLogout) {
+        localStorage.removeItem('userInfo');
+        return {
+          ...state,
+          userInfo: undefined,
+        }
+      } else {
+        localStorage.setItem('userInfo', JSON.stringify(action.userInfo));
+        return {
+          ...state,
+          userInfo: action.userInfo,
+        }
       }
     }
     case ActionType.CLOSE_SOCKET: {

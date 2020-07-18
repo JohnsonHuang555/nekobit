@@ -1,5 +1,44 @@
 @import '../color';
 
+.header {
+  background-color: $navbar-bg !important;
+  box-shadow: 0 3px 6px 0 $basic-black;
+}
+
+.logo {
+  flex-grow: 1;
+  a {
+    text-decoration: none;
+    padding: 10px 0;
+  }
+  .g {
+    color: $basic-white;
+    font-size: 34px;
+  }
+  .play {
+    font-size: 30px;
+    color: $navbar-bg;
+    background: $logo-blue;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 5px;
+    line-height: 1;
+  }
+}
+
+.image {
+  width: 46px;
+  height: 46px;
+  margin-right: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.75);
+}
+
+.name {
+  font-size: 18px;
+  margin: 0 12px;
+}
+
 .navbar {
   background: $navbar-bg;
   height: 92px;

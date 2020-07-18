@@ -50,7 +50,6 @@ const RoomContainer = () => {
   // component did mount
   useEffect(() => {
     const id = location.search.substr(4);
-    dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
       type: AppActionType.CREATE_SOCKET,
       domain: id,

@@ -2,97 +2,122 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import uuid from 'uuid';
-import LoginModal from 'src/components/Modals/LoginModal';
-import useLocalStorage from 'src/customHook/useLocalStorage';
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
-import '@styles/components/header.module.scss';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  TextField
+} from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { userInfoSelector } from 'src/selectors';
+import { ActionType as AppActionType } from 'src/reducers/appReducer';
+import styles from '@styles/components/header.module.scss';
 
 const Header = () => {
-  const [isShowLoginModal, setIsShowLoginModal] = useState(false);
-  const [userInfo, setUserInfo] = useLocalStorage('userInfo', null);
+  const dispatch = useDispatch();
+  const userInfo = useSelector(userInfoSelector);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [userName, setUserName] = useState('');
 
   const onLogin = () => {
-    setIsShowLoginModal(true);
-  };
-  const onCloseLogin = () => {
-    setIsShowLoginModal(false);
-  };
-
-  const login = (name: string) => {
-    const userData = {
-      name,
-      id: uuid(),
-      account: "",
-      isLogin: true,
-    }
-    setUserInfo(userData);
-    setIsShowLoginModal(false);
+    dispatch({
+      type: AppActionType.SET_USER_INFO,
+      userInfo: {
+        id: uuid(),
+        name: userName,
+      },
+    });
+    setShowLoginModal(false);
   };
 
-  const logout = () => {
-    setUserInfo(null);
+  const onLogout = () => {
+    dispatch({
+      type: AppActionType.SET_USER_INFO,
+      isLogout: true,
+    });
     Router.push('/');
   };
 
   useEffect(() => {
-    if (!userInfo) {
-      setIsShowLoginModal(true);
-    }
+    dispatch({ type: AppActionType.GET_USER_INFO });
   }, []);
 
   return (
     <>
-      <LoginModal
-        show={isShowLoginModal}
-        login={login}
-        onCloseLogin={onCloseLogin}
-      />
-      <AppBar position="static">
+      <Dialog
+        fullWidth
+        open={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        aria-labelledby="login-modal"
+      >
+        <DialogTitle id="login-modal">登入</DialogTitle>
+        <DialogContent>
+          <Box marginBottom={2}>
+            <TextField
+              required
+              fullWidth
+              label="暱稱"
+              placeholder="請輸入您的暱稱"
+              variant="outlined"
+              onChange={(e) => setUserName(e.target.value)}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setShowLoginModal(false)}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={() => onLogin()}
+            color="primary"
+            disabled={!userName ? true : false}
+          >
+            Login
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <AppBar position="static" className={styles.header}>
         <Toolbar>
-          <Typography variant="h6">
+          <Typography variant="h6" className={styles.logo}>
             <Link href="/">
-              <a className="logo">
-                <b className="g">G</b>
-                <b className="play">play</b>
+              <a>
+                <span className={styles.g}>G</span>
+                <span className={styles.play}>play</span>
               </a>
             </Link>
           </Typography>
-          <Button color="inherit">Login</Button>
+          {!userInfo ? (
+            <Button
+              color="inherit"
+              onClick={() => setShowLoginModal(true)}
+            >
+              Login
+            </Button>
+          ) : (
+            <Box display="flex" alignItems="center">
+              <img className={styles.image} src="https://images.pexels.com/photos/3393375/pexels-photo-3393375.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
+              <Box className={styles.name}>
+                {userInfo.name}
+              </Box>
+              <Button
+                color="inherit"
+                onClick={() => onLogout()}
+              >
+                Logout
+              </Button>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
-      {/* <nav className="navbar navbar-expand-lg navbar-dark">
-        <div className="container">
-          <Link href="/">
-            <a className="logo">
-              <b className="g">G</b>
-              <b className="play">play</b>
-            </a>
-          </Link>
-          <div className="navbar-nav">
-            { !userInfo ? (
-              <>
-                <a onClick={onLogin} href="javacript: void();">Login</a>
-                <Link href="/signup">
-                  <a className="nav-item nav-link">SignUp</a>
-                </Link>
-              </>
-              ) : (
-              <div className="member_info">
-                <div className="user">
-                  <div className="photo">
-                    <img src="https://images.pexels.com/photos/3393375/pexels-photo-3393375.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
-                  </div>
-                  <b className="name">{userInfo.name}</b>
-                  <div className="down">
-                    <button onClick={logout}>Logout</button>
-                  </div>
-                </div>
-                <span className="at">在<span>西洋棋</span>大廳</span>
-              </div> )
-            }
-          </div>
-        </div>
-      </nav> */}
     </>
   )
 }
