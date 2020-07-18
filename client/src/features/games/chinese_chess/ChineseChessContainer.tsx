@@ -2,21 +2,24 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { Box } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import { websocketSelector, userInfoSelector } from 'src/selectors';
 import { TSocket, SocketEvent } from 'src/types/Socket';
-import { roomInfoSelector, playerSideSelector } from 'src/features/main/selectors';
+import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
 import Hidden from './components/Mode/Hidden';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
 import { CheckMoveRange } from '../helpers/CheckMoveRange';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import { ChineseChessFactory } from '../domain/factories/ChineseChessFactory';
+import styles from '@styles/games/chineseChess.module.scss';
+import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
   const ws = useSelector(websocketSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const playerSide = useSelector(playerSideSelector);
+  const isYouMaster = useSelector(isYouMasterSelector);
   const userInfo = useSelector(userInfoSelector);
 
   const [selectedChess, setSelectedChess] = useState<TChineseChess>();
@@ -27,17 +30,12 @@ const ChineseChessContainer = () => {
         const wsData: TSocket = JSON.parse(webSocket.data);
         switch (wsData.event) {
           case SocketEvent.SetPlayOrder: {
-            const userList = UserFactory.createArrayFromNet(wsData.data.roomInfo.user_list);
-            const nowTurn: string = wsData.data.roomInfo.now_turn;
-            if (userList.length && nowTurn) {
-              dispatch({
-                type: RoomActionType.UPDATE_ROOM_INFO,
-                roomInfo: {
-                  nowTurn,
-                  userList,
-                }
-              });
-            }
+            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo,
+            });
+            break;
           }
           case SocketEvent.FlipChess: {
             const userList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
@@ -51,6 +49,7 @@ const ChineseChessContainer = () => {
                 gameData,
               }
             });
+            break;
           }
           case SocketEvent.MoveChess:
           case SocketEvent.EatChess: {
@@ -89,6 +88,7 @@ const ChineseChessContainer = () => {
                 nowTurn,
               }
             });
+            break;
           }
         }
       };
@@ -146,7 +146,7 @@ const ChineseChessContainer = () => {
 
   const onEat = (targetChess: TChineseChess, gameMode: GameModeCode) => {
     if (!targetChess || !selectedChess) { return; }
-    const chesses: TChineseChess[] = roomInfo.gameData.chesses;
+    const chesses: TChineseChess[] = roomInfo.gameData;
 
     // 炮 要判斷中間是否隔一個
     if (selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
@@ -255,9 +255,30 @@ const ChineseChessContainer = () => {
   }
 
   return (
-    <Box>
-      {renderMode}
-    </Box>
+    <>
+      <Box className={styles.header}>
+        {!roomInfo.nowTurn && isYouMaster && (
+          <Button
+            color="primary"
+            size="large"
+            variant="contained"
+            onClick={() => dispatch({
+              type: AppActionType.SEND_MESSAGE,
+              event: SocketEvent.SetPlayOrder,
+            })}
+          >
+            決定順序
+          </Button>
+        )}
+        {yourTurn && (
+          <Box>你的回合</Box>
+        )}
+        <Box>{playerSide}</Box>
+      </Box>
+      <Box>
+        {renderMode}
+      </Box>
+    </>
   );
 };
 

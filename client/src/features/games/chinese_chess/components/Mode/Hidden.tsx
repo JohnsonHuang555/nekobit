@@ -1,7 +1,7 @@
 import React from 'react';
 import { TChineseChess, ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import MapItem from '../MapItem';
-import { Box } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import styles from '@styles/games/chineseChess.module.scss';
 
 type HiddenProps = {
@@ -76,8 +76,10 @@ const Hidden = (props: HiddenProps) => {
   }
 
   return (
-    <Box className={styles.container}>
-      {chessMap()}
+    <Box width="100vh">
+      <Grid container className={styles.container}>
+          {chessMap()}
+      </Grid>
     </Box>
   )
 };

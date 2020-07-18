@@ -107,13 +107,13 @@ const RoomContainer = () => {
           }
           case SocketEvent.StartGame:
           case SocketEvent.ChangePassword:
-          case SocketEvent.SetPlayOrder:
           case SocketEvent.GameOver: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
               roomInfo,
             });
+            break;
           }
         }
       };
@@ -156,10 +156,6 @@ const RoomContainer = () => {
     })
     setShowEditModal(false);
   };
-
-  // const gameOver = (isWin: boolean) => {
-
-  // };
 
   return (
     <Layout>
@@ -319,20 +315,6 @@ const RoomContainer = () => {
             你{gameOver.winner === playerSide ? '贏' : '輸'}了
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setShowEditModal(false)}
-            color="primary"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => changePassword()}
-            color="primary"
-          >
-            Save
-          </Button>
-        </DialogActions>
       </Dialog>
     </Layout>
   )

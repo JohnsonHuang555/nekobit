@@ -41,8 +41,7 @@ export class GetSocketMessageUseCase implements GetSocketMessage.UseCase {
             this.roomInfo = roomInfo;
             break;
           }
-          case SocketEvent.ChangePassword:
-          case SocketEvent.SetPlayOrder: {
+          case SocketEvent.ChangePassword: {
             const roomInfo = RoomFactory.createFromNet(result.data.roomInfo);
             this.roomInfo = roomInfo;
             break;

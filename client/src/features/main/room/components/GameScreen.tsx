@@ -13,8 +13,6 @@ const GameScreen = (props: GameScreenProps) => {
     gameId,
   } = props;
 
-  // const yourTurn = roomInfo.nowTurn && userID === roomInfo.nowTurn ? true : false;
-
   const playGame = {
     [GameList.ChineseChess]:
       <ChineseChessContainer />,

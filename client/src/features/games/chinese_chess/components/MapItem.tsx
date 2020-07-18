@@ -1,5 +1,6 @@
 import { TChineseChess } from '../../domain/models/ChineseChess';
 import Chess from './Chess';
+import { Grid } from '@material-ui/core';
 import styles from '@styles/games/chineseChess.module.scss';
 
 type MapItemProps = {
@@ -17,7 +18,11 @@ const MapItem = (props: MapItemProps) => {
     onChessClick,
   } = props;
   return (
-    <div className={styles.mapItem + (isSelected ? ` ${styles.isSelected}` : '')} onClick={onMapClick}>
+    <Grid
+      item
+      className={styles.mapItem + (isSelected ? ` ${styles.isSelected}` : '')}
+      onClick={onMapClick}
+    >
       {chessInfo && (
         <Chess
           name={chessInfo.name}
@@ -26,7 +31,7 @@ const MapItem = (props: MapItemProps) => {
           onChessClick={onChessClick}
         />
       )}
-    </div>
+    </Grid>
   )
 };
 

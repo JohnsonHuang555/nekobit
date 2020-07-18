@@ -1,11 +1,14 @@
 @import '../color';
 
 .container {
-  display: flex;
-  flex-wrap: wrap;
-  width: 100vh;
   border: 2px solid #b3a6a6;
-  position: relative;
+}
+
+.header {
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  left: 0;
 }
 
 .mapItem {
@@ -59,7 +62,7 @@
     border-radius: 50%;
     position: absolute;
     top: 0;
-    left: 0;
+    left: -1px;
   }
 }
 
@@ -73,6 +76,6 @@
     border-radius: 50%;
     position: absolute;
     top: 0;
-    left: 0;
+    left: -1px;
   }
 }
