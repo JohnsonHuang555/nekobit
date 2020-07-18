@@ -20,15 +20,6 @@ const GameScreen = (props: GameScreenProps) => {
 
   return (
     <Box className={styles.gameScreen}>
-      {/* {!roomInfo.nowTurn && isYouMaster && (
-        <Button className="set-play-order" onClick={onSetPlayOrder}>
-          決定順序
-        </Button>
-      )} */}
-      {/* {yourTurn && (
-        <div className="your-turn">你的回合</div>
-      )} */}
-      {/* <div className="your-side">{playerSide}</div> */}
       {playGame[gameId as GameList]}
     </Box>
   );

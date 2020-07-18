@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box, Button } from '@material-ui/core';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { Box, Button } from '@material-ui/core';
 import { websocketSelector, userInfoSelector } from 'src/selectors';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
-import Hidden from './components/Mode/Hidden';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
 import { CheckMoveRange } from '../helpers/CheckMoveRange';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import { ChineseChessFactory } from '../domain/factories/ChineseChessFactory';
-import styles from '@styles/games/chineseChess.module.scss';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
+import Hidden from './components/Mode/Hidden';
+import styles from '@styles/games/chineseChess.module.scss';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();

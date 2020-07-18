@@ -1,6 +1,6 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { TGame } from '../domain/models/Game';
-import { getApi } from 'src/api/Fetcher2';
+import { getApi } from 'src/api/Fetcher';
 import { ActionType as IndexActionType } from '../reducers/indexReducer';
 import { GameFactory } from '../domain/factories/GameFactory';
 

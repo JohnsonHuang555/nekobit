@@ -1,4 +1,4 @@
-import { getApi, postApi } from 'src/api/Fetcher2';
+import { getApi, postApi } from 'src/api/Fetcher';
 import { takeEvery, call, put } from 'redux-saga/effects';
 import { ActionType } from '../reducers/gameReducer';
 import { TGame } from '../domain/models/Game';
