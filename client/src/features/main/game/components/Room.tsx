@@ -2,7 +2,8 @@ import React from 'react';
 import { faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TRoom } from 'src/features/main/domain/models/Room';
-import '@styles/components/rooms/roomList.scss';
+import { Box, Button } from '@material-ui/core';
+import styles from '@styles/components/room.module.scss';
 
 type RoomListProps = {
   roomInfo: TRoom;
@@ -29,34 +30,54 @@ const Room = (props: RoomListProps) => {
   }
 
   return (
-    <div className="room">
-      <div className="top">
-        <div className="info">
-          <span className="id">{roomInfo.roomNumber}.</span>
-          <span className="title">{roomInfo.title}</span>
-        </div>
+    <Box className={styles.room}>
+      <Box display="flex" className={styles.top}>
+        <Box
+          display="flex"
+          alignItems="center"
+          className={styles.info}
+        >
+          <Box>{roomInfo.roomNumber}.</Box>
+          <Box>{roomInfo.title}</Box>
+        </Box>
         {roomInfo.password && (
-          <div className="key">
-            <FontAwesomeIcon icon={faKey}/>
-            私密
-          </div>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            width="100%"
+          >
+            <FontAwesomeIcon icon={faKey} className={styles.key}/>
+            <Box marginLeft={1}>私密</Box>
+          </Box>
         )}
-      </div>
-      <div className="bottom">
-        <span className="status">
-          {isFull ? 'Playing' : 'Waiting'}...
-        </span>
-        <span className="mode">
+      </Box>
+      <Box
+        display="flex"
+        className={styles.bottom}
+      >
+        <Box className={styles.status}>
+          {isFull ? 'Playing' : 'Waiting'}
+        </Box>
+        <Box className={styles.mode}>
           {gameMode}
-        </span>
-        <span className="players">
-          <FontAwesomeIcon icon={faUser}/> {roomInfo.userList.length || 1} / {maxPlayers}
-        </span>
-        <span className={"btn-enter " + (isFull ? 'full' : 'remain')} onClick={() => onChoose(roomInfo.id)}>
+        </Box>
+        <Box className={styles.players}>
+          <FontAwesomeIcon icon={faUser}/>
+          <Box marginLeft={1}>
+            {roomInfo.userList.length || 1} / {maxPlayers}
+          </Box>
+        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => onChoose(roomInfo.id)}
+          disabled={isFull}
+        >
           {isFull ? 'Full' : 'Enter'}
-        </span>
-      </div>
-    </div>
+        </Button>
+      </Box>
+    </Box>
   )
 };
 

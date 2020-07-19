@@ -2,7 +2,8 @@ import React from 'react';
 import dynamic from 'next/dynamic'
 import Meta from 'src/components/Meta';
 import Footer from 'src/components/Footer';
-import '@styles/components/layout.scss';
+import { Container } from '@material-ui/core';
+// import '@styles/components/layout.scss';
 
 const Header = dynamic(
   () => import('./Header'),
@@ -10,14 +11,12 @@ const Header = dynamic(
 )
 
 type LayoutProps = {
-  id?: string;
   children: React.ReactNode;
   meta?: any;
 };
 
 const Layout = (props: LayoutProps) => {
   const {
-    id,
     children,
     meta,
   } = props;
@@ -26,10 +25,10 @@ const Layout = (props: LayoutProps) => {
     <>
       <Meta {...meta} />
       <Header />
-      <div id={id} className="container">
+      <Container>
         {children}
-      </div>
-      <Footer />
+      </Container>
+      {/* <Footer /> */}
     </>
   )
 };

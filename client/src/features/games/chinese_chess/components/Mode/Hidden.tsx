@@ -1,15 +1,17 @@
 import React from 'react';
 import { TChineseChess, ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import MapItem from '../MapItem';
+import { Box, Grid } from '@material-ui/core';
+import styles from '@styles/games/chineseChess.module.scss';
 
 type HiddenProps = {
   chesses: TChineseChess[];
   yourTurn: boolean;
   selectedChess?: TChineseChess;
   playerSide: ChessSide;
-  onSelect: (id: number) => void;
-  onMove: (id: number, targetX: number, targetY: number) => void;
-  onEat: (id: number, targetId: number) => void;
+  onSelect: (chess: TChineseChess) => void;
+  onMove: (targetX: number, targetY: number) => void;
+  onEat: (targetChess: TChineseChess) => void;
   onFlip: (id: number) => void;
 }
 
@@ -35,7 +37,7 @@ const Hidden = (props: HiddenProps) => {
 
         const onMapClick = () => {
           if (!chessInfo && selectedChess) {
-            onMove(selectedChess.id, x, y);
+            onMove(x, y);
           }
         };
 
@@ -44,9 +46,9 @@ const Hidden = (props: HiddenProps) => {
           if (!chessInfo.isFlipped) {
             onFlip(chessInfo.id);
           } else if (playerSide === chessInfo.side) {
-            onSelect(chessInfo.id);
+            onSelect(chessInfo);
           } else if (selectedChess && selectedChess.side !== chessInfo.side) {
-            onEat(selectedChess.id, chessInfo.id);
+            onEat(chessInfo);
           }
         };
 
@@ -74,9 +76,11 @@ const Hidden = (props: HiddenProps) => {
   }
 
   return (
-    <div className="hidden">
-      {chessMap()}
-    </div>
+    <Box width="100vh">
+      <Grid container className={styles.container}>
+          {chessMap()}
+      </Grid>
+    </Box>
   )
 };
 

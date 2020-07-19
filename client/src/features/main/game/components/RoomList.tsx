@@ -2,7 +2,9 @@ import React from 'react';
 import Room from 'src/features/main/game/components/Room';
 import { TRoom } from '../../domain/models/Room';
 import { GameMode } from '../../domain/models/Game';
-import '@styles/components/rooms/roomList.scss';
+import { Box, Grid } from '@material-ui/core';
+import Chat from 'src/components/Chat';
+import styles from '@styles/components/roomList.module.scss';
 
 type RoomListProps = {
   rooms: TRoom[];
@@ -20,40 +22,40 @@ const RoomList = (props: RoomListProps) => {
   } = props;
 
   return (
-    <div id="room-list" className="row">
-      <div className="col-md-9">
-        <div className="block">
-          <h2>Room List</h2>
-          <div className="rooms">
-            {rooms.map(room => (
-              <Room
-                key={room.id}
-                roomInfo={room}
-                maxPlayers={maxPlayers}
-                gameMode={GameMode[gameId].find(g => g.value === room.mode)?.label}
-                onChooseRoom={onChooseRoom}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="block chat">
-          <h2>Chatting Room</h2>
-          <div className="messages">
-          </div>
-          <div className="type-message">
-            <input type="text" placeholder="想說點什麼嗎？..."/>
-            <div className="submit">Submit</div>
-          </div>
-        </div>
+    <Box className={styles.roomList}>
+      <div className="section-heading">
+        <h2>房間列表</h2>
       </div>
-      <div className="col-md-3">
-        <div className="block">
-          <h2>Player List</h2>
-          <div className="player-list">
-          </div>
-        </div>
-      </div>
-    </div>
+      <Grid container spacing={3}>
+        <Grid item xs={9}>
+          <Box className="block">
+            <Grid container className={styles.rooms} spacing={1} alignContent="flex-start">
+              {rooms.map(room => (
+                <Grid item xs={6} key={room.id}>
+                  <Room
+                    roomInfo={room}
+                    maxPlayers={maxPlayers}
+                    gameMode={GameMode[gameId].find(g => g.value === room.mode)?.label}
+                    onChooseRoom={onChooseRoom}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+          <Box className="block">
+            <Chat
+              onSubmit={() => {}}
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={3}>
+          <Box className="block">
+            <Box className={styles.playerList}>
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

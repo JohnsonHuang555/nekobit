@@ -1,0 +1,18 @@
+@import '../color';
+
+.roomList {
+  color: $basic-white;
+  .rooms {
+    min-height: 500px;
+    background-color: $room-list-content-bg;
+    padding: 5px;
+  }
+  .chat {
+    min-height: 100px;
+    background-color: $room-list-content-bg;
+  }
+  .playerList {
+    min-height: 700px;
+    background-color: $room-list-content-bg;
+  }
+}

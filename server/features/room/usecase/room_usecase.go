@@ -150,6 +150,7 @@ func (ru *roomUseCase) SetPlayerSide(roomID string, userID string, side string) 
 func (ru *roomUseCase) GameOver(roomID string) (*domain.Room, error) {
 	status := 2
 	ru.roomRepo.UpdateGameData(roomID, nil)
+	ru.roomRepo.UpdateNowTurnByID(roomID, "")
 	room, err := ru.roomRepo.UpdateStatusByID(roomID, status)
 	if err != nil {
 		return nil, err
