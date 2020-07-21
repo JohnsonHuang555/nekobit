@@ -30,7 +30,7 @@ type RoomUseCase interface {
 	UpdateGameData(roomID string, gameData interface{}) (interface{}, error)
 	SetPlayOrder(id string) (*Room, error)
 	ChangePlayerTurn(id string, userID string) (string, error)
-	SetPlayerSide(id string, userID string, side string) ([]*User, error)
+	SetPlayerSideIndependence(id string, userID string, side string, allSides []string) ([]*User, error)
 	GameOver(id string) (*Room, error)
 	ChangeRoomPassword(id string, password string) (*Room, error)
 }
