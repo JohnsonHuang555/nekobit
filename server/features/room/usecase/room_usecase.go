@@ -139,8 +139,33 @@ func (ru *roomUseCase) ChangePlayerTurn(roomID string, nowPlayerID string) (stri
 	return room.NowTurn, nil
 }
 
-func (ru *roomUseCase) SetPlayerSide(roomID string, userID string, side string) ([]*domain.User, error) {
+func (ru *roomUseCase) SetPlayerSideIndependence(
+	roomID string,
+	userID string,
+	side string,
+	allSides []string,
+) ([]*domain.User, error) {
 	users, err := ru.roomRepo.UpdateUserSide(roomID, userID, side)
+	noSideUsers := domain.FilterUsers(users, func(n *domain.User) bool {
+		return n.Side == ""
+	})
+
+	// 判斷剩下一個沒有陣營自動帶入
+	if len(noSideUsers) == 1 {
+		hasSideUsers := domain.FilterUsers(users, func(n *domain.User) bool {
+			return n.Side != ""
+		})
+		remainedSides := allSides
+		for i := 0; i < len(hasSideUsers); i++ {
+			remainedSides = append(remainedSides[:i], remainedSides[i+1:]...)
+		}
+		for i := 0; i < len(users); i++ {
+			if users[i].Side == "" {
+				users[i].Side = remainedSides[0]
+			}
+		}
+	}
+
 	if err != nil {
 		return nil, err
 	}

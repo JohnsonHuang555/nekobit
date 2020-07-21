@@ -70,7 +70,7 @@ func SocketEventHandler(
 		gd, side, _ := chineseChessUseCase.FlipChess(msg.Data.ChessID)
 		gameData, _ := ru.UpdateGameData(roomID, gd)
 		nowPlayer, _ := ru.ChangePlayerTurn(roomID, msg.UserID)
-		users, _ := ru.SetPlayerSide(roomID, msg.UserID, side)
+		users, _ := ru.SetPlayerSideIndependence(roomID, msg.UserID, side, domain.TwoSides)
 		msg.Data.RoomUserList = users
 		msg.Data.GameData = gameData
 		msg.Data.NowTurn = nowPlayer

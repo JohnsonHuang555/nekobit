@@ -43,6 +43,11 @@ type ChineseChessRepository interface {
 	UpdateAlive(chessID int, isAlive bool) error
 }
 
+var TwoSides = []string{
+	"RED",
+	"BLACK",
+}
+
 // CreateChesses 建立象棋小盤
 func CreateChessesHidden() []*ChineseChess {
 	var gameData []*ChineseChess

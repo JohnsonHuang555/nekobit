@@ -11,3 +11,13 @@ type User struct {
 	// Email     string    `json:"email"`
 	// Password  string    `json:"password"`
 }
+
+func FilterUsers(arr []*User, predicate func(*User) bool) []*User {
+	out := make([]*User, 0)
+	for _, e := range arr {
+		if predicate(e) {
+			out = append(out, e)
+		}
+	}
+	return out
+}
