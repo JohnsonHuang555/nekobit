@@ -8,3 +8,6 @@ export const websocketSelector = (store: StoreState) =>
 
 export const showToastSelector = (store: StoreState) =>
   store.app.showToast;
+
+export const showConfirmModalSelector = (store: StoreState) =>
+  store.app.showConfirmModal;

@@ -13,6 +13,7 @@ export const defaultState: State = {
   createRoomData: {
     title: '',
     mode: 1,
+    gameID: '',
   },
   createdRoomId: '',
 };

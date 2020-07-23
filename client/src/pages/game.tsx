@@ -14,13 +14,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Snackbar,
-  IconButton
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import { gameInfoSelector, roomsSelector, createRoomDataSelector, createdRoomIdSelector } from 'src/features/main/selectors';
-import { userInfoSelector, websocketSelector, showToastSelector } from 'src/selectors';
+import { userInfoSelector, websocketSelector } from 'src/selectors';
 import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { TSocket, SocketEvent } from 'src/types/Socket';
@@ -28,7 +25,6 @@ import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 
 const GameContainer = () => {
   const dispatch = useDispatch();
-  const showToast = useSelector(showToastSelector);
   const gameInfo = useSelector(gameInfoSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
@@ -53,6 +49,7 @@ const GameContainer = () => {
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
+    dispatch({ type: AppActionType.GET_USER_INFO });
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET });
     }
@@ -60,7 +57,7 @@ const GameContainer = () => {
 
   // listening for ws and userInfo
   useEffect(() => {
-    if (ws && userInfo) {
+    if (ws) {
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -260,34 +257,6 @@ const GameContainer = () => {
           />
         )}
       </Box>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        open={showToast.show}
-        autoHideDuration={4000}
-        onClose={() => dispatch({
-          type: AppActionType.SET_SHOW_TOAST,
-          show: false,
-        })}
-        message={showToast.message}
-        action={
-          <React.Fragment>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={() => dispatch({
-                type: AppActionType.SET_SHOW_TOAST,
-                show: false,
-              })}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
     </Layout>
   )
 };

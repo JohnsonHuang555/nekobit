@@ -1,12 +1,13 @@
 import { TUser } from './../features/main/domain/models/User';
 import { TSocket, SocketEvent } from 'src/types/Socket';
-import { Ttoast } from 'src/types/ReduxTypes';
+import { Ttoast, TAlert } from 'src/types/ReduxTypes';
 
 export type State = {
   websocket?: WebSocket;
   userInfo?: TUser;
   socketMsg?: TSocket;
   showToast: Ttoast;
+  showConfirmModal: TAlert;
 }
 
 export const defaultState: State = {
@@ -14,6 +15,10 @@ export const defaultState: State = {
     show: false,
     message: '',
   },
+  showConfirmModal: {
+    show: false,
+    message: '',
+  }
 };
 
 export enum ActionType {
@@ -22,7 +27,9 @@ export enum ActionType {
   SEND_MESSAGE = 'SEND_MESSAGE',
   GET_USER_INFO = 'GET_USER_INFO',
   SET_USER_INFO = 'SET_USER_INFO',
+
   SET_SHOW_TOAST = 'SET_SHOW_TOAST',
+  SET_CONFIRM_MODAL = 'SET_CONFIRM_MODAL',
 };
 
 export type CreateSocketAction = {
@@ -53,16 +60,23 @@ export type SetUserInfoAction = {
 
 export type SetShowToastAction = {
   type: ActionType.SET_SHOW_TOAST,
-  show: boolean,
-  message: string,
+  show: boolean;
+  message: string;
+};
+
+export type SetShowConfirmAction = {
+  type: ActionType.SET_CONFIRM_MODAL,
+  show: boolean;
+  message: string;
 };
 
 export type Action = CreateSocketAction
                    | CloseSocketAction
                    | SendMessageAction
                    | LoadUserInfoAction
+                   | SetUserInfoAction
                    | SetShowToastAction
-                   | SetUserInfoAction;
+                   | SetShowConfirmAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -126,6 +140,15 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return {
         ...state,
         showToast: {
+          show: action.show,
+          message: action.message,
+        },
+      }
+    }
+    case ActionType.SET_CONFIRM_MODAL: {
+      return {
+        ...state,
+        showConfirmModal: {
           show: action.show,
           message: action.message,
         },
