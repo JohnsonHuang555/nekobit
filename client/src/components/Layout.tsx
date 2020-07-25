@@ -6,8 +6,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showToastSelector } from 'src/selectors';
 import CloseIcon from '@material-ui/icons/Close';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
-import ConfirmModal from './Modals/ConfirmModal';
-import { SocketEvent } from 'src/types/Socket';
 // import Footer from 'src/components/Footer';
 
 const Header = dynamic(
@@ -63,12 +61,6 @@ const Layout = (props: LayoutProps) => {
             </IconButton>
           </React.Fragment>
         }
-      />
-      <ConfirmModal
-        onConfirm={() => dispatch({
-          type: AppActionType.SEND_MESSAGE,
-          event: SocketEvent.LeaveRoom,
-        })}
       />
       {/* <Footer /> */}
     </>

@@ -32,6 +32,7 @@ import {
   gameOverSelector,
   playerSideSelector,
 } from 'src/features/main/selectors';
+import ConfirmModal from 'src/components/Modals/ConfirmModal';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
@@ -49,6 +50,10 @@ const RoomContainer = () => {
 
   // component did mount
   useEffect(() => {
+    const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return e.returnValue = '';
+    };
     const leaveRoomHandler = () => {
       dispatch({
         type: AppActionType.SEND_MESSAGE_ROOM,
@@ -58,17 +63,19 @@ const RoomContainer = () => {
         type: AppActionType.SEND_MESSAGE_GAME,
         event: SocketEvent.GetRooms,
       });
-    }
+    };
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
       type: AppActionType.CREATE_SOCKET,
       domain: id,
     });
+    window.addEventListener('beforeunload', leaveRoomConfirmHandler);
     window.addEventListener('unload', leaveRoomHandler);
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
-      window.removeEventListener('unload', leaveRoomHandler);
+    window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
+    window.removeEventListener('unload', leaveRoomHandler);
     }
   }, []);
 
@@ -155,13 +162,6 @@ const RoomContainer = () => {
     return false;
   }
 
-  const onLeaveRoom = () => {
-    dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
-      event: SocketEvent.LeaveRoom,
-    });
-  };
-
   const changePassword = () => {
     dispatch({
       type: AppActionType.SEND_MESSAGE_ROOM,
@@ -196,7 +196,11 @@ const RoomContainer = () => {
             startIcon={
               <FontAwesomeIcon icon={faDoorOpen}/>
             }
-            onClick={() => setShowLeaveRoomModal(true)}
+            onClick={() => dispatch({
+              type: AppActionType.SET_CONFIRM_MODAL,
+              show: true,
+              message: '確定要離開房間？'
+            })}
           >
             離開
           </Button>
@@ -258,32 +262,6 @@ const RoomContainer = () => {
       )}
       <Dialog
         fullWidth
-        open={showLeaveRoomModal}
-        onClose={() => setShowLeaveRoomModal(false)}
-      >
-        <DialogTitle id="leave-room-modal">提示</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            確定要離開房間?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setShowLeaveRoomModal(false)}
-            color="primary"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => onLeaveRoom()}
-            color="primary"
-          >
-            Leave
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        fullWidth
         open={showEditModal}
         onClose={() => setShowEditModal(false)}
       >
@@ -332,6 +310,12 @@ const RoomContainer = () => {
           </Box>
         </DialogContent>
       </Dialog>
+      <ConfirmModal
+        onConfirm={() => dispatch({
+          type: AppActionType.SEND_MESSAGE_ROOM,
+          event: SocketEvent.LeaveRoom,
+        })}
+      />
     </Layout>
   )
 };

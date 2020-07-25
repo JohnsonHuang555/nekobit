@@ -3,7 +3,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  Button
+  Button,
+  DialogTitle
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { showConfirmModalSelector } from "src/selectors";
@@ -15,7 +16,7 @@ type ConfirmModalProps = {
 
 const ConfirmModal = (props: ConfirmModalProps) => {
   const dispatch = useDispatch();
-  const showConfirmMoal = useSelector(showConfirmModalSelector);
+  const showConfirmModal = useSelector(showConfirmModalSelector);
 
   const closeHandler = () => {
     dispatch({
@@ -24,29 +25,34 @@ const ConfirmModal = (props: ConfirmModalProps) => {
     });
   };
 
-  const confrimHandler = () => {
+  const confirmHandler = () => {
     closeHandler();
     props.onConfirm();
   };
 
   return (
     <Dialog
-      open={showConfirmMoal.show}
+      fullWidth
+      open={showConfirmModal.show}
       onClose={closeHandler}
-      aria-labelledby="confirm-modal"
-      aria-describedby="confirm-modal"
-      disableBackdropClick
     >
+      <DialogTitle id="leave-room-modal">提示</DialogTitle>
       <DialogContent>
-        <DialogContentText id="confirm-modal">
-          {showConfirmMoal.message}
+        <DialogContentText>
+          {showConfirmModal.message}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeHandler} color="primary">
+        <Button
+          onClick={closeHandler}
+          color="primary"
+        >
           Cancel
         </Button>
-        <Button onClick={confrimHandler} color="primary">
+        <Button
+          onClick={confirmHandler}
+          color="primary"
+        >
           OK
         </Button>
       </DialogActions>
