@@ -49,31 +49,22 @@ const RoomContainer = () => {
 
   // component did mount
   useEffect(() => {
-    const handleRouteChange = () => {
-      // dispatch({
-      //   type: AppActionType.SET_CONFIRM_MODAL,
-      //   show: true,
-      //   message: '確定要離開嗎?',
-      // });
-      console.log(123456)
+    const leaveRoomHandler = () => {
+      dispatch({
+        type: AppActionType.SEND_MESSAGE,
+        event: SocketEvent.LeaveRoom,
+      });
     }
-    // const onBeforeUnload = (e: BeforeUnloadEvent) => {
-    //   const confirmationMessage = 'o/';
-    //   (e || window.event).returnValue = confirmationMessage;
-    //   return confirmationMessage;
-    // };
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
       type: AppActionType.CREATE_SOCKET,
       domain: id,
     });
-    // window.addEventListener('beforeunload', onBeforeUnload);
-    Router.events.on('hashChangeStart', handleRouteChange);
+    window.addEventListener('unload', leaveRoomHandler);
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET });
-      // window.removeEventListener('beforeunload', onBeforeUnload);
-      Router.events.off('hashChangeStart', handleRouteChange)
+      window.removeEventListener('unload', leaveRoomHandler);
     }
   }, []);
 

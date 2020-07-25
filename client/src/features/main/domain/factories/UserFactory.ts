@@ -7,7 +7,7 @@ export class UserFactory {
     return _.mapKeys(netUser, (value, key) => (_.camelCase(key))) as TRoomUser;
   }
 
-  static createArrayFromNet(netUsers: NetUser[]): TRoomUser[] {
+  static createArrayFromNet(netUsers: NetUser[] = []): TRoomUser[] {
     return netUsers.map((netUser) => this.createFromNet(netUser)) as TRoomUser[];
   }
 }

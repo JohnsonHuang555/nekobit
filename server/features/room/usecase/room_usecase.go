@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"server/domain"
 )
 
@@ -62,12 +63,16 @@ func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) (*dom
 }
 
 func (ru *roomUseCase) LeaveRoom(id string, userID string) ([]*domain.User, error) {
+	fmt.Println(userID)
 	users, err := ru.roomRepo.RemoveUser(id, userID)
+	fmt.Println(users, "ddddd")
 	if err != nil {
 		return nil, err
 	}
 
-	users, err = ru.roomRepo.UpdateUserIsMaster(id, users[0].ID, true)
+	if len(users) > 1 {
+		users, err = ru.roomRepo.UpdateUserIsMaster(id, users[0].ID, true)
+	}
 	if err != nil {
 		return nil, err
 	}

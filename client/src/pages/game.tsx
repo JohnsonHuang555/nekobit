@@ -50,6 +50,7 @@ const GameContainer = () => {
       id: gameId,
     });
     dispatch({ type: AppActionType.GET_USER_INFO });
+    dispatch({ type: GameActionType.INITIAL_STATE });
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET });
     }
