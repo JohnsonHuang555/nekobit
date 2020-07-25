@@ -41,16 +41,22 @@ const GameContainer = () => {
   // component did mount
   useEffect(() => {
     const gameId = location.search.substr(4);
-    dispatch({
-      type: AppActionType.CREATE_SOCKET,
-      domain: 'gamePage',
-    });
+    if (!ws) {
+      dispatch({
+        type: AppActionType.CREATE_SOCKET,
+        domain: 'gamePage',
+      });
+    } else {
+      dispatch({
+        type: AppActionType.SEND_MESSAGE_GAME,
+        event: SocketEvent.GetRooms,
+      });
+    }
     dispatch({
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
     dispatch({ type: AppActionType.GET_USER_INFO });
-    dispatch({ type: GameActionType.INITIAL_STATE });
   }, []);
 
   // listening for ws and userInfo
@@ -61,10 +67,6 @@ const GameContainer = () => {
           type: AppActionType.SET_SHOW_TOAST,
           show: true,
           message: 'Connect successfully',
-        });
-        dispatch({
-          type: AppActionType.SEND_MESSAGE_GAME,
-          event: SocketEvent.GetRooms,
         });
       }
       ws.onerror = () => {
@@ -92,6 +94,8 @@ const GameContainer = () => {
         type: AppActionType.SEND_MESSAGE_GAME,
         event: SocketEvent.GetRooms,
       });
+      // clear createdId
+      dispatch({ type: GameActionType.INITIAL_STATE });
       redirectToRoomPage(createdRoomId);
     }
   }, [createdRoomId]);

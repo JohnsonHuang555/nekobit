@@ -10,7 +10,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Box,
   TextField,
@@ -45,7 +44,6 @@ const RoomContainer = () => {
   const playerSide = useSelector(playerSideSelector);
 
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showLeaveRoomModal, setShowLeaveRoomModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
 
   // component did mount
@@ -74,8 +72,8 @@ const RoomContainer = () => {
     window.addEventListener('unload', leaveRoomHandler);
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
-    window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
-    window.removeEventListener('unload', leaveRoomHandler);
+      window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
+      window.removeEventListener('unload', leaveRoomHandler);
     }
   }, []);
 
