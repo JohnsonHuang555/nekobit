@@ -54,6 +54,10 @@ const RoomContainer = () => {
         type: AppActionType.SEND_MESSAGE_ROOM,
         event: SocketEvent.LeaveRoom,
       });
+      dispatch({
+        type: AppActionType.SEND_MESSAGE_GAME,
+        event: SocketEvent.GetRooms,
+      });
     }
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });

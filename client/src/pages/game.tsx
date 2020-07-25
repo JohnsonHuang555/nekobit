@@ -40,7 +40,6 @@ const GameContainer = () => {
 
   // component did mount
   useEffect(() => {
-    console.log(111111)
     const gameId = location.search.substr(4);
     dispatch({
       type: AppActionType.CREATE_SOCKET,
@@ -52,15 +51,11 @@ const GameContainer = () => {
     });
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({ type: GameActionType.INITIAL_STATE });
-    return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET_GAME });
-    }
   }, []);
 
   // listening for ws and userInfo
   useEffect(() => {
     if (ws) {
-      console.log(ws)
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -80,12 +75,10 @@ const GameContainer = () => {
         switch (wsData.event) {
           case SocketEvent.GetRooms: {
             const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
-            if (rooms.length) {
-              dispatch({
-                type: GameActionType.GET_ROOMS,
-                rooms,
-              });
-            }
+            dispatch({
+              type: GameActionType.GET_ROOMS,
+              rooms,
+            });
           }
         }
       }
@@ -132,7 +125,7 @@ const GameContainer = () => {
     }
   }
 
-  if (!gameInfo) { return null; }
+  if (!gameInfo ) { return null; }
 
   return (
     <Layout>
