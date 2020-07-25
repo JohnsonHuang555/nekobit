@@ -16,7 +16,7 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-import { websocketSelector, userInfoSelector } from 'src/selectors';
+import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
 import { SocketEvent, TSocket } from 'src/types/Socket';
@@ -35,7 +35,7 @@ import {
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(websocketSelector);
+  const ws = useSelector(roomWebsocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
@@ -51,7 +51,7 @@ const RoomContainer = () => {
   useEffect(() => {
     const leaveRoomHandler = () => {
       dispatch({
-        type: AppActionType.SEND_MESSAGE,
+        type: AppActionType.SEND_MESSAGE_ROOM,
         event: SocketEvent.LeaveRoom,
       });
     }
@@ -63,7 +63,7 @@ const RoomContainer = () => {
     });
     window.addEventListener('unload', leaveRoomHandler);
     return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET });
+      dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
       window.removeEventListener('unload', leaveRoomHandler);
     }
   }, []);
@@ -78,7 +78,7 @@ const RoomContainer = () => {
           message: 'Join room',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE,
+          type: AppActionType.SEND_MESSAGE_ROOM,
           event: SocketEvent.JoinRoom,
           data: {
             userName: userInfo.name,
@@ -137,7 +137,7 @@ const RoomContainer = () => {
   // methods
   const kickOutPlayer = (id: string) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE,
+      type: AppActionType.SEND_MESSAGE_ROOM,
       userId: id,
       event: SocketEvent.LeaveRoom,
     });
@@ -153,14 +153,14 @@ const RoomContainer = () => {
 
   const onLeaveRoom = () => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE,
+      type: AppActionType.SEND_MESSAGE_ROOM,
       event: SocketEvent.LeaveRoom,
     });
   };
 
   const changePassword = () => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE,
+      type: AppActionType.SEND_MESSAGE_ROOM,
       event: SocketEvent.ChangePassword,
       data: {
         roomPassword: editingPassword,
@@ -222,7 +222,7 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE,
+                type: AppActionType.SEND_MESSAGE_ROOM,
                 event: SocketEvent.StartGame,
                 data: {
                   gameID: roomInfo.gameId,
@@ -240,7 +240,7 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE,
+                type: AppActionType.SEND_MESSAGE_ROOM,
                 event: SocketEvent.ReadyGame,
               })}
             >
@@ -317,7 +317,7 @@ const RoomContainer = () => {
         fullWidth
         open={gameOver.isGameOver}
         onClose={() => dispatch({
-          type: AppActionType.SEND_MESSAGE,
+          type: AppActionType.SEND_MESSAGE_ROOM,
           event: SocketEvent.GameOver,
         })}
       >

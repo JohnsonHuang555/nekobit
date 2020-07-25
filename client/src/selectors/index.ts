@@ -3,8 +3,11 @@ import { StoreState } from 'src/reducers';
 export const userInfoSelector = (store: StoreState) =>
   store.app.userInfo;
 
-export const websocketSelector = (store: StoreState) =>
-  store.app.websocket;
+export const gameWebsocketSelector = (store: StoreState) =>
+  store.app.gamePageWebSocket;
+
+export const roomWebsocketSelector = (store: StoreState) =>
+  store.app.roomPageWebSocket;
 
 export const showToastSelector = (store: StoreState) =>
   store.app.showToast;

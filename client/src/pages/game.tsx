@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { gameInfoSelector, roomsSelector, createRoomDataSelector, createdRoomIdSelector } from 'src/features/main/selectors';
-import { userInfoSelector, websocketSelector } from 'src/selectors';
+import { userInfoSelector, gameWebsocketSelector } from 'src/selectors';
 import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { TSocket, SocketEvent } from 'src/types/Socket';
@@ -28,7 +28,7 @@ const GameContainer = () => {
   const gameInfo = useSelector(gameInfoSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
-  const ws = useSelector(websocketSelector);
+  const ws = useSelector(gameWebsocketSelector);
   const createRoomData = useSelector(createRoomDataSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
 
@@ -40,10 +40,11 @@ const GameContainer = () => {
 
   // component did mount
   useEffect(() => {
+    console.log(111111)
     const gameId = location.search.substr(4);
     dispatch({
       type: AppActionType.CREATE_SOCKET,
-      domain: 'game_page',
+      domain: 'gamePage',
     });
     dispatch({
       type: GameActionType.GET_GAME_INFO,
@@ -52,13 +53,14 @@ const GameContainer = () => {
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({ type: GameActionType.INITIAL_STATE });
     return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET });
+      dispatch({ type: AppActionType.CLOSE_SOCKET_GAME });
     }
   }, []);
 
   // listening for ws and userInfo
   useEffect(() => {
     if (ws) {
+      console.log(ws)
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -66,7 +68,7 @@ const GameContainer = () => {
           message: 'Connect successfully',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE,
+          type: AppActionType.SEND_MESSAGE_GAME,
           event: SocketEvent.GetRooms,
         });
       }
@@ -94,7 +96,7 @@ const GameContainer = () => {
   useEffect(() => {
     if (createdRoomId && userInfo && ws) {
       dispatch({
-        type: AppActionType.SEND_MESSAGE,
+        type: AppActionType.SEND_MESSAGE_GAME,
         event: SocketEvent.GetRooms,
       });
       redirectToRoomPage(createdRoomId);
