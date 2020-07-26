@@ -46,21 +46,24 @@ const RoomContainer = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
 
+  // leave room event
+  const leaveRoomHandler = () => {
+    console.log('leave handler')
+    dispatch({
+      type: AppActionType.SEND_MESSAGE_ROOM,
+      event: SocketEvent.LeaveRoom,
+    });
+    dispatch({
+      type: AppActionType.SEND_MESSAGE_GAME,
+      event: SocketEvent.GetRooms,
+    });
+  };
+
   // component did mount
   useEffect(() => {
     const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       return e.returnValue = '';
-    };
-    const leaveRoomHandler = () => {
-      dispatch({
-        type: AppActionType.SEND_MESSAGE_ROOM,
-        event: SocketEvent.LeaveRoom,
-      });
-      dispatch({
-        type: AppActionType.SEND_MESSAGE_GAME,
-        event: SocketEvent.GetRooms,
-      });
     };
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });
@@ -68,12 +71,15 @@ const RoomContainer = () => {
       type: AppActionType.CREATE_SOCKET,
       domain: id,
     });
+
     window.addEventListener('beforeunload', leaveRoomConfirmHandler);
     window.addEventListener('unload', leaveRoomHandler);
+    Router.events.on('routeChangeStart', leaveRoomHandler)
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
       window.removeEventListener('unload', leaveRoomHandler);
+      Router.events.off('routeChangeStart', leaveRoomHandler)
     }
   }, []);
 
@@ -308,12 +314,7 @@ const RoomContainer = () => {
           </Box>
         </DialogContent>
       </Dialog>
-      <ConfirmModal
-        onConfirm={() => dispatch({
-          type: AppActionType.SEND_MESSAGE_ROOM,
-          event: SocketEvent.LeaveRoom,
-        })}
-      />
+      <ConfirmModal onConfirm={() => leaveRoomHandler()} />
     </Layout>
   )
 };

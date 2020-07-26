@@ -163,6 +163,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
       }
     }
     case ActionType.SEND_MESSAGE_GAME: {
+      console.log(action.event)
       if (state.gamePageWebSocket && state.userInfo) {
         const data: TSocket = {
           userID: action.userId ?
@@ -176,6 +177,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return state;
     }
     case ActionType.SEND_MESSAGE_ROOM: {
+      console.log(action.event)
+
       if (state.roomPageWebSocket && state.userInfo) {
         const data: TSocket = {
           userID: action.userId ?

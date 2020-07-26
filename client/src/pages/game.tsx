@@ -68,6 +68,10 @@ const GameContainer = () => {
           show: true,
           message: 'Connect successfully',
         });
+        dispatch({
+          type: AppActionType.SEND_MESSAGE_GAME,
+          event: SocketEvent.GetRooms,
+        });
       }
       ws.onerror = () => {
         console.log('connect failed');
