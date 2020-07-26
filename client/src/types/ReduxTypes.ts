@@ -3,7 +3,7 @@ export type Ttoast = {
   message: string;
 };
 
-export type TAlert = {
+export type TModal = {
   show: boolean;
   message: string;
 };

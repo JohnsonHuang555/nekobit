@@ -1,6 +1,6 @@
 import { TUser } from './../features/main/domain/models/User';
 import { TSocket, SocketEvent } from 'src/types/Socket';
-import { Ttoast, TAlert } from 'src/types/ReduxTypes';
+import { Ttoast, TModal } from 'src/types/ReduxTypes';
 
 export type State = {
   gamePageWebSocket?: WebSocket;
@@ -8,7 +8,8 @@ export type State = {
   userInfo?: TUser;
   socketMsg?: TSocket;
   showToast: Ttoast;
-  showConfirmModal: TAlert;
+  showConfirmModal: TModal;
+  showAlertModal: TModal;
 }
 
 export const defaultState: State = {
@@ -19,22 +20,30 @@ export const defaultState: State = {
   showConfirmModal: {
     show: false,
     message: '',
-  }
+  },
+  showAlertModal: {
+    show: false,
+    message: '',
+  },
 };
 
 export enum ActionType {
+  // socket
   CREATE_SOCKET = 'CREATE_SOCKET',
   CLOSE_SOCKET_GAME = 'CLOSE_SOCKET_GAME',
   CLOSE_SOCKET_ROOM = 'CLOSE_SOCKET_ROOM',
 
+  // send message
   SEND_MESSAGE_GAME = 'SEND_MESSAGE_GAME',
   SEND_MESSAGE_ROOM = 'SEND_MESSAGE_ROOM',
 
+  // user info
   GET_USER_INFO = 'GET_USER_INFO',
   SET_USER_INFO = 'SET_USER_INFO',
 
   SET_SHOW_TOAST = 'SET_SHOW_TOAST',
   SET_CONFIRM_MODAL = 'SET_CONFIRM_MODAL',
+  SET_ALERT_MODAL = 'SET_ALERT_MODAL',
 };
 
 export type CreateSocketAction = {
@@ -86,6 +95,12 @@ export type SetShowConfirmAction = {
   message: string;
 };
 
+export type SetShowAlertAction = {
+  type: ActionType.SET_ALERT_MODAL,
+  show: boolean;
+  message: string;
+};
+
 export type Action = CreateSocketAction
                    | CloseSocketGameAction
                    | CloseSocketRoomAction
@@ -94,7 +109,8 @@ export type Action = CreateSocketAction
                    | LoadUserInfoAction
                    | SetUserInfoAction
                    | SetShowToastAction
-                   | SetShowConfirmAction;
+                   | SetShowConfirmAction
+                   | SetShowAlertAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -204,6 +220,15 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return {
         ...state,
         showConfirmModal: {
+          show: action.show,
+          message: action.message,
+        },
+      }
+    }
+    case ActionType.SET_ALERT_MODAL: {
+      return {
+        ...state,
+        showAlertModal: {
           show: action.show,
           message: action.message,
         },

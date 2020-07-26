@@ -22,6 +22,7 @@ import { ActionType as GameActionType, ActionType } from 'src/features/main/redu
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
+import AlertModal from 'src/components/Modals/AlertModal';
 
 const GameContainer = () => {
   const dispatch = useDispatch();
@@ -137,6 +138,7 @@ const GameContainer = () => {
 
   return (
     <Layout>
+      <AlertModal />
       <Dialog
         fullWidth
         open={showCreateRoomModal}
@@ -256,8 +258,22 @@ const GameContainer = () => {
           <GameDetail
             gameInfo={gameInfo}
             roomsCount={rooms.length}
-            onShowModal={() => setShowCreateRoomModal(true)}
-            playNow={() => setShowRoomList(true)}
+            onShowModal={() => userInfo
+              ? setShowCreateRoomModal(true)
+              : dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: '請先登入'
+                })
+            }
+            playNow={() => userInfo
+              ? setShowRoomList(true)
+              : dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: '請先登入'
+                })
+            }
           />
         )}
       </Box>

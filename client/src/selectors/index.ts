@@ -14,3 +14,6 @@ export const showToastSelector = (store: StoreState) =>
 
 export const showConfirmModalSelector = (store: StoreState) =>
   store.app.showConfirmModal;
+
+export const showAlertModalSelector = (store: StoreState) =>
+  store.app.showAlertModal;

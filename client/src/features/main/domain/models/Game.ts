@@ -25,7 +25,7 @@ export type TModeVaule = {
 };
 
 export enum GameList {
-  ChineseChess = '5de1f7ddac5b6c1002ece8f1',
+  ChineseChess = '5d62a35bd986c21bc010c00b',
 }
 
 export const GameMode: { [key: string]: TModeVaule[] } = {

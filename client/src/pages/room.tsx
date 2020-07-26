@@ -48,7 +48,6 @@ const RoomContainer = () => {
 
   // leave room event
   const leaveRoomHandler = () => {
-    console.log('leave handler')
     dispatch({
       type: AppActionType.SEND_MESSAGE_ROOM,
       event: SocketEvent.LeaveRoom,
@@ -72,14 +71,25 @@ const RoomContainer = () => {
       domain: id,
     });
 
+    // 攔截轉址事件
+    const abortRouterChange = () => {
+      Router.events.emit('routeChangeError');
+      dispatch({
+        type: AppActionType.SET_CONFIRM_MODAL,
+        show: true,
+        message: '確定要離開房間？'
+      })
+      throw 'Abort route change. Please ignore this error.';
+    };
+
     window.addEventListener('beforeunload', leaveRoomConfirmHandler);
     window.addEventListener('unload', leaveRoomHandler);
-    Router.events.on('routeChangeStart', leaveRoomHandler)
+    Router.events.on('routeChangeStart', abortRouterChange);
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
       window.removeEventListener('unload', leaveRoomHandler);
-      Router.events.off('routeChangeStart', leaveRoomHandler)
+      Router.events.off('routeChangeStart', abortRouterChange);
     }
   }, []);
 
@@ -179,6 +189,7 @@ const RoomContainer = () => {
 
   return (
     <Layout>
+      <ConfirmModal onConfirm={() => leaveRoomHandler()} />
       <div className="section-heading">
         <h2>{roomInfo.roomNumber}.{roomInfo.title}</h2>
         <Box marginBottom={1} display="flex">
@@ -314,7 +325,6 @@ const RoomContainer = () => {
           </Box>
         </DialogContent>
       </Dialog>
-      <ConfirmModal onConfirm={() => leaveRoomHandler()} />
     </Layout>
   )
 };
