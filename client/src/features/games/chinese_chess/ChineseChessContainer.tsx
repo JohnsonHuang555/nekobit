@@ -60,23 +60,19 @@ const ChineseChessContainer = () => {
             const blackAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Black);
             if (!redAliveChesses.length) {
               dispatch({
-                type: RoomActionType.GAME_OVER,
-                gameOver: {
-                  isGameOver: true,
-                  winner: ChessSide.Black,
-                }
-              });
+                type: AppActionType.SET_ALERT_MODAL,
+                show: true,
+                message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
+              })
               return;
             }
 
             if (!blackAliveChesses.length) {
               dispatch({
-                type: RoomActionType.GAME_OVER,
-                gameOver: {
-                  isGameOver: true,
-                  winner: ChessSide.Red,
-                }
-              });
+                type: AppActionType.SET_ALERT_MODAL,
+                show: true,
+                message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
+              })
               return;
             }
 

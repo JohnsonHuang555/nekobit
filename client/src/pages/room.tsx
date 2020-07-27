@@ -28,10 +28,10 @@ import {
   roomInfoSelector,
   isYouMasterSelector,
   isPlayerReadySelector,
-  gameOverSelector,
   playerSideSelector,
 } from 'src/features/main/selectors';
 import ConfirmModal from 'src/components/Modals/ConfirmModal';
+import AlertModal from 'src/components/Modals/AlertModal';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
@@ -40,7 +40,6 @@ const RoomContainer = () => {
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
   const isPlayerReady = useSelector(isPlayerReadySelector);
-  const gameOver = useSelector(gameOverSelector);
   const playerSide = useSelector(playerSideSelector);
 
   const [showEditModal, setShowEditModal] = useState(false);
@@ -60,10 +59,6 @@ const RoomContainer = () => {
 
   // component did mount
   useEffect(() => {
-    const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      return e.returnValue = '';
-    };
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
@@ -71,25 +66,17 @@ const RoomContainer = () => {
       domain: id,
     });
 
-    // 攔截轉址事件
-    const abortRouterChange = () => {
-      Router.events.emit('routeChangeError');
-      dispatch({
-        type: AppActionType.SET_CONFIRM_MODAL,
-        show: true,
-        message: '確定要離開房間？'
-      })
-      throw 'Abort route change. Please ignore this error.';
+    const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return e.returnValue = '';
     };
 
     window.addEventListener('beforeunload', leaveRoomConfirmHandler);
     window.addEventListener('unload', leaveRoomHandler);
-    Router.events.on('routeChangeStart', abortRouterChange);
     return () => {
       dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
       window.removeEventListener('unload', leaveRoomHandler);
-      Router.events.off('routeChangeStart', abortRouterChange);
     }
   }, []);
 
@@ -190,6 +177,12 @@ const RoomContainer = () => {
   return (
     <Layout>
       <ConfirmModal onConfirm={() => leaveRoomHandler()} />
+      <AlertModal onConfirm={() =>
+        dispatch({
+          type: AppActionType.SEND_MESSAGE_ROOM,
+          event: SocketEvent.GameOver,
+        })}
+      />
       <div className="section-heading">
         <h2>{roomInfo.roomNumber}.{roomInfo.title}</h2>
         <Box marginBottom={1} display="flex">
@@ -309,21 +302,6 @@ const RoomContainer = () => {
             Save
           </Button>
         </DialogActions>
-      </Dialog>
-      <Dialog
-        fullWidth
-        open={gameOver.isGameOver}
-        onClose={() => dispatch({
-          type: AppActionType.SEND_MESSAGE_ROOM,
-          event: SocketEvent.GameOver,
-        })}
-      >
-        <DialogTitle id="leave-room-modal">提示</DialogTitle>
-        <DialogContent>
-          <Box>
-            你{gameOver.winner === playerSide ? '贏' : '輸'}了
-          </Box>
-        </DialogContent>
       </Dialog>
     </Layout>
   )
