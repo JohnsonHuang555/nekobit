@@ -4,11 +4,6 @@ export type TSocket = {
   data?: any;
 }
 
-export type TGameOver = {
-  isGameOver: boolean;
-  winner: string;
-}
-
 export enum SocketEvent {
   GetRooms = 'getRooms',
   JoinRoom = 'joinRoom',

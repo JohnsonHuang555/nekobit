@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import uuid from 'uuid';
@@ -43,10 +43,6 @@ const Header = () => {
     });
     Router.push('/');
   };
-
-  useEffect(() => {
-    dispatch({ type: AppActionType.GET_USER_INFO });
-  }, []);
 
   return (
     <>

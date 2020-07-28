@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button } from '@material-ui/core';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { websocketSelector, userInfoSelector } from 'src/selectors';
+import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
@@ -16,7 +16,7 @@ import styles from '@styles/games/chineseChess.module.scss';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(websocketSelector);
+  const ws = useSelector(roomWebsocketSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const playerSide = useSelector(playerSideSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
@@ -60,23 +60,19 @@ const ChineseChessContainer = () => {
             const blackAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Black);
             if (!redAliveChesses.length) {
               dispatch({
-                type: RoomActionType.GAME_OVER,
-                gameOver: {
-                  isGameOver: true,
-                  winner: ChessSide.Black,
-                }
-              });
+                type: AppActionType.SET_ALERT_MODAL,
+                show: true,
+                message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
+              })
               return;
             }
 
             if (!blackAliveChesses.length) {
               dispatch({
-                type: RoomActionType.GAME_OVER,
-                gameOver: {
-                  isGameOver: true,
-                  winner: ChessSide.Red,
-                }
-              });
+                type: AppActionType.SET_ALERT_MODAL,
+                show: true,
+                message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
+              })
               return;
             }
 
@@ -120,7 +116,7 @@ const ChineseChessContainer = () => {
         const isInRange = CheckMoveRange.isInRange(range, targetX, targetY);
         if (isInRange) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE,
+            type: AppActionType.SEND_MESSAGE_ROOM,
             event: SocketEvent.MoveChess,
             data: {
               chessID: selectedChess.id,
@@ -135,7 +131,7 @@ const ChineseChessContainer = () => {
 
   const onFlip = (id: number) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE,
+      type: AppActionType.SEND_MESSAGE_ROOM,
       event: SocketEvent.FlipChess,
       data: {
         chessID: id,
@@ -184,7 +180,7 @@ const ChineseChessContainer = () => {
         if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
           if (isEatable(targetChess)) {
             dispatch({
-              type: AppActionType.SEND_MESSAGE,
+              type: AppActionType.SEND_MESSAGE_ROOM,
               event: SocketEvent.EatChess,
               data: {
                 chessID: selectedChess.id,
@@ -263,7 +259,7 @@ const ChineseChessContainer = () => {
             size="large"
             variant="contained"
             onClick={() => dispatch({
-              type: AppActionType.SEND_MESSAGE,
+              type: AppActionType.SEND_MESSAGE_ROOM,
               event: SocketEvent.SetPlayOrder,
             })}
           >

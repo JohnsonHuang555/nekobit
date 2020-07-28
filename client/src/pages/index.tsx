@@ -4,7 +4,8 @@ import { Box } from '@material-ui/core';
 import Layout from 'src/components/Layout';
 import GameList from 'src/features/main/Index/components/GameList';
 import { useDispatch, useSelector } from 'react-redux';
-import { ActionType } from 'src/features/main/reducers/indexReducer';
+import { ActionType as IndexActionType } from 'src/features/main/reducers/indexReducer';
+import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { gamesSelector } from 'src/features/main/selectors';
 
 const IndexContainer = () => {
@@ -12,7 +13,8 @@ const IndexContainer = () => {
   const games = useSelector(gamesSelector);
 
   useEffect(() => {
-    dispatch({ type: ActionType.GET_GAMES });
+    dispatch({ type: IndexActionType.GET_GAMES });
+    dispatch({ type: AppActionType.GET_USER_INFO });
   }, []);
 
   const chooseGameHandler = (id: string) => {

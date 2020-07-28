@@ -1,17 +1,10 @@
 import { TRoom } from "../domain/models/Room";
-import { TGameOver } from "src/types/Socket";
 
 export type State = {
   roomInfo?: TRoom;
-  gameOver: TGameOver;
 };
 
-export const defaultState: State = {
-  gameOver: {
-    isGameOver: false,
-    winner: '',
-  }
-};
+export const defaultState: State = {};
 
 export enum ActionType {
   INITIAL_ROOM_INFO = 'INITIAL_ROOM_INFO',
@@ -29,12 +22,7 @@ export type UpdateRoomInfoAction = {
   roomInfo: Partial<TRoom>;
 };
 
-export type SetGameOverAction = {
-  type: ActionType.GAME_OVER,
-  gameOver: TGameOver;
-};
-
-export type Action = LoadRoomInfoAction | UpdateRoomInfoAction | SetGameOverAction;
+export type Action = LoadRoomInfoAction | UpdateRoomInfoAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -56,12 +44,6 @@ const reducer = (state: State = defaultState, action: Action): State => {
       } else {
         throw Error('Room not found');
       }
-    }
-    case ActionType.GAME_OVER: {
-      return {
-        ...state,
-        gameOver: action.gameOver,
-      };
     }
     default: {
       return state;

@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"fmt"
 	"server/domain"
+	"server/utils"
 )
 
 type roomUseCase struct {
@@ -62,12 +64,16 @@ func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) (*dom
 }
 
 func (ru *roomUseCase) LeaveRoom(id string, userID string) ([]*domain.User, error) {
+	fmt.Println(userID)
 	users, err := ru.roomRepo.RemoveUser(id, userID)
+	fmt.Println(users)
 	if err != nil {
 		return nil, err
 	}
 
-	users, err = ru.roomRepo.UpdateUserIsMaster(id, users[0].ID, true)
+	if len(users) > 1 {
+		users, err = ru.roomRepo.UpdateUserIsMaster(id, users[0].ID, true)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -152,16 +158,14 @@ func (ru *roomUseCase) SetPlayerSideIndependence(
 
 	// 判斷剩下一個沒有陣營自動帶入
 	if len(noSideUsers) == 1 {
-		hasSideUsers := domain.FilterUsers(users, func(n *domain.User) bool {
-			return n.Side != ""
-		})
 		remainedSides := allSides
-		for i := 0; i < len(hasSideUsers); i++ {
-			remainedSides = append(remainedSides[:i], remainedSides[i+1:]...)
-		}
 		for i := 0; i < len(users); i++ {
 			if users[i].Side == "" {
 				users[i].Side = remainedSides[0]
+			} else {
+				remainedSides = utils.FilterStrings(remainedSides, func(n string) bool {
+					return n != users[i].Side
+				})
 			}
 		}
 	}

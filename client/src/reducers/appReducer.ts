@@ -1,12 +1,15 @@
 import { TUser } from './../features/main/domain/models/User';
 import { TSocket, SocketEvent } from 'src/types/Socket';
-import { Ttoast } from 'src/types/ReduxTypes';
+import { Ttoast, TModal } from 'src/types/ReduxTypes';
 
 export type State = {
-  websocket?: WebSocket;
+  gamePageWebSocket?: WebSocket;
+  roomPageWebSocket?: WebSocket;
   userInfo?: TUser;
   socketMsg?: TSocket;
   showToast: Ttoast;
+  showConfirmModal: TModal;
+  showAlertModal: TModal;
 }
 
 export const defaultState: State = {
@@ -14,15 +17,33 @@ export const defaultState: State = {
     show: false,
     message: '',
   },
+  showConfirmModal: {
+    show: false,
+    message: '',
+  },
+  showAlertModal: {
+    show: false,
+    message: '',
+  },
 };
 
 export enum ActionType {
+  // socket
   CREATE_SOCKET = 'CREATE_SOCKET',
-  CLOSE_SOCKET = 'CLOSE_SOCKET',
-  SEND_MESSAGE = 'SEND_MESSAGE',
+  CLOSE_SOCKET_GAME = 'CLOSE_SOCKET_GAME',
+  CLOSE_SOCKET_ROOM = 'CLOSE_SOCKET_ROOM',
+
+  // send message
+  SEND_MESSAGE_GAME = 'SEND_MESSAGE_GAME',
+  SEND_MESSAGE_ROOM = 'SEND_MESSAGE_ROOM',
+
+  // user info
   GET_USER_INFO = 'GET_USER_INFO',
   SET_USER_INFO = 'SET_USER_INFO',
+
   SET_SHOW_TOAST = 'SET_SHOW_TOAST',
+  SET_CONFIRM_MODAL = 'SET_CONFIRM_MODAL',
+  SET_ALERT_MODAL = 'SET_ALERT_MODAL',
 };
 
 export type CreateSocketAction = {
@@ -30,12 +51,23 @@ export type CreateSocketAction = {
   domain: string;
 };
 
-export type CloseSocketAction = {
-  type: ActionType.CLOSE_SOCKET,
+export type CloseSocketGameAction = {
+  type: ActionType.CLOSE_SOCKET_GAME,
 };
 
-export type SendMessageAction = {
-  type: ActionType.SEND_MESSAGE,
+export type CloseSocketRoomAction = {
+  type: ActionType.CLOSE_SOCKET_ROOM,
+};
+
+export type SendMessageGameAction = {
+  type: ActionType.SEND_MESSAGE_GAME,
+  userId: string;
+  event: SocketEvent;
+  data: any;
+};
+
+export type SendMessageRoomAction = {
+  type: ActionType.SEND_MESSAGE_ROOM,
   userId: string;
   event: SocketEvent;
   data: any;
@@ -53,24 +85,50 @@ export type SetUserInfoAction = {
 
 export type SetShowToastAction = {
   type: ActionType.SET_SHOW_TOAST,
-  show: boolean,
-  message: string,
+  show: boolean;
+  message: string;
+};
+
+export type SetShowConfirmAction = {
+  type: ActionType.SET_CONFIRM_MODAL,
+  show: boolean;
+  message: string;
+};
+
+export type SetShowAlertAction = {
+  type: ActionType.SET_ALERT_MODAL,
+  show: boolean;
+  message: string;
 };
 
 export type Action = CreateSocketAction
-                   | CloseSocketAction
-                   | SendMessageAction
+                   | CloseSocketGameAction
+                   | CloseSocketRoomAction
+                   | SendMessageGameAction
+                   | SendMessageRoomAction
                    | LoadUserInfoAction
+                   | SetUserInfoAction
                    | SetShowToastAction
-                   | SetUserInfoAction;
+                   | SetShowConfirmAction
+                   | SetShowAlertAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
     case ActionType.CREATE_SOCKET: {
-      const websocket = new WebSocket(`ws://localhost:8080/ws/${action.domain}`);
-      return {
-        ...state,
-        websocket,
+      if (action.domain === 'gamePage') {
+        // game
+        const gamePageWebSocket = new WebSocket('ws://localhost:8080/ws/game_page');
+        return {
+          ...state,
+          gamePageWebSocket,
+        }
+      } else {
+        // room
+        const roomPageWebSocket = new WebSocket(`ws://localhost:8080/ws/${action.domain}`);
+        return {
+          ...state,
+          roomPageWebSocket,
+        }
       }
     }
     case ActionType.GET_USER_INFO: {
@@ -98,27 +156,54 @@ const reducer = (state: State = defaultState, action: Action): State => {
         }
       }
     }
-    case ActionType.CLOSE_SOCKET: {
-      if (state.websocket) {
-        state.websocket.close();
+    case ActionType.CLOSE_SOCKET_GAME: {
+      if (state.gamePageWebSocket) {
+        state.gamePageWebSocket.close();
         return {
           ...state,
-          websocket: undefined,
+          gamePageWebSocket: undefined,
         }
       } else {
         throw Error('Socket not found...');
       }
     }
-    case ActionType.SEND_MESSAGE: {
-      if (state.websocket && state.userInfo) {
+    case ActionType.CLOSE_SOCKET_ROOM: {
+      if (state.roomPageWebSocket) {
+        state.roomPageWebSocket.close();
+        return {
+          ...state,
+          roomPageWebSocket: undefined,
+        }
+      } else {
+        throw Error('Socket not found...');
+      }
+    }
+    case ActionType.SEND_MESSAGE_GAME: {
+      console.log(action.event)
+      if (state.gamePageWebSocket && state.userInfo) {
         const data: TSocket = {
           userID: action.userId ?
-          action.userId :
-          state.userInfo.id,
+            action.userId :
+            state.userInfo.id,
           event: action.event,
           data: action.data,
         }
-        state.websocket.send(JSON.stringify(data));
+        state.gamePageWebSocket.send(JSON.stringify(data));
+      }
+      return state;
+    }
+    case ActionType.SEND_MESSAGE_ROOM: {
+      console.log(action.event)
+
+      if (state.roomPageWebSocket && state.userInfo) {
+        const data: TSocket = {
+          userID: action.userId ?
+            action.userId :
+            state.userInfo.id,
+          event: action.event,
+          data: action.data,
+        }
+        state.roomPageWebSocket.send(JSON.stringify(data));
       }
       return state;
     }
@@ -126,6 +211,24 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return {
         ...state,
         showToast: {
+          show: action.show,
+          message: action.message,
+        },
+      }
+    }
+    case ActionType.SET_CONFIRM_MODAL: {
+      return {
+        ...state,
+        showConfirmModal: {
+          show: action.show,
+          message: action.message,
+        },
+      }
+    }
+    case ActionType.SET_ALERT_MODAL: {
+      return {
+        ...state,
+        showAlertModal: {
           show: action.show,
           message: action.message,
         },

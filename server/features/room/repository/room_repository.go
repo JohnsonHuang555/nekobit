@@ -140,11 +140,12 @@ func (rr *roomRepository) RemoveUser(roomID string, userID string) ([]*domain.Us
 	// 代表最後一位玩家則 刪除 該房間
 	if len(userList) == 1 {
 		rr.rooms = append(rr.rooms[:roomIndex], rr.rooms[roomIndex+1:]...)
+		return nil, nil
 	} else {
 		userList = append(userList[:userIndex], userList[userIndex+1:]...)
+		rr.rooms[roomIndex].UserList = userList
+		return rr.rooms[roomIndex].UserList, nil
 	}
-	rr.rooms[roomIndex].UserList = userList
-	return rr.rooms[roomIndex].UserList, nil
 }
 
 func (rr *roomRepository) UpdateUserIsReady(roomID string, userID string) ([]*domain.User, error) {

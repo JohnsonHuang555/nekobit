@@ -14,25 +14,22 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Snackbar,
-  IconButton
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch, useSelector } from 'react-redux';
 import { gameInfoSelector, roomsSelector, createRoomDataSelector, createdRoomIdSelector } from 'src/features/main/selectors';
-import { userInfoSelector, websocketSelector, showToastSelector } from 'src/selectors';
+import { userInfoSelector, gameWebsocketSelector } from 'src/selectors';
 import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
+import AlertModal from 'src/components/Modals/AlertModal';
 
 const GameContainer = () => {
   const dispatch = useDispatch();
-  const showToast = useSelector(showToastSelector);
   const gameInfo = useSelector(gameInfoSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
-  const ws = useSelector(websocketSelector);
+  const ws = useSelector(gameWebsocketSelector);
   const createRoomData = useSelector(createRoomDataSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
 
@@ -45,22 +42,27 @@ const GameContainer = () => {
   // component did mount
   useEffect(() => {
     const gameId = location.search.substr(4);
-    dispatch({
-      type: AppActionType.CREATE_SOCKET,
-      domain: 'game_page',
-    });
+    if (!ws) {
+      dispatch({
+        type: AppActionType.CREATE_SOCKET,
+        domain: 'gamePage',
+      });
+    } else {
+      dispatch({
+        type: AppActionType.SEND_MESSAGE_GAME,
+        event: SocketEvent.GetRooms,
+      });
+    }
     dispatch({
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
-    return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET });
-    }
+    dispatch({ type: AppActionType.GET_USER_INFO });
   }, []);
 
   // listening for ws and userInfo
   useEffect(() => {
-    if (ws && userInfo) {
+    if (ws) {
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -68,7 +70,7 @@ const GameContainer = () => {
           message: 'Connect successfully',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE,
+          type: AppActionType.SEND_MESSAGE_GAME,
           event: SocketEvent.GetRooms,
         });
       }
@@ -80,12 +82,10 @@ const GameContainer = () => {
         switch (wsData.event) {
           case SocketEvent.GetRooms: {
             const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
-            if (rooms.length) {
-              dispatch({
-                type: GameActionType.GET_ROOMS,
-                rooms,
-              });
-            }
+            dispatch({
+              type: GameActionType.GET_ROOMS,
+              rooms,
+            });
           }
         }
       }
@@ -96,9 +96,11 @@ const GameContainer = () => {
   useEffect(() => {
     if (createdRoomId && userInfo && ws) {
       dispatch({
-        type: AppActionType.SEND_MESSAGE,
+        type: AppActionType.SEND_MESSAGE_GAME,
         event: SocketEvent.GetRooms,
       });
+      // clear createdId
+      dispatch({ type: GameActionType.INITIAL_STATE });
       redirectToRoomPage(createdRoomId);
     }
   }, [createdRoomId]);
@@ -132,10 +134,11 @@ const GameContainer = () => {
     }
   }
 
-  if (!gameInfo) { return null; }
+  if (!gameInfo ) { return null; }
 
   return (
     <Layout>
+      <AlertModal />
       <Dialog
         fullWidth
         open={showCreateRoomModal}
@@ -255,39 +258,25 @@ const GameContainer = () => {
           <GameDetail
             gameInfo={gameInfo}
             roomsCount={rooms.length}
-            onShowModal={() => setShowCreateRoomModal(true)}
-            playNow={() => setShowRoomList(true)}
+            onShowModal={() => userInfo
+              ? setShowCreateRoomModal(true)
+              : dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: '請先登入'
+                })
+            }
+            playNow={() => userInfo
+              ? setShowRoomList(true)
+              : dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: '請先登入'
+                })
+            }
           />
         )}
       </Box>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        open={showToast.show}
-        autoHideDuration={4000}
-        onClose={() => dispatch({
-          type: AppActionType.SET_SHOW_TOAST,
-          show: false,
-        })}
-        message={showToast.message}
-        action={
-          <React.Fragment>
-            <IconButton
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={() => dispatch({
-                type: AppActionType.SET_SHOW_TOAST,
-                show: false,
-              })}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
     </Layout>
   )
 };

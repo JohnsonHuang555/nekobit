@@ -13,11 +13,13 @@ export const defaultState: State = {
   createRoomData: {
     title: '',
     mode: 1,
+    gameID: '',
   },
   createdRoomId: '',
 };
 
 export enum ActionType {
+  INITIAL_STATE = 'INITIAL_STATE',
   GET_GAME_INFO = 'GET_GAME_INFO',
   GET_GAME_INFO_SUCCESS = 'GET_GAME_INFO_SUCCESS',
   GET_ROOMS = 'GET_ROOMS',
@@ -25,6 +27,10 @@ export enum ActionType {
   CREATE_ROOM = 'CREATE_ROOM',
   CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS',
 }
+
+export type InitialStateAction = {
+  type: ActionType.INITIAL_STATE,
+};
 
 export type LoadGameInfoAction = {
   type: ActionType.GET_GAME_INFO_SUCCESS,
@@ -46,10 +52,17 @@ export type CreatedRoomAction = {
   id: string;
 }
 
-export type Action = LoadGameInfoAction | LoadRoomsAction | CreatingRoomsAction | CreatedRoomAction;
+export type Action = InitialStateAction
+                   | LoadGameInfoAction
+                   | LoadRoomsAction
+                   | CreatingRoomsAction
+                   | CreatedRoomAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
+    case ActionType.INITIAL_STATE: {
+      return defaultState;
+    }
     case ActionType.GET_GAME_INFO_SUCCESS: {
       return {
         ...state,

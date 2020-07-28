@@ -10,13 +10,12 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Box,
   TextField,
   Grid,
 } from '@material-ui/core';
-import { websocketSelector, userInfoSelector } from 'src/selectors';
+import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
 import { SocketEvent, TSocket } from 'src/types/Socket';
@@ -29,34 +28,55 @@ import {
   roomInfoSelector,
   isYouMasterSelector,
   isPlayerReadySelector,
-  gameOverSelector,
   playerSideSelector,
 } from 'src/features/main/selectors';
+import ConfirmModal from 'src/components/Modals/ConfirmModal';
+import AlertModal from 'src/components/Modals/AlertModal';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(websocketSelector);
+  const ws = useSelector(roomWebsocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
   const isPlayerReady = useSelector(isPlayerReadySelector);
-  const gameOver = useSelector(gameOverSelector);
   const playerSide = useSelector(playerSideSelector);
 
   const [showEditModal, setShowEditModal] = useState(false);
-  const [showLeaveRoomModal, setShowLeaveRoomModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
+
+  // leave room event
+  const leaveRoomHandler = () => {
+    dispatch({
+      type: AppActionType.SEND_MESSAGE_ROOM,
+      event: SocketEvent.LeaveRoom,
+    });
+    dispatch({
+      type: AppActionType.SEND_MESSAGE_GAME,
+      event: SocketEvent.GetRooms,
+    });
+  };
 
   // component did mount
   useEffect(() => {
     const id = location.search.substr(4);
+    dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
       type: AppActionType.CREATE_SOCKET,
       domain: id,
     });
 
+    const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', leaveRoomConfirmHandler);
+    window.addEventListener('unload', leaveRoomHandler);
     return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET });
+      dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
+      window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
+      window.removeEventListener('unload', leaveRoomHandler);
     }
   }, []);
 
@@ -70,7 +90,7 @@ const RoomContainer = () => {
           message: 'Join room',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE,
+          type: AppActionType.SEND_MESSAGE_ROOM,
           event: SocketEvent.JoinRoom,
           data: {
             userName: userInfo.name,
@@ -129,7 +149,7 @@ const RoomContainer = () => {
   // methods
   const kickOutPlayer = (id: string) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE,
+      type: AppActionType.SEND_MESSAGE_ROOM,
       userId: id,
       event: SocketEvent.LeaveRoom,
     });
@@ -143,16 +163,9 @@ const RoomContainer = () => {
     return false;
   }
 
-  const onLeaveRoom = () => {
-    dispatch({
-      type: AppActionType.SEND_MESSAGE,
-      event: SocketEvent.LeaveRoom,
-    });
-  };
-
   const changePassword = () => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE,
+      type: AppActionType.SEND_MESSAGE_ROOM,
       event: SocketEvent.ChangePassword,
       data: {
         roomPassword: editingPassword,
@@ -163,6 +176,13 @@ const RoomContainer = () => {
 
   return (
     <Layout>
+      <ConfirmModal onConfirm={() => leaveRoomHandler()} />
+      <AlertModal onConfirm={() =>
+        dispatch({
+          type: AppActionType.SEND_MESSAGE_ROOM,
+          event: SocketEvent.GameOver,
+        })}
+      />
       <div className="section-heading">
         <h2>{roomInfo.roomNumber}.{roomInfo.title}</h2>
         <Box marginBottom={1} display="flex">
@@ -184,7 +204,11 @@ const RoomContainer = () => {
             startIcon={
               <FontAwesomeIcon icon={faDoorOpen}/>
             }
-            onClick={() => setShowLeaveRoomModal(true)}
+            onClick={() => dispatch({
+              type: AppActionType.SET_CONFIRM_MODAL,
+              show: true,
+              message: '確定要離開房間？'
+            })}
           >
             離開
           </Button>
@@ -214,7 +238,7 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE,
+                type: AppActionType.SEND_MESSAGE_ROOM,
                 event: SocketEvent.StartGame,
                 data: {
                   gameID: roomInfo.gameId,
@@ -232,7 +256,7 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE,
+                type: AppActionType.SEND_MESSAGE_ROOM,
                 event: SocketEvent.ReadyGame,
               })}
             >
@@ -244,32 +268,6 @@ const RoomContainer = () => {
       {roomInfo.status === 1 && userInfo && (
         <GameScreen gameId={roomInfo.gameId} />
       )}
-      <Dialog
-        fullWidth
-        open={showLeaveRoomModal}
-        onClose={() => setShowLeaveRoomModal(false)}
-      >
-        <DialogTitle id="leave-room-modal">提示</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            確定要離開房間?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setShowLeaveRoomModal(false)}
-            color="primary"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => onLeaveRoom()}
-            color="primary"
-          >
-            Leave
-          </Button>
-        </DialogActions>
-      </Dialog>
       <Dialog
         fullWidth
         open={showEditModal}
@@ -304,21 +302,6 @@ const RoomContainer = () => {
             Save
           </Button>
         </DialogActions>
-      </Dialog>
-      <Dialog
-        fullWidth
-        open={gameOver.isGameOver}
-        onClose={() => dispatch({
-          type: AppActionType.SEND_MESSAGE,
-          event: SocketEvent.GameOver,
-        })}
-      >
-        <DialogTitle id="leave-room-modal">提示</DialogTitle>
-        <DialogContent>
-          <Box>
-            你{gameOver.winner === playerSide ? '贏' : '輸'}了
-          </Box>
-        </DialogContent>
       </Dialog>
     </Layout>
   )
