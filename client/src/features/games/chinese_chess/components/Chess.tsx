@@ -1,16 +1,18 @@
-import { ChessSide } from "../../domain/models/ChineseChess";
+import { ChessSide, GameModeCode } from "../../domain/models/ChineseChess";
 import styles from '@styles/games/chineseChess.module.scss';
 
 type ChessProps = {
   side: ChessSide;
   name: string;
   isFlipped: boolean;
+  mode: GameModeCode;
   onChessClick: () => void;
 }
 const Chess = (props: ChessProps) => {
   const {
     side,
     name,
+    mode,
     isFlipped,
     onChessClick,
   } = props;
@@ -18,6 +20,7 @@ const Chess = (props: ChessProps) => {
   const className = [
     styles.chess,
     isFlipped ? styles.isFlipped : '',
+    mode === GameModeCode.Standard ? styles.standardChess : '',
   ].join(' ');
 
   return (

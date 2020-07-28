@@ -1,38 +1,28 @@
 import React from 'react';
-import { TChineseChess, ChessSide, GameModeCode } from 'src/features/games/domain/models/ChineseChess';
-import MapItem from '../MapItem';
 import { Box, Grid } from '@material-ui/core';
+import { HiddenProps } from './Hidden';
+import MapItem from '../MapItem';
 import styles from '@styles/games/chineseChess.module.scss';
+import { GameModeCode } from 'src/features/games/domain/models/ChineseChess';
 
-export type HiddenProps = {
-  chesses: TChineseChess[];
-  yourTurn: boolean;
-  selectedChess?: TChineseChess;
-  playerSide: ChessSide;
-  onSelect: (chess: TChineseChess) => void;
-  onMove: (targetX: number, targetY: number) => void;
-  onEat: (targetChess: TChineseChess) => void;
-  onFlip: (id: number) => void;
-}
+type StandardProps = Omit<HiddenProps, 'onFlip'>
 
-const Hidden = (props: HiddenProps) => {
+const Standard = (props: StandardProps) => {
   const {
     chesses,
-    yourTurn,
     selectedChess,
+    yourTurn,
     playerSide,
     onSelect,
-    onEat,
-    onFlip,
     onMove,
+    onEat,
   } = props;
-
   const chessMap = () => {
     let map = [];
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 8; x++) {
+    for (let y = 0; y < 10; y++) {
+      for (let x = 0; x < 9; x++) {
         const chessInfo = [...chesses].find(c => {
-          return c.locationX === x && c.locationY === y && c.alive
+          return c.locationX === x && c.locationY === y && c.alive;
         });
 
         const onMapClick = () => {
@@ -43,9 +33,7 @@ const Hidden = (props: HiddenProps) => {
 
         const onChessClick = () => {
           if (!chessInfo || !yourTurn) { return; }
-          if (!chessInfo.isFlipped) {
-            onFlip(chessInfo.id);
-          } else if (playerSide === chessInfo.side) {
+          if (playerSide === chessInfo.side) {
             onSelect(chessInfo);
           } else if (selectedChess && selectedChess.side !== chessInfo.side) {
             onEat(chessInfo);
@@ -63,18 +51,18 @@ const Hidden = (props: HiddenProps) => {
 
         map.push(
           <MapItem
-            mode={GameModeCode.Hidden}
+            mode={GameModeCode.Standard}
             key={`x-${x}/y-${y}`}
             isSelected={isSelected()}
             chessInfo={chessInfo}
             onMapClick={onMapClick}
             onChessClick={onChessClick}
           />
-        );
+        )
       }
     }
     return map;
-  }
+  };
 
   return (
     <Box width="100vh">
@@ -85,4 +73,4 @@ const Hidden = (props: HiddenProps) => {
   )
 };
 
-export default Hidden;
+export default Standard;

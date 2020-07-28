@@ -13,6 +13,7 @@ import { ChineseChessFactory } from '../domain/factories/ChineseChessFactory';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import Hidden from './components/Mode/Hidden';
 import styles from '@styles/games/chineseChess.module.scss';
+import Standard from './components/Mode/Standard';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
@@ -228,7 +229,17 @@ const ChineseChessContainer = () => {
   const renderMode = () => {
     switch (roomInfo.mode) {
       case 1: {
-
+        return (
+          <Standard
+            chesses={roomInfo.gameData as TChineseChess[]}
+            selectedChess={selectedChess}
+            playerSide={playerSide as ChessSide}
+            onSelect={(chess) => onSelect(chess)}
+            onMove={(tX, tY) => onMove(tX, tY, GameModeCode.Standard)}
+            onEat={(tc) => onEat(tc, GameModeCode.Standard)}
+            yourTurn={yourTurn}
+          />
+        )
       }
       case 2: {
         return (
