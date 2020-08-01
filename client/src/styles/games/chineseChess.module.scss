@@ -84,18 +84,8 @@
   width: calc(100% / 9);
   border: none;
   position: relative;
-  min-height: 80px;
-  &::before {
-    content: "";
-    width: 100%;
-    border-bottom: 1px solid #867d72;
-    position: absolute;
-  }
-  &::after {
-    content: "";
-    height: 100%;
-    border-left: 1px solid #867d72;
-  }
+  min-height: 90px;
+  background: none;
 }
 
 .standardChess {

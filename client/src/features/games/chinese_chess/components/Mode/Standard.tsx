@@ -2,8 +2,10 @@ import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { HiddenProps } from './Hidden';
 import MapItem from '../MapItem';
-import styles from '@styles/games/chineseChess.module.scss';
 import { GameModeCode } from 'src/features/games/domain/models/ChineseChess';
+import GameMap, { GameType } from 'src/components/GameMap';
+// import styles from '@styles/games/chineseChess.module.scss';
+import styles from '@styles/games/chineseChessStandard.module.scss';
 
 type StandardProps = Omit<HiddenProps, 'onFlip'>
 
@@ -65,8 +67,9 @@ const Standard = (props: StandardProps) => {
   };
 
   return (
-    <Box width="100vh">
-      <Grid container className={styles.container}>
+    <Box width="100vh" className={styles['standard-mode']}>
+      <GameMap gameType={GameType.ChineseChess} className={styles['map']} />
+      <Grid container className={styles['chesses']}>
         {chessMap()}
       </Grid>
     </Box>

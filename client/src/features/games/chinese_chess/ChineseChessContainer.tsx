@@ -110,7 +110,17 @@ const ChineseChessContainer = () => {
 
     switch (gameMode) {
       case GameModeCode.Standard: {
-        // TODO:
+        let range = [];
+        switch (selectedChess.name) {
+          case ChessName.KingBlack:
+          case ChessName.KingRed:{
+            range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
+          }
+          case ChessName.SoldiersBlack:
+          case ChessName.SoldiersRed: {
+            range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY, false);
+          }
+        }
       }
       case GameModeCode.Hidden: {
         const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
