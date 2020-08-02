@@ -77,24 +77,56 @@ const ChineseChessContainer = () => {
             const gameData = ChineseChessFactory.createArrayFromNet(wsData.data.gameData || []);
             const nowTurn = wsData.data.nowTurn || '';
 
-            const redAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Red);
-            const blackAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Black);
-            if (!redAliveChesses.length) {
-              dispatch({
-                type: AppActionType.SET_ALERT_MODAL,
-                show: true,
-                message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
-              })
-              return;
-            }
-
-            if (!blackAliveChesses.length) {
-              dispatch({
-                type: AppActionType.SET_ALERT_MODAL,
-                show: true,
-                message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
-              })
-              return;
+            if (roomInfo?.mode === GameModeCode.Standard) {
+              const redKingAlive = gameData.find(c => c.name === ChessName.KingRed)?.alive;
+              const blackKingAlive = gameData.find(c => c.name === ChessName.KingBlack)?.alive;
+              if (!redKingAlive) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              }
+              if (!blackKingAlive) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              }
+            } else {
+              const redAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Red);
+              const blackAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Black);
+              if (!redAliveChesses.length) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              }
+              if (!blackAliveChesses.length) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              }
             }
 
             setSelectedChess(undefined);
@@ -106,6 +138,13 @@ const ChineseChessContainer = () => {
               }
             });
             break;
+          }
+          case SocketEvent.GameOver: {
+            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo,
+            });
           }
         }
       };

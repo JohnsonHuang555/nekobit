@@ -29,6 +29,7 @@ import {
   isYouMasterSelector,
   isPlayerReadySelector,
   playerSideSelector,
+  showGameScreenSelector,
 } from 'src/features/main/selectors';
 import ConfirmModal from 'src/components/Modals/ConfirmModal';
 import AlertModal from 'src/components/Modals/AlertModal';
@@ -40,7 +41,7 @@ const RoomContainer = () => {
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
   const isPlayerReady = useSelector(isPlayerReadySelector);
-  const playerSide = useSelector(playerSideSelector);
+  const showGameScreen = useSelector(showGameScreenSelector);
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
@@ -129,9 +130,19 @@ const RoomContainer = () => {
             }
             break;
           }
-          case SocketEvent.StartGame:
-          case SocketEvent.ChangePassword:
-          case SocketEvent.GameOver: {
+          case SocketEvent.StartGame: {
+            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo,
+            });
+            dispatch({
+              type: RoomActionType.SET_SHOW_GAME_SCREEN,
+              show: true,
+            });
+            break;
+          }
+          case SocketEvent.ChangePassword: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -179,8 +190,8 @@ const RoomContainer = () => {
       <ConfirmModal onConfirm={() => leaveRoomHandler()} />
       <AlertModal onConfirm={() =>
         dispatch({
-          type: AppActionType.SEND_MESSAGE_ROOM,
-          event: SocketEvent.GameOver,
+          type: RoomActionType.SET_SHOW_GAME_SCREEN,
+          show: false,
         })}
       />
       <div className="section-heading">
@@ -265,7 +276,7 @@ const RoomContainer = () => {
           )}
         </Grid>
       </Grid>
-      {roomInfo.status === 1 && userInfo && (
+      {showGameScreen && roomInfo.status === 1 && userInfo && (
         <GameScreen gameId={roomInfo.gameId} />
       )}
       <Dialog
