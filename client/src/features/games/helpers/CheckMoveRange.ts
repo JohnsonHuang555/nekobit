@@ -1,4 +1,4 @@
-type TRange = {
+export type TRange = {
   x: number;
   y: number;
 }
@@ -12,16 +12,22 @@ export class CheckMoveRange {
   }
 
   // 短十字
-  static shortCross(currentX: number, currentY: number, canDown: boolean = true): TRange[] {
+  static shortCross(currentX: number, currentY: number): TRange[] {
     const range: TRange[] = [];
     range.push({ x: currentX + 1, y: currentY }); // 右
     range.push({ x: currentX - 1, y: currentY }); // 左
     range.push({ x: currentX, y: currentY + 1 }); // 上
-    if (canDown) {
-      range.push({ x: currentX, y: currentY - 1 }); // 下
-    }
+    range.push({ x: currentX, y: currentY - 1 }); // 下
     return range;
   }
 
-
+  // 對角
+  static diagonal(currentX: number, currentY: number): TRange[] {
+    const range: TRange[] = [];
+    range.push({x: currentX - 1, y: currentY + 1});
+    range.push({x: currentX - 1, y: currentY + 1});
+    range.push({x: currentX + 1, y: currentY - 1});
+    range.push({x: currentX + 1, y: currentY + 1});
+    return range;
+  }
 }

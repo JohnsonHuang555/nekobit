@@ -7,13 +7,13 @@ import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
-import { CheckMoveRange } from '../helpers/CheckMoveRange';
+import { CheckMoveRange, TRange } from '../helpers/CheckMoveRange';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import { ChineseChessFactory } from '../domain/factories/ChineseChessFactory';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import Hidden from './components/Mode/Hidden';
-import styles from '@styles/games/chineseChess.module.scss';
 import Standard from './components/Mode/Standard';
+import styles from '@styles/games/chineseChess.module.scss';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
@@ -35,6 +35,26 @@ const ChineseChessContainer = () => {
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
               roomInfo,
+            });
+            if (roomInfo.mode === GameModeCode.Standard && isYouMaster) {
+              const user = roomInfo.userList.find(u => u.playOrder === 0);
+              if (user) {
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.SetSideBlack,
+                  userId: user.id
+                });
+              }
+            }
+            break;
+          }
+          case SocketEvent.SetSideBlack: {
+            const userList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo: {
+                userList,
+              }
             });
             break;
           }
@@ -98,6 +118,7 @@ const ChineseChessContainer = () => {
 
   // methods
   const onSelect = (chess: TChineseChess) => {
+    console.log(chess)
     if (selectedChess?.id === chess.id) {
       setSelectedChess(undefined);
       return;
@@ -110,16 +131,191 @@ const ChineseChessContainer = () => {
 
     switch (gameMode) {
       case GameModeCode.Standard: {
-        let range = [];
+        let canMove = false;
         switch (selectedChess.name) {
-          case ChessName.KingBlack:
+          case ChessName.KingBlack: {
+            // 限制範圍
+            if (targetY > 3) { return; }
+            const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
+          }
           case ChessName.KingRed:{
-            range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
+            if (targetY < 8) { return; }
+            const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
           }
-          case ChessName.SoldiersBlack:
+          case ChessName.SoldiersBlack: {
+            const range: TRange[] = [];
+            range.push({
+              x: selectedChess.locationX,
+              y: selectedChess.locationY + 1
+            });
+            if (targetY > 5) {
+              // 可左右移動
+              range.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+              range.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+            }
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
+          }
           case ChessName.SoldiersRed: {
-            range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY, false);
+            const range: TRange[] = [];
+            range.push({
+              x: selectedChess.locationX,
+              y: selectedChess.locationY - 1
+            });
+            if (targetY < 6) {
+              // 可左右移動
+              range.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+              range.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+            }
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
           }
+          case ChessName.ChariotsBlack:
+          case ChessName.ChariotsRed:
+          case ChessName.CannonsBlack:
+          case ChessName.CannonsRed: {
+            if (selectedChess.locationX === targetX) {
+              for (let i = 0; i < Math.abs(selectedChess.locationY - targetY) - 1; i++) {
+                let hasChessY = false;
+                if (targetY > selectedChess.locationY) {
+                  hasChessY = findChessByLocation(targetX, selectedChess.locationY + i);
+                } else {
+                  hasChessY = findChessByLocation(targetX, targetY + i);
+                }
+                if (hasChessY) {
+                  canMove = false;
+                  break;
+                }
+              }
+            }
+            if (selectedChess.locationY === targetY) {
+              for (let i = 0; i < Math.abs(selectedChess.locationX - targetX) - 1; i++) {
+                let hasChessX = false;
+                if (targetX > selectedChess.locationX) {
+                  hasChessX = findChessByLocation(selectedChess.locationX + i, targetY);
+                } else {
+                  hasChessX = findChessByLocation(targetX + i, targetY);
+                }
+                if (hasChessX) {
+                  canMove = false;
+                  break;
+                }
+              }
+            }
+          }
+          case ChessName.HorsesBlack:
+          case ChessName.HorsesRed: {
+            const range: TRange[] = [];
+            ['xAdd', 'xMinus', 'yAdd', 'yMinus'].forEach(item => {
+              switch (item) {
+                case 'xAdd':
+                  // 拐馬腳
+                  const xAddObstacle = findChessByLocation(selectedChess.locationX + 1, selectedChess.locationY);
+                  if (xAddObstacle) break;
+                  const xAdd = selectedChess.locationX + 2;
+                  range.push({x: xAdd, y: selectedChess.locationY + 1});
+                  range.push({x: xAdd, y: selectedChess.locationY - 1});
+                  break;
+                case 'xMinus':
+                  const xMinusObstacle = findChessByLocation(selectedChess.locationX - 1, selectedChess.locationY);
+                  if (xMinusObstacle) break;
+                  const xMinus = selectedChess.locationX - 2;
+                  range.push({x: xMinus, y: selectedChess.locationY + 1});
+                  range.push({x: xMinus, y: selectedChess.locationY - 1});
+                  break;
+                case 'yAdd':
+                  const yAddObstacle = findChessByLocation(selectedChess.locationX, selectedChess.locationY + 1);
+                  if (yAddObstacle) break;
+                  const yAdd = selectedChess.locationY + 2;
+                  range.push({x: selectedChess.locationX + 1, y: yAdd});
+                  range.push({x: selectedChess.locationX - 1, y: yAdd});
+                  break;
+                case 'yMinus':
+                  const yMinusObstacle = findChessByLocation(selectedChess.locationX, selectedChess.locationY - 1);
+                  if (yMinusObstacle) break;
+                  const yMinus = selectedChess.locationY - 2;
+                  range.push({x: selectedChess.locationX + 1, y: yMinus});
+                  range.push({x: selectedChess.locationX - 1, y: yMinus});
+                  break;
+              }
+            });
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
+          }
+          case ChessName.MinisterBlack:
+          case ChessName.MinisterRed: {
+            const range: TRange[] = [];
+            // 不可過河
+            if (selectedChess.name === '象' && selectedChess.locationY > 5) {
+              canMove = false;
+              break;
+            }
+            if (selectedChess.name === '相' && selectedChess.locationY < 6) {
+              canMove = false;
+              break;
+            }
+            ['left', 'right'].forEach(item => {
+              switch (item) {
+                case 'left':
+                  const topLeftObstacle = findChessByLocation(selectedChess.locationX - 1, selectedChess.locationY - 1);
+                  const bottomLeftObstacle = findChessByLocation(selectedChess.locationX - 1, selectedChess.locationY + 1);
+                  const leftX = selectedChess.locationX - 2;
+                  if (!topLeftObstacle) {
+                    range.push({x: leftX, y: selectedChess.locationY - 2});
+                  }
+                  if (!bottomLeftObstacle) {
+                    range.push({x: leftX, y: selectedChess.locationY + 2});
+                  }
+                  break;
+                case 'right':
+                  const topRightObstacle = findChessByLocation(selectedChess.locationX + 1, selectedChess.locationY - 1);
+                  const bottomRightObstacle = findChessByLocation(selectedChess.locationX + 1, selectedChess.locationY + 1);
+                  const rightX = selectedChess.locationX + 2;
+                  if (!topRightObstacle) {
+                    range.push({x: rightX, y: selectedChess.locationY - 2});
+                  }
+                  if (!bottomRightObstacle) {
+                    range.push({x: rightX, y: selectedChess.locationY + 2});
+                  }
+                  break;
+              }
+            });
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
+          }
+          case ChessName.GuardsBlack:
+          case ChessName.GuardsRed: {
+            if (targetX > 6 || targetX < 4) {
+              canMove = false;
+              break;
+            }
+            if (selectedChess.name === '士' && targetY > 3) {
+              canMove = false;
+              break;
+            } else if (selectedChess.name === '仕' && targetY < 8) {
+              canMove = false;
+              break;
+            }
+
+            const range = CheckMoveRange.diagonal(selectedChess.locationX, selectedChess.locationY);
+            canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+            break;
+          }
+        }
+        if (canMove) {
+          dispatch({
+            type: AppActionType.SEND_MESSAGE_ROOM,
+            event: SocketEvent.MoveChess,
+            data: {
+              chessID: selectedChess.id,
+              locationX: targetX,
+              locationY: targetY,
+            }
+          });
         }
       }
       case GameModeCode.Hidden: {
@@ -234,6 +430,12 @@ const ChineseChessContainer = () => {
       }
       return false
     }
+  }
+
+  const findChessByLocation = (x: number, y:number): boolean => {
+    return roomInfo.gameData.find((chess: TChineseChess) => (
+      chess.locationX === x && chess.locationY === y
+    ));
   }
 
   const renderMode = () => {
