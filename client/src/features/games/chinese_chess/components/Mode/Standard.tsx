@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { HiddenProps } from './Hidden';
 import MapItem from '../MapItem';
-import { GameModeCode } from 'src/features/games/domain/models/ChineseChess';
+import { GameModeCode, ChessSide } from 'src/features/games/domain/models/ChineseChess';
 import GameMap, { GameType } from 'src/components/GameMap';
 import styles from '@styles/games/chineseChessStandard.module.scss';
 
@@ -55,6 +55,7 @@ const Standard = (props: StandardProps) => {
             mode={GameModeCode.Standard}
             key={`x-${x}/y-${y}`}
             isSelected={isSelected()}
+            playerSide={playerSide}
             chessInfo={chessInfo}
             onMapClick={onMapClick}
             onChessClick={onChessClick}
@@ -68,7 +69,7 @@ const Standard = (props: StandardProps) => {
   return (
     <Box width="100vh" className={styles['standard-mode']}>
       <GameMap gameType={GameType.ChineseChess} className={styles['map']} />
-      <Grid container className={styles['chesses']}>
+      <Grid container className={`${styles['chesses']} ${playerSide === ChessSide.Black ? styles['rotate-180'] : ''}`}>
         {chessMap()}
       </Grid>
     </Box>
