@@ -7,11 +7,12 @@ import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { TSocket, SocketEvent } from 'src/types/Socket';
 import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
-import { CheckMoveRange } from '../helpers/CheckMoveRange';
+import { CheckMoveRange, TRange } from '../helpers/CheckMoveRange';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
 import { ChineseChessFactory } from '../domain/factories/ChineseChessFactory';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import Hidden from './components/Mode/Hidden';
+import Standard from './components/Mode/Standard';
 import styles from '@styles/games/chineseChess.module.scss';
 
 const ChineseChessContainer = () => {
@@ -35,6 +36,26 @@ const ChineseChessContainer = () => {
               type: RoomActionType.UPDATE_ROOM_INFO,
               roomInfo,
             });
+            if (roomInfo.mode === GameModeCode.Standard && isYouMaster) {
+              const user = roomInfo.userList.find(u => u.playOrder === 0);
+              if (user) {
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.SetSideBlack,
+                  userId: user.id
+                });
+              }
+            }
+            break;
+          }
+          case SocketEvent.SetSideBlack: {
+            const userList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo: {
+                userList,
+              }
+            });
             break;
           }
           case SocketEvent.FlipChess: {
@@ -56,24 +77,56 @@ const ChineseChessContainer = () => {
             const gameData = ChineseChessFactory.createArrayFromNet(wsData.data.gameData || []);
             const nowTurn = wsData.data.nowTurn || '';
 
-            const redAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Red);
-            const blackAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Black);
-            if (!redAliveChesses.length) {
-              dispatch({
-                type: AppActionType.SET_ALERT_MODAL,
-                show: true,
-                message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
-              })
-              return;
-            }
-
-            if (!blackAliveChesses.length) {
-              dispatch({
-                type: AppActionType.SET_ALERT_MODAL,
-                show: true,
-                message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
-              })
-              return;
+            if (roomInfo?.mode === GameModeCode.Standard) {
+              const redKingAlive = gameData.find(c => c.name === ChessName.KingRed)?.alive;
+              const blackKingAlive = gameData.find(c => c.name === ChessName.KingBlack)?.alive;
+              console.log(redKingAlive, blackKingAlive)
+              console.log(playerSide, 'djdjdjddj')
+              if (!redKingAlive) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              } else if (!blackKingAlive) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              }
+            } else {
+              const redAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Red);
+              const blackAliveChesses = gameData.filter(c => c.alive && c.side === ChessSide.Black);
+              if (!redAliveChesses.length) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              } else if (!blackAliveChesses.length) {
+                dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
+                });
+                dispatch({
+                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  event: SocketEvent.GameOver,
+                });
+              }
             }
 
             setSelectedChess(undefined);
@@ -86,10 +139,17 @@ const ChineseChessContainer = () => {
             });
             break;
           }
+          case SocketEvent.GameOver: {
+            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            dispatch({
+              type: RoomActionType.UPDATE_ROOM_INFO,
+              roomInfo,
+            });
+          }
         }
       };
     }
-  }, [ws]);
+  }, [ws, playerSide]);
 
   if (!roomInfo || !userInfo) { return null; }
 
@@ -109,7 +169,19 @@ const ChineseChessContainer = () => {
 
     switch (gameMode) {
       case GameModeCode.Standard: {
-        // TODO:
+        const canMove = checkMove(selectedChess, targetX, targetY);
+        if (canMove) {
+          dispatch({
+            type: AppActionType.SEND_MESSAGE_ROOM,
+            event: SocketEvent.MoveChess,
+            data: {
+              chessID: selectedChess.id,
+              locationX: targetX,
+              locationY: targetY,
+            }
+          });
+        }
+        break;
       }
       case GameModeCode.Hidden: {
         const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
@@ -125,6 +197,7 @@ const ChineseChessContainer = () => {
             }
           });
         }
+        break;
       }
     }
   };
@@ -156,8 +229,7 @@ const ChineseChessContainer = () => {
         if (middelChesses.length !== 1) {
           return;
         }
-      }
-      if (selectedChess.locationY === targetChess.locationY) {
+      } else if (selectedChess.locationY === targetChess.locationY) {
         const middelChesses = chesses.filter(c => {
           return c.locationY === targetChess.locationY &&
                  c.locationX > Math.min(targetChess.locationX, selectedChess.locationX) &&
@@ -167,12 +239,49 @@ const ChineseChessContainer = () => {
         if (middelChesses.length !== 1) {
           return;
         }
+      } else {
+        return;
       }
     }
 
     switch (gameMode) {
       case GameModeCode.Standard: {
-        // TODO:
+        const isInRange = checkMove(selectedChess, targetChess.locationX, targetChess.locationY);
+        if (selectedChess.name === ChessName.KingBlack || selectedChess.name === ChessName.KingRed) {
+          let hasChesses = false;
+          for (let i = 0; i < Math.abs(selectedChess.locationY - targetChess.locationY) - 1; i++) {
+            let hasChessY;
+            if (targetChess.locationY > selectedChess.locationY) {
+              hasChessY = findChessByLocation(targetChess.locationX, selectedChess.locationY + i + 1);
+            } else {
+              hasChessY = findChessByLocation(targetChess.locationX, targetChess.locationY + i + 1);
+            }
+            if (hasChessY && hasChessY.alive) {
+              hasChesses = true;
+              break;
+            }
+          }
+          if (!hasChesses) {
+            dispatch({
+              type: AppActionType.SEND_MESSAGE_ROOM,
+              event: SocketEvent.EatChess,
+              data: {
+                chessID: selectedChess.id,
+                targetID: targetChess.id,
+              }
+            });
+          }
+        } else if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
+          dispatch({
+            type: AppActionType.SEND_MESSAGE_ROOM,
+            event: SocketEvent.EatChess,
+            data: {
+              chessID: selectedChess.id,
+              targetID: targetChess.id,
+            }
+          });
+        }
+        break;
       }
       case GameModeCode.Hidden: {
         const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
@@ -189,6 +298,7 @@ const ChineseChessContainer = () => {
             });
           }
         }
+        break;
       }
     }
   };
@@ -225,10 +335,207 @@ const ChineseChessContainer = () => {
     }
   }
 
+  const checkMove = (selectedChess: TChineseChess, targetX: number, targetY: number): boolean => {
+    let canMove = false;
+    switch (selectedChess.name) {
+      case ChessName.KingBlack: {
+        // 限制範圍
+        if (targetY > 2) { return false; }
+        const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+      case ChessName.KingRed:{
+        if (targetY < 7) { return false; }
+        const range = CheckMoveRange.shortCross(selectedChess.locationX, selectedChess.locationY);
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+      case ChessName.SoldiersBlack: {
+        const range: TRange[] = [];
+        range.push({
+          x: selectedChess.locationX,
+          y: selectedChess.locationY + 1
+        });
+        if (targetY > 4) {
+          // 可左右移動
+          range.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+          range.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+        }
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+      case ChessName.SoldiersRed: {
+        const range: TRange[] = [];
+        range.push({
+          x: selectedChess.locationX,
+          y: selectedChess.locationY - 1
+        });
+        if (targetY < 5) {
+          // 可左右移動
+          range.push({x: selectedChess.locationX + 1, y: selectedChess.locationY});
+          range.push({x: selectedChess.locationX - 1, y: selectedChess.locationY});
+        }
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+      case ChessName.ChariotsBlack:
+      case ChessName.ChariotsRed:
+      case ChessName.CannonsBlack:
+      case ChessName.CannonsRed: {
+        let tempCanMove = true;
+        if (selectedChess.locationX === targetX) {
+          for (let i = 0; i < Math.abs(selectedChess.locationY - targetY) - 1; i++) {
+            let hasChessY;
+            if (targetY > selectedChess.locationY) {
+              hasChessY = findChessByLocation(targetX, selectedChess.locationY + i + 1);
+            } else {
+              hasChessY = findChessByLocation(targetX, targetY + i + 1);
+            }
+            if (hasChessY && hasChessY.alive) {
+              tempCanMove = false;
+              break;
+            }
+          }
+        } else if (selectedChess.locationY === targetY) {
+          for (let i = 0; i < Math.abs(selectedChess.locationX - targetX) - 1; i++) {
+            let hasChessX;
+            if (targetX > selectedChess.locationX) {
+              hasChessX = findChessByLocation(selectedChess.locationX + i + 1, targetY);
+            } else {
+              hasChessX = findChessByLocation(targetX + i + 1, targetY);
+            }
+            if (hasChessX && hasChessX.alive) {
+              tempCanMove = false;
+              break;
+            }
+          }
+        } else {
+          tempCanMove = false;
+        }
+        canMove = tempCanMove;
+        break;
+      }
+      case ChessName.HorsesBlack:
+      case ChessName.HorsesRed: {
+        const range: TRange[] = [];
+        ['xAdd', 'xMinus', 'yAdd', 'yMinus'].forEach(item => {
+          switch (item) {
+            case 'xAdd':
+              // 拐馬腳
+              const xAddObstacle = findChessByLocation(selectedChess.locationX + 1, selectedChess.locationY);
+              if (xAddObstacle) break;
+              const xAdd = selectedChess.locationX + 2;
+              range.push({x: xAdd, y: selectedChess.locationY + 1});
+              range.push({x: xAdd, y: selectedChess.locationY - 1});
+              break;
+            case 'xMinus':
+              const xMinusObstacle = findChessByLocation(selectedChess.locationX - 1, selectedChess.locationY);
+              if (xMinusObstacle) break;
+              const xMinus = selectedChess.locationX - 2;
+              range.push({x: xMinus, y: selectedChess.locationY + 1});
+              range.push({x: xMinus, y: selectedChess.locationY - 1});
+              break;
+            case 'yAdd':
+              const yAddObstacle = findChessByLocation(selectedChess.locationX, selectedChess.locationY + 1);
+              if (yAddObstacle) break;
+              const yAdd = selectedChess.locationY + 2;
+              range.push({x: selectedChess.locationX + 1, y: yAdd});
+              range.push({x: selectedChess.locationX - 1, y: yAdd});
+              break;
+            case 'yMinus':
+              const yMinusObstacle = findChessByLocation(selectedChess.locationX, selectedChess.locationY - 1);
+              if (yMinusObstacle) break;
+              const yMinus = selectedChess.locationY - 2;
+              range.push({x: selectedChess.locationX + 1, y: yMinus});
+              range.push({x: selectedChess.locationX - 1, y: yMinus});
+              break;
+          }
+        });
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+      case ChessName.MinisterBlack:
+      case ChessName.MinisterRed: {
+        const range: TRange[] = [];
+        // 不可過河
+        if (selectedChess.name === ChessName.MinisterBlack && targetY > 4) {
+          break;
+        }
+        if (selectedChess.name === ChessName.MinisterRed && targetY < 5) {
+          break;
+        }
+        ['left', 'right'].forEach(item => {
+          switch (item) {
+            case 'left':
+              const topLeftObstacle = findChessByLocation(selectedChess.locationX - 1, selectedChess.locationY - 1);
+              const bottomLeftObstacle = findChessByLocation(selectedChess.locationX - 1, selectedChess.locationY + 1);
+              const leftX = selectedChess.locationX - 2;
+              if (!topLeftObstacle) {
+                range.push({x: leftX, y: selectedChess.locationY - 2});
+              }
+              if (!bottomLeftObstacle) {
+                range.push({x: leftX, y: selectedChess.locationY + 2});
+              }
+              break;
+            case 'right':
+              const topRightObstacle = findChessByLocation(selectedChess.locationX + 1, selectedChess.locationY - 1);
+              const bottomRightObstacle = findChessByLocation(selectedChess.locationX + 1, selectedChess.locationY + 1);
+              const rightX = selectedChess.locationX + 2;
+              if (!topRightObstacle) {
+                range.push({x: rightX, y: selectedChess.locationY - 2});
+              }
+              if (!bottomRightObstacle) {
+                range.push({x: rightX, y: selectedChess.locationY + 2});
+              }
+              break;
+          }
+        });
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+      case ChessName.GuardsBlack:
+      case ChessName.GuardsRed: {
+        if (targetX > 5 || targetX < 3) {
+          canMove = false;
+          break;
+        }
+        if (selectedChess.name === ChessName.GuardsBlack && targetY > 2) {
+          canMove = false;
+          break;
+        } else if (selectedChess.name === ChessName.GuardsRed && targetY < 7) {
+          canMove = false;
+          break;
+        }
+
+        const range = CheckMoveRange.diagonal(selectedChess.locationX, selectedChess.locationY);
+        canMove = CheckMoveRange.isInRange(range, targetX, targetY);
+        break;
+      }
+    }
+    return canMove;
+  }
+
+  const findChessByLocation = (x: number, y:number): TChineseChess => {
+    return roomInfo.gameData.find((chess: TChineseChess) => (
+      chess.locationX === x && chess.locationY === y
+    ));
+  }
+
   const renderMode = () => {
     switch (roomInfo.mode) {
       case 1: {
-
+        return (
+          <Standard
+            chesses={roomInfo.gameData as TChineseChess[]}
+            selectedChess={selectedChess}
+            playerSide={playerSide as ChessSide}
+            onSelect={(chess) => onSelect(chess)}
+            onMove={(tX, tY) => onMove(tX, tY, GameModeCode.Standard)}
+            onEat={(tc) => onEat(tc, GameModeCode.Standard)}
+            yourTurn={yourTurn}
+          />
+        )
       }
       case 2: {
         return (

@@ -13,7 +13,7 @@
 
 .mapItem {
   width: calc(100% / 8);
-  height: 100px;
+  min-height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -78,4 +78,26 @@
     top: 0;
     left: -1px;
   }
+}
+
+.standard {
+  width: calc(100% / 9);
+  border: none;
+  position: relative;
+  min-height: 90px;
+  background: none;
+}
+
+.standardChess {
+  width: 60px;
+  height: 60px;
+  font-size: 32px;
+}
+
+.standard.isSelected {
+  border: 2px solid #be1010;
+}
+
+.rotate_180 {
+  transform: rotate(180deg);
 }

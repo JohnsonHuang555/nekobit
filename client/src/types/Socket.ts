@@ -19,4 +19,5 @@ export enum SocketEvent {
   MoveChess = 'moveChess',
   EatChess = 'eatChess',
   FlipChess = 'flipChess',
+  SetSideBlack = 'setPlayerSideStandard',
 }

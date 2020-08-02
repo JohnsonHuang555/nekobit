@@ -50,3 +50,6 @@ export const playerSideSelector = (store: StoreState) => {
   }
   return '';
 }
+
+export const showGameScreenSelector = (store: StoreState) =>
+  store.main.room.showGameScreen;

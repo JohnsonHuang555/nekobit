@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	"server/domain"
 	"server/utils"
 )
@@ -64,9 +63,7 @@ func (ru *roomUseCase) JoinRoom(id string, userID string, userName string) (*dom
 }
 
 func (ru *roomUseCase) LeaveRoom(id string, userID string) ([]*domain.User, error) {
-	fmt.Println(userID)
 	users, err := ru.roomRepo.RemoveUser(id, userID)
-	fmt.Println(users)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +148,7 @@ func (ru *roomUseCase) SetPlayerSideIndependence(
 	side string,
 	allSides []string,
 ) ([]*domain.User, error) {
-	users, err := ru.roomRepo.UpdateUserSide(roomID, userID, side)
+	users, err := ru.roomRepo.UpdateUserSide(roomID, userID, side, false)
 	noSideUsers := domain.FilterUsers(users, func(n *domain.User) bool {
 		return n.Side == ""
 	})
@@ -181,6 +178,10 @@ func (ru *roomUseCase) GameOver(roomID string) (*domain.Room, error) {
 	ru.roomRepo.UpdateGameData(roomID, nil)
 	ru.roomRepo.UpdateNowTurnByID(roomID, "")
 	room, err := ru.roomRepo.UpdateStatusByID(roomID, status)
+	for i := 0; i < len(room.UserList); i++ {
+		ru.roomRepo.UpdateUserSide(roomID, room.UserList[i].ID, "", true)
+	}
+	room, _ = ru.roomRepo.FindByID(roomID)
 	if err != nil {
 		return nil, err
 	}
