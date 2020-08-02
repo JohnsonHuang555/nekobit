@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"server/domain"
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
@@ -95,7 +94,6 @@ func SocketEventHandler(
 		msg.Data.NowTurn = nowPlayer
 	case "setPlayerSideStandard":
 		users, _ := ru.SetPlayerSideIndependence(roomID, msg.UserID, "BLACK", domain.TwoSides)
-		fmt.Println(msg.UserID)
 		msg.Data.RoomUserList = users
 	}
 	return msg

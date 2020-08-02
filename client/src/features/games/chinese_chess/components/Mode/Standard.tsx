@@ -4,7 +4,6 @@ import { HiddenProps } from './Hidden';
 import MapItem from '../MapItem';
 import { GameModeCode } from 'src/features/games/domain/models/ChineseChess';
 import GameMap, { GameType } from 'src/components/GameMap';
-// import styles from '@styles/games/chineseChess.module.scss';
 import styles from '@styles/games/chineseChessStandard.module.scss';
 
 type StandardProps = Omit<HiddenProps, 'onFlip'>

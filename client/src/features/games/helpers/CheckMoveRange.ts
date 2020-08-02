@@ -24,7 +24,7 @@ export class CheckMoveRange {
   // 對角
   static diagonal(currentX: number, currentY: number): TRange[] {
     const range: TRange[] = [];
-    range.push({x: currentX - 1, y: currentY + 1});
+    range.push({x: currentX - 1, y: currentY - 1});
     range.push({x: currentX - 1, y: currentY + 1});
     range.push({x: currentX + 1, y: currentY - 1});
     range.push({x: currentX + 1, y: currentY + 1});
