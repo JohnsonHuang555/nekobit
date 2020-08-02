@@ -80,6 +80,8 @@ const ChineseChessContainer = () => {
             if (roomInfo?.mode === GameModeCode.Standard) {
               const redKingAlive = gameData.find(c => c.name === ChessName.KingRed)?.alive;
               const blackKingAlive = gameData.find(c => c.name === ChessName.KingBlack)?.alive;
+              console.log(redKingAlive, blackKingAlive)
+              console.log(playerSide, 'djdjdjddj')
               if (!redKingAlive) {
                 dispatch({
                   type: AppActionType.SET_ALERT_MODAL,
@@ -90,8 +92,7 @@ const ChineseChessContainer = () => {
                   type: AppActionType.SEND_MESSAGE_ROOM,
                   event: SocketEvent.GameOver,
                 });
-              }
-              if (!blackKingAlive) {
+              } else if (!blackKingAlive) {
                 dispatch({
                   type: AppActionType.SET_ALERT_MODAL,
                   show: true,
@@ -115,8 +116,7 @@ const ChineseChessContainer = () => {
                   type: AppActionType.SEND_MESSAGE_ROOM,
                   event: SocketEvent.GameOver,
                 });
-              }
-              if (!blackAliveChesses.length) {
+              } else if (!blackAliveChesses.length) {
                 dispatch({
                   type: AppActionType.SET_ALERT_MODAL,
                   show: true,
@@ -149,7 +149,7 @@ const ChineseChessContainer = () => {
         }
       };
     }
-  }, [ws]);
+  }, [ws, playerSide]);
 
   if (!roomInfo || !userInfo) { return null; }
 

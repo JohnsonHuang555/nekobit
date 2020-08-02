@@ -191,7 +191,7 @@ func (rr *roomRepository) UpdateUsersPlayOrder(roomID string) ([]*domain.User, e
 	return rr.rooms[roomIndex].UserList, nil
 }
 
-func (rr *roomRepository) UpdateUserSide(roomID string, userID string, side string) ([]*domain.User, error) {
+func (rr *roomRepository) UpdateUserSide(roomID string, userID string, side string, isReset bool) ([]*domain.User, error) {
 	roomIndex := rr.findRoomIndexByID(roomID)
 	userIndex := rr.findUserIndexByID(userID, roomIndex)
 	if roomIndex == -1 || userIndex == -1 {
@@ -200,6 +200,11 @@ func (rr *roomRepository) UpdateUserSide(roomID string, userID string, side stri
 
 	// ID, Name 不覆寫, 保護成員
 	userList := rr.rooms[roomIndex].UserList
+	if isReset {
+		userList[userIndex].Side = ""
+		return rr.rooms[roomIndex].UserList, nil
+	}
+
 	if userList[userIndex].Side == "" {
 		isSideExist := false
 		for i := 0; i < len(userList); i++ {

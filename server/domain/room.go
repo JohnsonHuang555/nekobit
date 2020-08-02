@@ -58,5 +58,5 @@ type RoomRepository interface {
 
 	UpdateUserIsReady(roomID string, userID string) ([]*User, error)
 	UpdateUserIsMaster(roomID string, userID string, isMaster bool) ([]*User, error)
-	UpdateUserSide(roomID string, userID string, side string) ([]*User, error)
+	UpdateUserSide(roomID string, userID string, side string, isReset bool) ([]*User, error)
 }

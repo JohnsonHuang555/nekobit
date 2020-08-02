@@ -28,7 +28,6 @@ import {
   roomInfoSelector,
   isYouMasterSelector,
   isPlayerReadySelector,
-  playerSideSelector,
   showGameScreenSelector,
 } from 'src/features/main/selectors';
 import ConfirmModal from 'src/components/Modals/ConfirmModal';
@@ -82,7 +81,8 @@ const RoomContainer = () => {
   }, []);
 
   useEffect(() => {
-    if (ws && userInfo) {
+    console.log(ws)
+    if (ws && userInfo && !showGameScreen) {
       let gameId = '';
       ws.onopen = () => {
         dispatch({
@@ -132,6 +132,7 @@ const RoomContainer = () => {
           }
           case SocketEvent.StartGame: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
+            console.log(roomInfo)
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
               roomInfo,
@@ -153,7 +154,7 @@ const RoomContainer = () => {
         }
       };
     }
-  }, [ws, userInfo]);
+  }, [ws, userInfo, showGameScreen]);
 
   if (!roomInfo) { return null; }
 

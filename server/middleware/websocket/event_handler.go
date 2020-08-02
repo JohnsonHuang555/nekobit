@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"server/domain"
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
@@ -66,7 +65,6 @@ func SocketEventHandler(
 
 	case "gameOver":
 		room, _ := ru.GameOver(roomID)
-		fmt.Println(room.Status)
 		msg.Data.RoomInfo = room
 
 	case "changePassword":
