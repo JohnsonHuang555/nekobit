@@ -20,7 +20,7 @@
 
       //接收 Server 發送的訊息
       ws.onmessage = event => {
-        console.log(event)
+        console.log(JSON.parse(event.data))
       }
 
       $('#startGame').on('click', function() {

@@ -75,6 +75,27 @@ const (
 	Large  MapSize = "Large"
 )
 
-func CreateClassicMap(size MapSize) []*MapItem {
+func CreateClassicMap(size MapSize) [][]*MapItem {
+	myMap := [][]*MapItem{}
+	SingleMap := MapItem{}
+	SingleMap.ID = 1
 
+	for y := 0; y < 7; y++ {
+		ArrayMap := []*MapItem{}
+		for i := 0; i < 7; i++ {
+			if y == 0 || y == 6 {
+				ArrayMap = append(ArrayMap, &SingleMap)
+			} else {
+				if i == 0 || i == 6 {
+					ArrayMap = append(ArrayMap, &SingleMap)
+				} else {
+					ArrayMap = append(ArrayMap, nil)
+				}
+			}
+
+		}
+		myMap = append(myMap, ArrayMap)
+	}
+
+	return myMap
 }

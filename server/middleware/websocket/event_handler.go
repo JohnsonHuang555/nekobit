@@ -6,7 +6,6 @@ import (
 	ninjafighting "server/domain/ninja_fighting"
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
-
 	_ninjaFightingRepo "server/features/ninja_fighting/repository"
 	_ninjaFightingUseCase "server/features/ninja_fighting/usecase"
 	"server/utils"
@@ -67,13 +66,12 @@ func SocketEventHandler(
 				// mode 3
 			}
 		case "5f2976433562709c29a6d940":
-			fmt.Println("123456")
-			// gd = ninjaFightingUseCase.CreateGame()
+			gd = ninjafighting.CreateClassicMap(ninjafighting.Small)
 		}
 
-		room, _ := ru.StartGame(roomID, gd)
-		msg.Data.RoomInfo = room
-
+		//	room, _ := ru.StartGame(roomID, gd)
+		//	msg.Data.RoomInfo = room
+		msg.Data.GameData = gd
 	case "setPlayOrder":
 		rooms, _ := ru.SetPlayOrder(roomID)
 		msg.Data.RoomInfo = rooms
