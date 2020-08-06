@@ -1,13 +1,19 @@
 package middleware
 
 import (
+	"fmt"
 	"server/domain"
+	ninjafighting "server/domain/ninja_fighting"
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
+
+	_ninjaFightingRepo "server/features/ninja_fighting/repository"
+	_ninjaFightingUseCase "server/features/ninja_fighting/usecase"
 	"server/utils"
 )
 
 var chineseChessUseCase domain.ChineseChessUseCae
+var ninjaFightingUseCase ninjafighting.NinjaFightingUseCase
 
 // SocketEventHandler handle every event from client
 func SocketEventHandler(
@@ -16,6 +22,7 @@ func SocketEventHandler(
 	ru domain.RoomUseCase,
 ) MsgData {
 	roomInfo, _ := ru.GetRoomInfo(roomID)
+	fmt.Println(roomInfo)
 	if !utils.IsNil(roomInfo) {
 		// 判斷是否開始遊戲
 		if roomInfo.GameData != nil {
@@ -24,6 +31,11 @@ func SocketEventHandler(
 			case "5d62a35bd986c21bc010c00b":
 				chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
 				chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+			// Ninja Fighting
+			case "5f2976433562709c29a6d940":
+				fmt.Println(2)
+				ninjaFightingRepo := _ninjaFightingRepo.NewNinjaFightingRepository(roomInfo.GameData.([]*ninjafighting.MapItem))
+				ninjaFightingUseCase = _ninjaFightingUseCase.NewNinjaFightingUseCase(ninjaFightingRepo)
 			}
 		}
 	}
@@ -43,7 +55,7 @@ func SocketEventHandler(
 	case "startGame":
 		var gd interface{}
 		switch msg.Data.GameID {
-		case "5d62a35bd986c21bc010c00b": // FIXME:
+		case "5d62a35bd986c21bc010c00b":
 			// 1 大盤, 2 小盤
 			if msg.Data.RoomMode == 1 {
 				// mode 1
@@ -54,6 +66,9 @@ func SocketEventHandler(
 			} else {
 				// mode 3
 			}
+		case "5f2976433562709c29a6d940":
+			fmt.Println("123456")
+			// gd = ninjaFightingUseCase.CreateGame()
 		}
 
 		room, _ := ru.StartGame(roomID, gd)
@@ -95,6 +110,9 @@ func SocketEventHandler(
 	case "setPlayerSideStandard":
 		users, _ := ru.SetPlayerSideIndependence(roomID, msg.UserID, "BLACK", domain.TwoSides)
 		msg.Data.RoomUserList = users
+
+		// ninja fighting
+		// case ""
 	}
 	return msg
 }
