@@ -1,5 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState
+} from 'react';
 import Router from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/features/main/game/components/RoomList';
 import GameDetail from 'src/features/main/game/components/GameDetail';
@@ -15,12 +19,17 @@ import {
   DialogContent,
   DialogActions,
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { gameInfoSelector, roomsSelector, createRoomDataSelector, createdRoomIdSelector } from 'src/features/main/selectors';
-import { userInfoSelector, gameWebsocketSelector } from 'src/selectors';
-import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
+import {
+  gameInfoSelector,
+  roomsSelector,
+  createRoomDataSelector,
+  createdRoomIdSelector,
+  gameSocketSelector
+} from 'src/features/main/selectors';
+import { userInfoSelector } from 'src/selectors';
+import { ActionType as GameActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
-import { TSocket, SocketEvent } from 'src/types/Socket';
+import { TSocket, AppSocketEvent } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import AlertModal from 'src/components/Modals/AlertModal';
 
@@ -29,7 +38,7 @@ const GameContainer = () => {
   const gameInfo = useSelector(gameInfoSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
-  const ws = useSelector(gameWebsocketSelector);
+  const ws = useSelector(gameSocketSelector);
   const createRoomData = useSelector(createRoomDataSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
 
@@ -42,17 +51,10 @@ const GameContainer = () => {
   // component did mount
   useEffect(() => {
     const gameId = location.search.substr(4);
-    if (!ws) {
-      dispatch({
-        type: AppActionType.CREATE_SOCKET,
-        domain: 'gamePage',
-      });
-    } else {
-      dispatch({
-        type: AppActionType.SEND_MESSAGE_GAME,
-        event: SocketEvent.GetRooms,
-      });
-    }
+    dispatch({
+      type: GameActionType.CREATE_SOCKET,
+      domain: 'gamePage',
+    });
     dispatch({
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
@@ -62,16 +64,18 @@ const GameContainer = () => {
 
   // listening for ws and userInfo
   useEffect(() => {
-    if (ws) {
+    if (ws && userInfo) {
       ws.onopen = () => {
+        console.log('test')
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
           show: true,
           message: 'Connect successfully',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE_GAME,
-          event: SocketEvent.GetRooms,
+          type: GameActionType.SEND_MESSAGE,
+          event: AppSocketEvent.GetRooms,
+          userId: userInfo?.id,
         });
       }
       ws.onerror = () => {
@@ -80,7 +84,7 @@ const GameContainer = () => {
       ws.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
         switch (wsData.event) {
-          case SocketEvent.GetRooms: {
+          case AppSocketEvent.GetRooms: {
             const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
             dispatch({
               type: GameActionType.GET_ROOMS,
@@ -96,8 +100,9 @@ const GameContainer = () => {
   useEffect(() => {
     if (createdRoomId && userInfo && ws) {
       dispatch({
-        type: AppActionType.SEND_MESSAGE_GAME,
-        event: SocketEvent.GetRooms,
+        type: GameActionType.SEND_MESSAGE,
+        event: AppSocketEvent.GetRooms,
+        userId: userInfo?.id,
       });
       // clear createdId
       dispatch({ type: GameActionType.INITIAL_STATE });
@@ -155,7 +160,7 @@ const GameContainer = () => {
               placeholder="請輸入房間名稱"
               variant="outlined"
               onChange={(e) => dispatch({
-                type: ActionType.CREATING_ROOM,
+                type: GameActionType.CREATING_ROOM,
                 createRoomData: { title: e.target.value }
               })}
             />
@@ -169,7 +174,7 @@ const GameContainer = () => {
               type="password"
               variant="outlined"
               onChange={(e) => dispatch({
-                type: ActionType.CREATING_ROOM,
+                type: GameActionType.CREATING_ROOM,
                 createRoomData: { password: e.target.value }
               })}
             />
@@ -183,7 +188,7 @@ const GameContainer = () => {
                 value={createRoomData.mode}
                 variant="outlined"
                 onChange={(e) => dispatch({
-                  type: ActionType.CREATING_ROOM,
+                  type: GameActionType.CREATING_ROOM,
                   createRoomData: { mode: Number(e.target.value) }
                 })}
               >
@@ -205,7 +210,7 @@ const GameContainer = () => {
           </Button>
           <Button
             onClick={() => dispatch({
-              type: ActionType.CREATE_ROOM,
+              type: GameActionType.CREATE_ROOM,
               createRoomData: {
                 ...createRoomData,
                 gameID: gameInfo.id,

@@ -17,6 +17,9 @@ export const createRoomDataSelector = (store: StoreState) =>
 export const createdRoomIdSelector = (store: StoreState) =>
   store.main.game.createdRoomId;
 
+export const gameSocketSelector = (store: StoreState) =>
+  store.main.game.websocket;
+
 // room
 const getUserInfo = (store: StoreState) => {
   return store.main.room.roomInfo?.userList.find(

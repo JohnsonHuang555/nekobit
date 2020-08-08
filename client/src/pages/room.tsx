@@ -18,7 +18,7 @@ import {
 import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { SocketEvent, TSocket } from 'src/types/Socket';
+import { AppSocketEvent, TSocket } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
@@ -49,11 +49,11 @@ const RoomContainer = () => {
   const leaveRoomHandler = () => {
     dispatch({
       type: AppActionType.SEND_MESSAGE_ROOM,
-      event: SocketEvent.LeaveRoom,
+      event: AppSocketEvent.LeaveRoom,
     });
     dispatch({
       type: AppActionType.SEND_MESSAGE_GAME,
-      event: SocketEvent.GetRooms,
+      event: AppSocketEvent.GetRooms,
     });
   };
 
@@ -92,7 +92,7 @@ const RoomContainer = () => {
         });
         dispatch({
           type: AppActionType.SEND_MESSAGE_ROOM,
-          event: SocketEvent.JoinRoom,
+          event: AppSocketEvent.JoinRoom,
           data: {
             userName: userInfo.name,
           }
@@ -101,7 +101,7 @@ const RoomContainer = () => {
       ws.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
         switch (wsData.event) {
-          case SocketEvent.JoinRoom: {
+          case AppSocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             setEditingPassword(roomInfo.password);
             dispatch({
@@ -111,8 +111,8 @@ const RoomContainer = () => {
             gameId = roomInfo.gameId;
             break;
           }
-          case SocketEvent.LeaveRoom:
-          case SocketEvent.ReadyGame:{
+          case AppSocketEvent.LeaveRoom:
+          case AppSocketEvent.ReadyGame:{
             const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const user = roomUserList.find(u => u.id === userInfo.id);
             if (user) {
@@ -130,7 +130,7 @@ const RoomContainer = () => {
             }
             break;
           }
-          case SocketEvent.StartGame: {
+          case AppSocketEvent.StartGame: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             console.log(roomInfo)
             dispatch({
@@ -143,7 +143,7 @@ const RoomContainer = () => {
             });
             break;
           }
-          case SocketEvent.ChangePassword: {
+          case AppSocketEvent.ChangePassword: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -163,7 +163,7 @@ const RoomContainer = () => {
     dispatch({
       type: AppActionType.SEND_MESSAGE_ROOM,
       userId: id,
-      event: SocketEvent.LeaveRoom,
+      event: AppSocketEvent.LeaveRoom,
     });
   };
 
@@ -178,7 +178,7 @@ const RoomContainer = () => {
   const changePassword = () => {
     dispatch({
       type: AppActionType.SEND_MESSAGE_ROOM,
-      event: SocketEvent.ChangePassword,
+      event: AppSocketEvent.ChangePassword,
       data: {
         roomPassword: editingPassword,
       }
@@ -251,7 +251,7 @@ const RoomContainer = () => {
               size="large"
               onClick={() => dispatch({
                 type: AppActionType.SEND_MESSAGE_ROOM,
-                event: SocketEvent.StartGame,
+                event: AppSocketEvent.StartGame,
                 data: {
                   gameID: roomInfo.gameId,
                   roomMode: roomInfo.mode,
@@ -269,7 +269,7 @@ const RoomContainer = () => {
               size="large"
               onClick={() => dispatch({
                 type: AppActionType.SEND_MESSAGE_ROOM,
-                event: SocketEvent.ReadyGame,
+                event: AppSocketEvent.ReadyGame,
               })}
             >
               {isPlayerReady}
