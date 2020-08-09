@@ -8,7 +8,6 @@ import Layout from 'src/components/Layout';
 import RoomList from 'src/features/main/game/components/RoomList';
 import GameDetail from 'src/features/main/game/components/GameDetail';
 import { GameMode } from 'src/features/main/domain/models/Game';
-import { TRoom } from 'src/features/main/domain/models/Room';
 import {
   Box,
   TextField,
@@ -24,13 +23,10 @@ import {
   roomsSelector,
   createRoomDataSelector,
   createdRoomIdSelector,
-  gameSocketSelector
 } from 'src/features/main/selectors';
 import { userInfoSelector } from 'src/selectors';
 import { ActionType as GameActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
-import { TSocket, AppSocketEvent } from 'src/types/Socket';
-import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import AlertModal from 'src/components/Modals/AlertModal';
 
 const GameContainer = () => {
@@ -38,7 +34,6 @@ const GameContainer = () => {
   const gameInfo = useSelector(gameInfoSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
-  const ws = useSelector(gameSocketSelector);
   const createRoomData = useSelector(createRoomDataSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
 
@@ -50,60 +45,19 @@ const GameContainer = () => {
 
   // component did mount
   useEffect(() => {
+    // Initial step
     const gameId = location.search.substr(4);
-    dispatch({
-      type: GameActionType.CREATE_SOCKET,
-      domain: 'gamePage',
-    });
     dispatch({
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
+    dispatch({ type: GameActionType.GET_ROOMS });
     dispatch({ type: AppActionType.GET_USER_INFO });
   }, []);
 
-  // listening for ws and userInfo
-  useEffect(() => {
-    if (ws && userInfo) {
-      ws.onopen = () => {
-        console.log('test')
-        dispatch({
-          type: AppActionType.SET_SHOW_TOAST,
-          show: true,
-          message: 'Connect successfully',
-        });
-        dispatch({
-          type: GameActionType.SEND_MESSAGE,
-          event: AppSocketEvent.GetRooms,
-          userId: userInfo?.id,
-        });
-      }
-      ws.onerror = () => {
-        console.log('connect failed');
-      }
-      ws.onmessage = (webSocket: MessageEvent) => {
-        const wsData: TSocket = JSON.parse(webSocket.data);
-        switch (wsData.event) {
-          case AppSocketEvent.GetRooms: {
-            const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
-            dispatch({
-              type: GameActionType.GET_ROOMS,
-              rooms,
-            });
-          }
-        }
-      }
-    }
-  }, [ws, userInfo]);
-
   // when create room successfully
   useEffect(() => {
-    if (createdRoomId && userInfo && ws) {
-      dispatch({
-        type: GameActionType.SEND_MESSAGE,
-        event: AppSocketEvent.GetRooms,
-        userId: userInfo?.id,
-      });
+    if (createdRoomId && userInfo) {
       // clear createdId
       dispatch({ type: GameActionType.INITIAL_STATE });
       redirectToRoomPage(createdRoomId);

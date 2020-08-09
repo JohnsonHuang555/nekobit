@@ -5,7 +5,6 @@ export type TSocket = {
 }
 
 export enum AppSocketEvent {
-  GetRooms = 'getRooms',
   JoinRoom = 'joinRoom',
   LeaveRoom = 'leaveRoom',
   CreateRoom = 'createRoom',

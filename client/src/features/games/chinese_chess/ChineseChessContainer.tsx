@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button } from '@material-ui/core';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
+import { userInfoSelector } from 'src/selectors';
 import { TSocket, AppSocketEvent, ChineseChessSocketEvent } from 'src/types/Socket';
-import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
+import { roomInfoSelector, playerSideSelector, isYouMasterSelector, roomSocketSelector } from 'src/features/main/selectors';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
 import { CheckMoveRange, TRange } from '../helpers/CheckMoveRange';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
@@ -17,7 +17,7 @@ import styles from '@styles/games/chineseChess.module.scss';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(roomWebsocketSelector);
+  const ws = useSelector(roomSocketSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const playerSide = useSelector(playerSideSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
@@ -40,7 +40,7 @@ const ChineseChessContainer = () => {
               const user = roomInfo.userList.find(u => u.playOrder === 0);
               if (user) {
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
                   event: ChineseChessSocketEvent.SetSideBlack,
                   userId: user.id
                 });
@@ -87,7 +87,7 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
                   event: AppSocketEvent.GameOver,
                 });
               } else if (!blackKingAlive) {
@@ -97,7 +97,7 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
                   event: AppSocketEvent.GameOver,
                 });
               }
@@ -111,7 +111,7 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
                   event: AppSocketEvent.GameOver,
                 });
               } else if (!blackAliveChesses.length) {
@@ -121,7 +121,7 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
                   event: AppSocketEvent.GameOver,
                 });
               }
@@ -170,8 +170,9 @@ const ChineseChessContainer = () => {
         const canMove = checkMove(selectedChess, targetX, targetY);
         if (canMove) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE_ROOM,
+            type: RoomActionType.SEND_MESSAGE_ROOM,
             event: ChineseChessSocketEvent.MoveChess,
+            userId: userInfo.id,
             data: {
               chessID: selectedChess.id,
               locationX: targetX,
@@ -186,8 +187,9 @@ const ChineseChessContainer = () => {
         const isInRange = CheckMoveRange.isInRange(range, targetX, targetY);
         if (isInRange) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE_ROOM,
+            type: RoomActionType.SEND_MESSAGE_ROOM,
             event: ChineseChessSocketEvent.MoveChess,
+            userId: userInfo.id,
             data: {
               chessID: selectedChess.id,
               locationX: targetX,
@@ -202,8 +204,9 @@ const ChineseChessContainer = () => {
 
   const onFlip = (id: number) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
       event: ChineseChessSocketEvent.FlipChess,
+      userId: userInfo.id,
       data: {
         chessID: id,
       }
@@ -261,8 +264,9 @@ const ChineseChessContainer = () => {
           }
           if (!hasChesses) {
             dispatch({
-              type: AppActionType.SEND_MESSAGE_ROOM,
+              type: RoomActionType.SEND_MESSAGE_ROOM,
               event: ChineseChessSocketEvent.EatChess,
+              userId: userInfo.id,
               data: {
                 chessID: selectedChess.id,
                 targetID: targetChess.id,
@@ -271,8 +275,9 @@ const ChineseChessContainer = () => {
           }
         } else if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE_ROOM,
+            type: RoomActionType.SEND_MESSAGE_ROOM,
             event: ChineseChessSocketEvent.EatChess,
+            userId: userInfo.id,
             data: {
               chessID: selectedChess.id,
               targetID: targetChess.id,
@@ -287,8 +292,9 @@ const ChineseChessContainer = () => {
         if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
           if (isEatable(targetChess)) {
             dispatch({
-              type: AppActionType.SEND_MESSAGE_ROOM,
+              type: RoomActionType.SEND_MESSAGE_ROOM,
               event: ChineseChessSocketEvent.EatChess,
+              userId: userInfo.id,
               data: {
                 chessID: selectedChess.id,
                 targetID: targetChess.id,
@@ -564,7 +570,7 @@ const ChineseChessContainer = () => {
             size="large"
             variant="contained"
             onClick={() => dispatch({
-              type: AppActionType.SEND_MESSAGE_ROOM,
+              type: RoomActionType.SEND_MESSAGE_ROOM,
               event: AppSocketEvent.SetPlayOrder,
             })}
           >

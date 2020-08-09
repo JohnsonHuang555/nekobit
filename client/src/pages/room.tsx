@@ -15,7 +15,7 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
+import { userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
 import { AppSocketEvent, TSocket } from 'src/types/Socket';
@@ -29,13 +29,14 @@ import {
   isYouMasterSelector,
   isPlayerReadySelector,
   showGameScreenSelector,
+  roomSocketSelector,
 } from 'src/features/main/selectors';
 import ConfirmModal from 'src/components/Modals/ConfirmModal';
 import AlertModal from 'src/components/Modals/AlertModal';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(roomWebsocketSelector);
+  const ws = useSelector(roomSocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
@@ -48,12 +49,9 @@ const RoomContainer = () => {
   // leave room event
   const leaveRoomHandler = () => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
       event: AppSocketEvent.LeaveRoom,
-    });
-    dispatch({
-      type: AppActionType.SEND_MESSAGE_GAME,
-      event: AppSocketEvent.GetRooms,
+      userId: userInfo?.id,
     });
   };
 
@@ -62,7 +60,7 @@ const RoomContainer = () => {
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
-      type: AppActionType.CREATE_SOCKET,
+      type: RoomActionType.CREATE_SOCKET_ROOM,
       domain: id,
     });
 
@@ -74,14 +72,12 @@ const RoomContainer = () => {
     window.addEventListener('beforeunload', leaveRoomConfirmHandler);
     window.addEventListener('unload', leaveRoomHandler);
     return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
       window.removeEventListener('unload', leaveRoomHandler);
     }
   }, []);
 
   useEffect(() => {
-    console.log(ws)
     if (ws && userInfo && !showGameScreen) {
       let gameId = '';
       ws.onopen = () => {
@@ -91,8 +87,9 @@ const RoomContainer = () => {
           message: 'Join room',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE_ROOM,
+          type: RoomActionType.SEND_MESSAGE_ROOM,
           event: AppSocketEvent.JoinRoom,
+          userId: userInfo.id,
           data: {
             userName: userInfo.name,
           }
@@ -132,7 +129,6 @@ const RoomContainer = () => {
           }
           case AppSocketEvent.StartGame: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
-            console.log(roomInfo)
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
               roomInfo,
@@ -161,7 +157,7 @@ const RoomContainer = () => {
   // methods
   const kickOutPlayer = (id: string) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
       userId: id,
       event: AppSocketEvent.LeaveRoom,
     });
@@ -177,7 +173,7 @@ const RoomContainer = () => {
 
   const changePassword = () => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
       event: AppSocketEvent.ChangePassword,
       data: {
         roomPassword: editingPassword,
@@ -250,7 +246,7 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE_ROOM,
+                type: RoomActionType.SEND_MESSAGE_ROOM,
                 event: AppSocketEvent.StartGame,
                 data: {
                   gameID: roomInfo.gameId,
@@ -268,8 +264,9 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE_ROOM,
+                type: RoomActionType.SEND_MESSAGE_ROOM,
                 event: AppSocketEvent.ReadyGame,
+                userId: userInfo?.id,
               })}
             >
               {isPlayerReady}

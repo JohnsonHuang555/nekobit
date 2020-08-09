@@ -3,9 +3,6 @@ import { StoreState } from 'src/reducers';
 export const userInfoSelector = (store: StoreState) =>
   store.app.userInfo;
 
-export const roomWebsocketSelector = (store: StoreState) =>
-  store.app.roomPageWebSocket;
-
 export const showToastSelector = (store: StoreState) =>
   store.app.showToast;
 

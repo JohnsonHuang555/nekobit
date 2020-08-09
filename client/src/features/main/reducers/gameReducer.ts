@@ -1,9 +1,7 @@
 import { TGame, TCreateRoom } from 'src/features/main/domain/models/Game';
-import { TRoom } from '../domain/models/Room';
-import { AppSocketEvent, TSocket } from 'src/types/Socket';
+import { TRoom } from 'src/features/main/domain/models/Room';
 
 export type State = {
-  websocket?: WebSocket;
   gameInfo?: TGame;
   rooms: TRoom[];
   createRoomData: TCreateRoom;
@@ -25,14 +23,10 @@ export enum ActionType {
   GET_GAME_INFO = 'GET_GAME_INFO',
   GET_GAME_INFO_SUCCESS = 'GET_GAME_INFO_SUCCESS',
   GET_ROOMS = 'GET_ROOMS',
+  GET_ROOMS_SUCCESS = 'GET_ROOMS_SUCCESS',
   CREATING_ROOM = 'CREATING_ROOM',
   CREATE_ROOM = 'CREATE_ROOM',
   CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS',
-
-  // Socket
-  CREATE_SOCKET = 'CREATE_SOCKET',
-  CLOSE_SOCKET = 'CLOSE_SOCKET',
-  SEND_MESSAGE = 'SEND_MESSAGE',
 }
 
 export type InitialStateAction = {
@@ -45,7 +39,7 @@ export type LoadGameInfoAction = {
 };
 
 export type LoadRoomsAction = {
-  type: ActionType.GET_ROOMS,
+  type: ActionType.GET_ROOMS_SUCCESS,
   rooms: TRoom[];
 };
 
@@ -59,30 +53,11 @@ export type CreatedRoomAction = {
   id: string;
 }
 
-export type CreateSocketAction = {
-  type: ActionType.CREATE_SOCKET,
-  domain: string;
-};
-
-export type CloseSocketGameAction = {
-  type: ActionType.CLOSE_SOCKET,
-};
-
-export type SendMessageGameAction = {
-  type: ActionType.SEND_MESSAGE,
-  userId: string;
-  event: AppSocketEvent;
-  data: any;
-};
-
 export type Action = InitialStateAction
                    | LoadGameInfoAction
                    | LoadRoomsAction
                    | CreatingRoomsAction
-                   | CreatedRoomAction
-                   | CreateSocketAction
-                   | CloseSocketGameAction
-                   | SendMessageGameAction;
+                   | CreatedRoomAction;
 
 const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
@@ -95,7 +70,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
         gameInfo: action.gameInfo,
       }
     }
-    case ActionType.GET_ROOMS: {
+    case ActionType.GET_ROOMS_SUCCESS: {
       return {
         ...state,
         rooms: action.rooms,
@@ -115,38 +90,6 @@ const reducer = (state: State = defaultState, action: Action): State => {
         ...state,
         createdRoomId: action.id,
       }
-    }
-    case ActionType.CREATE_SOCKET: {
-      if (action.domain === 'gamePage') {
-        const websocket = new WebSocket('ws://localhost:8080/ws/game_page');
-        return {
-          ...state,
-          websocket,
-        }
-      }
-      throw Error('Domain not found');
-    }
-    case ActionType.SEND_MESSAGE: {
-      if (state.websocket && action.userId) {
-        const data: TSocket = {
-          userID: action.userId,
-          event: action.event,
-          data: action.data,
-        };
-        state.websocket.send(JSON.stringify(data));
-        return state;
-      }
-      throw Error('Socket not found');
-    }
-    case ActionType.CLOSE_SOCKET: {
-      if (state.websocket) {
-        state.websocket.close();
-        return {
-          ...state,
-          websocket: undefined,
-        };
-      }
-      throw Error('Socket not found');
     }
     default: {
       return state;
