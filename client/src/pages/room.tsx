@@ -45,6 +45,7 @@ const RoomContainer = () => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
+  const [leavingRoute, setLeavingRoute] = useState('');
 
   // leave room event
   const leaveRoomHandler = () => {
@@ -53,6 +54,24 @@ const RoomContainer = () => {
       event: AppSocketEvent.LeaveRoom,
       userId: userInfo?.id,
     });
+  };
+
+  const aa = (url: string) => {
+    console.log(url, 'url')
+    console.log(leavingRoute, 'leavvvvv')
+    if (!leavingRoute) {
+      setLeavingRoute(url)
+      dispatch({
+        type: AppActionType.SET_CONFIRM_MODAL,
+        show: true,
+        message: '確定要離開房間？'
+      });
+      throw 'route changing';
+    }
+    if (!url && leavingRoute) {
+      leaveRoomHandler();
+      Router.push(leavingRoute);
+    }
   };
 
   // component did mount
@@ -69,11 +88,13 @@ const RoomContainer = () => {
       return e.returnValue = '';
     };
 
-    window.addEventListener('beforeunload', leaveRoomConfirmHandler);
-    window.addEventListener('unload', leaveRoomHandler);
+    // window.addEventListener('beforeunload', leaveRoomConfirmHandler);
+    // window.addEventListener('unload', leaveRoomHandler);
+    Router.events.on('routeChangeStart', aa);
     return () => {
-      window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
-      window.removeEventListener('unload', leaveRoomHandler);
+      // window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
+      // window.removeEventListener('unload', leaveRoomHandler);
+      Router.events.off('routeChangeStart', aa)
     }
   }, []);
 
@@ -184,7 +205,7 @@ const RoomContainer = () => {
 
   return (
     <Layout>
-      <ConfirmModal onConfirm={() => leaveRoomHandler()} />
+      <ConfirmModal onConfirm={() => aa('')} />
       <AlertModal onConfirm={() =>
         dispatch({
           type: RoomActionType.SET_SHOW_GAME_SCREEN,
@@ -212,10 +233,9 @@ const RoomContainer = () => {
             startIcon={
               <FontAwesomeIcon icon={faDoorOpen}/>
             }
-            onClick={() => dispatch({
-              type: AppActionType.SET_CONFIRM_MODAL,
-              show: true,
-              message: '確定要離開房間？'
+            onClick={() => Router.push({
+              pathname: '/game',
+              query: { id: roomInfo.gameId }
             })}
           >
             離開
