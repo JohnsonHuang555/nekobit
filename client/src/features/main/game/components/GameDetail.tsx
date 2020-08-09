@@ -13,7 +13,6 @@ import styles from '@styles/components/gameDetail.module.scss';
 
 type GameDetailProps = {
   gameInfo: TGame;
-  roomsCount: number;
   onShowModal: () => void;
   playNow: () => void;
 };
@@ -21,7 +20,6 @@ type GameDetailProps = {
 const GameDetail = (props: GameDetailProps) => {
   const {
     gameInfo,
-    roomsCount = 0,
     onShowModal,
     playNow,
   } = props;
@@ -43,11 +41,6 @@ const GameDetail = (props: GameDetailProps) => {
               <FontAwesomeIcon icon={faUserFriends} className={styles.icon} />
               <span>遊戲需求人數：</span>
               <span>{gameInfo.maxPlayers}</span>
-            </Grid>
-            <Grid item xs={6}>
-              <FontAwesomeIcon icon={faChess} className={styles.icon} />
-              <span>總房間數：</span>
-              <span>{roomsCount}</span>
             </Grid>
           </Grid>
           <Grid container spacing={3}>

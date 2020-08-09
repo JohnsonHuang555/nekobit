@@ -212,11 +212,11 @@ const GameContainer = () => {
             gameId={gameInfo.id}
             maxPlayers={gameInfo.maxPlayers}
             onChooseRoom={(id) => onChooseRoom(id)}
+            onRefreshRooms={() => dispatch({ type: GameActionType.GET_ROOMS })}
           />
         ): (
           <GameDetail
             gameInfo={gameInfo}
-            roomsCount={rooms.length}
             onShowModal={() => userInfo
               ? setShowCreateRoomModal(true)
               : dispatch({
