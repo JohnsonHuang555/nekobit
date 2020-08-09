@@ -15,7 +15,6 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-import { userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
 import { AppSocketEvent, TSocket } from 'src/types/Socket';
@@ -31,6 +30,7 @@ import {
   showGameScreenSelector,
   roomSocketSelector,
 } from 'src/features/main/selectors';
+import { userInfoSelector } from 'src/selectors';
 import ConfirmModal from 'src/components/Modals/ConfirmModal';
 import AlertModal from 'src/components/Modals/AlertModal';
 
@@ -109,7 +109,7 @@ const RoomContainer = () => {
             break;
           }
           case AppSocketEvent.LeaveRoom:
-          case AppSocketEvent.ReadyGame:{
+          case AppSocketEvent.ReadyGame: {
             const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const user = roomUserList.find(u => u.id === userInfo.id);
             if (user) {

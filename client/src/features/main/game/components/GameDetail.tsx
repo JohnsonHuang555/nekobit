@@ -1,14 +1,12 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Grid, Box, Button } from '@material-ui/core';
 import {
   faUserFriends,
-  faChess,
   faDoorOpen,
   faGamepad,
-  faHome
 } from '@fortawesome/free-solid-svg-icons';
 import { TGame } from 'src/features/main/domain/models/Game';
-import { Grid, Box, Button } from '@material-ui/core';
 import styles from '@styles/components/gameDetail.module.scss';
 
 type GameDetailProps = {

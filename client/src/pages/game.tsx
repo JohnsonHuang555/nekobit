@@ -213,6 +213,14 @@ const GameContainer = () => {
             maxPlayers={gameInfo.maxPlayers}
             onChooseRoom={(id) => onChooseRoom(id)}
             onRefreshRooms={() => dispatch({ type: GameActionType.GET_ROOMS })}
+            onShowCreateRoomModal={() => userInfo
+              ? setShowCreateRoomModal(true)
+              : dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: '請先登入'
+                })
+            }
           />
         ): (
           <GameDetail

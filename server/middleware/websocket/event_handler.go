@@ -28,9 +28,6 @@ func SocketEventHandler(
 		}
 	}
 	switch msg.Event {
-	case "getRooms":
-		rooms, _ := ru.GetRooms()
-		msg.Data.Rooms = rooms
 	case "joinRoom":
 		room, _ := ru.JoinRoom(roomID, msg.UserID, msg.Data.UserName)
 		msg.Data.RoomInfo = room

@@ -97,6 +97,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
       }
     }
     case ActionType.SEND_MESSAGE_ROOM: {
+      console.log(action.event)
       if (state.websocket) {
         const data: TSocket = {
           userID: action.userId,
