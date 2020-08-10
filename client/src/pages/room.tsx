@@ -46,6 +46,7 @@ const RoomContainer = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
   const [leavingRoute, setLeavingRoute] = useState('');
+  const [canLeaveRoom, setCanLeaveRoom] = useState(false);
 
   // leave room event
   const leaveRoomHandler = () => {
@@ -57,20 +58,16 @@ const RoomContainer = () => {
   };
 
   const aa = (url: string) => {
-    console.log(url, 'url')
-    console.log(leavingRoute, 'leavvvvv')
-    if (!leavingRoute) {
-      setLeavingRoute(url)
+    if (!url) {
+      setCanLeaveRoom(true);
+    } else if (url && !canLeaveRoom) {
+      setLeavingRoute(url);
       dispatch({
         type: AppActionType.SET_CONFIRM_MODAL,
         show: true,
         message: '確定要離開房間？'
       });
       throw 'route changing';
-    }
-    if (!url && leavingRoute) {
-      leaveRoomHandler();
-      Router.push(leavingRoute);
     }
   };
 
@@ -97,6 +94,13 @@ const RoomContainer = () => {
       Router.events.off('routeChangeStart', aa)
     }
   }, []);
+
+  useEffect(() => {
+    if (canLeaveRoom) {
+      leaveRoomHandler();
+      Router.push(leavingRoute);
+    }
+  }, [canLeaveRoom])
 
   useEffect(() => {
     if (ws && userInfo && !showGameScreen) {
