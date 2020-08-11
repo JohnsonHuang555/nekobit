@@ -45,23 +45,12 @@ const RoomContainer = () => {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
-  const [leavingRoute, setLeavingRoute] = useState('');
-  const [canLeaveRoom, setCanLeaveRoom] = useState(false);
 
-  // leave room event
-  const leaveRoomHandler = () => {
-    dispatch({
-      type: RoomActionType.SEND_MESSAGE_ROOM,
-      event: AppSocketEvent.LeaveRoom,
-      userId: userInfo?.id,
-    });
-  };
-
-  const aa = (url: string) => {
-    if (!url) {
-      setCanLeaveRoom(true);
-    } else if (url && !canLeaveRoom) {
-      setLeavingRoute(url);
+  const onRouteChange = (url: string) => {
+    const leaveRoute = localStorage.getItem('leaveRoute');
+    const user = JSON.parse(localStorage.getItem('userInfo') as string);
+    if (!leaveRoute) {
+      localStorage.setItem('leaveRoute', url);
       dispatch({
         type: AppActionType.SET_CONFIRM_MODAL,
         show: true,
@@ -69,6 +58,13 @@ const RoomContainer = () => {
       });
       throw 'route changing';
     }
+    dispatch({
+      type: RoomActionType.SEND_MESSAGE_ROOM,
+      event: AppSocketEvent.LeaveRoom,
+      userId: user.id,
+    });
+    // clear
+    localStorage.removeItem('leaveRoute');
   };
 
   // component did mount
@@ -87,24 +83,16 @@ const RoomContainer = () => {
 
     // window.addEventListener('beforeunload', leaveRoomConfirmHandler);
     // window.addEventListener('unload', leaveRoomHandler);
-    Router.events.on('routeChangeStart', aa);
+    Router.events.on('routeChangeStart', onRouteChange);
     return () => {
       // window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
       // window.removeEventListener('unload', leaveRoomHandler);
-      Router.events.off('routeChangeStart', aa)
+      Router.events.off('routeChangeStart', onRouteChange)
     }
   }, []);
 
   useEffect(() => {
-    if (canLeaveRoom) {
-      leaveRoomHandler();
-      Router.push(leavingRoute);
-    }
-  }, [canLeaveRoom])
-
-  useEffect(() => {
     if (ws && userInfo && !showGameScreen) {
-      let gameId = '';
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -130,7 +118,6 @@ const RoomContainer = () => {
               type: RoomActionType.INITIAL_ROOM_INFO,
               roomInfo,
             });
-            gameId = roomInfo.gameId;
             break;
           }
           case AppSocketEvent.LeaveRoom:
@@ -143,11 +130,6 @@ const RoomContainer = () => {
                 roomInfo: {
                   userList: roomUserList,
                 },
-              });
-            } else {
-              Router.push({
-                pathname: '/game',
-                query: { id: gameId }
               });
             }
             break;
@@ -209,7 +191,7 @@ const RoomContainer = () => {
 
   return (
     <Layout>
-      <ConfirmModal onConfirm={() => aa('')} />
+      <ConfirmModal onConfirm={() => Router.push(localStorage.getItem('leaveRoute') || '/')} />
       <AlertModal onConfirm={() =>
         dispatch({
           type: RoomActionType.SET_SHOW_GAME_SCREEN,
