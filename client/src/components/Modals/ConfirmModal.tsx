@@ -30,7 +30,6 @@ const ConfirmModal = (props: ConfirmModalProps) => {
   };
 
   const confirmHandler = () => {
-    closeHandler();
     props.onConfirm();
   };
 
