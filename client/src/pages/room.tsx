@@ -76,6 +76,9 @@ const RoomContainer = () => {
       domain: id,
     });
 
+    // clear leaveRoute
+    localStorage.removeItem('leaveRoute');
+
     const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
       return e.returnValue = '';
@@ -191,7 +194,10 @@ const RoomContainer = () => {
 
   return (
     <Layout>
-      <ConfirmModal onConfirm={() => Router.push(localStorage.getItem('leaveRoute') || '/')} />
+      <ConfirmModal
+        onConfirm={() => Router.push(localStorage.getItem('leaveRoute') || '/')}
+        onCancel={() => localStorage.removeItem('leaveRoute')}
+      />
       <AlertModal onConfirm={() =>
         dispatch({
           type: RoomActionType.SET_SHOW_GAME_SCREEN,
