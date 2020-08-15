@@ -74,17 +74,16 @@ const RoomContainer = () => {
     localStorage.removeItem('leaveRoute');
 
     const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
-      console.log(e)
       e.preventDefault();
       return e.returnValue = '';
     };
 
     window.addEventListener('beforeunload', leaveRoomConfirmHandler);
-    // window.addEventListener('unload', leaveRoomHandler);
+    // window.addEventListener('unload', leftRoom);
     Router.events.on('routeChangeStart', onRouteChange);
     return () => {
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
-      // window.removeEventListener('unload', leaveRoomHandler);
+      // window.removeEventListener('unload', leftRoom);
       Router.events.off('routeChangeStart', onRouteChange);
       dispatch({ type: RoomActionType.CLOSE_SOCKET_ROOM });
     }
