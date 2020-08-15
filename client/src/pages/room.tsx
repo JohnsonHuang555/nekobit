@@ -48,7 +48,6 @@ const RoomContainer = () => {
 
   const onRouteChange = (url: string) => {
     const leaveRoute = localStorage.getItem('leaveRoute');
-    const user = JSON.parse(localStorage.getItem('userInfo') as string);
     if (!leaveRoute) {
       localStorage.setItem('leaveRoute', url);
       dispatch({
@@ -58,11 +57,6 @@ const RoomContainer = () => {
       });
       throw 'route changing';
     }
-    dispatch({
-      type: RoomActionType.SEND_MESSAGE_ROOM,
-      event: AppSocketEvent.LeaveRoom,
-      userId: user.id,
-    });
     // clear
     localStorage.removeItem('leaveRoute');
   };
@@ -91,11 +85,13 @@ const RoomContainer = () => {
     return () => {
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
       // window.removeEventListener('unload', leaveRoomHandler);
-      Router.events.off('routeChangeStart', onRouteChange)
+      Router.events.off('routeChangeStart', onRouteChange);
+      dispatch({ type: RoomActionType.CLOSE_SOCKET_ROOM });
     }
   }, []);
 
   useEffect(() => {
+    let gameId = '';
     if (ws && userInfo && !showGameScreen) {
       ws.onopen = () => {
         dispatch({
@@ -122,6 +118,7 @@ const RoomContainer = () => {
               type: RoomActionType.INITIAL_ROOM_INFO,
               roomInfo,
             });
+            gameId = roomInfo.gameId;
             break;
           }
           case AppSocketEvent.LeaveRoom:
@@ -135,6 +132,12 @@ const RoomContainer = () => {
                   userList: roomUserList,
                 },
               });
+            } else {
+              localStorage.setItem('leaveRoute', `/game?id=${gameId}`);
+              Router.push({
+                pathname: '/game',
+                query: { id: gameId }
+              })
             }
             break;
           }
@@ -196,7 +199,14 @@ const RoomContainer = () => {
   return (
     <Layout>
       <ConfirmModal
-        onConfirm={() => Router.push(localStorage.getItem('leaveRoute') || '/')}
+        onConfirm={() => {
+          Router.push(localStorage.getItem('leaveRoute') || '/');
+          dispatch({
+            type: RoomActionType.SEND_MESSAGE_ROOM,
+            event: AppSocketEvent.LeaveRoom,
+            userId: userInfo?.id,
+          });
+        }}
         onCancel={() => localStorage.removeItem('leaveRoute')}
       />
       <AlertModal onConfirm={() =>

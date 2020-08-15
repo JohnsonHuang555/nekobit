@@ -31,6 +31,10 @@ const ConfirmModal = (props: ConfirmModalProps) => {
 
   const confirmHandler = () => {
     props.onConfirm();
+    dispatch({
+      type: AppActionType.SET_CONFIRM_MODAL,
+      show: false,
+    });
   };
 
   return (
