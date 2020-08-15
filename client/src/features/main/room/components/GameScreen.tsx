@@ -1,5 +1,5 @@
 import { Box } from "@material-ui/core";
-import { GameList } from "../../domain/models/Game";
+import { GameList } from "src/features/main/domain/models/Game";
 import ChineseChessContainer from "src/features/games/chinese_chess/ChineseChessContainer";
 import styles from '@styles/components/gameScreen.module.scss';
 

@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button } from '@material-ui/core';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
-import { TSocket, SocketEvent } from 'src/types/Socket';
-import { roomInfoSelector, playerSideSelector, isYouMasterSelector } from 'src/features/main/selectors';
+import { userInfoSelector } from 'src/selectors';
+import { TSocket, AppSocketEvent, ChineseChessSocketEvent } from 'src/types/Socket';
+import { roomInfoSelector, playerSideSelector, isYouMasterSelector, roomSocketSelector } from 'src/features/main/selectors';
 import { TChineseChess, ChessSide, GameModeCode, ChessName } from '../domain/models/ChineseChess';
 import { CheckMoveRange, TRange } from '../helpers/CheckMoveRange';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
@@ -17,7 +17,7 @@ import styles from '@styles/games/chineseChess.module.scss';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(roomWebsocketSelector);
+  const ws = useSelector(roomSocketSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const playerSide = useSelector(playerSideSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
@@ -30,7 +30,7 @@ const ChineseChessContainer = () => {
       ws.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
         switch (wsData.event) {
-          case SocketEvent.SetPlayOrder: {
+          case AppSocketEvent.SetPlayOrder: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -40,15 +40,15 @@ const ChineseChessContainer = () => {
               const user = roomInfo.userList.find(u => u.playOrder === 0);
               if (user) {
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
-                  event: SocketEvent.SetSideBlack,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
+                  event: ChineseChessSocketEvent.SetSideBlack,
                   userId: user.id
                 });
               }
             }
             break;
           }
-          case SocketEvent.SetSideBlack: {
+          case ChineseChessSocketEvent.SetSideBlack: {
             const userList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -58,7 +58,7 @@ const ChineseChessContainer = () => {
             });
             break;
           }
-          case SocketEvent.FlipChess: {
+          case ChineseChessSocketEvent.FlipChess: {
             const userList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const nowTurn = wsData.data.nowTurn || '';
             const gameData = ChineseChessFactory.createArrayFromNet(wsData.data.gameData || []);
@@ -72,16 +72,14 @@ const ChineseChessContainer = () => {
             });
             break;
           }
-          case SocketEvent.MoveChess:
-          case SocketEvent.EatChess: {
+          case ChineseChessSocketEvent.MoveChess:
+          case ChineseChessSocketEvent.EatChess: {
             const gameData = ChineseChessFactory.createArrayFromNet(wsData.data.gameData || []);
             const nowTurn = wsData.data.nowTurn || '';
 
             if (roomInfo?.mode === GameModeCode.Standard) {
               const redKingAlive = gameData.find(c => c.name === ChessName.KingRed)?.alive;
               const blackKingAlive = gameData.find(c => c.name === ChessName.KingBlack)?.alive;
-              console.log(redKingAlive, blackKingAlive)
-              console.log(playerSide, 'djdjdjddj')
               if (!redKingAlive) {
                 dispatch({
                   type: AppActionType.SET_ALERT_MODAL,
@@ -89,8 +87,8 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
-                  event: SocketEvent.GameOver,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
+                  event: AppSocketEvent.GameOver,
                 });
               } else if (!blackKingAlive) {
                 dispatch({
@@ -99,8 +97,8 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
-                  event: SocketEvent.GameOver,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
+                  event: AppSocketEvent.GameOver,
                 });
               }
             } else {
@@ -113,8 +111,8 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Black ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
-                  event: SocketEvent.GameOver,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
+                  event: AppSocketEvent.GameOver,
                 });
               } else if (!blackAliveChesses.length) {
                 dispatch({
@@ -123,8 +121,8 @@ const ChineseChessContainer = () => {
                   message: playerSide === ChessSide.Red ? '你贏了' : '你輸了',
                 });
                 dispatch({
-                  type: AppActionType.SEND_MESSAGE_ROOM,
-                  event: SocketEvent.GameOver,
+                  type: RoomActionType.SEND_MESSAGE_ROOM,
+                  event: AppSocketEvent.GameOver,
                 });
               }
             }
@@ -139,7 +137,7 @@ const ChineseChessContainer = () => {
             });
             break;
           }
-          case SocketEvent.GameOver: {
+          case AppSocketEvent.GameOver: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -172,8 +170,9 @@ const ChineseChessContainer = () => {
         const canMove = checkMove(selectedChess, targetX, targetY);
         if (canMove) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE_ROOM,
-            event: SocketEvent.MoveChess,
+            type: RoomActionType.SEND_MESSAGE_ROOM,
+            event: ChineseChessSocketEvent.MoveChess,
+            userId: userInfo.id,
             data: {
               chessID: selectedChess.id,
               locationX: targetX,
@@ -188,8 +187,9 @@ const ChineseChessContainer = () => {
         const isInRange = CheckMoveRange.isInRange(range, targetX, targetY);
         if (isInRange) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE_ROOM,
-            event: SocketEvent.MoveChess,
+            type: RoomActionType.SEND_MESSAGE_ROOM,
+            event: ChineseChessSocketEvent.MoveChess,
+            userId: userInfo.id,
             data: {
               chessID: selectedChess.id,
               locationX: targetX,
@@ -204,8 +204,9 @@ const ChineseChessContainer = () => {
 
   const onFlip = (id: number) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
-      event: SocketEvent.FlipChess,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
+      event: ChineseChessSocketEvent.FlipChess,
+      userId: userInfo.id,
       data: {
         chessID: id,
       }
@@ -263,8 +264,9 @@ const ChineseChessContainer = () => {
           }
           if (!hasChesses) {
             dispatch({
-              type: AppActionType.SEND_MESSAGE_ROOM,
-              event: SocketEvent.EatChess,
+              type: RoomActionType.SEND_MESSAGE_ROOM,
+              event: ChineseChessSocketEvent.EatChess,
+              userId: userInfo.id,
               data: {
                 chessID: selectedChess.id,
                 targetID: targetChess.id,
@@ -273,8 +275,9 @@ const ChineseChessContainer = () => {
           }
         } else if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
           dispatch({
-            type: AppActionType.SEND_MESSAGE_ROOM,
-            event: SocketEvent.EatChess,
+            type: RoomActionType.SEND_MESSAGE_ROOM,
+            event: ChineseChessSocketEvent.EatChess,
+            userId: userInfo.id,
             data: {
               chessID: selectedChess.id,
               targetID: targetChess.id,
@@ -289,8 +292,9 @@ const ChineseChessContainer = () => {
         if (isInRange || selectedChess.name === ChessName.CannonsBlack || selectedChess.name === ChessName.CannonsRed) {
           if (isEatable(targetChess)) {
             dispatch({
-              type: AppActionType.SEND_MESSAGE_ROOM,
-              event: SocketEvent.EatChess,
+              type: RoomActionType.SEND_MESSAGE_ROOM,
+              event: ChineseChessSocketEvent.EatChess,
+              userId: userInfo.id,
               data: {
                 chessID: selectedChess.id,
                 targetID: targetChess.id,
@@ -566,8 +570,8 @@ const ChineseChessContainer = () => {
             size="large"
             variant="contained"
             onClick={() => dispatch({
-              type: AppActionType.SEND_MESSAGE_ROOM,
-              event: SocketEvent.SetPlayOrder,
+              type: RoomActionType.SEND_MESSAGE_ROOM,
+              event: AppSocketEvent.SetPlayOrder,
             })}
           >
             決定順序

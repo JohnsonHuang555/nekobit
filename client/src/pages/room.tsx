@@ -15,10 +15,9 @@ import {
   TextField,
   Grid,
 } from '@material-ui/core';
-import { roomWebsocketSelector, userInfoSelector } from 'src/selectors';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { ActionType as RoomActionType } from 'src/features/main/reducers/roomReducer';
-import { SocketEvent, TSocket } from 'src/types/Socket';
+import { AppSocketEvent, TSocket } from 'src/types/Socket';
 import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import UserList from 'src/features/main/room/components/UserList';
 import { UserFactory } from 'src/features/main/domain/factories/UserFactory';
@@ -29,13 +28,15 @@ import {
   isYouMasterSelector,
   isPlayerReadySelector,
   showGameScreenSelector,
+  roomSocketSelector,
 } from 'src/features/main/selectors';
+import { userInfoSelector } from 'src/selectors';
 import ConfirmModal from 'src/components/Modals/ConfirmModal';
 import AlertModal from 'src/components/Modals/AlertModal';
 
 const RoomContainer = () => {
   const dispatch = useDispatch();
-  const ws = useSelector(roomWebsocketSelector);
+  const ws = useSelector(roomSocketSelector);
   const userInfo = useSelector(userInfoSelector);
   const roomInfo = useSelector(roomInfoSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
@@ -45,16 +46,19 @@ const RoomContainer = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
 
-  // leave room event
-  const leaveRoomHandler = () => {
-    dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
-      event: SocketEvent.LeaveRoom,
-    });
-    dispatch({
-      type: AppActionType.SEND_MESSAGE_GAME,
-      event: SocketEvent.GetRooms,
-    });
+  const onRouteChange = (url: string) => {
+    const leaveRoute = localStorage.getItem('leaveRoute');
+    if (!leaveRoute) {
+      localStorage.setItem('leaveRoute', url);
+      dispatch({
+        type: AppActionType.SET_CONFIRM_MODAL,
+        show: true,
+        message: '確定要離開房間？'
+      });
+      throw 'route changing';
+    }
+    // clear
+    localStorage.removeItem('leaveRoute');
   };
 
   // component did mount
@@ -62,9 +66,12 @@ const RoomContainer = () => {
     const id = location.search.substr(4);
     dispatch({ type: AppActionType.GET_USER_INFO });
     dispatch({
-      type: AppActionType.CREATE_SOCKET,
+      type: RoomActionType.CREATE_SOCKET_ROOM,
       domain: id,
     });
+
+    // clear leaveRoute
+    localStorage.removeItem('leaveRoute');
 
     const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
       e.preventDefault();
@@ -72,18 +79,19 @@ const RoomContainer = () => {
     };
 
     window.addEventListener('beforeunload', leaveRoomConfirmHandler);
-    window.addEventListener('unload', leaveRoomHandler);
+    // window.addEventListener('unload', leftRoom);
+    Router.events.on('routeChangeStart', onRouteChange);
     return () => {
-      dispatch({ type: AppActionType.CLOSE_SOCKET_ROOM });
       window.removeEventListener('beforeunload', leaveRoomConfirmHandler);
-      window.removeEventListener('unload', leaveRoomHandler);
+      // window.removeEventListener('unload', leftRoom);
+      Router.events.off('routeChangeStart', onRouteChange);
+      dispatch({ type: RoomActionType.CLOSE_SOCKET_ROOM });
     }
   }, []);
 
   useEffect(() => {
-    console.log(ws)
+    let gameId = '';
     if (ws && userInfo && !showGameScreen) {
-      let gameId = '';
       ws.onopen = () => {
         dispatch({
           type: AppActionType.SET_SHOW_TOAST,
@@ -91,8 +99,9 @@ const RoomContainer = () => {
           message: 'Join room',
         });
         dispatch({
-          type: AppActionType.SEND_MESSAGE_ROOM,
-          event: SocketEvent.JoinRoom,
+          type: RoomActionType.SEND_MESSAGE_ROOM,
+          event: AppSocketEvent.JoinRoom,
+          userId: userInfo.id,
           data: {
             userName: userInfo.name,
           }
@@ -101,7 +110,7 @@ const RoomContainer = () => {
       ws.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
         switch (wsData.event) {
-          case SocketEvent.JoinRoom: {
+          case AppSocketEvent.JoinRoom: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             setEditingPassword(roomInfo.password);
             dispatch({
@@ -111,8 +120,8 @@ const RoomContainer = () => {
             gameId = roomInfo.gameId;
             break;
           }
-          case SocketEvent.LeaveRoom:
-          case SocketEvent.ReadyGame:{
+          case AppSocketEvent.LeaveRoom:
+          case AppSocketEvent.ReadyGame: {
             const roomUserList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             const user = roomUserList.find(u => u.id === userInfo.id);
             if (user) {
@@ -123,16 +132,16 @@ const RoomContainer = () => {
                 },
               });
             } else {
+              localStorage.setItem('leaveRoute', `/game?id=${gameId}`);
               Router.push({
                 pathname: '/game',
                 query: { id: gameId }
-              });
+              })
             }
             break;
           }
-          case SocketEvent.StartGame: {
+          case AppSocketEvent.StartGame: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
-            console.log(roomInfo)
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
               roomInfo,
@@ -143,7 +152,7 @@ const RoomContainer = () => {
             });
             break;
           }
-          case SocketEvent.ChangePassword: {
+          case AppSocketEvent.ChangePassword: {
             const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
             dispatch({
               type: RoomActionType.UPDATE_ROOM_INFO,
@@ -161,9 +170,9 @@ const RoomContainer = () => {
   // methods
   const kickOutPlayer = (id: string) => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
       userId: id,
-      event: SocketEvent.LeaveRoom,
+      event: AppSocketEvent.LeaveRoom,
     });
   };
 
@@ -177,8 +186,8 @@ const RoomContainer = () => {
 
   const changePassword = () => {
     dispatch({
-      type: AppActionType.SEND_MESSAGE_ROOM,
-      event: SocketEvent.ChangePassword,
+      type: RoomActionType.SEND_MESSAGE_ROOM,
+      event: AppSocketEvent.ChangePassword,
       data: {
         roomPassword: editingPassword,
       }
@@ -188,7 +197,17 @@ const RoomContainer = () => {
 
   return (
     <Layout>
-      <ConfirmModal onConfirm={() => leaveRoomHandler()} />
+      <ConfirmModal
+        onConfirm={() => {
+          Router.push(localStorage.getItem('leaveRoute') || '/');
+          dispatch({
+            type: RoomActionType.SEND_MESSAGE_ROOM,
+            event: AppSocketEvent.LeaveRoom,
+            userId: userInfo?.id,
+          });
+        }}
+        onCancel={() => localStorage.removeItem('leaveRoute')}
+      />
       <AlertModal onConfirm={() =>
         dispatch({
           type: RoomActionType.SET_SHOW_GAME_SCREEN,
@@ -216,10 +235,9 @@ const RoomContainer = () => {
             startIcon={
               <FontAwesomeIcon icon={faDoorOpen}/>
             }
-            onClick={() => dispatch({
-              type: AppActionType.SET_CONFIRM_MODAL,
-              show: true,
-              message: '確定要離開房間？'
+            onClick={() => Router.push({
+              pathname: '/game',
+              query: { id: roomInfo.gameId }
             })}
           >
             離開
@@ -250,8 +268,8 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE_ROOM,
-                event: SocketEvent.StartGame,
+                type: RoomActionType.SEND_MESSAGE_ROOM,
+                event: AppSocketEvent.StartGame,
                 data: {
                   gameID: roomInfo.gameId,
                   roomMode: roomInfo.mode,
@@ -268,8 +286,9 @@ const RoomContainer = () => {
               fullWidth
               size="large"
               onClick={() => dispatch({
-                type: AppActionType.SEND_MESSAGE_ROOM,
-                event: SocketEvent.ReadyGame,
+                type: RoomActionType.SEND_MESSAGE_ROOM,
+                event: AppSocketEvent.ReadyGame,
+                userId: userInfo?.id,
               })}
             >
               {isPlayerReady}

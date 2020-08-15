@@ -1,5 +1,5 @@
 import { TGame, TCreateRoom } from 'src/features/main/domain/models/Game';
-import { TRoom } from '../domain/models/Room';
+import { TRoom } from 'src/features/main/domain/models/Room';
 
 export type State = {
   gameInfo?: TGame;
@@ -23,6 +23,7 @@ export enum ActionType {
   GET_GAME_INFO = 'GET_GAME_INFO',
   GET_GAME_INFO_SUCCESS = 'GET_GAME_INFO_SUCCESS',
   GET_ROOMS = 'GET_ROOMS',
+  GET_ROOMS_SUCCESS = 'GET_ROOMS_SUCCESS',
   CREATING_ROOM = 'CREATING_ROOM',
   CREATE_ROOM = 'CREATE_ROOM',
   CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS',
@@ -38,7 +39,7 @@ export type LoadGameInfoAction = {
 };
 
 export type LoadRoomsAction = {
-  type: ActionType.GET_ROOMS,
+  type: ActionType.GET_ROOMS_SUCCESS,
   rooms: TRoom[];
 };
 
@@ -69,7 +70,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
         gameInfo: action.gameInfo,
       }
     }
-    case ActionType.GET_ROOMS: {
+    case ActionType.GET_ROOMS_SUCCESS: {
       return {
         ...state,
         rooms: action.rooms,

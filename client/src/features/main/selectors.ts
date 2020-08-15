@@ -24,6 +24,9 @@ const getUserInfo = (store: StoreState) => {
   );
 };
 
+export const roomSocketSelector = (store: StoreState) =>
+  store.main.room.websocket;
+
 export const roomInfoSelector = (store: StoreState) =>
   store.main.room.roomInfo;
 

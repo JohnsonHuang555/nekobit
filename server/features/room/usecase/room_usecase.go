@@ -68,9 +68,10 @@ func (ru *roomUseCase) LeaveRoom(id string, userID string) ([]*domain.User, erro
 		return nil, err
 	}
 
-	if len(users) > 1 {
+	if len(users) == 1 {
 		users, err = ru.roomRepo.UpdateUserIsMaster(id, users[0].ID, true)
 	}
+
 	if err != nil {
 		return nil, err
 	}

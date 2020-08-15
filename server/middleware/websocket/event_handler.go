@@ -21,16 +21,13 @@ func SocketEventHandler(
 		if roomInfo.GameData != nil {
 			switch roomInfo.GameID {
 			// 象棋
-			case "5d62a35bd986c21bc010c00b":
+			case "5de1f7ddac5b6c1002ece8f1":
 				chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
 				chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 			}
 		}
 	}
 	switch msg.Event {
-	case "getRooms":
-		rooms, _ := ru.GetRooms()
-		msg.Data.Rooms = rooms
 	case "joinRoom":
 		room, _ := ru.JoinRoom(roomID, msg.UserID, msg.Data.UserName)
 		msg.Data.RoomInfo = room
@@ -43,7 +40,7 @@ func SocketEventHandler(
 	case "startGame":
 		var gd interface{}
 		switch msg.Data.GameID {
-		case "5d62a35bd986c21bc010c00b": // FIXME:
+		case "5de1f7ddac5b6c1002ece8f1": // FIXME:
 			// 1 大盤, 2 小盤
 			if msg.Data.RoomMode == 1 {
 				// mode 1

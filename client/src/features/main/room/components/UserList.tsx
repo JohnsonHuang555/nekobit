@@ -1,5 +1,5 @@
-import { Box, Grid, Button, IconButton } from '@material-ui/core';
-import { TRoomUser } from '../../domain/models/Room';
+import { Box, Grid, IconButton } from '@material-ui/core';
+import { TRoomUser } from 'src/features/main/domain/models/Room';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrown, faUserTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from '@styles/components/userList.module.scss'
