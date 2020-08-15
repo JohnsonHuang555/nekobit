@@ -33,6 +33,7 @@ func NewRoomHandler(e *echo.Echo, ru domain.RoomUseCase) {
 		RUseCase: ru,
 	}
 	e.POST("/api/createRoom", handler.CreateRoom)
+	e.GET("/api/getRooms", handler.GetRooms)
 	e.GET("/ws/:roomID", handler.SocketHandler)
 }
 
@@ -49,6 +50,14 @@ func (r *RoomHandler) CreateRoom(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, id)
+}
+
+func (r *RoomHandler) GetRooms(c echo.Context) error {
+	rooms, err := r.RUseCase.GetRooms()
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusCreated, rooms)
 }
 
 func (r *RoomHandler) SocketHandler(context echo.Context) error {

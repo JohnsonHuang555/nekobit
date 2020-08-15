@@ -1,9 +1,11 @@
 import React from 'react';
 import Room from 'src/features/main/game/components/Room';
-import { TRoom } from '../../domain/models/Room';
-import { GameMode } from '../../domain/models/Game';
-import { Box, Grid } from '@material-ui/core';
+import { TRoom } from 'src/features/main/domain/models/Room';
+import { GameMode } from 'src/features/main/domain/models/Game';
+import { Box, Grid, Button } from '@material-ui/core';
 import Chat from 'src/components/Chat';
+import { faRedo, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from '@styles/components/roomList.module.scss';
 
 type RoomListProps = {
@@ -11,6 +13,8 @@ type RoomListProps = {
   gameId: string;
   maxPlayers: number;
   onChooseRoom: (id: string) => void;
+  onRefreshRooms: () => void;
+  onShowCreateRoomModal: () => void;
 };
 
 const RoomList = (props: RoomListProps) => {
@@ -19,6 +23,8 @@ const RoomList = (props: RoomListProps) => {
     gameId,
     maxPlayers,
     onChooseRoom,
+    onRefreshRooms,
+    onShowCreateRoomModal,
   } = props;
 
   return (
@@ -26,6 +32,32 @@ const RoomList = (props: RoomListProps) => {
       <div className="section-heading">
         <h2>房間列表</h2>
       </div>
+      <Box mb={2} display="flex">
+        <Box mr={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={onRefreshRooms}
+            startIcon={
+              <FontAwesomeIcon icon={faRedo} />
+            }
+          >
+            刷新房間
+          </Button>
+        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={onShowCreateRoomModal}
+          startIcon={
+            <FontAwesomeIcon icon={faDoorOpen} />
+          }
+        >
+          新建房間
+        </Button>
+      </Box>
       <Grid container spacing={3}>
         <Grid item xs={9}>
           <Box className="block">

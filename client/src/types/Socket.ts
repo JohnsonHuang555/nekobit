@@ -1,11 +1,10 @@
 export type TSocket = {
   userID?: string;
-  event: SocketEvent;
+  event: AppSocketEvent | ChineseChessSocketEvent;
   data?: any;
 }
 
-export enum SocketEvent {
-  GetRooms = 'getRooms',
+export enum AppSocketEvent {
   JoinRoom = 'joinRoom',
   LeaveRoom = 'leaveRoom',
   CreateRoom = 'createRoom',
@@ -14,8 +13,9 @@ export enum SocketEvent {
   SetPlayOrder = 'setPlayOrder',
   GameOver = 'gameOver',
   ChangePassword = 'changePassword',
+}
 
-  // Chinese Chess
+export enum ChineseChessSocketEvent {
   MoveChess = 'moveChess',
   EatChess = 'eatChess',
   FlipChess = 'flipChess',

@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState
+} from 'react';
 import Router from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/features/main/game/components/RoomList';
 import GameDetail from 'src/features/main/game/components/GameDetail';
 import { GameMode } from 'src/features/main/domain/models/Game';
-import { TRoom } from 'src/features/main/domain/models/Room';
 import {
   Box,
   TextField,
@@ -15,13 +18,15 @@ import {
   DialogContent,
   DialogActions,
 } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { gameInfoSelector, roomsSelector, createRoomDataSelector, createdRoomIdSelector } from 'src/features/main/selectors';
-import { userInfoSelector, gameWebsocketSelector } from 'src/selectors';
-import { ActionType as GameActionType, ActionType } from 'src/features/main/reducers/gameReducer';
+import {
+  gameInfoSelector,
+  roomsSelector,
+  createRoomDataSelector,
+  createdRoomIdSelector,
+} from 'src/features/main/selectors';
+import { userInfoSelector } from 'src/selectors';
+import { ActionType as GameActionType } from 'src/features/main/reducers/gameReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
-import { TSocket, SocketEvent } from 'src/types/Socket';
-import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import AlertModal from 'src/components/Modals/AlertModal';
 
 const GameContainer = () => {
@@ -29,7 +34,6 @@ const GameContainer = () => {
   const gameInfo = useSelector(gameInfoSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
-  const ws = useSelector(gameWebsocketSelector);
   const createRoomData = useSelector(createRoomDataSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
 
@@ -41,64 +45,19 @@ const GameContainer = () => {
 
   // component did mount
   useEffect(() => {
+    // Initial step
     const gameId = location.search.substr(4);
-    if (!ws) {
-      dispatch({
-        type: AppActionType.CREATE_SOCKET,
-        domain: 'gamePage',
-      });
-    } else {
-      dispatch({
-        type: AppActionType.SEND_MESSAGE_GAME,
-        event: SocketEvent.GetRooms,
-      });
-    }
     dispatch({
       type: GameActionType.GET_GAME_INFO,
       id: gameId,
     });
+    dispatch({ type: GameActionType.GET_ROOMS });
     dispatch({ type: AppActionType.GET_USER_INFO });
   }, []);
 
-  // listening for ws and userInfo
-  useEffect(() => {
-    if (ws) {
-      ws.onopen = () => {
-        dispatch({
-          type: AppActionType.SET_SHOW_TOAST,
-          show: true,
-          message: 'Connect successfully',
-        });
-        dispatch({
-          type: AppActionType.SEND_MESSAGE_GAME,
-          event: SocketEvent.GetRooms,
-        });
-      }
-      ws.onerror = () => {
-        console.log('connect failed');
-      }
-      ws.onmessage = (webSocket: MessageEvent) => {
-        const wsData: TSocket = JSON.parse(webSocket.data);
-        switch (wsData.event) {
-          case SocketEvent.GetRooms: {
-            const rooms: TRoom[] = RoomFactory.createArrayFromNet(wsData.data.rooms || []);
-            dispatch({
-              type: GameActionType.GET_ROOMS,
-              rooms,
-            });
-          }
-        }
-      }
-    }
-  }, [ws, userInfo]);
-
   // when create room successfully
   useEffect(() => {
-    if (createdRoomId && userInfo && ws) {
-      dispatch({
-        type: AppActionType.SEND_MESSAGE_GAME,
-        event: SocketEvent.GetRooms,
-      });
+    if (createdRoomId && userInfo) {
       // clear createdId
       dispatch({ type: GameActionType.INITIAL_STATE });
       redirectToRoomPage(createdRoomId);
@@ -155,7 +114,7 @@ const GameContainer = () => {
               placeholder="請輸入房間名稱"
               variant="outlined"
               onChange={(e) => dispatch({
-                type: ActionType.CREATING_ROOM,
+                type: GameActionType.CREATING_ROOM,
                 createRoomData: { title: e.target.value }
               })}
             />
@@ -169,7 +128,7 @@ const GameContainer = () => {
               type="password"
               variant="outlined"
               onChange={(e) => dispatch({
-                type: ActionType.CREATING_ROOM,
+                type: GameActionType.CREATING_ROOM,
                 createRoomData: { password: e.target.value }
               })}
             />
@@ -183,7 +142,7 @@ const GameContainer = () => {
                 value={createRoomData.mode}
                 variant="outlined"
                 onChange={(e) => dispatch({
-                  type: ActionType.CREATING_ROOM,
+                  type: GameActionType.CREATING_ROOM,
                   createRoomData: { mode: Number(e.target.value) }
                 })}
               >
@@ -205,7 +164,7 @@ const GameContainer = () => {
           </Button>
           <Button
             onClick={() => dispatch({
-              type: ActionType.CREATE_ROOM,
+              type: GameActionType.CREATE_ROOM,
               createRoomData: {
                 ...createRoomData,
                 gameID: gameInfo.id,
@@ -253,11 +212,19 @@ const GameContainer = () => {
             gameId={gameInfo.id}
             maxPlayers={gameInfo.maxPlayers}
             onChooseRoom={(id) => onChooseRoom(id)}
+            onRefreshRooms={() => dispatch({ type: GameActionType.GET_ROOMS })}
+            onShowCreateRoomModal={() => userInfo
+              ? setShowCreateRoomModal(true)
+              : dispatch({
+                  type: AppActionType.SET_ALERT_MODAL,
+                  show: true,
+                  message: '請先登入'
+                })
+            }
           />
         ): (
           <GameDetail
             gameInfo={gameInfo}
-            roomsCount={rooms.length}
             onShowModal={() => userInfo
               ? setShowCreateRoomModal(true)
               : dispatch({

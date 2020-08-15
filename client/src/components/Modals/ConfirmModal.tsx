@@ -12,6 +12,7 @@ import { ActionType as AppActionType } from 'src/reducers/appReducer';
 
 type ConfirmModalProps = {
   onConfirm: () => void;
+  onCancel?: () => void;
 }
 
 const ConfirmModal = (props: ConfirmModalProps) => {
@@ -19,6 +20,9 @@ const ConfirmModal = (props: ConfirmModalProps) => {
   const showConfirmModal = useSelector(showConfirmModalSelector);
 
   const closeHandler = () => {
+    if (props.onCancel) {
+      props.onCancel();
+    }
     dispatch({
       type: AppActionType.SET_CONFIRM_MODAL,
       show: false,
@@ -26,8 +30,11 @@ const ConfirmModal = (props: ConfirmModalProps) => {
   };
 
   const confirmHandler = () => {
-    closeHandler();
     props.onConfirm();
+    dispatch({
+      type: AppActionType.SET_CONFIRM_MODAL,
+      show: false,
+    });
   };
 
   return (
