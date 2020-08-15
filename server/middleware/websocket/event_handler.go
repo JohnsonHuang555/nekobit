@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"server/domain"
 	ninjafighting "server/domain/ninja_fighting"
 	_chineseChessRepo "server/features/chinese_chess/repository"
@@ -21,7 +20,6 @@ func SocketEventHandler(
 	ru domain.RoomUseCase,
 ) MsgData {
 	roomInfo, _ := ru.GetRoomInfo(roomID)
-	fmt.Println(roomInfo)
 	if !utils.IsNil(roomInfo) {
 		// 判斷是否開始遊戲
 		if roomInfo.GameData != nil {
@@ -32,7 +30,6 @@ func SocketEventHandler(
 				chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 			// Ninja Fighting
 			case "5f2976433562709c29a6d940":
-				fmt.Println(2)
 				ninjaFightingRepo := _ninjaFightingRepo.NewNinjaFightingRepository(roomInfo.GameData.([]*ninjafighting.MapItem))
 				ninjaFightingUseCase = _ninjaFightingUseCase.NewNinjaFightingUseCase(ninjaFightingRepo)
 			}

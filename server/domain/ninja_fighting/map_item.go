@@ -1,5 +1,7 @@
 package ninjafighting
 
+import "server/utils"
+
 // enums
 type CardType string
 type Target string
@@ -75,27 +77,36 @@ const (
 	Large  MapSize = "Large"
 )
 
-func CreateClassicMap(size MapSize) [][]*MapItem {
-	myMap := [][]*MapItem{}
-	SingleMap := MapItem{}
-	SingleMap.ID = 1
+func CreateClassicMap(size MapSize) []int {
+	// myMap := [][]*MapItem{}
+	// mapID := 1
 
-	for y := 0; y < 7; y++ {
-		ArrayMap := []*MapItem{}
-		for i := 0; i < 7; i++ {
-			if y == 0 || y == 6 {
-				ArrayMap = append(ArrayMap, &SingleMap)
-			} else {
-				if i == 0 || i == 6 {
-					ArrayMap = append(ArrayMap, &SingleMap)
-				} else {
-					ArrayMap = append(ArrayMap, nil)
-				}
-			}
+	// for y := 0; y < 7; y++ {
+	// 	arrayMap := []*MapItem{}
+	// 	var randNumbers []int
+	// 	if y == 0 {
+	// 		randNumbers = utils.RandomSampling(0, 6, 3)
+	// 	}
+	// 	for x := 0; x < 7; x++ {
+	// 		singleMap := MapItem{
+	// 			ID: mapID,
+	// 		}
+	// 		if y == 0 || y == 6 {
 
-		}
-		myMap = append(myMap, ArrayMap)
-	}
+	// 			arrayMap = append(arrayMap, &singleMap)
+	// 			mapID++
+	// 		} else {
+	// 			if x == 0 || x == 6 {
+	// 				arrayMap = append(arrayMap, &singleMap)
+	// 				mapID++
+	// 			} else {
+	// 				arrayMap = append(arrayMap, nil)
+	// 			}
+	// 		}
+	// 	}
+	// 	myMap = append(myMap, arrayMap)
+	// }
 
-	return myMap
+	// return myMap
+	return utils.RandomSampling(0, 6, 3)
 }

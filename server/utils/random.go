@@ -2,10 +2,11 @@ package utils
 
 import (
 	"math/rand"
+	"sort"
 	"time"
 )
 
-// 陣列隨機排序 從'0'開始
+// 隨機排序 從'0'開始
 func RandomShuffle(maxVal int) []int {
 	slice := []int{}
 	for i := 0; i < maxVal; i++ {
@@ -20,4 +21,22 @@ func RandomShuffle(maxVal int) []int {
 	}
 
 	return randLocation
+}
+
+// 隨機取樣
+func RandomSampling(min int, max int, n int) []int {
+	var allNumbers []int
+	var randNumbers []int
+	for i := min; i < max+1; i++ {
+		allNumbers = append(allNumbers, i)
+	}
+	for i := 0; i < n; i++ {
+		r := rand.New(rand.NewSource(time.Now().Unix()))
+		randIndex := r.Intn(max-min) + min + 1
+		randNumbers = append(randNumbers, allNumbers[randIndex])
+		allNumbers = append(allNumbers[:randIndex], allNumbers[randIndex+1:]...)
+		max--
+	}
+	sort.Ints(randNumbers)
+	return randNumbers
 }
