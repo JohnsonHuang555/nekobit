@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"math/rand"
 	"sort"
 	"time"
@@ -38,6 +37,9 @@ func RandomSampling(min int, max int, n int) []int {
 		max--
 	}
 	sort.Ints(randNumbers)
-	fmt.Println(randNumbers)
 	return randNumbers
+}
+
+func RandomNumber(min int, max int) int {
+	return rand.Intn(max-min) + min
 }
