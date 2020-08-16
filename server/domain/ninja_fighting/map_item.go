@@ -82,7 +82,7 @@ const (
 )
 
 func CreateClassicMap(size MapSize) [][]*MapItem {
-	myMap := [][]*MapItem{}
+	classicMap := [][]*MapItem{}
 	mapID := 1
 
 	var topX []int
@@ -110,49 +110,57 @@ func CreateClassicMap(size MapSize) [][]*MapItem {
 	}
 
 	for y := 0; y < 7; y++ {
-		arrayMap := []*MapItem{}
+		row := []*MapItem{}
 		for x := 0; x < 7; x++ {
-			singleMap := &MapItem{
+			mapItem := &MapItem{
 				ID: mapID,
 			}
 			switch y {
 			case 0:
 				if utils.IsIncludeNumber(topX, x) {
 					index := utils.RandomNumber(0, 2)
-					singleMap.Item = *CardItems[index]
+					mapItem.Item = *CardItems[index]
 				}
-				arrayMap = append(arrayMap, singleMap)
+				mapItem.LocationX = x
+				mapItem.LocationY = y
+				row = append(row, mapItem)
 				mapID++
 			case 6:
 				if utils.IsIncludeNumber(bottomX, x) {
 					index := utils.RandomNumber(0, 2)
-					singleMap.Item = *CardItems[index]
+					mapItem.Item = *CardItems[index]
 				}
-				arrayMap = append(arrayMap, singleMap)
+				mapItem.LocationX = x
+				mapItem.LocationY = y
+				row = append(row, mapItem)
 				mapID++
 			default:
 				switch x {
 				case 0:
 					if utils.IsIncludeNumber(leftY, y) {
 						index := utils.RandomNumber(0, 2)
-						singleMap.Item = *CardItems[index]
+						mapItem.Item = *CardItems[index]
 					}
-					arrayMap = append(arrayMap, singleMap)
+					row = append(row, mapItem)
+					mapItem.LocationX = x
+					mapItem.LocationY = y
 					mapID++
 				case 6:
 					if utils.IsIncludeNumber(rightY, y) {
 						index := utils.RandomNumber(0, 2)
-						singleMap.Item = *CardItems[index]
+						mapItem.Item = *CardItems[index]
 					}
-					arrayMap = append(arrayMap, singleMap)
+					row = append(row, mapItem)
+					mapItem.LocationX = x
+					mapItem.LocationY = y
 					mapID++
 				default:
-					arrayMap = append(arrayMap, nil)
+					row = append(row, nil)
 				}
 			}
 		}
-		myMap = append(myMap, arrayMap)
+		classicMap = append(classicMap, row)
 	}
 
-	return myMap
+	return classicMap
 }
