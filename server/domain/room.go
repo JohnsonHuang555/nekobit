@@ -33,6 +33,7 @@ type RoomUseCase interface {
 	SetPlayerSideIndependence(id string, userID string, side string, allSides []string) ([]*User, error)
 	GameOver(id string) (*Room, error)
 	ChangeRoomPassword(id string, password string) (*Room, error)
+	ChooseCharacter(roomID string, userID string, characterID int) ([]*User, error)
 }
 
 // RoomRepository represent the room's repository contract
@@ -59,4 +60,5 @@ type RoomRepository interface {
 	UpdateUserIsReady(roomID string, userID string) ([]*User, error)
 	UpdateUserIsMaster(roomID string, userID string, isMaster bool) ([]*User, error)
 	UpdateUserSide(roomID string, userID string, side string, isReset bool) ([]*User, error)
+	UpdateUserCharacterID(roomID string, userID string, characterID int) ([]*User, error)
 }

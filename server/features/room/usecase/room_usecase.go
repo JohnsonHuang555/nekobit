@@ -86,6 +86,14 @@ func (ru *roomUseCase) ReadyGame(id string, userID string) ([]*domain.User, erro
 	return users, nil
 }
 
+func (ru *roomUseCase) ChooseCharacter(roomID string, userID string, characterID int) ([]*domain.User, error) {
+	users, err := ru.roomRepo.UpdateUserCharacterID(roomID, userID, characterID)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func (ru *roomUseCase) UpdateGameData(roomID string, gameData interface{}) (interface{}, error) {
 	gd, err := ru.roomRepo.UpdateGameData(roomID, gameData)
 	if err != nil {

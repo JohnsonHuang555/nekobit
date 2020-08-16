@@ -1,6 +1,7 @@
 package ninjafighting
 
 import (
+	"server/domain"
 	"server/utils"
 )
 
@@ -81,8 +82,14 @@ const (
 	Large  MapSize = "Large"
 )
 
-func CreateClassicMap(size MapSize) [][]*MapItem {
+type GameData struct {
+	MapItems   [][]*MapItem `json:"map_items"`
+	Characters []*Character `json:"characters"`
+}
+
+func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 	classicMap := [][]*MapItem{}
+	characters := []*Character{}
 	mapID := 1
 
 	var topX []int
@@ -162,5 +169,5 @@ func CreateClassicMap(size MapSize) [][]*MapItem {
 		classicMap = append(classicMap, row)
 	}
 
-	return classicMap
+	return &GameData{MapItems: classicMap, Characters: characters}
 }
