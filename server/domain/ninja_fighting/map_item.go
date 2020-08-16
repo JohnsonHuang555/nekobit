@@ -1,6 +1,9 @@
 package ninjafighting
 
-import "server/utils"
+import (
+	"fmt"
+	"server/utils"
+)
 
 // enums
 type CardType string
@@ -77,36 +80,75 @@ const (
 	Large  MapSize = "Large"
 )
 
-func CreateClassicMap(size MapSize) []int {
-	// myMap := [][]*MapItem{}
-	// mapID := 1
+func CreateClassicMap(size MapSize) [][]*MapItem {
+	myMap := [][]*MapItem{}
+	mapID := 1
 
-	// for y := 0; y < 7; y++ {
-	// 	arrayMap := []*MapItem{}
-	// 	var randNumbers []int
-	// 	if y == 0 {
-	// 		randNumbers = utils.RandomSampling(0, 6, 3)
-	// 	}
-	// 	for x := 0; x < 7; x++ {
-	// 		singleMap := MapItem{
-	// 			ID: mapID,
-	// 		}
-	// 		if y == 0 || y == 6 {
+	var topX []int
+	var bottomX []int
+	var leftY []int
+	var rightY []int
 
-	// 			arrayMap = append(arrayMap, &singleMap)
-	// 			mapID++
-	// 		} else {
-	// 			if x == 0 || x == 6 {
-	// 				arrayMap = append(arrayMap, &singleMap)
-	// 				mapID++
-	// 			} else {
-	// 				arrayMap = append(arrayMap, nil)
-	// 			}
-	// 		}
-	// 	}
-	// 	myMap = append(myMap, arrayMap)
-	// }
+	// create random items
+	topX = utils.RandomSampling(0, 6, 3)
+	bottomX = utils.RandomSampling(0, 6, 3)
+	// 檢查是否有物品
+	if utils.IsIncludeNumber(topX, 0) && utils.IsIncludeNumber(bottomX, 0) {
+		leftY = utils.RandomSampling(1, 5, 1)
+	} else if utils.IsIncludeNumber(topX, 0) || utils.IsIncludeNumber(bottomX, 0) {
+		leftY = utils.RandomSampling(1, 5, 2)
+	} else {
+		leftY = utils.RandomSampling(1, 5, 3)
+	}
+	if utils.IsIncludeNumber(topX, 6) && utils.IsIncludeNumber(bottomX, 6) {
+		rightY = utils.RandomSampling(1, 5, 1)
+	} else if utils.IsIncludeNumber(topX, 6) || utils.IsIncludeNumber(bottomX, 6) {
+		rightY = utils.RandomSampling(1, 5, 2)
+	} else {
+		rightY = utils.RandomSampling(1, 5, 3)
+	}
+	fmt.Println("done")
 
-	// return myMap
-	return utils.RandomSampling(0, 6, 3)
+	for y := 0; y < 7; y++ {
+		arrayMap := []*MapItem{}
+		for x := 0; x < 7; x++ {
+			singleMap := MapItem{
+				ID: mapID,
+			}
+			switch y {
+			case 0:
+				if utils.IsIncludeNumber(topX, x) {
+					singleMap.HasFire = true
+				}
+				arrayMap = append(arrayMap, &singleMap)
+				mapID++
+			case 6:
+				if utils.IsIncludeNumber(bottomX, x) {
+					singleMap.HasFire = true
+				}
+				arrayMap = append(arrayMap, &singleMap)
+				mapID++
+			default:
+				switch x {
+				case 0:
+					if utils.IsIncludeNumber(leftY, y) {
+						singleMap.HasFire = true
+					}
+					arrayMap = append(arrayMap, &singleMap)
+					mapID++
+				case 6:
+					if utils.IsIncludeNumber(rightY, y) {
+						singleMap.HasFire = true
+					}
+					arrayMap = append(arrayMap, &singleMap)
+					mapID++
+				default:
+					arrayMap = append(arrayMap, nil)
+				}
+			}
+		}
+		myMap = append(myMap, arrayMap)
+	}
+
+	return myMap
 }

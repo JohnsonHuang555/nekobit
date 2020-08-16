@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"server/config"
 	"server/domain"
 	"server/infrastructure/datastore"
+	"time"
 
 	_gameDelivery "server/features/game/delivery"
 	_gameRepo "server/features/game/repository"
@@ -19,6 +21,8 @@ import (
 )
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	var rooms []*domain.Room
 	var roomNum int = 0
 

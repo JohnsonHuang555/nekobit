@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
 	"sort"
 	"time"
@@ -31,12 +32,12 @@ func RandomSampling(min int, max int, n int) []int {
 		allNumbers = append(allNumbers, i)
 	}
 	for i := 0; i < n; i++ {
-		r := rand.New(rand.NewSource(time.Now().Unix()))
-		randIndex := r.Intn(max-min) + min + 1
+		randIndex := rand.Intn(len(allNumbers))
 		randNumbers = append(randNumbers, allNumbers[randIndex])
 		allNumbers = append(allNumbers[:randIndex], allNumbers[randIndex+1:]...)
 		max--
 	}
 	sort.Ints(randNumbers)
+	fmt.Println(randNumbers)
 	return randNumbers
 }
