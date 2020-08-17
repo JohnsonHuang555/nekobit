@@ -27,7 +27,7 @@ type NetChineseChess struct {
 	TargetID     int `json:"targetID,omitempty"`
 }
 
-type ChineseChessUseCae interface {
+type ChineseChessUseCase interface {
 	GetNewChess() ([]*ChineseChess, error)
 	EatChess(id int, targetID int) ([]*ChineseChess, error)
 	MoveChess(id int, locationX int, locationY int) ([]*ChineseChess, error)

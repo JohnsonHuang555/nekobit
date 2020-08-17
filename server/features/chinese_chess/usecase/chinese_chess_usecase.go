@@ -8,7 +8,7 @@ type chineseChessUseCase struct {
 	chineseChessRepo domain.ChineseChessRepository
 }
 
-func NewChineseChessUseCase(c domain.ChineseChessRepository) domain.ChineseChessUseCae {
+func NewChineseChessUseCase(c domain.ChineseChessRepository) domain.ChineseChessUseCase {
 	return &chineseChessUseCase{c}
 }
 
