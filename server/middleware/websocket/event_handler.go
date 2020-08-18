@@ -10,7 +10,6 @@ import (
 	"server/utils"
 )
 
-// var roomUseCase domain.RoomUseCase
 var chineseChessUseCase domain.ChineseChessUseCase
 var ninjaFightingUseCase ninjafighting.NinjaFightingUseCase
 

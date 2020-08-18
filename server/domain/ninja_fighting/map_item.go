@@ -25,7 +25,8 @@ const (
 )
 
 const (
-	Gate        MapEvent = "Gate"        // 傳送門
+	Gate1       MapEvent = "Gate1"       // 傳送門 1 兩個互通
+	Gate2       MapEvent = "Gate2"       // 傳送門 2
 	Hospital    MapEvent = "Hospital"    // 醫院
 	Shop        MapEvent = "Shop"        // 道具抽抽樂
 	Dojo        MapEvent = "Dojo"        // 道場
@@ -54,8 +55,8 @@ type MapItem struct {
 	ID        int      `json:"id"`
 	LocationX int      `json:"location_x"`
 	LocationY int      `json:"location_y"`
-	Item      Card     `json:"item,omitempty"`
-	Bomb      Bomb     `json:"bomb,omitempty"`
+	Item      *Card    `json:"item,omitempty"`
+	Bomb      *Bomb    `json:"bomb,omitempty"`
 	HasFire   bool     `json:"has_fire"`
 	Visible   bool     `json:"visible"`
 	Event     MapEvent `json:"event"`
@@ -87,10 +88,27 @@ type GameData struct {
 	Characters []*Character `json:"characters"`
 }
 
+type eventLocation struct {
+	name MapEvent
+	x    int
+	y    int
+}
+
 func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 	classicMap := [][]*MapItem{}
 	characters := []*Character{}
 	mapID := 1
+
+	for _, user := range users {
+		characters = append(characters, &Character{
+			UserID: user.ID,
+			HP:     100,
+			Bomb:   1,
+			Fire:   1,
+			Item:   []*Card{},
+			Skill:  []*Card{},
+		})
+	}
 
 	var topX []int
 	var bottomX []int
@@ -122,11 +140,12 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 			mapItem := &MapItem{
 				ID: mapID,
 			}
+			mapItem.Event = getEvent(x, y)
 			switch y {
 			case 0:
 				if utils.IsIncludeNumber(topX, x) {
 					index := utils.RandomNumber(0, 2)
-					mapItem.Item = *CardItems[index]
+					mapItem.Item = CardItems[index]
 				}
 				mapItem.LocationX = x
 				mapItem.LocationY = y
@@ -135,7 +154,7 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 			case 6:
 				if utils.IsIncludeNumber(bottomX, x) {
 					index := utils.RandomNumber(0, 2)
-					mapItem.Item = *CardItems[index]
+					mapItem.Item = CardItems[index]
 				}
 				mapItem.LocationX = x
 				mapItem.LocationY = y
@@ -146,7 +165,7 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 				case 0:
 					if utils.IsIncludeNumber(leftY, y) {
 						index := utils.RandomNumber(0, 2)
-						mapItem.Item = *CardItems[index]
+						mapItem.Item = CardItems[index]
 					}
 					row = append(row, mapItem)
 					mapItem.LocationX = x
@@ -155,7 +174,7 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 				case 6:
 					if utils.IsIncludeNumber(rightY, y) {
 						index := utils.RandomNumber(0, 2)
-						mapItem.Item = *CardItems[index]
+						mapItem.Item = CardItems[index]
 					}
 					row = append(row, mapItem)
 					mapItem.LocationX = x
@@ -170,4 +189,47 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 	}
 
 	return &GameData{MapItems: classicMap, Characters: characters}
+}
+
+func getEvent(x int, y int) MapEvent {
+	// FIXME: 地圖事件不能寫死
+	mapEvents := [6]eventLocation{
+		{
+			name: Gate1,
+			x:    6,
+			y:    0,
+		},
+		{
+			name: Gate2,
+			x:    0,
+			y:    6,
+		},
+		{
+			name: Hospital,
+			x:    6,
+			y:    3,
+		},
+		{
+			name: Dojo,
+			x:    2,
+			y:    0,
+		},
+		{
+			name: Shop,
+			x:    4,
+			y:    6,
+		},
+		{
+			name: Exclamation,
+			x:    0,
+			y:    2,
+		},
+	}
+	var temp MapEvent
+	for _, event := range mapEvents {
+		if event.x == x && event.y == y {
+			temp = event.name
+		}
+	}
+	return temp
 }
