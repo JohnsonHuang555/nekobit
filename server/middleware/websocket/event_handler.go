@@ -10,17 +10,28 @@ import (
 	"server/utils"
 )
 
-var chineseChessUseCase domain.ChineseChessUseCae
+// var roomUseCase domain.RoomUseCase
+var chineseChessUseCase domain.ChineseChessUseCase
 var ninjaFightingUseCase ninjafighting.NinjaFightingUseCase
-var outputMsg MsgData
 
 // SocketEventHandler handle every event from client
 func SocketEventHandler(
 	msg MsgData,
-	roomID string,
+	rid string,
 	ru domain.RoomUseCase,
 ) MsgData {
-	roomInfo, _ := ru.GetRoomInfo(roomID)
+	// init event class
+	event := new(Event)
+	msgData := event.GetOutputMsg()
+	msgData.Event = msg.Event
+	msgData.UserID = msg.UserID
+	event.SetOutputMsg(msgData)
+	event.SetRoomID(rid)
+	event.SetUserID(msg.UserID)
+	event.SetRoomUseCase(ru)
+
+	roomInfo, _ := ru.GetRoomInfo(rid)
+	// e :=
 	if !utils.IsNil(roomInfo) {
 		// 判斷是否開始遊戲
 		if roomInfo.GameData != nil {
@@ -65,22 +76,30 @@ func SocketEventHandler(
 	// 		users, _ := ru.ChooseCharacter(roomID, msg.UserID, msg.Data.CharacterID)
 	// 		gd = ninjafighting.CreateClassicMap(ninjafighting.Small, users)
 
-	events := map[string]interface{}{
-		// "joinRoom":       joinRoom,
-		// "leaveRoom":      leaveRoom,
-		// "readyGame":      readyGame,
-		"startGame": startGame,
-		// "setPlayOrder":   setPlayOrder,
-		// "gameOver":       gameOver,
-		// "changePassword": changePassword,
+	// events := map[string]interface{}{
+	// 	"joinRoom":       joinRoom,
+	// 	// "leaveRoom":      leaveRoom,
+	// 	// "readyGame":      readyGame,
+	// 	"startGame": startGame,
+	// 	// "setPlayOrder":   setPlayOrder,
+	// 	// "gameOver":       gameOver,
+	// 	// "changePassword": changePassword,
+	// }
+
+	// for k, v := range events {
+	// 	switch k {
+	// 	case msg.Event:
+	// 		v.(func(*Event, string, int, int))(event, msg.Data.GameID, msg.Data.RoomMode, msg.Data.CharacterID)
+	// 	}
+	// }
+
+	switch msg.Event {
+	case "joinRoom":
+		joinRoom(event, msg.Data.UserName)
+	case "startGame":
+		startGame(event, msg.Data.GameID, msg.Data.RoomMode, msg.Data.CharacterID)
 	}
 
-	for k, v := range events {
-		switch k {
-		case msg.Event:
-			v.(func(string, int))(msg.Data.GameID, msg.Data.RoomMode)
-		}
-	}
 	// switch msg.Event {
 	// case "joinRoom":
 	// 	room, _ := ru.JoinRoom(roomID, msg.UserID, msg.Data.UserName)
@@ -152,28 +171,36 @@ func SocketEventHandler(
 	// 	// ninja fighting
 	// 	// case ""
 	// }
-	return outputMsg
+	return event.GetOutputMsg()
 }
 
-func startGame(gameID string, gameMode int) {
-	var gd interface{}
+func joinRoom(event *Event, userName string) {
+	msg := event.GetOutputMsg()
+	room, _ := event.GetRoomUseCase().JoinRoom(event.GetRoomID(), event.GetUserID(), userName)
+	msg.Data.RoomInfo = room
+	event.SetOutputMsg(msg)
+}
+
+func startGame(event *Event, gameID string, gameMode int, characterID int) {
+	msg := event.GetOutputMsg()
 	switch gameID {
 	case "5de1f7ddac5b6c1002ece8f1": // FIXME:
 		// 1 大盤, 2 小盤
 		if gameMode == 1 {
 			// mode 1
-			gd = domain.CreateChessesStandard()
+			msg.Data.GameData = domain.CreateChessesStandard()
 		} else if gameMode == 2 {
 			// mode 2
-			gd = domain.CreateChessesHidden()
+			msg.Data.GameData = domain.CreateChessesHidden()
 		} else {
 			// mode 3
 		}
 	case "5f2976433562709c29a6d940":
-		// gd = ninjafighting.CreateClassicMap(ninjafighting.Small)
+		users, _ := event.GetRoomUseCase().ChooseCharacter(event.GetRoomID(), event.GetUserID(), characterID)
+		msg.Data.GameData = ninjafighting.CreateClassicMap(ninjafighting.Small, users)
 	}
 
 	//	room, _ := ru.StartGame(roomID, gd)
 	//	msg.Data.RoomInfo = room
-	outputMsg.Data.GameData = gd
+	event.SetOutputMsg(msg)
 }
