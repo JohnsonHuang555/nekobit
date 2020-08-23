@@ -1,17 +1,19 @@
 .standard-mode {
   position: relative;
+  width: 800px !important;
+  height: 95vh;
 }
 
 .chesses {
   position: absolute;
   top: 0;
-  left: 35px;
-  width: calc(100vh - 70px) !important;
+  left: 0;
+  height: 100%;
 }
 
 .map {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
 }
 
 .rotate-180 {

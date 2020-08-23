@@ -86,6 +86,7 @@ const (
 type GameData struct {
 	MapItems   [][]*MapItem `json:"map_items"`
 	Characters []*Character `json:"characters"`
+	Round      int          `json:"round"`
 }
 
 type eventLocation struct {
@@ -98,6 +99,7 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 	classicMap := [][]*MapItem{}
 	characters := []*Character{}
 	mapID := 1
+	round := 1
 
 	for _, user := range users {
 		characters = append(characters, &Character{
@@ -188,7 +190,7 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 		classicMap = append(classicMap, row)
 	}
 
-	return &GameData{MapItems: classicMap, Characters: characters}
+	return &GameData{MapItems: classicMap, Characters: characters, Round: round}
 }
 
 func getEvent(x int, y int) MapEvent {

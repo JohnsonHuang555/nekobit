@@ -14,11 +14,12 @@ import { RoomFactory } from 'src/features/main/domain/factories/RoomFactory';
 import Hidden from './components/Mode/Hidden';
 import Standard from './components/Mode/Standard';
 import styles from '@styles/games/chineseChess.module.scss';
+import { TRoom } from 'src/features/main/domain/models/Room';
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
   const ws = useSelector(roomSocketSelector);
-  const roomInfo = useSelector(roomInfoSelector);
+  const roomInfo = useSelector(roomInfoSelector) as TRoom;
   const playerSide = useSelector(playerSideSelector);
   const isYouMaster = useSelector(isYouMasterSelector);
   const userInfo = useSelector(userInfoSelector);
@@ -26,28 +27,23 @@ const ChineseChessContainer = () => {
   const [selectedChess, setSelectedChess] = useState<TChineseChess>();
 
   useEffect(() => {
+    if (roomInfo.mode === GameModeCode.Standard && isYouMaster) {
+      const user = roomInfo.userList.find(u => u.playOrder === 0);
+      if (user) {
+        dispatch({
+          type: RoomActionType.SEND_MESSAGE_ROOM,
+          event: ChineseChessSocketEvent.SetSideBlack,
+          userId: user.id
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     if (ws) {
       ws.onmessage = (webSocket: MessageEvent) => {
         const wsData: TSocket = JSON.parse(webSocket.data);
         switch (wsData.event) {
-          case AppSocketEvent.SetPlayOrder: {
-            const roomInfo = RoomFactory.createFromNet(wsData.data.roomInfo);
-            dispatch({
-              type: RoomActionType.UPDATE_ROOM_INFO,
-              roomInfo,
-            });
-            if (roomInfo.mode === GameModeCode.Standard && isYouMaster) {
-              const user = roomInfo.userList.find(u => u.playOrder === 0);
-              if (user) {
-                dispatch({
-                  type: RoomActionType.SEND_MESSAGE_ROOM,
-                  event: ChineseChessSocketEvent.SetSideBlack,
-                  userId: user.id
-                });
-              }
-            }
-            break;
-          }
           case ChineseChessSocketEvent.SetSideBlack: {
             const userList = UserFactory.createArrayFromNet(wsData.data.roomUserList);
             dispatch({
@@ -149,9 +145,9 @@ const ChineseChessContainer = () => {
     }
   }, [ws, playerSide]);
 
-  if (!roomInfo || !userInfo) { return null; }
+  if (!userInfo) { return null; }
 
-  const yourTurn = roomInfo.nowTurn && userInfo.id === roomInfo.nowTurn ? true : false;
+  const yourTurn = roomInfo?.nowTurn && userInfo.id === roomInfo.nowTurn ? true : false;
 
   // methods
   const onSelect = (chess: TChineseChess) => {
