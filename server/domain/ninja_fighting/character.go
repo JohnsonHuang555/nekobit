@@ -13,7 +13,9 @@ type Character struct {
 	HP        int       `json:"hp"`
 	Bomb      int       `json:"bomb"`
 	Fire      int       `json:"fire"`
-	Item      []*Card   `json:"item"`
-	Skill     []*Card   `json:"skill"`
+	Items     []*Card   `json:"item"`
+	Skills    []*Card   `json:"skill"`
 	Direction Direction `json:"direction"`
+	LocationX int       `json:"location_x"`
+	LocationY int       `json:"location_y"`
 }

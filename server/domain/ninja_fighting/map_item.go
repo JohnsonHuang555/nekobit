@@ -55,24 +55,11 @@ type MapItem struct {
 	ID        int      `json:"id"`
 	LocationX int      `json:"location_x"`
 	LocationY int      `json:"location_y"`
-	Item      *Card    `json:"item,omitempty"`
-	Bomb      *Bomb    `json:"bomb,omitempty"`
+	Item      *Card    `json:"items,omitempty"`
+	Bomb      *Bomb    `json:"bombs,omitempty"`
 	HasFire   bool     `json:"has_fire"`
 	Visible   bool     `json:"visible"`
 	Event     MapEvent `json:"event"`
-}
-
-type NinjaFightingUseCase interface {
-	// Dice() int // 擲骰子
-}
-
-type NinjaFightingRepository interface {
-	// FindAll() []*MapItem
-	// FindOne(id int) (*MapItem, error)
-	// UpdateItem(id int, newItem Card, isClear bool) error
-	// UpdateBomb(id int, newBomb Bomb, isClear bool) error
-	// UpdateHasFire(id int, hasFire bool) error
-	// UpdateVisible(id int, visible bool) error
 }
 
 type MapSize string
@@ -100,17 +87,6 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 	characters := []*Character{}
 	mapID := 1
 	round := 1
-
-	for _, user := range users {
-		characters = append(characters, &Character{
-			UserID: user.ID,
-			HP:     100,
-			Bomb:   1,
-			Fire:   1,
-			Item:   []*Card{},
-			Skill:  []*Card{},
-		})
-	}
 
 	var topX []int
 	var bottomX []int
@@ -186,10 +162,30 @@ func CreateClassicMap(size MapSize, users []*domain.User) *GameData {
 					row = append(row, nil)
 				}
 			}
+
 		}
 		classicMap = append(classicMap, row)
 	}
 
+	charactersLocation := utils.RandomSampling(1, 24, len(users))
+	for i, cID := range charactersLocation {
+		for y := 0; y < 7; y++ {
+			for x := 0; x < 7; x++ {
+				if classicMap[y][x] != nil && classicMap[y][x].ID == cID {
+					characters = append(characters, &Character{
+						UserID:    users[i].ID,
+						HP:        100,
+						Bomb:      1,
+						Fire:      1,
+						Items:     []*Card{},
+						Skills:    []*Card{},
+						LocationX: x,
+						LocationY: y,
+					})
+				}
+			}
+		}
+	}
 	return &GameData{MapItems: classicMap, Characters: characters, Round: round}
 }
 

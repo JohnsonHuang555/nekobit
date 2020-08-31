@@ -40,6 +40,7 @@ func RandomSampling(min int, max int, n int) []int {
 	return randNumbers
 }
 
+// 隨機取得一數值
 func RandomNumber(min int, max int) int {
 	return rand.Intn(max-min) + min
 }

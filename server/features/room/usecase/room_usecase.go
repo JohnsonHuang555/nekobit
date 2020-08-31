@@ -94,6 +94,14 @@ func (ru *roomUseCase) ChooseCharacter(roomID string, userID string, characterID
 	return users, nil
 }
 
+func (ru *roomUseCase) ChooseGroup(roomID string, userID string, group int) ([]*domain.User, error) {
+	users, err := ru.roomRepo.UpdateUserGroup(roomID, userID, group)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func (ru *roomUseCase) UpdateGameData(roomID string, gameData interface{}) (interface{}, error) {
 	gd, err := ru.roomRepo.UpdateGameData(roomID, gameData)
 	if err != nil {

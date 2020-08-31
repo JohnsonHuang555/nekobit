@@ -9,6 +9,7 @@ type User struct {
 	PlayOrder   int    `json:"play_order"`
 	Side        string `json:"side"`
 	CharacterID int    `json:"character_id"`
+	Group       int    `json:"group"`
 	// Email     string    `json:"email"`
 	// Password  string    `json:"password"`
 }

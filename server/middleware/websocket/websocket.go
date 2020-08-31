@@ -49,6 +49,7 @@ type Attachment struct {
 	RoomInfo     *domain.Room   `json:"roomInfo,omitempty"`
 	NowTurn      string         `json:"nowTurn,omitempty"`
 	CharacterID  int            `json:"characterID,omitempty"`
+	Group        int            `json:"group,omitempty"`
 
 	domain.NetChineseChess
 }

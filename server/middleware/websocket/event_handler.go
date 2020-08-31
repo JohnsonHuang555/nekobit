@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"server/domain"
 	ninjafighting "server/domain/ninja_fighting"
 	_chineseChessRepo "server/features/chinese_chess/repository"
@@ -50,7 +49,7 @@ func SocketEventHandler(
 	case "joinRoom":
 		joinRoom(event, msg.Data.UserName)
 	case "startGame":
-		startGame(event, msg.Data.GameID, msg.Data.RoomMode, msg.Data.CharacterID)
+		startGame(event, msg.Data.GameID, msg.Data.RoomMode, msg.Data.CharacterID, msg.Data.Group)
 	case "leaveRoom":
 		leaveRoom(event)
 	case "readyGame":
@@ -80,10 +79,9 @@ func joinRoom(event *Event, userName string) {
 	event.SetOutputMsg(msg)
 }
 
-func startGame(event *Event, gameID string, gameMode int, characterID int) {
+func startGame(event *Event, gameID string, gameMode int, characterID int, group int) {
 	msg := event.GetOutputMsg()
 	var gd interface{}
-	fmt.Println(gameID)
 	switch gameID {
 	case "5d62a35bd986c21bc010c00b": // FIXME:
 		// 1 大盤, 2 小盤
@@ -98,6 +96,7 @@ func startGame(event *Event, gameID string, gameMode int, characterID int) {
 		}
 	case "5f2976433562709c29a6d940":
 		users, _ := event.GetRoomUseCase().ChooseCharacter(event.GetRoomID(), event.GetUserID(), characterID)
+		users, _ = event.GetRoomUseCase().ChooseGroup(event.GetRoomID(), event.GetUserID(), group)
 		gd = ninjafighting.CreateClassicMap(ninjafighting.Small, users)
 	}
 

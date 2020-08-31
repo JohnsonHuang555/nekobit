@@ -232,6 +232,17 @@ func (rr *roomRepository) UpdateUserCharacterID(roomID string, userID string, ch
 	return rr.rooms[roomIndex].UserList, nil
 }
 
+func (rr *roomRepository) UpdateUserGroup(roomID string, userID string, group int) ([]*domain.User, error) {
+	roomIndex := rr.findRoomIndexByID(roomID)
+	userIndex := rr.findUserIndexByID(userID, roomIndex)
+	if roomIndex == -1 || userIndex == -1 {
+		return nil, errors.New("User not exist")
+	}
+
+	rr.rooms[roomIndex].UserList[userIndex].Group = group
+	return rr.rooms[roomIndex].UserList, nil
+}
+
 func (rr *roomRepository) FindUserByID(roomID string, userID string) (*domain.User, error) {
 	roomIndex := rr.findRoomIndexByID(roomID)
 	userIndex := rr.findUserIndexByID(userID, roomIndex)
