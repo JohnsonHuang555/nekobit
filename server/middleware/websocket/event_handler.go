@@ -33,7 +33,7 @@ func SocketEventHandler(
 		if roomInfo.GameData != nil {
 			switch roomInfo.GameID {
 			// 象棋
-			case "5d62a35bd986c21bc010c00b":
+			case "5de1f7ddac5b6c1002ece8f1":
 				chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
 				chineseChessUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 				event.SetChineseChessUseCase(chineseChessUseCase)
@@ -85,7 +85,7 @@ func startGame(event *Event, gameID string, gameMode int, characterID int) {
 	var gd interface{}
 	fmt.Println(gameID)
 	switch gameID {
-	case "5d62a35bd986c21bc010c00b": // FIXME:
+	case "5de1f7ddac5b6c1002ece8f1": // FIXME:
 		// 1 大盤, 2 小盤
 		if gameMode == 1 {
 			// mode 1
