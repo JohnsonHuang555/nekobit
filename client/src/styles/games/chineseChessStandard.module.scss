@@ -2,6 +2,9 @@
   position: relative;
   width: 800px !important;
   height: 95vh;
+  @media(max-height: 767px) {
+    width: 600px !important;
+  }
 }
 
 .chesses {
