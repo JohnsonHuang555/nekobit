@@ -8,6 +8,7 @@ import { ActionType as IndexActionType } from 'src/features/main/reducers/indexR
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { gamesSelector } from 'src/features/main/selectors';
 import GameBoy from 'src/features/main/Index/components/GameBoy';
+import styles from '@styles/index.module.scss';
 
 const IndexContainer = () => {
   const dispatch = useDispatch();
@@ -27,10 +28,7 @@ const IndexContainer = () => {
 
   return (
     <Layout>
-      <Box className="section-heading">
-        <h2>Let's play a game</h2>
-      </Box>
-      <Grid container spacing={3}>
+      <Grid className={styles['index']} container>
         <Grid item xs={6}>
           <GameBoy />
         </Grid>
