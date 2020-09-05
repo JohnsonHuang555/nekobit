@@ -28,18 +28,13 @@ const IndexContainer = () => {
 
   return (
     <Layout>
-      <Grid className={styles['index']} container>
-        <Grid item xs={6}>
-          <GameBoy />
-        </Grid>
-        <Grid item xs={6}>
-          game data
-        </Grid>
-      </Grid>
-      {/* <GameList
+      <Box className="section-heading">
+        <h2>All Games</h2>
+      </Box>
+      <GameList
         games={games}
         onChooseGame={(id) => chooseGameHandler(id)}
-      /> */}
+      />
     </Layout>
   )
 };

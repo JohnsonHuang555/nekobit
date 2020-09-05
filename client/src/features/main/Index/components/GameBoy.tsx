@@ -3,8 +3,14 @@ import { Box, Grid } from '@material-ui/core';
 import styles from '@styles/components/gameBoy.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretLeft, faCaretDown, faCaretRight, faCaretUp, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { TGame } from '../../domain/models/Game';
 
-const GameBoy = () => {
+type GameBoyProps = {
+  games: TGame[];
+  onChooseGame: (id: string) => void;
+}
+
+const GameBoy = (props: GameBoyProps) => {
   return (
     <Box className={styles['game-boy']}>
       <Box className={styles['screen-area']}>
@@ -17,7 +23,12 @@ const GameBoy = () => {
           </Box>
           POWER
         </Box>
-        <Box className={styles['screen']}></Box>
+        <Box className={styles['screen']}>
+          <Box className={styles['title']}>遊戲列表</Box>
+          {props.games.map(game => (
+            <Box>{game.name}</Box>
+          ))}
+        </Box>
         <Box className={styles['logo-area']}>
           <Box className={styles['logo']}>GAME BOY</Box>
           <Box className={styles['c']}>C</Box>
