@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Grid } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import Layout from 'src/components/Layout';
 import GameList from 'src/features/main/Index/components/GameList';
 import { ActionType as IndexActionType } from 'src/features/main/reducers/indexReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { gamesSelector } from 'src/features/main/selectors';
-import GameBoy from 'src/features/main/Index/components/GameBoy';
 import styles from '@styles/index.module.scss';
 
 const IndexContainer = () => {

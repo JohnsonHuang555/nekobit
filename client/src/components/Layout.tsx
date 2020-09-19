@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { showToastSelector } from 'src/selectors';
 import CloseIcon from '@material-ui/icons/Close';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
-// import Footer from 'src/components/Footer';
+import Footer from 'src/components/Footer';
 
 const Header = dynamic(
   () => import('./Header'),
@@ -31,7 +31,7 @@ const Layout = (props: LayoutProps) => {
     <>
       <Meta {...meta} />
       <Header />
-      <Container>
+      <Container style={{ flex: '1 0 auto' }}>
         {children}
       </Container>
       <Snackbar
@@ -62,7 +62,7 @@ const Layout = (props: LayoutProps) => {
           </React.Fragment>
         }
       />
-      {/* <Footer /> */}
+      <Footer />
     </>
   )
 };

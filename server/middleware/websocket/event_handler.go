@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"server/domain"
-	ninjafighting "server/domain/ninja_fighting"
+	// ninjafighting "server/domain/ninja_fighting"
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
-	_ninjaFightingRepo "server/features/ninja_fighting/repository"
-	_ninjaFightingUseCase "server/features/ninja_fighting/usecase"
+
+	// _ninjaFightingRepo "server/features/ninja_fighting/repository"
+	// _ninjaFightingUseCase "server/features/ninja_fighting/usecase"
 	"server/utils"
 )
 
@@ -38,9 +39,9 @@ func SocketEventHandler(
 				event.SetChineseChessUseCase(chineseChessUseCase)
 			// Ninja Fighting
 			case "5f2976433562709c29a6d940":
-				ninjaFightingRepo := _ninjaFightingRepo.NewNinjaFightingRepository(roomInfo.GameData.(*ninjafighting.GameData))
-				ninjaFightingUseCase := _ninjaFightingUseCase.NewNinjaFightingUseCase(ninjaFightingRepo)
-				event.SetNinjaFightingUseCase(ninjaFightingUseCase)
+				// ninjaFightingRepo := _ninjaFightingRepo.NewNinjaFightingRepository(roomInfo.GameData.(*ninjafighting.GameData))
+				// ninjaFightingUseCase := _ninjaFightingUseCase.NewNinjaFightingUseCase(ninjaFightingRepo)
+				// event.SetNinjaFightingUseCase(ninjaFightingUseCase)
 			}
 		}
 	}
@@ -95,9 +96,9 @@ func startGame(event *Event, gameID string, gameMode int, characterID int, group
 			// mode 3
 		}
 	case "5f2976433562709c29a6d940":
-		users, _ := event.GetRoomUseCase().ChooseCharacter(event.GetRoomID(), event.GetUserID(), characterID)
-		users, _ = event.GetRoomUseCase().ChooseGroup(event.GetRoomID(), event.GetUserID(), group)
-		gd = ninjafighting.CreateClassicMap(ninjafighting.Small, users)
+		// users, _ := event.GetRoomUseCase().ChooseCharacter(event.GetRoomID(), event.GetUserID(), characterID)
+		// users, _ = event.GetRoomUseCase().ChooseGroup(event.GetRoomID(), event.GetUserID(), group)
+		// gd = ninjafighting.CreateClassicMap(ninjafighting.Small, users)
 	}
 
 	room, _ := event.GetRoomUseCase().StartGame(event.GetRoomID(), gd)

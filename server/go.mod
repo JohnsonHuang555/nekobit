@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/bxcodec/go-clean-arch v2.0.1+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1
+	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/go-cmp v0.4.0 // indirect
 	github.com/gorilla/mux v1.7.3
@@ -22,5 +23,4 @@ require (
 	go.mongodb.org/mongo-driver v1.1.2
 	golang.org/x/crypto v0.0.0-20191029031824-8986dd9e96cf // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e // indirect
-	golang.org/x/text v0.3.2 // indirect
 )
