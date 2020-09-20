@@ -7,7 +7,6 @@ import GameList from 'src/features/main/Index/components/GameList';
 import { ActionType as IndexActionType } from 'src/features/main/reducers/indexReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { gamesSelector } from 'src/features/main/selectors';
-import styles from '@styles/index.module.scss';
 
 const IndexContainer = () => {
   const dispatch = useDispatch();

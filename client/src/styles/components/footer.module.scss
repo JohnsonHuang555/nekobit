@@ -1,23 +1,18 @@
-@import '../theme';
+@import '../color';
 
-#footer {
-  margin-top: 40px;
-  .icons {
+.footer {
+  .slogan {
+    padding: 16px;
+    text-align: center;
     background-color: $navbar-bg;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    margin-bottom: 8px;
     svg {
-      margin: 0 10px;
-      height: 40px;
-      color: $basic-white;
+      margin-right: 10px;
     }
   }
   .copyright {
     text-align: center;
     color: $title-gray;
     font-size: 13px;
+    padding: 10px;
   }
 }

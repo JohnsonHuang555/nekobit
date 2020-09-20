@@ -12,7 +12,8 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
-  TextField
+  TextField,
+  Container
 } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { userInfoSelector } from 'src/selectors';
@@ -36,13 +37,14 @@ const Header = () => {
     setShowLoginModal(false);
   };
 
-  const onLogout = () => {
-    dispatch({
-      type: AppActionType.SET_USER_INFO,
-      isLogout: true,
-    });
-    Router.push('/');
-  };
+  console.log(Router.route)
+  // const onLogout = () => {
+  //   dispatch({
+  //     type: AppActionType.SET_USER_INFO,
+  //     isLogout: true,
+  //   });
+  //   Router.push('/');
+  // };
 
   return (
     <>
@@ -82,37 +84,50 @@ const Header = () => {
         </DialogActions>
       </Dialog>
       <AppBar position="static" className={styles.header}>
-        <Toolbar>
-          <Typography variant="h6" className={styles.logo}>
-            <Link href="/">
-              <a>
-                <span className={styles.g}>G</span>
-                <span className={styles.play}>play</span>
-              </a>
-            </Link>
-          </Typography>
-          {!userInfo ? (
-            <Button
-              color="inherit"
-              onClick={() => setShowLoginModal(true)}
-            >
-              Login
-            </Button>
-          ) : (
-            <Box display="flex" alignItems="center">
-              <img className={styles.image} src="https://images.pexels.com/photos/3393375/pexels-photo-3393375.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
-              <Box className={styles.name}>
-                {userInfo.name}
-              </Box>
+        <Container>
+          <Toolbar className={styles['toolbar']}>
+            <Typography variant="h6" className={styles.logo}>
+              <Link href="/">
+                <a className={styles['link-logo']}>
+                  <span className={styles.g}>G</span>
+                  <span className={styles.play}>play</span>
+                </a>
+              </Link>
+              <Link href="#">
+                <a className={`${styles['link'] } + ${Router.pathname === '/' ? styles['active'] : ''}`}>Home</a>
+              </Link>
+              <Link href="#">
+                <a className={styles['link']}>Games</a>
+              </Link>
+              <Link href="#">
+                <a className={styles['link']}>About</a>
+              </Link>
+            </Typography>
+            {!userInfo ? (
               <Button
                 color="inherit"
-                onClick={() => onLogout()}
+                onClick={() => setShowLoginModal(true)}
               >
-                Logout
+                Login
               </Button>
-            </Box>
-          )}
-        </Toolbar>
+            ) : (
+              <Box display="flex" alignItems="center">
+                <img className={styles.image} src="https://images.pexels.com/photos/3393375/pexels-photo-3393375.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"/>
+                <Box display="flex" flexDirection="column" className={styles['user-info']}>
+                  <span className={styles['name']}>{userInfo.name}</span>
+                  {/* TODO: level */}
+                  <span className={styles['level']}>Lv. 100</span>
+                </Box>
+                {/* <Button
+                  color="inherit"
+                  onClick={() => onLogout()}
+                >
+                  Logout
+                </Button> */}
+              </Box>
+            )}
+          </Toolbar>
+        </Container>
       </AppBar>
     </>
   )
