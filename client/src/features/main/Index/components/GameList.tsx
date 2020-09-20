@@ -30,11 +30,11 @@ const GameList = (props: GameListProps) => {
   };
 
   return (
-    <Box className={styles.lobbyBox}>
+    <Box className={styles['swiper-container']}>
       <Swiper {...swiperParams} shouldSwiperUpdate>
         {games.map((game: TGame) => (
           <Box key={game.id}>
-            <Box className="game-card">
+            <Box className={styles['game-card']}>
               <img
                 className="game-image"
                 src={`${game.imgUrl}/home.png`}
@@ -42,7 +42,7 @@ const GameList = (props: GameListProps) => {
                 width="100%"
                 height="100%"
               />
-              <Box className="game-block">
+              <Box className={styles['game-block']}>
                 <Box className="center">
                   <h2>{game.name}</h2>
                   <Button
@@ -50,7 +50,7 @@ const GameList = (props: GameListProps) => {
                     color="primary"
                     onClick={() => onChooseGame(game.id)}
                   >
-                    Enter
+                    PLAY
                   </Button>
                 </Box>
               </Box>

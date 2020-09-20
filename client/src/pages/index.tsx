@@ -7,6 +7,7 @@ import GameList from 'src/features/main/Index/components/GameList';
 import { ActionType as IndexActionType } from 'src/features/main/reducers/indexReducer';
 import { ActionType as AppActionType } from 'src/reducers/appReducer';
 import { gamesSelector } from 'src/features/main/selectors';
+import styles from '@styles/pages/index.module.scss';
 
 const IndexContainer = () => {
   const dispatch = useDispatch();
@@ -26,8 +27,17 @@ const IndexContainer = () => {
 
   return (
     <Layout>
-      <Box className="section-heading">
-        <h2>All Games</h2>
+      <Box
+        className={styles['background-image']}
+        style={{ backgroundImage: "url('img/intro.jpg')" }}
+      />
+      <Box className={styles['game-intro']}>
+        <Box className={styles['game-title']}>
+          熱門遊戲
+        </Box>
+        <Box className={styles['game-description']}>
+          歡迎來到 Gplay ，免費遊玩各式桌遊喔 ^^
+        </Box>
       </Box>
       <GameList
         games={games}
