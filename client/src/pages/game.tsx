@@ -6,7 +6,6 @@ import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from 'src/components/Layout';
 import RoomList from 'src/features/main/game/components/RoomList';
-import GameDetail from 'src/features/main/game/components/GameDetail';
 import { GameMode } from 'src/features/main/domain/models/Game';
 import {
   Box,
@@ -37,7 +36,6 @@ const GameContainer = () => {
   const createRoomData = useSelector(createRoomDataSelector);
   const createdRoomId = useSelector(createdRoomIdSelector);
 
-  const [showRoomList, setShowRoomList] = useState(false);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
   const [showEnterPasswordModal, setShowEnterPasswordModal] = useState(false);
   const [editingPassword, setEditingPassword] = useState('');
@@ -205,45 +203,20 @@ const GameContainer = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box>
-        {showRoomList ? (
-          <RoomList
-            rooms={rooms}
-            gameId={gameInfo.id}
-            maxPlayers={gameInfo.maxPlayers}
-            onChooseRoom={(id) => onChooseRoom(id)}
-            onRefreshRooms={() => dispatch({ type: GameActionType.GET_ROOMS })}
-            onShowCreateRoomModal={() => userInfo
-              ? setShowCreateRoomModal(true)
-              : dispatch({
-                  type: AppActionType.SET_ALERT_MODAL,
-                  show: true,
-                  message: '請先登入'
-                })
-            }
-          />
-        ): (
-          <GameDetail
-            gameInfo={gameInfo}
-            onShowModal={() => userInfo
-              ? setShowCreateRoomModal(true)
-              : dispatch({
-                  type: AppActionType.SET_ALERT_MODAL,
-                  show: true,
-                  message: '請先登入'
-                })
-            }
-            playNow={() => userInfo
-              ? setShowRoomList(true)
-              : dispatch({
-                  type: AppActionType.SET_ALERT_MODAL,
-                  show: true,
-                  message: '請先登入'
-                })
-            }
-          />
-        )}
-      </Box>
+      <RoomList
+        rooms={rooms}
+        gameInfo={gameInfo}
+        onChooseRoom={(id) => onChooseRoom(id)}
+        onRefreshRooms={() => dispatch({ type: GameActionType.GET_ROOMS })}
+        onShowCreateRoomModal={() => userInfo
+          ? setShowCreateRoomModal(true)
+          : dispatch({
+              type: AppActionType.SET_ALERT_MODAL,
+              show: true,
+              message: '請先登入'
+            })
+        }
+      />
     </Layout>
   )
 };

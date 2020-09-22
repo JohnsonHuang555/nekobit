@@ -17,11 +17,13 @@
 
 .logo {
   flex-grow: 1;
-  .link-logo {
-    margin-right: 40px;
-  }
   a {
     text-decoration: none;
+    padding-bottom: 10px;
+  }
+  .link-logo {
+    margin-right: 40px;
+    padding-bottom: 0;
   }
   .g {
     color: $basic-white;
@@ -44,7 +46,7 @@
   border: 2px solid #57a5c7;
   width: 90%;
   left: 0;
-  bottom: -10px;
+  bottom: -5px;
   position: absolute;
   background: aqua;
 }
