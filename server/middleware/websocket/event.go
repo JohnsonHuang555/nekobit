@@ -2,16 +2,16 @@ package middleware
 
 import (
 	"server/domain"
-	ninjafighting "server/domain/ninja_fighting"
+	"server/domain/hearts"
 )
 
 type Event struct {
-	roomID               string
-	userID               string
-	outputMsg            MsgData
-	roomUseCase          domain.RoomUseCase
-	chineseChessUseCase  domain.ChineseChessUseCase
-	ninjaFightingUseCase ninjafighting.NinjaFightingUseCase
+	roomID              string
+	userID              string
+	outputMsg           MsgData
+	roomUseCase         domain.RoomUseCase
+	chineseChessUseCase domain.ChineseChessUseCase
+	heartsUseCase       hearts.HeartsUseCase
 }
 
 func (e *Event) GetRoomID() string {
@@ -34,8 +34,8 @@ func (e *Event) GetChineseChessUseCase() domain.ChineseChessUseCase {
 	return e.chineseChessUseCase
 }
 
-func (e *Event) GetNinjaFightingUseCase() ninjafighting.NinjaFightingUseCase {
-	return e.ninjaFightingUseCase
+func (e *Event) GetHeartsUseCase() hearts.HeartsUseCase {
+	return e.heartsUseCase
 }
 
 func (e *Event) SetRoomID(rid string) {
@@ -58,6 +58,6 @@ func (e *Event) SetChineseChessUseCase(ccu domain.ChineseChessUseCase) {
 	e.chineseChessUseCase = ccu
 }
 
-func (e *Event) SetNinjaFightingUseCase(nfu ninjafighting.NinjaFightingUseCase) {
-	e.ninjaFightingUseCase = nfu
+func (e *Event) SetHeartsUseCase(hu hearts.HeartsUseCase) {
+	e.heartsUseCase = hu
 }

@@ -19,7 +19,7 @@ type HeartsUseCase interface {
 type HeartsRepository interface {
 	FindAll() []*Player
 	FindOne(id string) (*Player, error)
-	UpdateHand(id string, hand utils.Poker) error
+	UpdateHand(id string, hand []*utils.Poker) error
 	UpdateScore(id string, score int) error
 }
 

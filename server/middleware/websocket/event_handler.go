@@ -3,11 +3,16 @@ package middleware
 import (
 	"server/domain"
 	// ninjafighting "server/domain/ninja_fighting"
+	hearts "server/domain/hearts"
 	_chineseChessRepo "server/features/chinese_chess/repository"
 	_chineseChessUseCase "server/features/chinese_chess/usecase"
 
 	// _ninjaFightingRepo "server/features/ninja_fighting/repository"
 	// _ninjaFightingUseCase "server/features/ninja_fighting/usecase"
+
+	// hearts
+	_heartsRepo "server/features/hearts/repository"
+	_heartsUseCase "server/features/hearts/usecase"
 	"server/utils"
 )
 
@@ -37,11 +42,11 @@ func SocketEventHandler(
 				chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(roomInfo.GameData.([]*domain.ChineseChess))
 				chineseChessUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 				event.SetChineseChessUseCase(chineseChessUseCase)
-			// Ninja Fighting
+			// Hearts
 			case "5f2976433562709c29a6d940":
-				// ninjaFightingRepo := _ninjaFightingRepo.NewNinjaFightingRepository(roomInfo.GameData.(*ninjafighting.GameData))
-				// ninjaFightingUseCase := _ninjaFightingUseCase.NewNinjaFightingUseCase(ninjaFightingRepo)
-				// event.SetNinjaFightingUseCase(ninjaFightingUseCase)
+				heartsRepo := _heartsRepo.NewHeartsRepository(roomInfo.GameData.(*hearts.GameData))
+				heartsUseCase := _heartsUseCase.NewHeartsUseCase(heartsRepo)
+				event.SetHeartsUseCase(heartsUseCase)
 			}
 		}
 	}
@@ -96,9 +101,8 @@ func startGame(event *Event, gameID string, gameMode int, characterID int, group
 			// mode 3
 		}
 	case "5f2976433562709c29a6d940":
-		// users, _ := event.GetRoomUseCase().ChooseCharacter(event.GetRoomID(), event.GetUserID(), characterID)
-		// users, _ = event.GetRoomUseCase().ChooseGroup(event.GetRoomID(), event.GetUserID(), group)
-		// gd = ninjafighting.CreateClassicMap(ninjafighting.Small, users)
+		room, _ := event.GetRoomUseCase().GetRoomInfo(event.GetRoomID())
+		gd = hearts.CreateHearts(room.UserList)
 	}
 
 	room, _ := event.GetRoomUseCase().StartGame(event.GetRoomID(), gd)
