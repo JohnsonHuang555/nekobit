@@ -1,8 +1,9 @@
-package delivery
+package http
 
 import (
 	"net/http"
 	"server/domain"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
@@ -29,23 +30,36 @@ func NewGameHandler(e *echo.Echo, us domain.GameUseCase) {
 
 // GetGames will fetch the all games
 func (g *GameHandler) GetGames(c echo.Context) error {
-	res, err := g.GUseCase.GetGames()
+	numS := c.QueryParam("num")
+	num, _ := strconv.Atoi(numS)
+	cursor := c.QueryParam("cursor")
+	ctx := c.Request().Context()
+
+	listAr, nextCursor, err := g.GUseCase.GetGames(ctx, cursor, int64(num))
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
-	return c.JSON(http.StatusOK, res)
+
+	c.Response().Header().Set(`X-Cursor`, nextCursor)
+	return c.JSON(http.StatusOK, listAr)
 }
 
 // GetGameInfo will get the game by given id
 func (g *GameHandler) GetGameInfo(c echo.Context) error {
-	var game *domain.Game
-	id := c.QueryParam("id")
-	game, err := g.GUseCase.GetGameInfo(id)
+	idP, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
+	}
+
+	id := int64(idP)
+	ctx := c.Request().Context()
+
+	art, err := g.GUseCase.GetGameInfo(ctx, id)
 	if err != nil {
 		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, game)
+	return c.JSON(http.StatusOK, art)
 }
 
 func getStatusCode(err error) int {
