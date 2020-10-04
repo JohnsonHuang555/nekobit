@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"context"
 	"time"
 )
 
@@ -26,6 +27,6 @@ type GameUseCase interface {
 
 // GameRepository represent the game's repository contract
 type GameRepository interface {
-	FindAll(g []*Game) ([]*Game, error)
-	FindOne(id string) (*Game, error)
+	FindAll(ctx context.Context, cursor string, num int64) (res []Game, nextCursor string, err error)
+	FindOneByID(ctx context.Context, id int64) (res Game, err error)
 }
