@@ -21,8 +21,8 @@ type Game struct {
 
 // GameUseCase represent the game's useacses
 type GameUseCase interface {
-	GetGames() ([]*Game, error)
-	GetGameInfo(id string) (*Game, error)
+	GetGames(c context.Context, cursor string, num int64) (res []Game, nextCursor string, err error)
+	GetGameInfo(c context.Context, id int64) (res Game, err error)
 }
 
 // GameRepository represent the game's repository contract
