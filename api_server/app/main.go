@@ -1,10 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
+	"net/url"
+	"server/app/config"
 
-	"github.com/spf13/viper"
+	_ "github.com/go-sql-driver/mysql"
+
+	"github.com/labstack/echo"
 )
 
 // "database/sql"
@@ -23,47 +28,39 @@ import (
 // _authorRepo "github.com/bxcodec/go-clean-arch/author/repository/mysql"
 
 func init() {
-	viper.SetConfigFile(`config.json`)
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
-
-	if viper.GetBool(`debug`) {
-		log.Println("Service RUN on DEBUG mode")
-	}
+	config.ReadConfig()
 }
 
 func main() {
-	fmt.Println("test")
-	// dbHost := viper.GetString(`database.host`)
-	// dbPort := viper.GetString(`database.port`)
-	// dbUser := viper.GetString(`database.user`)
-	// dbPass := viper.GetString(`database.pass`)
-	// dbName := viper.GetString(`database.name`)
-	// connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
-	// val := url.Values{}
-	// val.Add("parseTime", "1")
-	// val.Add("loc", "Asia/Jakarta")
-	// dsn := fmt.Sprintf("%s?%s", connection, val.Encode())
-	// dbConn, err := sql.Open(`mysql`, dsn)
+	dbHost := config.C.Database.Host
+	dbPort := config.C.Database.Port
+	dbUser := config.C.Database.User
+	dbPass := config.C.Database.Pass
+	dbName := config.C.Database.Name
+	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
+	fmt.Println(connection)
+	val := url.Values{}
+	val.Add("parseTime", "1")
+	val.Add("loc", "Asia/Jakarta")
+	dsn := fmt.Sprintf("%s?%s", connection, val.Encode())
+	dbConn, err := sql.Open(`mysql`, dsn)
 
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// err = dbConn.Ping()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = dbConn.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// defer func() {
-	// 	err := dbConn.Close()
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// }()
+	defer func() {
+		err := dbConn.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
-	// e := echo.New()
+	e := echo.New()
 	// middL := _articleHttpDeliveryMiddleware.InitMiddleware()
 	// e.Use(middL.CORS)
 	// authorRepo := _authorRepo.NewMysqlAuthorRepository(dbConn)
@@ -73,5 +70,5 @@ func main() {
 	// au := _articleUcase.NewArticleUsecase(ar, authorRepo, timeoutContext)
 	// _articleHttpDelivery.NewArticleHandler(e, au)
 
-	// log.Fatal(e.Start(viper.GetString("server.address")))
+	log.Fatal(e.Start(config.C.Server.Address))
 }

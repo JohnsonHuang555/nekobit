@@ -5,8 +5,10 @@ go 1.12
 require (
 	github.com/bxcodec/faker v1.4.2
 	github.com/bxcodec/go-clean-arch v2.0.1+incompatible
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-playground/locales v0.12.1 // indirect
 	github.com/go-playground/universal-translator v0.16.0 // indirect
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce // indirect
 	github.com/labstack/echo v3.3.5+incompatible
 	github.com/labstack/gommon v0.0.0-20180426014445-588f4e8bddc6 // indirect
