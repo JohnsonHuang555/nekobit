@@ -1,9 +1,12 @@
 database:
   name: game_platform
-  host: localhost
+  host: 127.0.0.1
   port: 3306
   user: root
   pass: root
+
+context:
+  timeout: 2
 
 server:
   address: :8080

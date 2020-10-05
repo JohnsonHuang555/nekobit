@@ -6,26 +6,17 @@ import (
 	"log"
 	"net/url"
 	"server/app/config"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/labstack/echo"
+
+	_gameHttpDelivery "server/features/game/delivery/http"
+	_gameHttpDeliveryMiddleware "server/features/game/delivery/http/middleware"
+	_gameRepo "server/features/game/repository/mysql"
+	_gameUseCase "server/features/game/usecase"
 )
-
-// "database/sql"
-
-// "log"
-// "net/url"
-// "time"
-
-// _ "github.com/go-sql-driver/mysql"
-// "github.com/labstack/echo"
-
-// _articleHttpDelivery "github.com/bxcodec/go-clean-arch/article/delivery/http"
-// _articleHttpDeliveryMiddleware "github.com/bxcodec/go-clean-arch/article/delivery/http/middleware"
-// _articleRepo "github.com/bxcodec/go-clean-arch/article/repository/mysql"
-// _articleUcase "github.com/bxcodec/go-clean-arch/article/usecase"
-// _authorRepo "github.com/bxcodec/go-clean-arch/author/repository/mysql"
 
 func init() {
 	config.ReadConfig()
@@ -61,14 +52,13 @@ func main() {
 	}()
 
 	e := echo.New()
-	// middL := _articleHttpDeliveryMiddleware.InitMiddleware()
-	// e.Use(middL.CORS)
-	// authorRepo := _authorRepo.NewMysqlAuthorRepository(dbConn)
-	// ar := _articleRepo.NewMysqlArticleRepository(dbConn)
+	middL := _gameHttpDeliveryMiddleware.InitMiddleware()
+	e.Use(middL.CORS)
+	gr := _gameRepo.NewGameRepository(dbConn)
 
-	// timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
-	// au := _articleUcase.NewArticleUsecase(ar, authorRepo, timeoutContext)
-	// _articleHttpDelivery.NewArticleHandler(e, au)
+	timeoutContext := time.Duration(2) * time.Second
+	gu := _gameUseCase.NewGameUseCase(gr, timeoutContext)
+	_gameHttpDelivery.NewGameHandler(e, gu)
 
 	log.Fatal(e.Start(config.C.Server.Address))
 }

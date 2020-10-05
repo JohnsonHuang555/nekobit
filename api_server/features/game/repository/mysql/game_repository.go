@@ -59,8 +59,7 @@ func (m *gameRepository) fetch(ctx context.Context, query string, args ...interf
 }
 
 func (gr *gameRepository) FindAll(ctx context.Context, cursor string, num int64) (res []domain.Game, nextCursor string, err error) {
-	query := `SELECT id,name,min_players,max_players, updated_at, created_at
-  						FROM game_platform WHERE created_at > ? ORDER BY created_at LIMIT ? `
+	query := `SELECT * FROM game_platform.game WHERE created_at > ? ORDER BY created_at LIMIT ? `
 
 	decodedCursor, err := repository.DecodeCursor(cursor)
 	if err != nil && cursor != "" {

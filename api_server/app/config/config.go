@@ -19,6 +19,9 @@ type config struct {
 		Pass string
 		Port string
 	}
+	Context struct {
+		Timeout int
+	}
 	Server struct {
 		Address string
 	}
