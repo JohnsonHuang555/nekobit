@@ -79,8 +79,7 @@ func (gr *gameRepository) FindAll(ctx context.Context, cursor string, num int64)
 }
 
 func (gr *gameRepository) FindOneByID(ctx context.Context, id int64) (res domain.Game, err error) {
-	query := `SELECT id,title,content, author_id, updated_at, created_at
-  						FROM article WHERE ID = ?`
+	query := `SELECT * FROM game_platform.game WHERE ID = ?`
 
 	list, err := gr.fetch(ctx, query, id)
 	if err != nil {

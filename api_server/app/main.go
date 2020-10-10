@@ -29,7 +29,6 @@ func main() {
 	dbPass := config.C.Database.Pass
 	dbName := config.C.Database.Name
 	connection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
-	fmt.Println(connection)
 	val := url.Values{}
 	val.Add("parseTime", "1")
 	val.Add("loc", "Asia/Jakarta")
