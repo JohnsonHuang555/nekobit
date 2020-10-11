@@ -19,14 +19,14 @@ type Game struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
-// GameUseCase represent the game's useacses
-type GameUseCase interface {
-	GetGames(c context.Context, cursor string, num int64) (res []Game, nextCursor string, err error)
-	GetGameInfo(c context.Context, id int64) (res Game, err error)
-}
-
 // GameRepository represent the game's repository contract
 type GameRepository interface {
 	FindAll(ctx context.Context, cursor string, num int64) (res []Game, nextCursor string, err error)
 	FindOneByID(ctx context.Context, id int64) (res Game, err error)
+}
+
+// GameUseCase represent the game's useacses
+type GameUseCase interface {
+	GetGames(c context.Context, cursor string, num int64) (res []Game, nextCursor string, err error)
+	GetGameInfo(c context.Context, id int64) (res Game, err error)
 }

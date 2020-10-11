@@ -14,8 +14,8 @@ type gameRepository struct {
 }
 
 // NewGameRepository well create an object that represent the game.Repository interface
-func NewGameRepository(conn *sql.DB) domain.GameRepository {
-	return &gameRepository{conn}
+func NewGameRepository(Conn *sql.DB) domain.GameRepository {
+	return &gameRepository{Conn}
 }
 
 func (m *gameRepository) fetch(ctx context.Context, query string, args ...interface{}) (result []domain.Game, err error) {
