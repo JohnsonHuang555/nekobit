@@ -25,7 +25,7 @@ func NewGameHandler(e *echo.Echo, us domain.GameUseCase) {
 		GUseCase: us,
 	}
 	e.GET("/api/getAllGames", handler.GetGames)
-	e.GET("/api/getGameInfo", handler.GetGameInfo)
+	e.GET("/api/getGameInfo/:id", handler.GetGameInfo)
 }
 
 // GetGames will fetch the all games
@@ -47,6 +47,7 @@ func (g *GameHandler) GetGames(c echo.Context) error {
 // GetGameInfo will get the game by given id
 func (g *GameHandler) GetGameInfo(c echo.Context) error {
 	idP, err := strconv.Atoi(c.Param("id"))
+
 	if err != nil {
 		return c.JSON(http.StatusNotFound, domain.ErrNotFound.Error())
 	}
