@@ -30,9 +30,18 @@ type RoomRepository interface {
 	UpdateByID(id string, r *Room) error
 
 	// player
-	FindPlayerAll(rid string) []*Player
+	FindAllPlayers(rid string) []*Player
 	FindPlayerByID(rid string, uid string) (*Player, error)
 	CreatePlayer(rid string, p *Player) error
 	DeletePlayerByID(rid string, uid string) error
 	UpdatePlayerByID(rid string, uid string, p *Player) error
+}
+
+type RoomUseCase interface {
+	GetRooms() []*Room
+	JoinRoom(rid string, uid string, userName string) (*Room, error)
+	LeaveRoom(rid string, uid string) ([]*Player, error)
+	ReadyGame(rid string, uid string) ([]*Player, error)
+	StartGame(rid string, gameData interface{}) (*Room, error)
+	CreateRoom(title string, mode int, password string, gameID string) (string, error)
 }

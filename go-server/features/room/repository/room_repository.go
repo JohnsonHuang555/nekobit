@@ -58,7 +58,7 @@ func (rr *roomRepository) UpdateByID(id string, r *domain.Room) error {
 	return nil
 }
 
-func (rr *roomRepository) FindPlayerAll(rid string) []*domain.Player {
+func (rr *roomRepository) FindAllPlayers(rid string) []*domain.Player {
 	index := rr.findRoomIndexByID(rid)
 	if index == -1 {
 		return nil
