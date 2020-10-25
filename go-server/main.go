@@ -5,17 +5,18 @@ import (
 	"fmt"
 
 	"go-server/domain"
-	"go-server/middleware"
 
 	_gameHandlerHttpDelivery "go-server/features/game/delivery/http"
 	_gameRepo "go-server/features/game/repository"
 	_gameUsecase "go-server/features/game/usecase"
 
 	_roomHandlerHttpDelivery "go-server/features/room/delivery/http"
+	_roomHandlerWebSocketDelivery "go-server/features/room/delivery/websocket"
 	_roomRepo "go-server/features/room/repository"
 	_roomUsecase "go-server/features/room/usecase"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -51,18 +52,20 @@ func main() {
 	}
 
 	e := echo.New()
-	middL := middleware.InitMiddleware()
-	e.Use(middL.CORS)
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000", "http://127.0.0.1:8080"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	gameRepo := _gameRepo.NewpostgreSqlGameRepository(db)
 	gameUseCase := _gameUsecase.NewGameUseCase(gameRepo)
 	_gameHandlerHttpDelivery.NewGameHandler(e, gameUseCase)
-
 	rooms := []*domain.Room{}
 
 	roomRepo := _roomRepo.NewRoomRepository(rooms)
 	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
 	_roomHandlerHttpDelivery.NewRoomHttpHandler(e, roomUseCase)
+	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase)
 
 	logrus.Fatal(e.Start(restfulHost + ":" + restfulPort))
 }

@@ -25,7 +25,7 @@ type Room struct {
 	Players   []*Player   `json:"user_list"`
 	NowTurn   string      `json:"now_turn"`
 	GameData  interface{} `json:"game_data"`
-	GameID    GamePack    `json:"game_id"`
+	GamePack  GamePack    `json:"game_pack"`
 	CreatedAt time.Time   `json:"created_at"`
 }
 
@@ -47,9 +47,9 @@ type RoomRepository interface {
 type RoomUseCase interface {
 	GetRooms() []*Room
 	GetRoomInfo(rid string) (*Room, error)
-	JoinRoom(rid string, uid string, userName string) (*Room, error)
+	JoinRoom(rid string, uid string, playerName string) (*Room, error)
 	LeaveRoom(rid string, uid string) ([]*Player, error)
 	ReadyGame(rid string, uid string) ([]*Player, error)
 	StartGame(rid string, gameData interface{}) (*Room, error)
-	CreateRoom(title string, mode int, password string, gameID GamePack) (string, error)
+	CreateRoom(title string, mode int, password string, gamePack GamePack) (string, error)
 }

@@ -22,7 +22,8 @@ type MsgData struct {
 }
 
 type Attachment struct {
-	// UserName     string         `json:"userName,omitempty"`
+	PlayerName string       `json:"player_name,omitempty"`
+	RoomInfo   *domain.Room `json:"room_info,omitempty"`
 	// IsMaster     bool           `json:"isMaster,omitempty"`
 	// IsReady      bool           `json:"isReady,omitempty"`
 	// GameData     interface{}    `json:"gameData,omitempty"`
@@ -95,15 +96,12 @@ func (s subscription) readPump() {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
 		room, err := s.roomUseCase.GetRoomInfo(s.roomID)
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				logrus.Printf("error: %v", err)
-			}
+		if err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 			break
 		}
 		// 判斷是否開始遊戲
 		if !utils.IsNil(room) && room.GameData != nil {
-			switch room.GameID {
+			switch room.GamePack {
 			case domain.ChineseChess:
 				// initial game
 			}
@@ -111,6 +109,10 @@ func (s subscription) readPump() {
 
 		switch msg.Event {
 		case domain.JoinRoom:
+			room, err := s.roomUseCase.JoinRoom(s.roomID, msg.UserID, msg.Data.PlayerName)
+			if err == nil {
+				msg.Data.RoomInfo = room
+			}
 		case domain.LeaveRoom:
 		case domain.ReadyGame:
 		case domain.StartGame:

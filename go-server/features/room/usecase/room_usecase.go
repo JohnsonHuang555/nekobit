@@ -1,6 +1,8 @@
 package usecase
 
-import "go-server/domain"
+import (
+	"go-server/domain"
+)
 
 type roomUseCase struct {
 	roomRepo domain.RoomRepository
@@ -24,22 +26,19 @@ func (ru *roomUseCase) GetRoomInfo(rid string) (*domain.Room, error) {
 	return room, nil
 }
 
-func (ru *roomUseCase) JoinRoom(rid string, uid string, userName string) (*domain.Room, error) {
+func (ru *roomUseCase) JoinRoom(rid string, uid string, playerName string) (*domain.Room, error) {
 	player := &domain.Player{
 		ID:        uid,
-		Name:      userName,
+		Name:      playerName,
 		PlayOrder: 0,
 	}
 
 	// 判斷是否已經在房間內
-	existPlayer, err := ru.roomRepo.FindPlayerByID(rid, uid)
-	if err != nil {
-		return nil, err
-	}
+	existPlayer, _ := ru.roomRepo.FindPlayerByID(rid, uid)
 
 	// 不存在使用者 則 create
-	if existPlayer.ID == "" {
-		err = ru.roomRepo.CreatePlayer(rid, player)
+	if existPlayer == nil {
+		err := ru.roomRepo.CreatePlayer(rid, player)
 		if err != nil {
 			return nil, err
 		}
@@ -104,12 +103,12 @@ func (ru *roomUseCase) StartGame(rid string, gameData interface{}) (*domain.Room
 	return room, nil
 }
 
-func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID domain.GamePack) (string, error) {
+func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gamePack domain.GamePack) (string, error) {
 	room := &domain.Room{
 		Title:    title,
 		Mode:     mode,
 		Password: password,
-		GameID:   gameID,
+		GamePack: gamePack,
 	}
 
 	id, err := ru.roomRepo.Create(room)

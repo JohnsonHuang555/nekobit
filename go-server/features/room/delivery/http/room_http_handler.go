@@ -11,7 +11,7 @@ import (
 type createRoomParams struct {
 	Title    string          `json:"title"`
 	Password string          `json:"password"`
-	GameID   domain.GamePack `json:"game_id"`
+	GamePack domain.GamePack `json:"game_pack"`
 	Mode     int             `json:"mode"`
 }
 
@@ -35,7 +35,7 @@ func (r *RoomHttpHandler) CreateRoom(c echo.Context) error {
 		return err
 	}
 
-	id, err := r.RoomUseCase.CreateRoom(params.Title, params.Mode, params.Password, params.GameID)
+	id, err := r.RoomUseCase.CreateRoom(params.Title, params.Mode, params.Password, params.GamePack)
 	if err != nil {
 		return c.JSON(utils.GetStatusCode(err), utils.ResponseError{Message: err.Error()})
 	}
