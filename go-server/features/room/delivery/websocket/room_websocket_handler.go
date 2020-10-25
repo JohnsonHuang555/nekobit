@@ -16,9 +16,9 @@ type RoomWebSocketHandler struct {
 }
 
 type MsgData struct {
-	UserID string     `json:"userID"`
-	Event  string     `json:"event"`
-	Data   Attachment `json:"data"`
+	UserID string             `json:"user_id"`
+	Event  domain.SocketEvent `json:"event"`
+	Data   Attachment         `json:"data"`
 }
 
 type Attachment struct {
@@ -107,6 +107,13 @@ func (s subscription) readPump() {
 			case domain.ChineseChess:
 				// initial game
 			}
+		}
+
+		switch msg.Event {
+		case domain.JoinRoom:
+		case domain.LeaveRoom:
+		case domain.ReadyGame:
+		case domain.StartGame:
 		}
 		m := message{msg, s.roomID}
 		h.broadcast <- m
