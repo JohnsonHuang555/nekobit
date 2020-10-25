@@ -2,16 +2,11 @@ package http
 
 import (
 	"go-server/domain"
+	"go-server/utils"
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/sirupsen/logrus"
 )
-
-// ResponseError represent the response error struct
-type ResponseError struct {
-	Message string `json:"message"`
-}
 
 type GameHandler struct {
 	GameUseCase domain.GameUseCase
@@ -31,7 +26,7 @@ func (g *GameHandler) GetGames(c echo.Context) error {
 	games, err := g.GameUseCase.GetGames()
 
 	if err != nil {
-		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+		return c.JSON(utils.GetStatusCode(err), utils.ResponseError{Message: err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, games)
@@ -43,26 +38,8 @@ func (g *GameHandler) GetGameInfo(c echo.Context) error {
 
 	game, err := g.GameUseCase.GetGameInfo(id)
 	if err != nil {
-		return c.JSON(getStatusCode(err), ResponseError{Message: err.Error()})
+		return c.JSON(utils.GetStatusCode(err), utils.ResponseError{Message: err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, game)
-}
-
-func getStatusCode(err error) int {
-	if err == nil {
-		return http.StatusOK
-	}
-
-	logrus.Error(err)
-	switch err {
-	case domain.ErrInternalServerError:
-		return http.StatusInternalServerError
-	case domain.ErrNotFound:
-		return http.StatusNotFound
-	case domain.ErrConflict:
-		return http.StatusConflict
-	default:
-		return http.StatusInternalServerError
-	}
 }

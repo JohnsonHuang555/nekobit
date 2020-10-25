@@ -4,11 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 
+	"go-server/domain"
 	"go-server/middleware"
 
 	_gameHandlerHttpDelivery "go-server/features/game/delivery/http"
 	_gameRepo "go-server/features/game/repository"
 	_gameUsecase "go-server/features/game/usecase"
+
+	_roomHandlerHttpDelivery "go-server/features/room/delivery/http"
+	_roomRepo "go-server/features/room/repository"
+	_roomUsecase "go-server/features/room/usecase"
 
 	"github.com/labstack/echo"
 	_ "github.com/lib/pq"
@@ -48,9 +53,16 @@ func main() {
 	e := echo.New()
 	middL := middleware.InitMiddleware()
 	e.Use(middL.CORS)
+
 	gameRepo := _gameRepo.NewpostgreSqlGameRepository(db)
 	gameUseCase := _gameUsecase.NewGameUseCase(gameRepo)
 	_gameHandlerHttpDelivery.NewGameHandler(e, gameUseCase)
+
+	rooms := []*domain.Room{}
+
+	roomRepo := _roomRepo.NewRoomRepository(rooms)
+	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
+	_roomHandlerHttpDelivery.NewRoomHandler(e, roomUseCase)
 
 	logrus.Fatal(e.Start(restfulHost + ":" + restfulPort))
 }
