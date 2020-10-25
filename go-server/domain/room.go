@@ -9,6 +9,13 @@ const (
 	Playing   Status = "playing"   // 遊戲中
 )
 
+// 所有遊戲種類
+type GamePack string
+
+const (
+	ChineseChess GamePack = "chinese_chess" // 象棋
+)
+
 type Room struct {
 	ID        string      `json:"id"` // uuid
 	Title     string      `json:"title"`
@@ -18,7 +25,7 @@ type Room struct {
 	Players   []*Player   `json:"user_list"`
 	NowTurn   string      `json:"now_turn"`
 	GameData  interface{} `json:"game_data"`
-	GameID    string      `json:"game_id"`
+	GameID    GamePack    `json:"game_id"`
 	CreatedAt time.Time   `json:"created_at"`
 }
 
@@ -39,9 +46,10 @@ type RoomRepository interface {
 
 type RoomUseCase interface {
 	GetRooms() []*Room
+	GetRoomInfo(rid string) (*Room, error)
 	JoinRoom(rid string, uid string, userName string) (*Room, error)
 	LeaveRoom(rid string, uid string) ([]*Player, error)
 	ReadyGame(rid string, uid string) ([]*Player, error)
 	StartGame(rid string, gameData interface{}) (*Room, error)
-	CreateRoom(title string, mode int, password string, gameID string) (string, error)
+	CreateRoom(title string, mode int, password string, gameID GamePack) (string, error)
 }

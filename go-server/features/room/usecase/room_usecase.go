@@ -15,6 +15,15 @@ func (ru *roomUseCase) GetRooms() []*domain.Room {
 	return rooms
 }
 
+func (ru *roomUseCase) GetRoomInfo(rid string) (*domain.Room, error) {
+	room, err := ru.roomRepo.FindByID(rid)
+	if err != nil {
+		return nil, err
+	}
+
+	return room, nil
+}
+
 func (ru *roomUseCase) JoinRoom(rid string, uid string, userName string) (*domain.Room, error) {
 	player := &domain.Player{
 		ID:        uid,
@@ -95,7 +104,7 @@ func (ru *roomUseCase) StartGame(rid string, gameData interface{}) (*domain.Room
 	return room, nil
 }
 
-func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID string) (string, error) {
+func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gameID domain.GamePack) (string, error) {
 	room := &domain.Room{
 		Title:    title,
 		Mode:     mode,
