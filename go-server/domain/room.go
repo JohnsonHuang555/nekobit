@@ -22,7 +22,7 @@ type Room struct {
 	Password  string      `json:"password"`
 	Mode      int         `json:"mode"`
 	Status    Status      `json:"status"`
-	Players   []*Player   `json:"user_list"`
+	Players   []*Player   `json:"player_list"`
 	NowTurn   string      `json:"now_turn"`
 	GameData  interface{} `json:"game_data"`
 	GamePack  GamePack    `json:"game_pack"`

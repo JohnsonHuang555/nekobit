@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"go-server/domain"
-	"go-server/utils"
 	"net/http"
 	"time"
 
@@ -96,17 +95,17 @@ func (s subscription) readPump() {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-		room, err := s.roomUseCase.GetRoomInfo(s.roomID)
+		// room, err := s.roomUseCase.GetRoomInfo(s.roomID)
 		if err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 			break
 		}
 		// 判斷是否開始遊戲
-		if !utils.IsNil(room) && room.GameData != nil {
-			switch room.GamePack {
-			case domain.ChineseChess:
-				// initial game
-			}
-		}
+		// if !utils.IsNil(room) && room.GameData != nil {
+		// 	switch room.GamePack {
+		// 	case domain.ChineseChess:
+		// 		// initial game
+		// 	}
+		// }
 
 		switch msg.Event {
 		case domain.JoinRoom:
@@ -125,6 +124,10 @@ func (s subscription) readPump() {
 				msg.Data.Players = players
 			}
 		case domain.StartGame:
+			// TODO:流程
+			// 產遊戲資料
+			// 寫入房間
+			// 廣播出去
 			switch msg.Data.GamePack {
 			case domain.ChineseChess:
 			}

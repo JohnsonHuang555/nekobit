@@ -60,8 +60,8 @@ func main() {
 	gameRepo := _gameRepo.NewpostgreSqlGameRepository(db)
 	gameUseCase := _gameUsecase.NewGameUseCase(gameRepo)
 	_gameHandlerHttpDelivery.NewGameHandler(e, gameUseCase)
-	rooms := []*domain.Room{}
 
+	rooms := []*domain.Room{}
 	roomRepo := _roomRepo.NewRoomRepository(rooms)
 	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
 	_roomHandlerHttpDelivery.NewRoomHttpHandler(e, roomUseCase)
