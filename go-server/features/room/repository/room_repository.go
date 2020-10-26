@@ -67,13 +67,13 @@ func (rr *roomRepository) FindAllPlayers(rid string) []*domain.Player {
 	return rr.rooms[index].Players
 }
 
-func (rr *roomRepository) FindPlayerByID(rid string, uid string) (*domain.Player, error) {
+func (rr *roomRepository) FindPlayerByID(rid string, pid string) (*domain.Player, error) {
 	roomIndex := rr.findRoomIndexByID(rid)
 	if roomIndex == -1 {
 		return nil, errors.New("No room found")
 	}
 
-	playerIndex := rr.findPlayerIndexByID(uid, roomIndex)
+	playerIndex := rr.findPlayerIndexByID(pid, roomIndex)
 	if playerIndex == -1 {
 		return nil, errors.New("No user found")
 	}
@@ -91,13 +91,13 @@ func (rr *roomRepository) CreatePlayer(rid string, p *domain.Player) error {
 	return nil
 }
 
-func (rr *roomRepository) DeletePlayerByID(rid string, uid string) error {
+func (rr *roomRepository) DeletePlayerByID(rid string, pid string) error {
 	roomIndex := rr.findRoomIndexByID(rid)
 	if roomIndex == -1 {
 		return errors.New("No room found")
 	}
 
-	playerIndex := rr.findPlayerIndexByID(uid, roomIndex)
+	playerIndex := rr.findPlayerIndexByID(pid, roomIndex)
 	if playerIndex == -1 {
 		return errors.New("No user found")
 	}
@@ -107,13 +107,13 @@ func (rr *roomRepository) DeletePlayerByID(rid string, uid string) error {
 	return nil
 }
 
-func (rr *roomRepository) UpdatePlayerByID(rid string, uid string, p *domain.Player) error {
+func (rr *roomRepository) UpdatePlayerByID(rid string, pid string, p *domain.Player) error {
 	roomIndex := rr.findRoomIndexByID(rid)
 	if roomIndex == -1 {
 		return errors.New("No room found")
 	}
 
-	playerIndex := rr.findPlayerIndexByID(uid, roomIndex)
+	playerIndex := rr.findPlayerIndexByID(pid, roomIndex)
 	if playerIndex == -1 {
 		return errors.New("No user found")
 	}
@@ -135,11 +135,11 @@ func (rr *roomRepository) findRoomIndexByID(id string) int {
 	return index
 }
 
-func (rr *roomRepository) findPlayerIndexByID(userID string, roomIndex int) int {
-	users := rr.rooms[roomIndex].Players
+func (rr *roomRepository) findPlayerIndexByID(playerID string, roomIndex int) int {
+	players := rr.rooms[roomIndex].Players
 	index := -1
-	for i := 0; i < len(users); i++ {
-		if users[i].ID == userID {
+	for i := 0; i < len(players); i++ {
+		if players[i].ID == playerID {
 			index = i
 		}
 	}

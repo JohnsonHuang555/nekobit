@@ -38,18 +38,18 @@ type RoomRepository interface {
 
 	// player
 	FindAllPlayers(rid string) []*Player
-	FindPlayerByID(rid string, uid string) (*Player, error)
+	FindPlayerByID(rid string, pid string) (*Player, error)
 	CreatePlayer(rid string, p *Player) error
-	DeletePlayerByID(rid string, uid string) error
-	UpdatePlayerByID(rid string, uid string, p *Player) error
+	DeletePlayerByID(rid string, pid string) error
+	UpdatePlayerByID(rid string, pid string, p *Player) error
 }
 
 type RoomUseCase interface {
 	GetRooms() []*Room
 	GetRoomInfo(rid string) (*Room, error)
-	JoinRoom(rid string, uid string, playerName string) (*Room, error)
-	LeaveRoom(rid string, uid string) ([]*Player, error)
-	ReadyGame(rid string, uid string) ([]*Player, error)
+	JoinRoom(rid string, pid string, playerName string) (*Room, error)
+	LeaveRoom(rid string, pid string) ([]*Player, error)
+	ReadyGame(rid string, pid string) ([]*Player, error)
 	StartGame(rid string, gameData interface{}) (*Room, error)
 	CreateRoom(title string, mode int, password string, gamePack GamePack) (string, error)
 }

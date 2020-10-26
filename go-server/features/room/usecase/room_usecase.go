@@ -26,15 +26,15 @@ func (ru *roomUseCase) GetRoomInfo(rid string) (*domain.Room, error) {
 	return room, nil
 }
 
-func (ru *roomUseCase) JoinRoom(rid string, uid string, playerName string) (*domain.Room, error) {
+func (ru *roomUseCase) JoinRoom(rid string, pid string, playerName string) (*domain.Room, error) {
 	player := &domain.Player{
-		ID:        uid,
+		ID:        pid,
 		Name:      playerName,
 		PlayOrder: 0,
 	}
 
 	// 判斷是否已經在房間內
-	existPlayer, _ := ru.roomRepo.FindPlayerByID(rid, uid)
+	existPlayer, _ := ru.roomRepo.FindPlayerByID(rid, pid)
 
 	// 不存在使用者 則 create
 	if existPlayer == nil {
@@ -51,7 +51,7 @@ func (ru *roomUseCase) JoinRoom(rid string, uid string, playerName string) (*dom
 	return room, nil
 }
 
-func (ru *roomUseCase) LeaveRoom(rid string, uid string) ([]*domain.Player, error) {
+func (ru *roomUseCase) LeaveRoom(rid string, pid string) ([]*domain.Player, error) {
 	roomPlayers := ru.roomRepo.FindAllPlayers(rid)
 	// 最後一位使用者 則 刪除房間
 	if len(roomPlayers) == 1 {
@@ -62,7 +62,7 @@ func (ru *roomUseCase) LeaveRoom(rid string, uid string) ([]*domain.Player, erro
 		return nil, err
 	}
 
-	err := ru.roomRepo.DeletePlayerByID(rid, uid)
+	err := ru.roomRepo.DeletePlayerByID(rid, pid)
 	if err != nil {
 		return nil, err
 	}
@@ -71,14 +71,14 @@ func (ru *roomUseCase) LeaveRoom(rid string, uid string) ([]*domain.Player, erro
 	return newPlayers, nil
 }
 
-func (ru *roomUseCase) ReadyGame(rid string, uid string) ([]*domain.Player, error) {
-	player, err := ru.roomRepo.FindPlayerByID(rid, uid)
+func (ru *roomUseCase) ReadyGame(rid string, pid string) ([]*domain.Player, error) {
+	player, err := ru.roomRepo.FindPlayerByID(rid, pid)
 	if err != nil {
 		return nil, err
 	}
 
 	player.IsReady = !player.IsReady
-	err = ru.roomRepo.UpdatePlayerByID(rid, uid, player)
+	err = ru.roomRepo.UpdatePlayerByID(rid, pid, player)
 	if err != nil {
 		return nil, err
 	}

@@ -16,18 +16,19 @@ type RoomWebSocketHandler struct {
 }
 
 type MsgData struct {
-	UserID string             `json:"user_id"`
-	Event  domain.SocketEvent `json:"event"`
-	Data   Attachment         `json:"data"`
+	PlayerID string             `json:"player_id"`
+	Event    domain.SocketEvent `json:"event"`
+	Data     Attachment         `json:"data"`
 }
 
 type Attachment struct {
-	PlayerName string       `json:"player_name,omitempty"`
-	RoomInfo   *domain.Room `json:"room_info,omitempty"`
+	PlayerName string           `json:"player_name,omitempty"`
+	RoomInfo   *domain.Room     `json:"room_info,omitempty"`
+	Players    []*domain.Player `json:"players,omitempty"`
+	GamePack   domain.GamePack  `json:"game_pack,omitempty"`
 	// IsMaster     bool           `json:"isMaster,omitempty"`
 	// IsReady      bool           `json:"isReady,omitempty"`
 	// GameData     interface{}    `json:"gameData,omitempty"`
-	// GameID       string         `json:"gameID,omitempty"`
 	// RoomPassword string         `json:"roomPassword,omitempty"`
 	// RoomTitle    string         `json:"roomTitle,omitempty"`
 	// RoomMode     int            `json:"roomMode,omitempty"`
@@ -109,13 +110,25 @@ func (s subscription) readPump() {
 
 		switch msg.Event {
 		case domain.JoinRoom:
-			room, err := s.roomUseCase.JoinRoom(s.roomID, msg.UserID, msg.Data.PlayerName)
+			room, err := s.roomUseCase.JoinRoom(s.roomID, msg.PlayerID, msg.Data.PlayerName)
 			if err == nil {
 				msg.Data.RoomInfo = room
 			}
 		case domain.LeaveRoom:
+			players, err := s.roomUseCase.LeaveRoom(s.roomID, msg.PlayerID)
+			if err == nil {
+				msg.Data.Players = players
+			}
 		case domain.ReadyGame:
+			players, err := s.roomUseCase.ReadyGame(s.roomID, msg.PlayerID)
+			if err == nil {
+				msg.Data.Players = players
+			}
 		case domain.StartGame:
+			switch msg.Data.GamePack {
+			case domain.ChineseChess:
+			}
+			// s.roomUseCase.StartGame(s.roomID, )
 		}
 		m := message{msg, s.roomID}
 		h.broadcast <- m
