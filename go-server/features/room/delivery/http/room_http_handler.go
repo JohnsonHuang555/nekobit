@@ -12,7 +12,7 @@ type createRoomParams struct {
 	Title    string          `json:"title"`
 	Password string          `json:"password"`
 	GamePack domain.GamePack `json:"game_pack"`
-	Mode     int             `json:"mode"`
+	GameMode domain.GameMode `json:"game_mode"`
 }
 
 type RoomHttpHandler struct {
@@ -35,7 +35,7 @@ func (r *RoomHttpHandler) CreateRoom(c echo.Context) error {
 		return err
 	}
 
-	id, err := r.RoomUseCase.CreateRoom(params.Title, params.Mode, params.Password, params.GamePack)
+	id, err := r.RoomUseCase.CreateRoom(params.Title, params.GameMode, params.Password, params.GamePack)
 	if err != nil {
 		return c.JSON(utils.GetStatusCode(err), utils.ResponseError{Message: err.Error()})
 	}

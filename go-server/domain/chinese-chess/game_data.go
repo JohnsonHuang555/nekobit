@@ -1,12 +1,12 @@
 package chinesechess
 
+import "go-server/domain"
+
 type GameData struct {
 	ChineseChess []*ChineseChess `json:"chinese_chess"`
 }
 
-type GameMode string
-
 const (
-	Standard GameMode = "standard"
-	Hidden   GameMode = "hidden"
+	Standard domain.GameMode = "standard"
+	Hidden   domain.GameMode = "hidden"
 )

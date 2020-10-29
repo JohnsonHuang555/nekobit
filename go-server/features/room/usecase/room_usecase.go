@@ -103,10 +103,10 @@ func (ru *roomUseCase) StartGame(rid string, gameData interface{}) (*domain.Room
 	return room, nil
 }
 
-func (ru *roomUseCase) CreateRoom(title string, mode int, password string, gamePack domain.GamePack) (string, error) {
+func (ru *roomUseCase) CreateRoom(title string, gameMode domain.GameMode, password string, gamePack domain.GamePack) (string, error) {
 	room := &domain.Room{
 		Title:    title,
-		Mode:     mode,
+		GameMode: gameMode,
 		Password: password,
 		GamePack: gamePack,
 	}

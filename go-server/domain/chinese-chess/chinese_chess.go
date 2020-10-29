@@ -1,5 +1,7 @@
 package chinesechess
 
+import "go-server/domain"
+
 type ChineseChessSide string
 
 const (
@@ -28,5 +30,5 @@ type ChineseChessUseCase interface {
 	FlipChess(id int) []*ChineseChess
 	EatChess(id int, targetID int) []*ChineseChess
 	MoveChess(id int, locationX int, locationY int) []*ChineseChess
-	CreateGame(mode GameMode) *GameData
+	CreateGame(gameMode domain.GameMode) *GameData
 }

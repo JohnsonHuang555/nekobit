@@ -27,7 +27,7 @@ type Attachment struct {
 	RoomInfo              *domain.Room     `json:"room_info,omitempty"`
 	Players               []*domain.Player `json:"players,omitempty"`
 	GamePack              domain.GamePack  `json:"game_pack,omitempty"`
-	chinesechess.GameMode `json:"game_mode,omitempty"`
+	domain.GameMode `json:"game_mode,omitempty"`
 	// GameMode   interface{}      `json:"game_mode,omitempty"`
 	// IsMaster     bool           `json:"isMaster,omitempty"`
 	// IsReady      bool           `json:"isReady,omitempty"`

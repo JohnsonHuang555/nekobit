@@ -11,6 +11,7 @@ const (
 
 // 所有遊戲種類
 type GamePack string
+type GameMode string
 
 const (
 	ChineseChess GamePack = "chinese_chess" // 象棋
@@ -20,12 +21,12 @@ type Room struct {
 	ID        string      `json:"id"` // uuid
 	Title     string      `json:"title"`
 	Password  string      `json:"password"`
-	Mode      int         `json:"mode"`
 	Status    Status      `json:"status"`
 	Players   []*Player   `json:"player_list"`
 	NowTurn   string      `json:"now_turn"`
 	GameData  interface{} `json:"game_data"`
 	GamePack  GamePack    `json:"game_pack"`
+	GameMode  GameMode    `json:"game_mode"`
 	CreatedAt time.Time   `json:"created_at"`
 }
 
@@ -51,5 +52,5 @@ type RoomUseCase interface {
 	LeaveRoom(rid string, pid string) ([]*Player, error)
 	ReadyGame(rid string, pid string) ([]*Player, error)
 	StartGame(rid string, gameData interface{}) (*Room, error)
-	CreateRoom(title string, mode int, password string, gamePack GamePack) (string, error)
+	CreateRoom(title string, gameMode GameMode, password string, gamePack GamePack) (string, error)
 }
