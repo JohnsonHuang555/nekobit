@@ -15,6 +15,10 @@ import (
 	_roomRepo "go-server/features/room/repository"
 	_roomUsecase "go-server/features/room/usecase"
 
+	chineseChessGameData "go-server/domain/chinese-chess"
+	_chineseChessRepo "go-server/features/chinese_chess/repository"
+	_chineseChessUseCase "go-server/features/chinese_chess/usecase"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/lib/pq"
@@ -57,15 +61,24 @@ func main() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 
-	gameRepo := _gameRepo.NewpostgreSqlGameRepository(db)
-	gameUseCase := _gameUsecase.NewGameUseCase(gameRepo)
-	_gameHandlerHttpDelivery.NewGameHandler(e, gameUseCase)
+	// chinese chess
+	ccGameData := &chineseChessGameData.GameData{
+		ChineseChess: []*chineseChessGameData.ChineseChess{},
+	}
+	chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(ccGameData)
+	chineseUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 
+	// room
 	rooms := []*domain.Room{}
 	roomRepo := _roomRepo.NewRoomRepository(rooms)
 	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
 	_roomHandlerHttpDelivery.NewRoomHttpHandler(e, roomUseCase)
-	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase)
+	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase, chineseUseCase)
+
+	// game
+	gameRepo := _gameRepo.NewpostgreSqlGameRepository(db)
+	gameUseCase := _gameUsecase.NewGameUseCase(gameRepo)
+	_gameHandlerHttpDelivery.NewGameHandler(e, gameUseCase)
 
 	logrus.Fatal(e.Start(restfulHost + ":" + restfulPort))
 }

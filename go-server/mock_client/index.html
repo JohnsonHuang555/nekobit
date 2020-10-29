@@ -100,10 +100,11 @@
       // 開始遊戲
       $('#startGame').on('click', function() {
         const data = {
-          event: "startGame",
-          player_id: "123-fdsf-fdsga",
+          event: "start_game",
+          player_id: player.id,
           data: {
-            gameID: "5f2976433562709c29a6d940",
+            game_pack: 'chinese_chess',
+            game_mode: 'hidden',
           }
         }
         ws.send(JSON.stringify(data))

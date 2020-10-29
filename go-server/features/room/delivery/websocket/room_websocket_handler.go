@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"go-server/domain"
+	chinesechess "go-server/domain/chinese-chess"
 	"net/http"
 	"time"
 
@@ -11,7 +12,8 @@ import (
 )
 
 type RoomWebSocketHandler struct {
-	RoomUseCase domain.RoomUseCase
+	RoomUseCase         domain.RoomUseCase
+	ChineseChessUseCase chinesechess.ChineseChessUseCase
 }
 
 type MsgData struct {
@@ -21,10 +23,12 @@ type MsgData struct {
 }
 
 type Attachment struct {
-	PlayerName string           `json:"player_name,omitempty"`
-	RoomInfo   *domain.Room     `json:"room_info,omitempty"`
-	Players    []*domain.Player `json:"players,omitempty"`
-	GamePack   domain.GamePack  `json:"game_pack,omitempty"`
+	PlayerName            string           `json:"player_name,omitempty"`
+	RoomInfo              *domain.Room     `json:"room_info,omitempty"`
+	Players               []*domain.Player `json:"players,omitempty"`
+	GamePack              domain.GamePack  `json:"game_pack,omitempty"`
+	chinesechess.GameMode `json:"game_mode,omitempty"`
+	// GameMode   interface{}      `json:"game_mode,omitempty"`
 	// IsMaster     bool           `json:"isMaster,omitempty"`
 	// IsReady      bool           `json:"isReady,omitempty"`
 	// GameData     interface{}    `json:"gameData,omitempty"`
@@ -58,9 +62,10 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func NewRoomWebSocketHandler(e *echo.Echo, ru domain.RoomUseCase) {
+func NewRoomWebSocketHandler(e *echo.Echo, ru domain.RoomUseCase, ccu chinesechess.ChineseChessUseCase) {
 	handler := &RoomWebSocketHandler{
-		RoomUseCase: ru,
+		RoomUseCase:         ru,
+		ChineseChessUseCase: ccu,
 	}
 	e.GET("/ws/:roomID", handler.SocketHandler)
 }
@@ -76,7 +81,7 @@ func (r *RoomWebSocketHandler) SocketHandler(c echo.Context) error {
 		return err
 	}
 	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID, r.RoomUseCase}
+	s := subscription{conn, roomID, r.RoomUseCase, r.ChineseChessUseCase}
 	h.register <- s
 	go s.writePump()
 	s.readPump()
@@ -128,10 +133,15 @@ func (s subscription) readPump() {
 			// 產遊戲資料
 			// 寫入房間
 			// 廣播出去
+			var gameData interface{}
 			switch msg.Data.GamePack {
 			case domain.ChineseChess:
+				gameData = s.chineseChessUseCase.CreateGame(msg.Data.GameMode)
 			}
-			// s.roomUseCase.StartGame(s.roomID, )
+			room, err := s.roomUseCase.StartGame(s.roomID, gameData)
+			if err == nil {
+				msg.Data.RoomInfo = room
+			}
 		}
 		m := message{msg, s.roomID}
 		h.broadcast <- m

@@ -28,4 +28,5 @@ type ChineseChessUseCase interface {
 	FlipChess(id int) []*ChineseChess
 	EatChess(id int, targetID int) []*ChineseChess
 	MoveChess(id int, locationX int, locationY int) []*ChineseChess
+	CreateGame(mode GameMode) *GameData
 }

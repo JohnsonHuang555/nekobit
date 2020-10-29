@@ -1,6 +1,8 @@
 package usecase
 
-import chinesechess "go-server/domain/chinese-chess"
+import (
+	chinesechess "go-server/domain/chinese-chess"
+)
 
 type chineseChessUseCase struct {
 	chineseChessRepo chinesechess.ChineseChessRepository
@@ -42,4 +44,16 @@ func (cu *chineseChessUseCase) MoveChess(id int, locationX int, locationY int) [
 
 	chesses := cu.chineseChessRepo.FindAll()
 	return chesses
+}
+
+func (cu *chineseChessUseCase) CreateGame(mode chinesechess.GameMode) *chinesechess.GameData {
+	switch mode {
+	case chinesechess.Standard:
+	case chinesechess.Hidden:
+		gameData := &chinesechess.GameData{
+			ChineseChess: cu.chineseChessRepo.FindAll(),
+		}
+		return gameData
+	}
+	return nil
 }

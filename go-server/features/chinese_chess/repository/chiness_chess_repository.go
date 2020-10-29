@@ -8,8 +8,8 @@ type chineseChessRepository struct {
 	chesses []*chinesechess.ChineseChess
 }
 
-func NewChineseChessRepository(chesses []*chinesechess.ChineseChess) chinesechess.ChineseChessRepository {
-	return &chineseChessRepository{chesses}
+func NewChineseChessRepository(gameData *chinesechess.GameData) chinesechess.ChineseChessRepository {
+	return &chineseChessRepository{chesses: gameData.ChineseChess}
 }
 
 func (cr *chineseChessRepository) FindAll() []*chinesechess.ChineseChess {
