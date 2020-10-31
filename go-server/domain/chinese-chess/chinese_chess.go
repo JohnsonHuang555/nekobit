@@ -2,13 +2,6 @@ package chinesechess
 
 import "go-server/domain"
 
-type ChineseChessSide string
-
-const (
-	Red   ChineseChessSide = "Red"
-	Black ChineseChessSide = "Black"
-)
-
 type ChineseChess struct {
 	ID        int              `json:"id"`
 	Side      ChineseChessSide `json:"side"`
