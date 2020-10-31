@@ -28,6 +28,25 @@ func (rr *roomRepository) FindByID(id string) (*domain.Room, error) {
 	return rr.rooms[index], nil
 }
 
+func (rr *roomRepository) FindPlayerByPlayerOrder(rid string, po int) (*domain.Player, error) {
+	roomIndex := rr.findRoomIndexByID(rid)
+	if roomIndex == -1 {
+		return nil, errors.New("No room found")
+	}
+
+	playerIndex := -1
+	for i := 0; i < len(rr.rooms[roomIndex].Players); i++ {
+		if rr.rooms[roomIndex].Players[i].PlayOrder == po {
+			playerIndex = i
+		}
+	}
+	if roomIndex == -1 || playerIndex == -1 {
+		return nil, errors.New("User not exist")
+	}
+
+	return rr.rooms[roomIndex].Players[playerIndex], nil
+}
+
 func (rr *roomRepository) Create(r *domain.Room) (string, error) {
 	r.ID = uuid.Must(uuid.NewV4()).String()
 	r.Status = domain.Preparing

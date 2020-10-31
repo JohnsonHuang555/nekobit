@@ -23,11 +23,12 @@ type MsgData struct {
 }
 
 type Attachment struct {
-	PlayerName            string           `json:"player_name,omitempty"`
-	RoomInfo              *domain.Room     `json:"room_info,omitempty"`
-	Players               []*domain.Player `json:"players,omitempty"`
-	GamePack              domain.GamePack  `json:"game_pack,omitempty"`
+	PlayerName      string           `json:"player_name,omitempty"`
+	RoomInfo        *domain.Room     `json:"room_info,omitempty"`
+	Players         []*domain.Player `json:"players,omitempty"`
+	GamePack        domain.GamePack  `json:"game_pack,omitempty"`
 	domain.GameMode `json:"game_mode,omitempty"`
+	chinesechess.NetChineseChess
 	// GameMode   interface{}      `json:"game_mode,omitempty"`
 	// IsMaster     bool           `json:"isMaster,omitempty"`
 	// IsReady      bool           `json:"isReady,omitempty"`
@@ -100,17 +101,9 @@ func (s subscription) readPump() {
 	for {
 		var msg MsgData
 		err := c.ws.ReadJSON(&msg)
-		// room, err := s.roomUseCase.GetRoomInfo(s.roomID)
 		if err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 			break
 		}
-		// 判斷是否開始遊戲
-		// if !utils.IsNil(room) && room.GameData != nil {
-		// 	switch room.GamePack {
-		// 	case domain.ChineseChess:
-		// 		// initial game
-		// 	}
-		// }
 
 		switch msg.Event {
 		case domain.JoinRoom:
@@ -129,19 +122,26 @@ func (s subscription) readPump() {
 				msg.Data.Players = players
 			}
 		case domain.StartGame:
-			// TODO:流程
 			// 產遊戲資料
-			// 寫入房間
-			// 廣播出去
 			var gameData interface{}
 			switch msg.Data.GamePack {
 			case domain.ChineseChess:
 				gameData = s.chineseChessUseCase.CreateGame(msg.Data.GameMode)
 			}
+			// 寫入房間
 			room, err := s.roomUseCase.StartGame(s.roomID, gameData)
 			if err == nil {
 				msg.Data.RoomInfo = room
 			}
+		case domain.FlipChess:
+			newChesses := s.chineseChessUseCase.FlipChess(msg.Data.ChessID)
+			err := s.roomUseCase.UpdateGameData(s.roomID, newChesses)
+			players, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
+			if err == nil {
+				msg.Data.Players = players
+			}
+		case domain.MoveChess:
+		case domain.EatChess:
 		}
 		m := message{msg, s.roomID}
 		h.broadcast <- m

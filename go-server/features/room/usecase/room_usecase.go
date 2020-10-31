@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"go-server/domain"
+	"go-server/utils"
 )
 
 type roomUseCase struct {
@@ -95,6 +96,13 @@ func (ru *roomUseCase) StartGame(rid string, gameData interface{}) (*domain.Room
 
 	room.Status = domain.Playing
 	room.GameData = gameData
+
+	// 決定玩家順序
+	randOrders := utils.RandomShuffle(len(room.Players))
+	for i := 0; i < len(room.Players); i++ {
+		room.Players[i].PlayOrder = randOrders[i]
+	}
+
 	err = ru.roomRepo.UpdateByID(rid, room)
 	if err != nil {
 		return nil, err
@@ -117,4 +125,51 @@ func (ru *roomUseCase) CreateRoom(title string, gameMode domain.GameMode, passwo
 	}
 
 	return id, nil
+}
+
+func (ru *roomUseCase) UpdateGameData(rid string, gameData interface{}) error {
+	room, err := ru.roomRepo.FindByID(rid)
+	if err != nil {
+		return err
+	}
+
+	room.GameData = gameData
+	err = ru.roomRepo.UpdateByID(rid, room)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ru *roomUseCase) ChangePlayerTurn(rid string, pid string) ([]*domain.Player, error) {
+	room, err := ru.roomRepo.FindByID(rid)
+	if err != nil {
+		return nil, err
+	}
+
+	player, err := ru.roomRepo.FindPlayerByID(rid, pid)
+	if err != nil {
+		return nil, err
+	}
+
+	nowPlayerOrder := player.PlayOrder + 1
+	// 代表 p1 重新開始
+	if nowPlayerOrder > len(room.Players)-1 {
+		nowPlayerOrder = 0
+	}
+
+	newPlayer, err := ru.roomRepo.FindPlayerByPlayerOrder(rid, nowPlayerOrder)
+	if err != nil {
+		return nil, err
+	}
+
+	room.NowTurn = newPlayer.ID
+	err = ru.roomRepo.UpdateByID(rid, room)
+	if err != nil {
+		return nil, err
+	}
+
+	newPlayers := ru.roomRepo.FindAllPlayers(rid)
+	return newPlayers, nil
 }

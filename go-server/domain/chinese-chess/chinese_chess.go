@@ -13,6 +13,14 @@ type ChineseChess struct {
 	Alive     bool             `json:"alive"`
 }
 
+// from socket params
+type NetChineseChess struct {
+	ChessID   int `json:"chess_id"`
+	TargetID  int `json:"target_id"`
+	LocationX int `json:"location_x"`
+	LocationY int `json:"location_y"`
+}
+
 type ChineseChessRepository interface {
 	FindAll() []*ChineseChess
 	FindOne(id int) *ChineseChess

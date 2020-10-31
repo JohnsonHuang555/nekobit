@@ -1,3 +1,4 @@
+// 管理所有 Socket Evnet
 package domain
 
 type SocketEvent string
@@ -7,4 +8,9 @@ const (
 	LeaveRoom SocketEvent = "leave_room" // 離開房間
 	ReadyGame SocketEvent = "ready_game" // 準備遊戲
 	StartGame SocketEvent = "start_game" // 開始遊戲
+
+	// chinese chess
+	FlipChess SocketEvent = "filp_chess" // 翻棋
+	MoveChess SocketEvent = "move_chess" // 移動棋子
+	EatChess  SocketEvent = "eat_chess"  // 吃棋
 )
