@@ -6,6 +6,10 @@ import (
 	"net/http"
 	"time"
 
+	chineseChessGameData "go-server/domain/chinese-chess"
+	_chineseChessRepo "go-server/features/chinese_chess/repository"
+	_chineseChessUseCase "go-server/features/chinese_chess/usecase"
+
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
@@ -27,6 +31,8 @@ type Attachment struct {
 	RoomInfo        *domain.Room     `json:"room_info,omitempty"`
 	Players         []*domain.Player `json:"players,omitempty"`
 	GamePack        domain.GamePack  `json:"game_pack,omitempty"`
+	GameData        interface{}      `json:"game_data,omitempty"`
+	NowTurn         string           `json:"now_turn,omitempty"`
 	domain.GameMode `json:"game_mode,omitempty"`
 	chinesechess.NetChineseChess
 	// GameMode   interface{}      `json:"game_mode,omitempty"`
@@ -63,10 +69,9 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func NewRoomWebSocketHandler(e *echo.Echo, ru domain.RoomUseCase, ccu chinesechess.ChineseChessUseCase) {
+func NewRoomWebSocketHandler(e *echo.Echo, ru domain.RoomUseCase) {
 	handler := &RoomWebSocketHandler{
-		RoomUseCase:         ru,
-		ChineseChessUseCase: ccu,
+		RoomUseCase: ru,
 	}
 	e.GET("/ws/:roomID", handler.SocketHandler)
 }
@@ -82,7 +87,7 @@ func (r *RoomWebSocketHandler) SocketHandler(c echo.Context) error {
 		return err
 	}
 	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID, r.RoomUseCase, r.ChineseChessUseCase}
+	s := subscription{conn, roomID, r.RoomUseCase}
 	h.register <- s
 	go s.writePump()
 	s.readPump()
@@ -100,7 +105,28 @@ func (s subscription) readPump() {
 	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		var msg MsgData
-		err := c.ws.ReadJSON(&msg)
+		room, err := s.roomUseCase.GetRoomInfo(s.roomID)
+		if err != nil {
+			break
+		}
+
+		// game usecases
+		var chineseChessUseCase chinesechess.ChineseChessUseCase
+
+		// chinese chess
+		ccGameData := &chineseChessGameData.GameData{
+			ChineseChess: []*chineseChessGameData.ChineseChess{},
+		}
+
+		// inject games every connection
+		if room.Status == domain.Playing {
+			ccGameData = room.GameData.(*chineseChessGameData.GameData)
+		}
+
+		chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(ccGameData)
+		chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
+
+		err = c.ws.ReadJSON(&msg)
 		if err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 			break
 		}
@@ -126,7 +152,7 @@ func (s subscription) readPump() {
 			var gameData interface{}
 			switch msg.Data.GamePack {
 			case domain.ChineseChess:
-				gameData = s.chineseChessUseCase.CreateGame(msg.Data.GameMode)
+				gameData = chineseChessUseCase.CreateGame(msg.Data.GameMode)
 			}
 			// 寫入房間
 			room, err := s.roomUseCase.StartGame(s.roomID, gameData)
@@ -134,11 +160,13 @@ func (s subscription) readPump() {
 				msg.Data.RoomInfo = room
 			}
 		case domain.FlipChess:
-			newChesses := s.chineseChessUseCase.FlipChess(msg.Data.ChessID)
-			err := s.roomUseCase.UpdateGameData(s.roomID, newChesses)
-			players, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
+			newChesses := chineseChessUseCase.FlipChess(msg.Data.ChessID)
+			ccGameData.ChineseChess = newChesses
+			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
+			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
 			if err == nil {
-				msg.Data.Players = players
+				msg.Data.NowTurn = nowTurn
+				msg.Data.GameData = ccGameData
 			}
 		case domain.MoveChess:
 		case domain.EatChess:

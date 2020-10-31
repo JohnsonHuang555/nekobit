@@ -10,7 +10,7 @@ const (
 	StartGame SocketEvent = "start_game" // 開始遊戲
 
 	// chinese chess
-	FlipChess SocketEvent = "filp_chess" // 翻棋
+	FlipChess SocketEvent = "flip_chess" // 翻棋
 	MoveChess SocketEvent = "move_chess" // 移動棋子
 	EatChess  SocketEvent = "eat_chess"  // 吃棋
 )

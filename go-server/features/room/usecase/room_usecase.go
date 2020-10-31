@@ -142,15 +142,15 @@ func (ru *roomUseCase) UpdateGameData(rid string, gameData interface{}) error {
 	return nil
 }
 
-func (ru *roomUseCase) ChangePlayerTurn(rid string, pid string) ([]*domain.Player, error) {
+func (ru *roomUseCase) ChangePlayerTurn(rid string, pid string) (string, error) {
 	room, err := ru.roomRepo.FindByID(rid)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	player, err := ru.roomRepo.FindPlayerByID(rid, pid)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	nowPlayerOrder := player.PlayOrder + 1
@@ -161,15 +161,14 @@ func (ru *roomUseCase) ChangePlayerTurn(rid string, pid string) ([]*domain.Playe
 
 	newPlayer, err := ru.roomRepo.FindPlayerByPlayerOrder(rid, nowPlayerOrder)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	room.NowTurn = newPlayer.ID
 	err = ru.roomRepo.UpdateByID(rid, room)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	newPlayers := ru.roomRepo.FindAllPlayers(rid)
-	return newPlayers, nil
+	return room.NowTurn, nil
 }

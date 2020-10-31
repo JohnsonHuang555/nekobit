@@ -2,7 +2,6 @@ package websocket
 
 import (
 	"go-server/domain"
-	chinesechess "go-server/domain/chinese-chess"
 )
 
 type message struct {
@@ -11,10 +10,9 @@ type message struct {
 }
 
 type subscription struct {
-	conn                *connection
-	roomID              string
-	roomUseCase         domain.RoomUseCase
-	chineseChessUseCase chinesechess.ChineseChessUseCase
+	conn        *connection
+	roomID      string
+	roomUseCase domain.RoomUseCase
 }
 
 // hub maintains the set of active connections and broadcasts messages to the

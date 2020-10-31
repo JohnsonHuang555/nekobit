@@ -12,6 +12,7 @@
   <button id="joinRoom2">Join Room new player</button>
   <button id="startGame">Start Game</button>
   <button id="readyGame">Ready Game</button>
+  <button id="flipChess">Flip Chess</button>
   <script>
     $(document).ready(function() {
       let ws;
@@ -105,6 +106,17 @@
           data: {
             game_pack: 'chinese_chess',
             game_mode: 'hidden',
+          }
+        }
+        ws.send(JSON.stringify(data))
+      })
+
+      $('#flipChess').on('click', function() {
+        const data = {
+          event: "flip_chess",
+          player_id: player.id,
+          data: {
+            chess_id: 1,
           }
         }
         ws.send(JSON.stringify(data))
