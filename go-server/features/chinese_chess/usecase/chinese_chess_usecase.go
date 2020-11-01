@@ -15,13 +15,14 @@ func NewChineseChessUseCase(c chinesechess.ChineseChessRepository) chinesechess.
 	return &chineseChessUseCase{c}
 }
 
-func (cu *chineseChessUseCase) FlipChess(id int) []*chinesechess.ChineseChess {
+func (cu *chineseChessUseCase) FlipChess(id int, pid string, side chinesechess.ChineseChessSide) ([]*chinesechess.ChineseChess, []*chinesechess.PlayerSide) {
 	chess := cu.chineseChessRepo.FindOne(id)
 	chess.IsFliped = true
 	cu.chineseChessRepo.UpdateOne(id, chess)
 
 	chesses := cu.chineseChessRepo.FindAll()
-	return chesses
+	playerSide := cu.chineseChessRepo.UpdatePlayerSide(pid, side)
+	return chesses, playerSide
 }
 
 func (cu *chineseChessUseCase) EatChess(id int, targetID int) []*chinesechess.ChineseChess {

@@ -4,6 +4,12 @@ import "go-server/domain"
 
 type GameData struct {
 	ChineseChess []*ChineseChess `json:"chinese_chess"`
+	PlayerSide   []*PlayerSide   `json:"player_side"`
+}
+
+type PlayerSide struct {
+	ID   string           `json:"id"`
+	Side ChineseChessSide `json:"side"`
 }
 
 const (

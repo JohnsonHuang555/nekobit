@@ -15,20 +15,22 @@ type ChineseChess struct {
 
 // from socket params
 type NetChineseChess struct {
-	ChessID   int `json:"chess_id"`
-	TargetID  int `json:"target_id"`
-	LocationX int `json:"location_x"`
-	LocationY int `json:"location_y"`
+	ChessID          int              `json:"chess_id"`
+	TargetID         int              `json:"target_id"`
+	LocationX        int              `json:"location_x"`
+	LocationY        int              `json:"location_y"`
+	ChineseChessSide ChineseChessSide `json:"chinese_chess_side"`
 }
 
 type ChineseChessRepository interface {
 	FindAll() []*ChineseChess
 	FindOne(id int) *ChineseChess
 	UpdateOne(id int, c *ChineseChess)
+	UpdatePlayerSide(pid string, side ChineseChessSide) []*PlayerSide
 }
 
 type ChineseChessUseCase interface {
-	FlipChess(id int) []*ChineseChess
+	FlipChess(id int, pid string, side ChineseChessSide) ([]*ChineseChess, []*PlayerSide)
 	EatChess(id int, targetID int) []*ChineseChess
 	MoveChess(id int, locationX int, locationY int) []*ChineseChess
 	CreateGame(gameMode domain.GameMode) *GameData

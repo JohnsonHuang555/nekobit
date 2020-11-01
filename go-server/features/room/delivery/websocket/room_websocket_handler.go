@@ -35,20 +35,6 @@ type Attachment struct {
 	NowTurn         string           `json:"now_turn,omitempty"`
 	domain.GameMode `json:"game_mode,omitempty"`
 	chinesechess.NetChineseChess
-	// GameMode   interface{}      `json:"game_mode,omitempty"`
-	// IsMaster     bool           `json:"isMaster,omitempty"`
-	// IsReady      bool           `json:"isReady,omitempty"`
-	// GameData     interface{}    `json:"gameData,omitempty"`
-	// RoomPassword string         `json:"roomPassword,omitempty"`
-	// RoomTitle    string         `json:"roomTitle,omitempty"`
-	// RoomMode     int            `json:"roomMode,omitempty"`
-	// RoomStatus   int            `json:"roomStatus,omitempty"`
-	// RoomUserList []*domain.Player `json:"roomUserList,omitempty"`
-	// Rooms        []*domain.Room `json:"rooms,omitempty"`
-	// RoomInfo     *domain.Room   `json:"roomInfo,omitempty"`
-	// NowTurn      string         `json:"nowTurn,omitempty"`
-	// CharacterID  int            `json:"characterID,omitempty"`
-	// Group        int            `json:"group,omitempty"`
 }
 
 // connection is an middleman between the websocket connection and the hub.
@@ -160,17 +146,34 @@ func (s subscription) readPump() {
 				msg.Data.RoomInfo = room
 			}
 		case domain.FlipChess:
-			newChesses := chineseChessUseCase.FlipChess(msg.Data.ChessID)
+			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide)
 			ccGameData.ChineseChess = newChesses
+			ccGameData.PlayerSide = playerSide
 			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
-			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
 			if err == nil {
-				msg.Data.NowTurn = nowTurn
 				msg.Data.GameData = ccGameData
 			}
 		case domain.MoveChess:
+			newChesses := chineseChessUseCase.MoveChess(msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
+			ccGameData.ChineseChess = newChesses
+			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
+			if err == nil {
+				msg.Data.GameData = ccGameData
+			}
 		case domain.EatChess:
+			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
+			ccGameData.ChineseChess = newChesses
+			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
+			if err == nil {
+				msg.Data.GameData = ccGameData
+			}
 		}
+
+		nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
+		if err == nil {
+			msg.Data.NowTurn = nowTurn
+		}
+
 		m := message{msg, s.roomID}
 		h.broadcast <- m
 	}
