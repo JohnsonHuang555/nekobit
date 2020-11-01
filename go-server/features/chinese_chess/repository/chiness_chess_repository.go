@@ -6,7 +6,7 @@ import (
 
 type chineseChessRepository struct {
 	chesses    []*chinesechess.ChineseChess
-	playerSide []*chinesechess.PlayerSide
+	playerSide map[string]chinesechess.ChineseChessSide
 }
 
 func NewChineseChessRepository(gameData *chinesechess.GameData) chinesechess.ChineseChessRepository {
@@ -28,21 +28,11 @@ func (cr *chineseChessRepository) UpdateOne(id int, c *chinesechess.ChineseChess
 	cr.chesses[chessIndex] = c
 }
 
-func (cr *chineseChessRepository) UpdatePlayerSide(pid string, side chinesechess.ChineseChessSide) []*chinesechess.PlayerSide {
-	index := -1
-	for i := 0; i < len(cr.playerSide); i++ {
-		if cr.playerSide[i].ID == pid {
-			// found
-			index = i
-		}
-	}
-
-	// 有了才塞值
-	if index == -1 {
-		cr.playerSide = append(cr.playerSide, &chinesechess.PlayerSide{
-			ID:   pid,
-			Side: side,
-		})
+func (cr *chineseChessRepository) UpdatePlayerSide(pid string, side chinesechess.ChineseChessSide) map[string]chinesechess.ChineseChessSide {
+	_, exist := cr.playerSide[pid]
+	// 不存在才塞值
+	if !exist {
+		cr.playerSide[pid] = side
 	}
 
 	return cr.playerSide

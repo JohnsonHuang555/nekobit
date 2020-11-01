@@ -15,7 +15,7 @@ func NewChineseChessUseCase(c chinesechess.ChineseChessRepository) chinesechess.
 	return &chineseChessUseCase{c}
 }
 
-func (cu *chineseChessUseCase) FlipChess(id int, pid string, side chinesechess.ChineseChessSide) ([]*chinesechess.ChineseChess, []*chinesechess.PlayerSide) {
+func (cu *chineseChessUseCase) FlipChess(id int, pid string, side chinesechess.ChineseChessSide) ([]*chinesechess.ChineseChess, map[string]chinesechess.ChineseChessSide) {
 	chess := cu.chineseChessRepo.FindOne(id)
 	chess.IsFliped = true
 	cu.chineseChessRepo.UpdateOne(id, chess)
@@ -72,8 +72,27 @@ func (cu *chineseChessUseCase) CreateGame(gameMode domain.GameMode) *chineseches
 		}
 		gameData := &chinesechess.GameData{
 			ChineseChess: chesses,
+			PlayerSide:   make(map[string]chinesechess.ChineseChessSide),
 		}
 		return gameData
 	}
 	return nil
+}
+
+func (cu *chineseChessUseCase) CheckGameOver(pid string, playerSides map[string]chinesechess.ChineseChessSide) bool {
+	gameOver := true
+	var anotherPlayerSide chinesechess.ChineseChessSide
+	for key, side := range playerSides {
+		if key != pid {
+			anotherPlayerSide = side
+		}
+	}
+
+	chesses := cu.chineseChessRepo.FindAll()
+	for _, chess := range chesses {
+		if chess.Side == anotherPlayerSide && chess.Alive == true {
+			gameOver = false
+		}
+	}
+	return gameOver
 }

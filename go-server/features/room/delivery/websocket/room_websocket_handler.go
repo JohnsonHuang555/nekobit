@@ -33,6 +33,7 @@ type Attachment struct {
 	GamePack        domain.GamePack  `json:"game_pack,omitempty"`
 	GameData        interface{}      `json:"game_data,omitempty"`
 	NowTurn         string           `json:"now_turn,omitempty"`
+	GameOver        bool             `json:"game_over,omitempty"`
 	domain.GameMode `json:"game_mode,omitempty"`
 	chinesechess.NetChineseChess
 }
@@ -162,10 +163,12 @@ func (s subscription) readPump() {
 			}
 		case domain.EatChess:
 			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
+			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide)
 			ccGameData.ChineseChess = newChesses
 			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
 			if err == nil {
 				msg.Data.GameData = ccGameData
+				msg.Data.GameOver = gameOver
 			}
 		}
 
