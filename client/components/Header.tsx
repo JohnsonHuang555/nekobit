@@ -1,8 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image'
 import Icon, { IconType } from './Icon';
-import styles from 'styles/header.module.scss';
+import styles from 'styles/components/header.module.scss';
 
 const Header = () => {
   return (

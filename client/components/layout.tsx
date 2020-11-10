@@ -1,7 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
-import styles from 'styles/layout.module.scss';
 import Header from './Header';
+import styles from 'styles/components/layout.module.scss';
+import Footer from './Footer';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -18,16 +19,7 @@ const Layout = (props: LayoutProps) => {
       <main className={styles.main}>
         {props.children}
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      <Footer />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from 'components/Layout';
-import styles from 'styles/home.module.scss';
+import styles from 'styles/components/home.module.scss';
 
 export default function Home() {
   return (
