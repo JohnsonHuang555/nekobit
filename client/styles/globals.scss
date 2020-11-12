@@ -4,8 +4,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Helvetica Neue, sans-serif;
   background-color: $primary;
   color: $white;
 }
@@ -17,4 +16,34 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+button {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 5px 20px;
+	cursor: pointer;
+  outline: inherit;
+  font-size: 20px;
+  border-radius: 5px;
+  background-color: $second;
+}
+
+.page-title {
+  color: $white;
+  font-size: 28px;
+  border-bottom: 1px solid $grey-3;
+  position: relative;
+  padding-bottom: 10px;
+  font-weight: 400;
+  &:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    background: $grey-3;
+    width: 100%;
+    left: 0;
+    bottom: -4px;
+  }
 }

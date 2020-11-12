@@ -1,0 +1,71 @@
+@import './color';
+
+.backgroundImage {
+  position: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 60vh;
+  background-position: center;
+  left: 0;
+  width: 100%;
+}
+
+.container {
+  z-index: 1;
+  width: 100%;
+  .info {
+    margin-top: 80px;
+    margin-bottom: 100px;
+    h1 {
+      font-size: 60px;
+    }
+    p {
+      font-size: 24px;
+    }
+  }
+  .gameBlock {
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: all .3s;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.35);
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.swiper-container {
+  width: 480px;
+}
+
+@media screen and (min-width: 640px) {
+  .swiper-container {
+    width: 640px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .swiper-container {
+    width: 768px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .swiper-container {
+    width: 1024px;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .swiper-container {
+    width: 1200px;
+  }
+}

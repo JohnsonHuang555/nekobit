@@ -1,0 +1,32 @@
+@import './color';
+
+.header {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  .categories {
+    flex: .3;
+  }
+  .games {
+    flex: 1;
+  }
+  .categories {
+    .title {
+      font-size: 22px;
+      border-bottom: 1px solid $grey-3;
+      padding: 5px 15px;
+      margin-bottom: 10px;
+    }
+  }
+  .categoryRow {
+    display: flex;
+    padding: 5px 20px;
+    .categoryTitle {
+      font-size: 20px;
+      margin-left: 5px;
+    }
+  }
+}

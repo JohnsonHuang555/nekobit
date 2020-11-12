@@ -1,8 +1,9 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/Layout';
-import styles from 'styles/components/home.module.scss';
 import { Game } from 'features/index/domain/models/Game';
+import Button from 'components/Button';
+import styles from 'styles/pages/home.module.scss';
 
 const testData: Game[] = [
   {
@@ -29,6 +30,66 @@ const testData: Game[] = [
     createAt: '',
     updateAt: '',
   },
+  {
+    id: 'dfgfd-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: '888-dfg',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: '888-sddd',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: 'ssdfg-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: 'www-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
 ]
 
 export default function Home() {
@@ -45,18 +106,46 @@ export default function Home() {
         </div>
         <Swiper
           spaceBetween={30}
-          slidesPerView={6}
-          onSlideChange={() => console.log('slide change')}
-          onSwiper={(swiper) => console.log(swiper)}
+          slidesPerView={1}
+          breakpoints={{
+            // when window width is >= 640px
+            640: {
+              width: 640,
+              slidesPerView: 2,
+            },
+            // when window width is >= 768px
+            768: {
+              width: 768,
+              slidesPerView: 3,
+            },
+            // when window width is >= 768px
+            1024: {
+              width: 1024,
+              slidesPerView: 4,
+            },
+            // when window width is >= 768px
+            1200: {
+              width: 1200,
+              slidesPerView: 5,
+            },
+          }}
         >
           {testData.map(game => (
-            <SwiperSlide>
+            <SwiperSlide key={game.id} className={styles.swiperSlide}>
               <img
                 src={`${game.imgUrl}/home.png`}
                 alt={game.name}
                 width="100%"
                 height="100%"
               />
+              <div className={styles.gameBlock}>
+                <div className={styles.gameTitle}>
+                  <h2>{game.name}</h2>
+                  <Button
+                    title="PLAY"
+                  />
+                </div>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
