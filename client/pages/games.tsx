@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from 'components/Layout';
 import styles from 'styles/pages/games.module.scss';
 import Icon, { IconType } from 'components/Icon';
+import { Game } from 'features/index/domain/models/Game';
 
 const categoryList = [
   {
@@ -36,6 +37,93 @@ const categoryList = [
   },
 ];
 
+const testData: Game[] = [
+  {
+    id: '123-555',
+    name: '象棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chinese-chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: '888-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: 'dfgfd-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: '888-dfg',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: '888-sddd',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: 'ssdfg-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+  {
+    id: 'www-555',
+    name: '西洋棋',
+    minPlayers: 2,
+    maxPlayers: 2,
+    brief: '對弈',
+    description: 'PKPK',
+    imgUrl: '/img/chess',
+    estimateTime: 30,
+    createAt: '',
+    updateAt: '',
+  },
+]
+
 const Games = () => {
   return (
     <Layout>
@@ -56,7 +144,29 @@ const Games = () => {
           ))}
         </div>
         <div className={styles.games}>
-222
+          {testData.map(game => (
+            <div
+              key={game.id}
+              className={styles.game}
+              style={{ backgroundImage: `url(${game.imgUrl}/game.png)` }}
+            >
+              <div className={styles.gameInfo}>
+                <div className={styles.gameName}>{game.name}</div>
+                <div className={styles.gameBrief}>{game.brief}</div>
+                <div className={styles.icons}>
+                  {/* FIXME: */}
+                  <Icon
+                    type={IconType.User}
+                    label="2-4"
+                    style={{
+                      marginBottom: '10px'
+                    }}
+                  />
+                  <Icon type={IconType.Clock} label={String(game.estimateTime)} />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </Layout>

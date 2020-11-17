@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import AlertIcon from './icons/Alert';
 import FireIcon from './icons/Fire';
-import styles from 'styles/components/icon.module.scss';
 import RocketIcon from './icons/Rocket';
 import TheaterMasksIcon from './icons/TheaterMasks';
 import ChessKnightIcon from './icons/ChessKnight';
 import UsersIcon from './icons/Users';
+import UserIcon from './icons/User';
+import ClockIcon from './icons/Clock';
+import styles from 'styles/components/icon.module.scss';
 
 export enum IconType {
   Alert = 'alert',
@@ -14,10 +16,14 @@ export enum IconType {
   TheaterMasks = 'theater-masks',
   ChessKnight = 'chess-knight',
   Users = 'users',
+  User = 'user',
+  Clock = 'clock',
 }
 
 type IconProps = {
   type: IconType;
+  label?: string;
+  style?: CSSProperties;
 }
 
 const iconList = {
@@ -27,13 +33,16 @@ const iconList = {
   [IconType.TheaterMasks]: <TheaterMasksIcon />,
   [IconType.ChessKnight]: <ChessKnightIcon />,
   [IconType.Users]: <UsersIcon />,
+  [IconType.User]: <UserIcon />,
+  [IconType.Clock]: <ClockIcon />,
 };
 
 const Icon = (props: IconProps) => {
-  const { type } = props;
+  const { type, label, style } = props;
   return (
-    <div className={styles.icon}>
+    <div className={styles.icon} style={style}>
       {iconList[type]}
+      <span className={styles.label}>{label}</span>
     </div>
   );
 };

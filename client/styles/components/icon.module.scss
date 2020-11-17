@@ -1,5 +1,15 @@
 @import '../color';
 
-.icon svg {
-  fill: $white;
+.icon {
+  display: flex;
+  svg {
+    fill: $white;
+    width: 20px;
+    height: 20px;
+  }
+  .label {
+    font-size: 20px;
+    margin-left: 10px;
+    font-weight: 400;
+  }
 }
