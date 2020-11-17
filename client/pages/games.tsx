@@ -3,6 +3,7 @@ import Layout from 'components/Layout';
 import styles from 'styles/pages/games.module.scss';
 import Icon, { IconType } from 'components/Icon';
 import { Game } from 'features/index/domain/models/Game';
+import { useRouter } from 'next/router';
 
 const categoryList = [
   {
@@ -125,9 +126,11 @@ const testData: Game[] = [
 ]
 
 const Games = () => {
+  const router = useRouter()
+
   return (
     <Layout>
-      <div className={styles.header}>
+      <div className="header">
         <h2 className="page-title">遊戲列表</h2>
         <div className={styles.filters}></div>
       </div>
@@ -138,8 +141,7 @@ const Games = () => {
           </div>
           {categoryList.map(category => (
             <div key={category.id} className={styles.categoryRow}>
-              <Icon type={category.icon} />
-              <div className={styles.categoryTitle}>{category.title}</div>
+              <Icon type={category.icon} label={category.title}/>
             </div>
           ))}
         </div>
@@ -150,7 +152,7 @@ const Games = () => {
               className={styles.game}
               style={{ backgroundImage: `url(${game.imgUrl}/game.png)` }}
             >
-              <div className={styles.gameInfo}>
+              <div className={styles.gameInfo} onClick={() => router.push(`/games/${game.id}`)}>
                 <div className={styles.gameName}>{game.name}</div>
                 <div className={styles.gameBrief}>{game.brief}</div>
                 <div className={styles.icons}>
