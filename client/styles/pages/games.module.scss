@@ -1,15 +1,14 @@
 @import './color';
 
-
-
 .row {
   display: flex;
   width: 100%;
-  .categories {
+  flex: 1;
+  .categories, .detail {
     flex: .2;
-    margin-right: 15px;
+    margin-right: 20px;
   }
-  .games {
+  .games, .rooms {
     flex: 1;
     display: flex;
     flex-wrap: wrap;
@@ -71,6 +70,29 @@
     .categoryTitle {
       font-size: 20px;
       margin-left: 10px;
+    }
+  }
+  .detail {
+    display: flex;
+    flex-direction: column;
+    img {
+      margin-bottom: 20px;
+    }
+    .description {
+      line-height: 25px;
+      flex: 1;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      button {
+        margin-bottom: 15px;
+      }
+    }
+  }
+  .rooms {
+    .room {
+
     }
   }
 }

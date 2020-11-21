@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 interface ButtonProps extends Omit<Partial<React.HTMLAttributes<HTMLButtonElement>>, 'onClick'> {
   title: string;
   type?: 'button' | 'submit' | 'reset';
-  className?: string;
+  styles?: CSSProperties;
   disabled?: boolean;
   onClick?: (el: React.ChangeEvent<HTMLInputElement>) => void;
 }

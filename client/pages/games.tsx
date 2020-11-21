@@ -1,9 +1,9 @@
 import React from 'react';
 import Layout from 'components/Layout';
-import styles from 'styles/pages/games.module.scss';
 import Icon, { IconType } from 'components/Icon';
 import { Game } from 'features/index/domain/models/Game';
 import { useRouter } from 'next/router';
+import styles from 'styles/pages/games.module.scss';
 
 const categoryList = [
   {
