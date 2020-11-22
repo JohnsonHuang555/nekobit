@@ -1,7 +1,7 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/Layout';
-import { Game } from 'features/index/domain/models/Game';
+import { Game } from 'models/Game';
 import Button from 'components/Button';
 import styles from 'styles/pages/home.module.scss';
 

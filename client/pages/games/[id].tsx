@@ -1,12 +1,90 @@
 import React from 'react';
 import Layout from 'components/Layout';
-import styles from 'styles/pages/games.module.scss';
 import Button from 'components/Button';
+import styles from 'styles/pages/games.module.scss';
+import { GamePack, GameStatus, Room } from 'models/Room';
+import Icon, { IconType } from 'components/Icon';
 
-const rooms = [
+const rooms: Room[] = [
   {
-
-  }
+    id: '123',
+    title: '快來PK',
+    password: '',
+    status: GameStatus.Preparing,
+    players: [
+      {
+        id: '123456',
+        name: 'Johnson',
+        isMaster: true,
+        isReady: false,
+        playOrder: -1,
+        group: 1,
+      }
+    ],
+    nowTurn: '',
+    gameData: {},
+    gameMode: '',
+    gamePack: GamePack.ChineseChess,
+    createdAt: '',
+  },
+  {
+    id: '456',
+    title: '快來PK2',
+    password: '',
+    status: GameStatus.Playing,
+    players: [
+      {
+        id: '324',
+        name: 'Jack',
+        isMaster: true,
+        isReady: true,
+        playOrder: 0,
+        group: 1,
+      },
+      {
+        id: '666',
+        name: 'Harry',
+        isMaster: false,
+        isReady: true,
+        playOrder: 1,
+        group: 2,
+      }
+    ],
+    nowTurn: '666',
+    gameData: {},
+    gameMode: 'hidden',
+    gamePack: GamePack.ChineseChess,
+    createdAt: '',
+  },
+  {
+    id: '789',
+    title: '快來PK3',
+    password: '',
+    status: GameStatus.Playing,
+    players: [
+      {
+        id: '324',
+        name: 'Jack',
+        isMaster: true,
+        isReady: true,
+        playOrder: 0,
+        group: 1,
+      },
+      {
+        id: '666',
+        name: 'Harry',
+        isMaster: false,
+        isReady: true,
+        playOrder: 1,
+        group: 2,
+      }
+    ],
+    nowTurn: '666',
+    gameData: {},
+    gameMode: 'hidden',
+    gamePack: GamePack.ChineseChess,
+    createdAt: '',
+  },
 ];
 
 const Game = () => {
@@ -34,7 +112,32 @@ const Game = () => {
             <Button title="快速加入" />
           </div>
         </div>
-        <div className={styles.rooms}>222</div>
+        <div className={styles.rooms}>
+          {rooms.map(room => (
+            // FIXME: 抽出來
+            <div className={`${styles.room} ${room.status === GameStatus.Preparing ? styles.preparing : styles.playing}`}>
+              <div className={`${styles.roomHeader} ${room.status === GameStatus.Preparing ? styles.preparing : styles.playing}`}>
+                <div className={styles.roomTitle}>
+                  <span>001</span>
+                  <div className={styles.roomName}>
+                    {room.title}
+                  </div>
+                </div>
+                <Icon type={IconType.Key} label="私密" />
+              </div>
+              <div className={styles.roomInfo}>
+                <span className={styles.gameStatus}>Waiting...</span>
+                <span className={styles.infoBlock}>
+                  <Icon type={IconType.TwoUsers} label="1/2" />
+                </span>
+                <span className={styles.infoBlock}>一般模式</span>
+                <span>
+                  <Button title="加入" />
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </Layout>
   );

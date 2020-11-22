@@ -12,6 +12,7 @@
     flex: 1;
     display: flex;
     flex-wrap: wrap;
+    align-content: flex-start;
     .game {
       height: 200px;
       background-position: center;
@@ -90,9 +91,67 @@
       }
     }
   }
-  .rooms {
-    .room {
-
+  .room {
+    height: 140px;
+    border-radius: 5px;
+    width: calc(100% / 2 - 20px);
+    padding: 20px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    &:nth-child(1) {
+      margin-right: 10px;
+      margin-bottom: 10px;
     }
+    .roomHeader {
+      display: flex;
+      height: 40px;
+      width: 100%;
+      border-radius: 5px;
+      padding: 10px;
+      justify-content: space-between;
+    }
+    .preparing {
+      background-color: $dark-brown;
+    }
+    .playing {
+      background-color: $grey-5;
+    }
+    .roomTitle {
+      display: flex;
+      align-items: center;
+      span {
+        margin-right: 10px;
+        font-size: 18px;
+      }
+      .roomName {
+        font-size: 16px;
+      }
+    }
+    .roomInfo {
+      display: flex;
+      justify-content: space-between;
+      .gameStatus {
+        font-size: 26px;
+        letter-spacing: 2px;
+      }
+      .infoBlock {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $dark-brown;
+        width: 120px;
+        border-radius: 5px;
+      }
+      button {
+        width: 120px;
+      }
+    }
+  }
+  .preparing {
+    background-color: $brown;
+  }
+  .playing {
+    background-color: $grey-4;
   }
 }

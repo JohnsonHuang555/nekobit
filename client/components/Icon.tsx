@@ -8,6 +8,8 @@ import UsersIcon from './icons/Users';
 import UserIcon from './icons/User';
 import ClockIcon from './icons/Clock';
 import styles from 'styles/components/icon.module.scss';
+import KeyIcon from './icons/Key';
+import TwoUsersIcon from './icons/TwoUsers';
 
 export enum IconType {
   Alert = 'alert',
@@ -18,6 +20,8 @@ export enum IconType {
   Users = 'users',
   User = 'user',
   Clock = 'clock',
+  Key = 'key',
+  TwoUsers = 'two-users',
 }
 
 type IconProps = {
@@ -35,6 +39,8 @@ const iconList = {
   [IconType.Users]: <UsersIcon />,
   [IconType.User]: <UserIcon />,
   [IconType.Clock]: <ClockIcon />,
+  [IconType.Key]: <KeyIcon />,
+  [IconType.TwoUsers]: <TwoUsersIcon />,
 };
 
 const Icon = (props: IconProps) => {
