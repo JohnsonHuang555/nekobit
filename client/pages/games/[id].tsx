@@ -88,6 +88,10 @@ const rooms: Room[] = [
 ];
 
 const Game = () => {
+  const roomStatus = (status: GameStatus) => {
+    return status === GameStatus.Preparing ? styles.preparing : styles.playing;
+  }
+
   return (
     <Layout>
       <div className="header">
@@ -108,15 +112,14 @@ const Game = () => {
             哈哈哈哈
           </div>
           <div className={styles.controls}>
-            <Button title="新增房間" />
-            <Button title="快速加入" />
+            <Button title="新增房間" color="secondary" />
+            <Button title="快速加入" color="grey-4" />
           </div>
         </div>
         <div className={styles.rooms}>
           {rooms.map(room => (
-            // FIXME: 抽出來
-            <div className={`${styles.room} ${room.status === GameStatus.Preparing ? styles.preparing : styles.playing}`}>
-              <div className={`${styles.roomHeader} ${room.status === GameStatus.Preparing ? styles.preparing : styles.playing}`}>
+            <div key={room.id} className={`${styles.room} ${roomStatus(room.status)}`}>
+              <div className={`${styles.roomHeader} ${roomStatus(room.status)}`}>
                 <div className={styles.roomTitle}>
                   <span>001</span>
                   <div className={styles.roomName}>
@@ -127,13 +130,13 @@ const Game = () => {
               </div>
               <div className={styles.roomInfo}>
                 <span className={styles.gameStatus}>Waiting...</span>
-                <span className={styles.infoBlock}>
+                <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
                   <Icon type={IconType.TwoUsers} label="1/2" />
                 </span>
-                <span className={styles.infoBlock}>一般模式</span>
-                <span>
-                  <Button title="加入" />
+                <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
+                  一般模式
                 </span>
+                <Button title="加入" color="grey-4" />
               </div>
             </div>
           ))}

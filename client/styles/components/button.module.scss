@@ -1,21 +1,24 @@
 @import './color';
 
-.btn {
-  background: none;
-	color: inherit;
-	border: none;
-	padding: 5px 20px;
-	cursor: pointer;
-  outline: inherit;
-  font-size: 20px;
-  border-radius: 5px;
+.primary {
+  background-color: $primary;
 }
 
-.btn-primary {
+.secondary {
   background-color: $second;
+  &:hover {
+    background-color: #4897ba;
+  }
 }
 
-.btn-outline {
+.grey-4 {
+  background-color: $grey-4;
+  &:hover {
+    background-color: #333333;
+  }
+}
+
+.outline {
   border: 2px solid;
   padding: 5px 20px;
   font-size: 20px;
