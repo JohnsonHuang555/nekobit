@@ -1,9 +1,10 @@
 import React from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import styles from 'styles/pages/games.module.scss';
 import { GamePack, GameStatus, Room } from 'models/Room';
 import Icon, { IconType } from 'components/Icon';
+import { useRouter } from 'next/router';
+import styles from 'styles/pages/games.module.scss';
 
 const rooms: Room[] = [
   {
@@ -88,6 +89,8 @@ const rooms: Room[] = [
 ];
 
 const Game = () => {
+  const router = useRouter();
+
   const roomStatus = (status: GameStatus) => {
     return status === GameStatus.Preparing ? styles.preparing : styles.playing;
   }
@@ -136,7 +139,11 @@ const Game = () => {
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
                   一般模式
                 </span>
-                <Button title="加入" color="grey-4" />
+                <Button
+                  title="加入"
+                  color="grey-4"
+                  onClick={() => router.push(`/rooms/${room.id}`)}
+                />
               </div>
             </div>
           ))}

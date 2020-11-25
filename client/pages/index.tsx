@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/Layout';
 import { Game } from 'models/Game';
 import Button from 'components/Button';
+import { useRouter } from 'next/router';
 import styles from 'styles/pages/home.module.scss';
 
 const testData: Game[] = [
@@ -93,6 +94,8 @@ const testData: Game[] = [
 ]
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <Layout>
       <div
@@ -143,6 +146,7 @@ export default function Home() {
                   <h2>{game.name}</h2>
                   <Button
                     title="PLAY"
+                    onClick={() => router.push(`/games/${game.id}`)}
                   />
                 </div>
               </div>

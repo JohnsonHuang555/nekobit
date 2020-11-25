@@ -126,7 +126,7 @@ const testData: Game[] = [
 ]
 
 const Games = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <Layout>
