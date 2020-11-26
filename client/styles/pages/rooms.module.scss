@@ -1,0 +1,14 @@
+@import './color';
+
+.mainArea {
+  display: flex;
+  width: 100%;
+  .leftArea {
+    flex: 1;
+  }
+
+  .rightArea {
+    flex: .4;
+  }
+}
+
