@@ -10,6 +10,7 @@ import ClockIcon from './icons/Clock';
 import styles from 'styles/components/icon.module.scss';
 import KeyIcon from './icons/Key';
 import TwoUsersIcon from './icons/TwoUsers';
+import TimesIcon from './icons/Times';
 
 export enum IconType {
   Alert = 'alert',
@@ -22,6 +23,7 @@ export enum IconType {
   Clock = 'clock',
   Key = 'key',
   TwoUsers = 'two-users',
+  Times = 'times',
 }
 
 type IconProps = {
@@ -41,6 +43,7 @@ const iconList = {
   [IconType.Clock]: <ClockIcon />,
   [IconType.Key]: <KeyIcon />,
   [IconType.TwoUsers]: <TwoUsersIcon />,
+  [IconType.Times]: <TimesIcon />,
 };
 
 const Icon = (props: IconProps) => {
@@ -48,7 +51,7 @@ const Icon = (props: IconProps) => {
   return (
     <div className={styles.icon} style={style}>
       {iconList[type]}
-      <span className={styles.label}>{label}</span>
+      {label && <span className={styles.label}>{label}</span>}
     </div>
   );
 };
