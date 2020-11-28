@@ -3,7 +3,6 @@ import Button from 'components/Button';
 import Layout from 'components/Layout';
 import styles from 'styles/pages/rooms.module.scss';
 import { Player } from 'models/Player';
-import { url } from 'inspector';
 import Icon, { IconType } from 'components/Icon';
 
 const playerList: Player[] = [
@@ -79,6 +78,13 @@ const Room = () => {
       <div className={styles.mainArea}>
         <div className={styles.leftArea}>
           <div className={`${styles.block} ${styles.playerList}`}>
+            <div className={styles.header}>
+              <div className={styles.roomInfo}>
+                <div className={styles.roomNumber}>001</div>
+                <div className={styles.roomTitle}>快來 PK</div>
+              </div>
+              <Icon type={IconType.EditSquare} label="編輯" />
+            </div>
             <div className={styles.content}>
               {playerList.map(player => (
                 // Now Player

@@ -11,6 +11,9 @@ import styles from 'styles/components/icon.module.scss';
 import KeyIcon from './icons/Key';
 import TwoUsersIcon from './icons/TwoUsers';
 import TimesIcon from './icons/Times';
+import EditSquareIcon from './icons/EditSquare';
+
+// TODO: 客製化 大小 顏色
 
 export enum IconType {
   Alert = 'alert',
@@ -24,6 +27,7 @@ export enum IconType {
   Key = 'key',
   TwoUsers = 'two-users',
   Times = 'times',
+  EditSquare = 'edit-square',
 }
 
 type IconProps = {
@@ -44,6 +48,7 @@ const iconList = {
   [IconType.Key]: <KeyIcon />,
   [IconType.TwoUsers]: <TwoUsersIcon />,
   [IconType.Times]: <TimesIcon />,
+  [IconType.EditSquare]: <EditSquareIcon />,
 };
 
 const Icon = (props: IconProps) => {

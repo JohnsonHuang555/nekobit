@@ -13,6 +13,7 @@
     .playerList {
       flex: 1;
       margin-bottom: 15px;
+      position: relative;
       .content {
         margin-top: 40px;
         display: flex;
@@ -66,6 +67,28 @@
         }
         .nowPlayer {
           background: $brown;
+        }
+      }
+      .header {
+        display: flex;
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        width: calc(100% - 20px);
+        justify-content: space-between;
+        .roomInfo {
+          display: flex;
+          align-items: center;
+          .roomNumber {
+            font-size: 16px;
+            background: $dark-green;
+            margin-right: 10px;
+            border-radius: 5px;
+            padding: 3px 5px;
+          }
+          .roomTitle {
+            font-size: 18px;
+          }
         }
       }
     }
