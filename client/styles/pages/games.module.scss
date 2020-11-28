@@ -99,7 +99,7 @@
     justify-content: space-between;
     display: flex;
     flex-direction: column;
-    &:nth-child(1) {
+    &:nth-child(odd) {
       margin-right: 10px;
       margin-bottom: 10px;
     }
