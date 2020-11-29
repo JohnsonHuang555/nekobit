@@ -13,3 +13,15 @@ export const loadGames = createAsyncThunk(
     }
   }
 );
+
+export const loadGameInfo = createAsyncThunk(
+  'games/loadGameInfo',
+  async (id: string, thunkAPI) => {
+    try {
+      const response = await getApi(`/games/${id}`);
+      return GameFactory.createFromNet(response.data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue({ error: error.message })
+    }
+  }
+);

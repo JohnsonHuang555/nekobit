@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
 import { GamePack, GameStatus, Room } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import styles from 'styles/pages/games.module.scss';
+import { useDispatch } from 'react-redux';
+import { loadGameInfo } from 'domain/action/games/fetchAction';
 
 const rooms: Room[] = [
   {
@@ -235,6 +237,15 @@ const rooms: Room[] = [
 
 const Game = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const gameId = String(router.query.id);
+
+  useEffect(() => {
+    async function dispatchLoadGameInfo() {
+      await dispatch(loadGameInfo(gameId));
+    }
+    dispatchLoadGameInfo();
+  }, [dispatch]);
 
   const roomStatus = (status: GameStatus) => {
     return status === GameStatus.Preparing ? styles.preparing : styles.playing;

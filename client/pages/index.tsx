@@ -1,100 +1,12 @@
 import React, { useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/Layout';
-import { Game } from 'domain/models/Game';
 import Button from 'components/Button';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectGames } from 'domain/selectors/gamesSelector';
 import { loadGames } from 'domain/action/games/fetchAction';
 import styles from 'styles/pages/home.module.scss';
-
-const testData: Game[] = [
-  {
-    id: '123-555',
-    name: '象棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chinese-chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: '888-555',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: 'dfgfd-555',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: '888-dfg',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: '888-sddd',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: 'ssdfg-555',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: 'www-555',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    createAt: '',
-    updateAt: '',
-  },
-]
 
 export default function Home() {
   const router = useRouter();
@@ -107,8 +19,6 @@ export default function Home() {
     }
     dispatchLoadGames();
   }, [dispatch]);
-
-  console.log(games)
 
   return (
     <Layout>
@@ -147,7 +57,7 @@ export default function Home() {
             },
           }}
         >
-          {testData.map(game => (
+          {games.map(game => (
             <SwiperSlide key={game.id} className={styles.swiperSlide}>
               <img
                 src={`${game.imgUrl}/home.png`}
