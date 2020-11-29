@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/Layout';
 import { Game } from 'models/Game';
 import Button from 'components/Button';
 import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectGames } from 'selectors/gamesSelector';
+import { loadGames } from 'actions/games/fetchAction';
 import styles from 'styles/pages/home.module.scss';
 
 const testData: Game[] = [
@@ -95,6 +98,17 @@ const testData: Game[] = [
 
 export default function Home() {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { games } = useSelector(selectGames);
+
+  useEffect(() => {
+    async function dispatchLoadGames() {
+      await dispatch(loadGames());
+    }
+    dispatchLoadGames();
+  }, [dispatch]);
+
+  console.log(games)
 
   return (
     <Layout>
