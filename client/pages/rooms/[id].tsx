@@ -2,7 +2,7 @@ import React from 'react';
 import Button from 'components/Button';
 import Layout from 'components/Layout';
 import styles from 'styles/pages/rooms.module.scss';
-import { Player } from 'models/Player';
+import { Player } from 'domain/models/Player';
 import Icon, { IconType } from 'components/Icon';
 
 const playerList: Player[] = [

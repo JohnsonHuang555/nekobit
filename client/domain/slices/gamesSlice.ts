@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { loadGames } from "actions/games/fetchAction";
-import { Game } from "models/Game";
+import { loadGames } from "domain/action/games/fetchAction";
+import { Game } from "domain/models/Game";
 
 type initialState = {
   games: Game[];

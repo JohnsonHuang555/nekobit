@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import { GamePack, GameStatus, Room } from 'models/Room';
+import { GamePack, GameStatus, Room } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import styles from 'styles/pages/games.module.scss';
