@@ -19,7 +19,7 @@ export type CreateRoomParams = {
   title: string;
   password: string;
   game_pack: GamePack;
-  mode: string;
+  game_mode: string;
 }
 
 export const createRoom = createAsyncThunk(

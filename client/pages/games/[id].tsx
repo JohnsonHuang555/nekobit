@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import { GameStatus } from 'domain/models/Room';
+import { GamePack, GameStatus } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import { loadGameInfo } from 'domain/action/gamesAction';
 import { selectGameInfo } from 'domain/selectors/gamesSelector';
 import { selectRooms } from 'domain/selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
-import { loadRooms } from 'domain/action/roomsAction';
+import { createRoom, loadRooms } from 'domain/action/roomsAction';
 
 const Game = () => {
   const router = useRouter();
@@ -59,7 +59,17 @@ const Game = () => {
             {selectedGame.description}
           </div>
           <div className={styles.controls}>
-            <Button title="新增房間" color="secondary" />
+           {/* TODO: 跳model */}
+            <Button
+              title="新增房間"
+              color="secondary"
+              onClick={() => dispatch(createRoom({
+                title: '來',
+                password: '',
+                game_pack: GamePack.ChineseChess,
+                game_mode: 'hidden',
+              }))}
+            />
             <Button title="快速加入" color="grey-4" />
           </div>
         </div>
@@ -73,12 +83,14 @@ const Game = () => {
                     {room.title}
                   </div>
                 </div>
-                <Icon type={IconType.Key} label="私密" />
+                {room.password && <Icon type={IconType.Key} label="私密" />}
               </div>
               <div className={styles.roomInfo}>
-                <span className={styles.gameStatus}>Waiting...</span>
+                <span className={styles.gameStatus}>
+                  {room.status === GameStatus.Preparing ? 'Waiting...' : 'Playing...'}
+                </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
-                  <Icon type={IconType.TwoUsers} label="1/2" />
+                  <Icon type={IconType.TwoUsers} label={`${room.playerList.length}/${selectedGame.maxPlayers}`} />
                 </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
                   一般模式
