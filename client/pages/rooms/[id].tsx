@@ -88,7 +88,7 @@ const Room = () => {
             <div className={styles.content}>
               {playerList.map(player => (
                 // Now Player
-                <div className={`${styles.player}`}>
+                <div key={player.id} className={`${styles.player}`}>
                   <div
                     className={styles.picture}
                     style={{ backgroundImage: "url('https://images.pexels.com/photos/3541389/pexels-photo-3541389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')" }}

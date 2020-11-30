@@ -1,253 +1,35 @@
 import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import { GamePack, GameStatus, Room } from 'domain/models/Room';
+import { GameStatus } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
-import styles from 'styles/pages/games.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadGameInfo } from 'domain/action/gamesAction';
 import { selectGameInfo } from 'domain/selectors/gamesSelector';
-
-const rooms: Room[] = [
-  {
-    id: '123',
-    title: '快來PK',
-    password: '',
-    status: GameStatus.Preparing,
-    players: [
-      {
-        id: '123456',
-        name: 'Johnson',
-        isMaster: true,
-        isReady: false,
-        playOrder: -1,
-        group: 1,
-      }
-    ],
-    nowTurn: '',
-    gameData: {},
-    gameMode: '',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '456',
-    title: '快來PK2',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '789',
-    title: '快來PK3',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '789',
-    title: '快來PK3',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '789',
-    title: '快來PK3',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '789',
-    title: '快來PK3',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '789',
-    title: '快來PK3',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-  {
-    id: '789',
-    title: '快來PK3',
-    password: '',
-    status: GameStatus.Playing,
-    players: [
-      {
-        id: '324',
-        name: 'Jack',
-        isMaster: true,
-        isReady: true,
-        playOrder: 0,
-        group: 1,
-      },
-      {
-        id: '666',
-        name: 'Harry',
-        isMaster: false,
-        isReady: true,
-        playOrder: 1,
-        group: 2,
-      }
-    ],
-    nowTurn: '666',
-    gameData: {},
-    gameMode: 'hidden',
-    gamePack: GamePack.ChineseChess,
-    createdAt: '',
-  },
-];
+import { selectRooms } from 'domain/selectors/roomsSelector';
+import styles from 'styles/pages/games.module.scss';
+import { loadRooms } from 'domain/action/roomsAction';
 
 const Game = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const gameId = String(router.query.id);
-  const { selectedGame } = useSelector(selectGameInfo)
+  const gameId = router.query.id;
+  const { selectedGame } = useSelector(selectGameInfo);
+  const { rooms } = useSelector(selectRooms);
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
-      await dispatch(loadGameInfo(gameId));
+      await dispatch(loadGameInfo(String(gameId)));
     }
-    dispatchLoadGameInfo();
-  }, [dispatch]);
+    async function dispatchLoadRooms() {
+      await dispatch(loadRooms());
+    }
+    if (gameId) {
+      dispatchLoadGameInfo();
+      dispatchLoadRooms();
+    }
+  }, [dispatch, gameId]);
 
   const roomStatus = (status: GameStatus) => {
     return status === GameStatus.Preparing ?
@@ -263,21 +45,18 @@ const Game = () => {
   return (
     <Layout>
       <div className="header">
-        <h2 className="page-title">{selectedGame?.name}</h2>
+        <h2 className="page-title">{selectedGame.name}</h2>
       </div>
       <div className={styles.row}>
         <div className={styles.detail}>
           <img
-            src="https://1.bp.blogspot.com/-U5rTlenivu4/V-pYEdCNCnI/AAAAAAAARCA/d-3heuMuTIMfOl6aNFOoO156Am9QrIWRQCLcB/s1600/%25E8%25B1%25A1%25E6%25A3%258B.jpg"
+            src={`${selectedGame.imgUrl}/game.png`}
             alt="detail"
             width="100%"
             height={250}
           />
           <div className={styles.description}>
-            兩人對弈的桌遊，有幾百年歷史
-            兩人對弈的桌遊，有幾百年歷史
-            兩人對弈的桌遊，有幾百年歷史
-            哈哈哈哈
+            {selectedGame.description}
           </div>
           <div className={styles.controls}>
             <Button title="新增房間" color="secondary" />
