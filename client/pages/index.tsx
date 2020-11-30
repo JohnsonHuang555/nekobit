@@ -5,7 +5,7 @@ import Button from 'components/Button';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectGames } from 'domain/selectors/gamesSelector';
-import { loadGames } from 'domain/action/games/fetchAction';
+import { loadGames } from 'domain/action/gamesAction';
 import styles from 'styles/pages/home.module.scss';
 
 export default function Home() {

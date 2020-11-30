@@ -5,8 +5,9 @@ import { GamePack, GameStatus, Room } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import styles from 'styles/pages/games.module.scss';
-import { useDispatch } from 'react-redux';
-import { loadGameInfo } from 'domain/action/games/fetchAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadGameInfo } from 'domain/action/gamesAction';
+import { selectGameInfo } from 'domain/selectors/gamesSelector';
 
 const rooms: Room[] = [
   {
@@ -239,6 +240,7 @@ const Game = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const gameId = String(router.query.id);
+  const { selectedGame } = useSelector(selectGameInfo)
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
@@ -248,13 +250,20 @@ const Game = () => {
   }, [dispatch]);
 
   const roomStatus = (status: GameStatus) => {
-    return status === GameStatus.Preparing ? styles.preparing : styles.playing;
+    return status === GameStatus.Preparing ?
+      styles.preparing :
+      styles.playing;
+  }
+
+  // TODO: 空白畫面 未來可以補 loading
+  if (!selectedGame) {
+    return null;
   }
 
   return (
     <Layout>
       <div className="header">
-        <h2 className="page-title">象棋</h2>
+        <h2 className="page-title">{selectedGame?.name}</h2>
       </div>
       <div className={styles.row}>
         <div className={styles.detail}>

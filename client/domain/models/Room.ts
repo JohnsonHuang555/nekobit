@@ -5,11 +5,11 @@ export type Room = {
 	title: string;
 	password: string;
 	status: GameStatus;
-	players: Player[];
+	playerList: Player[];
 	nowTurn: string;
 	gameData: any;
 	gamePack: GamePack;
-	gameMode: string;
+	gameMode: string; // FIXME: 擴充列舉
 	createdAt: string;
 };
 

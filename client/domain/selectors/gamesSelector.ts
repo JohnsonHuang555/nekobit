@@ -7,3 +7,10 @@ export const selectGames = createSelector(
   }),
   (state) => state,
 );
+
+export const selectGameInfo = createSelector(
+  (state: StoreState) => ({
+    selectedGame: state.games.selectedGame,
+  }),
+  (state) => state,
+);
