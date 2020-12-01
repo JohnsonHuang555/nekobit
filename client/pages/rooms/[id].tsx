@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'components/Button';
 import Layout from 'components/Layout';
 import styles from 'styles/pages/rooms.module.scss';
 import { Player } from 'domain/models/Player';
 import Icon, { IconType } from 'components/Icon';
+import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { SocketEvent, WebSocketParams } from 'domain/models/WebSocket';
 
 const playerList: Player[] = [
   {
@@ -38,41 +41,57 @@ const playerList: Player[] = [
     playOrder: 0,
     group: 2,
   },
-  {
-    id: '1234',
-    name: 'Johnson1',
-    isMaster: false,
-    isReady: true,
-    playOrder: 0,
-    group: 1,
-  },
-  {
-    id: '222',
-    name: 'Johnson2',
-    isMaster: false,
-    isReady: false,
-    playOrder: 0,
-    group: 1,
-  },
-  {
-    id: '333',
-    name: 'Johnson3',
-    isMaster: false,
-    isReady: false,
-    playOrder: 0,
-    group: 2,
-  },
-  {
-    id: '444',
-    name: 'Johnson4',
-    isMaster: false,
-    isReady: true,
-    playOrder: 0,
-    group: 2,
-  },
 ];
 
 const Room = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const roomId = router.query.id;
+  const [ws, setWs] = useState<WebSocket>();
+
+  useEffect(() => {
+    if (roomId) {
+      setWs(new WebSocket(`ws://localhost:5000/ws/${roomId}`));
+    }
+  }, [dispatch, roomId]);
+
+  useEffect(() => {
+    if (ws) {
+      ws.onopen = () => {
+        console.log('open connection')
+        const data = {
+          event: SocketEvent.JoinRoom,
+          player_id: 'asd-ddf',
+          data: {
+            player_name: 'Johnson',
+          }
+        }
+        sendMessage(data);
+      }
+      ws.onmessage = event => {
+        const data: WebSocketParams = JSON.parse(event.data)
+        switch (data.event) {
+          case SocketEvent.JoinRoom: {
+            alert("join room");
+            break;
+          }
+        }
+        console.log(data)
+      }
+    }
+    return () => {
+      ws?.close();
+    }
+  }, [ws]);
+
+  if (!ws) {
+    return null;
+  }
+
+  const sendMessage = (data: WebSocketParams) => {
+    ws.send(JSON.stringify(data))
+  };
+
   return (
     <Layout>
       <div className={styles.mainArea}>
