@@ -5,11 +5,11 @@ import { GamePack, GameStatus } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadGameInfo } from 'domain/action/gamesAction';
-import { selectGameInfo } from 'domain/selectors/gamesSelector';
-import { selectRooms } from 'domain/selectors/roomsSelector';
+import { loadGameInfo } from 'actions/gamesAction';
+import { selectGameInfo } from 'selectors/gamesSelector';
+import { selectRooms } from 'selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
-import { createRoom, loadRooms } from 'domain/action/roomsAction';
+import { createRoom, loadRooms } from 'actions/roomsAction';
 
 const Game = () => {
   const router = useRouter();

@@ -4,8 +4,8 @@ import Layout from 'components/Layout';
 import Button from 'components/Button';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectGames } from 'domain/selectors/gamesSelector';
-import { loadGames } from 'domain/action/gamesAction';
+import { selectGames } from 'selectors/gamesSelector';
+import { loadGames } from 'actions/gamesAction';
 import styles from 'styles/pages/home.module.scss';
 
 export default function Home() {

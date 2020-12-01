@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import gamesReducer from 'domain/slices/gamesSlice';
-import roomsReducer from 'domain/slices/roomsSlice';
+import gamesReducer from 'slices/gamesSlice';
+import roomsReducer from 'slices/roomsSlice';
 
-import { initialState as GamesState } from "domain/slices/gamesSlice";
-import { initialState as RoomsState } from "domain/slices/roomsSlice";
+import { initialState as GamesState } from "slices/gamesSlice";
+import { initialState as RoomsState } from "slices/roomsSlice";
 
 export type StoreState = {
   games: GamesState;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createRoom, loadRooms } from "domain/action/roomsAction";
+import { createRoom, loadRooms } from "actions/roomsAction";
 import { Room } from "domain/models/Room";
 
 export type initialState = {
@@ -9,7 +9,9 @@ export type initialState = {
   loading: boolean;
 };
 
-const roomsSlice = createSlice<initialState, any, any>({
+export type CaseReducer = {};
+
+const roomsSlice = createSlice<initialState, CaseReducer>({
   name: 'rooms',
   initialState: {
     rooms: [],
