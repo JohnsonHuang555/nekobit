@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loadGameInfo, loadGames } from "actions/gamesAction";
 import { Game } from "domain/models/Game";
 
-export type initialState = {
+export type State = {
   games: Game[];
   selectedGame?: Game;
   loading: boolean;
@@ -10,7 +10,7 @@ export type initialState = {
 
 export type CaseReducer = {};
 
-const gamesSlice = createSlice<initialState, CaseReducer>({
+const gamesSlice = createSlice<State, CaseReducer>({
   name: 'games',
   initialState: {
     games: [],

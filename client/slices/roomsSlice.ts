@@ -2,16 +2,18 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createRoom, loadRooms } from "actions/roomsAction";
 import { Room } from "domain/models/Room";
 
-export type initialState = {
+export type State = {
   rooms: Room[];
   selectedRoom?: Room;
   createdId: string;
   loading: boolean;
 };
 
-export type CaseReducer = {};
+export type CaseReducer = {
+  joinRoom: (state: State, action: PayloadAction<Room>) => void;
+};
 
-const roomsSlice = createSlice<initialState, CaseReducer>({
+const roomsSlice = createSlice<State, CaseReducer>({
   name: 'rooms',
   initialState: {
     rooms: [],
@@ -19,7 +21,11 @@ const roomsSlice = createSlice<initialState, CaseReducer>({
     createdId: '',
     loading: false,
   },
-  reducers: {},
+  reducers: {
+    joinRoom: (state: State, action: PayloadAction<Room>) => {
+      state.selectedRoom = action.payload;
+    },
+  },
   extraReducers: {
     [loadRooms.pending.toString()]: (state) => {
       state.loading = true;
@@ -37,5 +43,9 @@ const roomsSlice = createSlice<initialState, CaseReducer>({
     },
   },
 });
+
+export const {
+  joinRoom,
+} = roomsSlice.actions;
 
 export default roomsSlice.reducer;

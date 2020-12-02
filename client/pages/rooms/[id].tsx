@@ -1,52 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import Button from 'components/Button';
 import Layout from 'components/Layout';
-import styles from 'styles/pages/rooms.module.scss';
-import { Player } from 'domain/models/Player';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SocketEvent, WebSocketParams } from 'domain/models/WebSocket';
-
-const playerList: Player[] = [
-  {
-    id: '1234',
-    name: 'Johnson1',
-    isMaster: true,
-    isReady: true,
-    playOrder: 0,
-    group: 1,
-  },
-  {
-    id: '222',
-    name: 'Johnson2',
-    isMaster: false,
-    isReady: false,
-    playOrder: 0,
-    group: 1,
-  },
-  {
-    id: '333',
-    name: 'Johnson3',
-    isMaster: false,
-    isReady: false,
-    playOrder: 0,
-    group: 2,
-  },
-  {
-    id: '444',
-    name: 'Johnson4',
-    isMaster: false,
-    isReady: true,
-    playOrder: 0,
-    group: 2,
-  },
-];
+import { joinRoom } from 'slices/roomsSlice';
+import { RoomFactory } from 'domain/factories/RoomFactory';
+import { selectRoomInfo } from 'selectors/roomsSelector';
+import styles from 'styles/pages/rooms.module.scss';
 
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = router.query.id;
+  const { selectedRoom } = useSelector(selectRoomInfo);
   const [ws, setWs] = useState<WebSocket>();
 
   useEffect(() => {
@@ -68,15 +36,19 @@ const Room = () => {
         }
         sendMessage(data);
       }
-      ws.onmessage = event => {
-        const data: WebSocketParams = JSON.parse(event.data)
-        switch (data.event) {
+      ws.onmessage = e => {
+        const {
+          event,
+          data,
+          player_id
+        }: WebSocketParams = JSON.parse(e.data);
+        switch (event) {
           case SocketEvent.JoinRoom: {
-            alert("join room");
+            const room = RoomFactory.createFromNet(data.room_info);
+            dispatch(joinRoom(room))
             break;
           }
         }
-        console.log(data)
       }
     }
     return () => {
@@ -84,7 +56,8 @@ const Room = () => {
     }
   }, [ws]);
 
-  if (!ws) {
+  // TODO: 做 loading...
+  if (!ws || !selectedRoom) {
     return null;
   }
 
@@ -100,12 +73,12 @@ const Room = () => {
             <div className={styles.header}>
               <div className={styles.roomInfo}>
                 <div className={styles.roomNumber}>001</div>
-                <div className={styles.roomTitle}>快來 PK</div>
+                  <div className={styles.roomTitle}>{selectedRoom.title}</div>
               </div>
               <Icon type={IconType.EditSquare} label="編輯" />
             </div>
             <div className={styles.content}>
-              {playerList.map(player => (
+              {selectedRoom.playerList.map(player => (
                 // Now Player
                 <div key={player.id} className={`${styles.player}`}>
                   <div
