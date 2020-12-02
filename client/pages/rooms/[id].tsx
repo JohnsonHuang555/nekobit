@@ -17,6 +17,10 @@ const Room = () => {
   const { selectedRoom } = useSelector(selectRoomInfo);
   const [ws, setWs] = useState<WebSocket>();
 
+  const sendMessage = (data: WebSocketParams) => {
+    ws?.send(JSON.stringify(data))
+  };
+
   useEffect(() => {
     if (roomId) {
       setWs(new WebSocket(`ws://localhost:5000/ws/${roomId}`));
@@ -60,10 +64,6 @@ const Room = () => {
   if (!ws || !selectedRoom) {
     return null;
   }
-
-  const sendMessage = (data: WebSocketParams) => {
-    ws.send(JSON.stringify(data))
-  };
 
   return (
     <Layout>
