@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import ReactModal, { Styles } from 'react-modal';
+import styles from 'styles/components/modal.module.scss';
+import Icon, { IconType } from './Icon';
 
 const customStyles: Styles = {
   content : {
@@ -17,8 +19,9 @@ const customStyles: Styles = {
 };
 
 type ModalProps = {
-  children?: React.ReactNode;
   show: boolean;
+  title?: string;
+  children?: React.ReactNode;
 }
 
 ReactModal.setAppElement('#__next')
@@ -27,12 +30,10 @@ const Modal = (props: ModalProps) => {
   const {
     children,
     show,
+    title = '',
   } = props;
   const [isOpen, setOpen] = useState(show);
 
-  const openModal = () => {
-    setOpen(true);
-  }
   const closeModal = () => {
     setOpen(false);
   }
@@ -42,9 +43,17 @@ const Modal = (props: ModalProps) => {
         isOpen={isOpen}
         onRequestClose={closeModal}
         style={customStyles}
-        contentLabel="Example Modal"
+        contentLabel="appModal"
       >
-        {children}
+        <div className={styles.header}>
+          <span className={styles.title}>{title}</span>
+          <div className={styles.closeModal}>
+            <Icon type={IconType.Times} />
+          </div>
+        </div>
+        <div className={styles.content}>
+          {children}
+        </div>
       </ReactModal>
     </div>
   );

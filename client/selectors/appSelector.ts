@@ -7,3 +7,10 @@ export const selectShowModal = createSelector(
   }),
   (state) => state,
 );
+
+export const selectUserInfo = createSelector(
+  (state: StoreState) => ({
+    userInfo: state.app.userInfo,
+  }),
+  (state) => state,
+);

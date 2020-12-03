@@ -1,3 +1,4 @@
+// 玩家資訊
 export type Player = {
   id: string;
   name: string;
