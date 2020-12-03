@@ -8,7 +8,7 @@ type InputProps = {
   label?: string;
   placeholder?: string;
   customStyles?: CSSProperties;
-  onChange: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   onBlur?: (event: React.FocusEvent) => void;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Icon, { IconType } from './Icon';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector(selectUserInfo);
   const { showModal } = useSelector(selectShowModal);
+  const [userName, setUserName] = useState('');
 
   return (
     <>
@@ -21,11 +22,11 @@ const Header = () => {
           type="text"
           placeholder="請輸入玩家暱稱"
           label="玩家暱稱"
-          value=""
-          onChange={() => {}}
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
           customStyles={{ marginBottom: '20px' }}
         />
-        <Button title="確認" color="secondary" />
+        <Button title="確認" color="secondary" onClick={() => {}} />
       </Modal>
       <header className={styles.header}>
         <Link href="/">
