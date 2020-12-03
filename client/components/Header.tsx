@@ -1,20 +1,22 @@
 import React from 'react';
 import Link from 'next/link';
 import Icon, { IconType } from './Icon';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
 import Modal from './Modal';
 import styles from 'styles/components/header.module.scss';
 import Input from './Input';
 import Button from './Button';
+import { setShowModal } from 'slices/appSlice';
 
 const Header = () => {
+  const dispatch = useDispatch();
   const { userInfo } = useSelector(selectUserInfo);
   const { showModal } = useSelector(selectShowModal);
 
   return (
     <>
-      <Modal show={true} title="LogIn" >
+      <Modal show={showModal} title="LogIn" >
         <Input
           type="text"
           placeholder="請輸入玩家暱稱"
@@ -69,7 +71,7 @@ const Header = () => {
               <div className={styles.logIn}>Log In</div>
             </li>
             <li>
-              <div className={styles.getStart}>Get Start</div>
+              <div className={styles.getStart} onClick={() => dispatch(setShowModal(true))}>Get Start</div>
             </li>
           </ul>
         }

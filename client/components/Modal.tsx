@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import ReactModal, { Styles } from 'react-modal';
+import { useDispatch } from 'react-redux';
+import { setShowModal } from 'slices/appSlice';
 import styles from 'styles/components/modal.module.scss';
 import Icon, { IconType } from './Icon';
 
@@ -32,23 +34,20 @@ const Modal = (props: ModalProps) => {
     show,
     title = '',
   } = props;
-  const [isOpen, setOpen] = useState(show);
+  const dispatch = useDispatch();
 
-  const closeModal = () => {
-    setOpen(false);
-  }
   return (
     <div>
       <ReactModal
-        isOpen={isOpen}
-        onRequestClose={closeModal}
+        isOpen={show}
+        onRequestClose={() => dispatch(setShowModal(false))}
         style={customStyles}
         contentLabel="appModal"
       >
         <div className={styles.header}>
           <span className={styles.title}>{title}</span>
-          <div className={styles.closeModal}>
-            <Icon type={IconType.Times} />
+          <div className={styles.closeModal} onClick={() => dispatch(setShowModal(false))}>
+            <Icon type={IconType.Times}/>
           </div>
         </div>
         <div className={styles.content}>

@@ -26,4 +26,9 @@ const appSlice = createSlice<State, CaseReducer>({
   },
 });
 
+export const {
+  setUserInfo,
+  setShowModal,
+} = appSlice.actions;
+
 export default appSlice.reducer;
