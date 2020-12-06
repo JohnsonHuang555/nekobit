@@ -5,12 +5,13 @@ import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { SocketEvent, WebSocketParams } from 'domain/models/WebSocket';
-import { joinRoom, readyGame } from 'slices/roomsSlice';
+import { joinRoom, readyGame, startGame } from 'slices/roomsSlice';
 import { RoomFactory } from 'domain/factories/RoomFactory';
 import { selectRoomInfo } from 'selectors/roomsSelector';
 import { selectUserInfo } from 'selectors/appSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { PlayerFactory } from 'domain/factories/PlayerFactory';
+import { GamePack } from 'domain/models/Room';
 
 const Room = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const Room = () => {
   }, [roomId, userInfo]);
 
   const runSocket = () => {
+    console.log(99999)
     if (!userInfo) {
       return;
     }
@@ -51,22 +53,23 @@ const Room = () => {
         const {
           event,
           data,
-          player_id
         }: WebSocketParams = JSON.parse(msg.data);
+        console.log(1111)
         switch (event) {
           case SocketEvent.JoinRoom: {
             const room = RoomFactory.createFromNet(data.room_info);
-            dispatch(joinRoom(room))
+            dispatch(joinRoom(room));
             break;
           }
           case SocketEvent.ReadyGame: {
             const players = PlayerFactory.createArrayFromNet(data.players);
-            dispatch(readyGame(players))
+            dispatch(readyGame(players));
             break;
           }
           case SocketEvent.StartGame: {
             const room = RoomFactory.createFromNet(data.room_info);
-            dispatch(joinRoom(room))
+            console.log(room)
+            dispatch(startGame(room));
             break;
           }
         }
@@ -110,6 +113,7 @@ const Room = () => {
       event: SocketEvent.StartGame,
       player_id: userInfo.id,
       data: {
+        game_pack: GamePack.ChineseChess,
         game_mode: 'hidden',
       }
     }

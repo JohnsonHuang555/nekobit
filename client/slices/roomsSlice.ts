@@ -13,6 +13,7 @@ export type State = {
 export type CaseReducer = {
   joinRoom: (state: State, action: PayloadAction<Room>) => void;
   readyGame: (state: State, action: PayloadAction<Player[]>) => void;
+  startGame: (state: State, action: PayloadAction<Room>) => void;
 };
 
 const roomsSlice = createSlice<State, CaseReducer>({
@@ -35,6 +36,9 @@ const roomsSlice = createSlice<State, CaseReducer>({
         };
       }
     },
+    startGame: (state: State, action: PayloadAction<Room>) => {
+      state.selectedRoom = action.payload;
+    }
   },
   extraReducers: {
     [loadRooms.pending.toString()]: (state) => {
@@ -57,6 +61,7 @@ const roomsSlice = createSlice<State, CaseReducer>({
 export const {
   joinRoom,
   readyGame,
+  startGame,
 } = roomsSlice.actions;
 
 export default roomsSlice.reducer;

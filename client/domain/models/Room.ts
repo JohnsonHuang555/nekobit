@@ -14,7 +14,7 @@ export type Room = {
 };
 
 export enum GamePack {
-  ChineseChess = 'chineseChess',
+  ChineseChess = 'chinese_chess',
 }
 
 export enum GameStatus {
