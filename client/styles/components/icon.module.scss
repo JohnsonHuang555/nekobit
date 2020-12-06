@@ -1,9 +1,12 @@
 @import '../color';
 
-.icon {
+.content {
   display: flex;
   align-items: center;
-  cursor: pointer;
+  .icon {
+    display: flex;
+    align-items: center;
+  }
   svg {
     fill: $white;
     width: 20px;
@@ -13,5 +16,44 @@
     font-size: 20px;
     margin-left: 10px;
     font-weight: 400;
+  }
+  .xs {
+    font-size: 18px;
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  .md {
+    font-size: 22px;
+    svg {
+      width: 26px;
+      height: 26px;
+    }
+  }
+  .lg {
+    font-size: 26px;
+    svg {
+      width: 30px;
+      height: 30px;
+    }
+  }
+  .primary {
+    color: $primary;
+    path {
+      fill: $primary;
+    }
+  }
+  .second {
+    color: $second;
+    path {
+      fill: $second;
+    }
+  }
+  .darkWarning {
+    color: $dark-warning;
+    path {
+      fill: $dark-warning;
+    }
   }
 }

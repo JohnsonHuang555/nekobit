@@ -36,6 +36,9 @@ type IconProps = {
   type: IconType;
   label?: string;
   style?: CSSProperties;
+  size?: 'xs' | 'md' | 'lg';
+  color?: 'primary' | 'second' | 'dark-warning'
+  childern?: React.ReactNode;
 }
 
 const iconList = {
@@ -55,11 +58,46 @@ const iconList = {
 };
 
 const Icon = (props: IconProps) => {
-  const { type, label, style } = props;
+  const {
+    type,
+    label,
+    style,
+    size,
+    color,
+    childern,
+  } = props;
+
+  const iconClasses = () => {
+    if (!size) { return ''; }
+    switch (size) {
+      case 'xs':
+        return styles.xs
+      case 'md':
+        return styles.md
+      case 'lg':
+        return styles.lg
+    }
+  }
+
+  const iconColor = () => {
+    if (!color) { return ''; }
+    switch (color) {
+      case 'primary':
+        return styles.primary
+      case 'second':
+        return styles.second
+      case 'dark-warning':
+        return styles.darkWarning
+    }
+  }
+
   return (
-    <div className={styles.icon} style={style}>
-      {iconList[type]}
-      {label && <span className={styles.label}>{label}</span>}
+    <div className={styles.content} style={style}>
+      <div className={`${styles.icon} ${iconClasses()} ${iconColor()}`}>{iconList[type]}</div>
+      {childern ?
+        childern :
+        label && <span className={`${styles.label} ${iconClasses()}`}>{label}</span>
+      }
     </div>
   );
 };

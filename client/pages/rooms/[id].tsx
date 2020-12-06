@@ -144,8 +144,12 @@ const Room = () => {
                         Ready
                       </div> :
                       <div className={styles.master}>
-                        <Icon type={IconType.Crown} />
-                        <span>房主</span>
+                        <Icon
+                          type={IconType.Crown}
+                          label="房主"
+                          size="lg"
+                          color="dark-warning"
+                        />
                       </div>
                     }
                   </div>

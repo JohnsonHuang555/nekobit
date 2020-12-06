@@ -97,7 +97,11 @@ const Game = () => {
                   {room.status === GameStatus.Preparing ? 'Waiting...' : 'Playing...'}
                 </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
-                  <Icon type={IconType.TwoUsers} label={`${room.playerList.length}/${selectedGame.maxPlayers}`} />
+                  <Icon
+                    type={IconType.TwoUsers}
+                    label={`${room.playerList.length}/${selectedGame.maxPlayers}`}
+                    size="md"
+                  />
                 </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
                   一般模式
