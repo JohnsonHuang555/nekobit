@@ -14,3 +14,10 @@ export const selectRoomInfo = createSelector(
   }),
   (state) => state,
 );
+
+export const selectCreatedId = createSelector(
+  (state: StoreState) => ({
+    createdId: state.rooms.createdId,
+  }),
+  (state) => state,
+)

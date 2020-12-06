@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadGameInfo } from 'actions/gamesAction';
 import { selectGameInfo } from 'selectors/gamesSelector';
-import { selectRooms } from 'selectors/roomsSelector';
+import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
 import { createRoom, loadRooms } from 'actions/roomsAction';
 
@@ -17,6 +17,7 @@ const Game = () => {
   const gameId = router.query.id;
   const { selectedGame } = useSelector(selectGameInfo);
   const { rooms } = useSelector(selectRooms);
+  const { createdId } = useSelector(selectCreatedId);
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
@@ -30,6 +31,12 @@ const Game = () => {
       dispatchLoadRooms();
     }
   }, [dispatch, gameId]);
+
+  useEffect(() => {
+    if (createdId) {
+      router.push(`/rooms/${createdId}`)
+    }
+  }, [createdId]);
 
   const roomStatus = (status: GameStatus) => {
     return status === GameStatus.Preparing ?
@@ -61,7 +68,7 @@ const Game = () => {
           <div className={styles.controls}>
            {/* TODO: 跳model */}
             <Button
-              title="新增房間"
+              title="建立房間"
               color="secondary"
               onClick={() => dispatch(createRoom({
                 title: '來',

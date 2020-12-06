@@ -9,6 +9,7 @@ import { joinRoom } from 'slices/roomsSlice';
 import { RoomFactory } from 'domain/factories/RoomFactory';
 import { selectRoomInfo } from 'selectors/roomsSelector';
 import styles from 'styles/pages/rooms.module.scss';
+import { selectUserInfo } from 'selectors/appSelector';
 
 const Room = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ const Room = () => {
   const roomId = router.query.id;
   const { selectedRoom } = useSelector(selectRoomInfo);
   const [ws, setWs] = useState<WebSocket>();
+  const { userInfo } = useSelector(selectUserInfo);
 
   const sendMessage = (data: WebSocketParams) => {
     ws?.send(JSON.stringify(data))
@@ -28,14 +30,14 @@ const Room = () => {
   }, [dispatch, roomId]);
 
   useEffect(() => {
-    if (ws) {
+    if (ws && userInfo) {
       ws.onopen = () => {
         console.log('open connection')
         const data = {
           event: SocketEvent.JoinRoom,
-          player_id: 'asd-ddf',
+          player_id: userInfo.id,
           data: {
-            player_name: 'Johnson',
+            player_name: userInfo.name,
           }
         }
         sendMessage(data);
@@ -49,6 +51,7 @@ const Room = () => {
         switch (event) {
           case SocketEvent.JoinRoom: {
             const room = RoomFactory.createFromNet(data.room_info);
+            console.log('joooooooo', room)
             dispatch(joinRoom(room))
             break;
           }
