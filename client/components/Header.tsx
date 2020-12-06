@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
@@ -15,14 +15,6 @@ const Header = () => {
   const { userInfo } = useSelector(selectUserInfo);
   const { showModal } = useSelector(selectShowModal);
   const [userName, setUserName] = useState('');
-
-  useEffect(() => {
-    const user = localStorage.getItem('userInfo');
-    if (user) {
-      const uiObj: User = JSON.parse(user);
-      dispatch(setUserInfo(uiObj));
-    }
-  }, [dispatch])
 
   const onLogin = () => {
     const user: User = {

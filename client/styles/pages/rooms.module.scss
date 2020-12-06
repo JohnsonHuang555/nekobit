@@ -60,6 +60,20 @@
               font-size: 24px;
               color: $grey-0;
             }
+            .master {
+              font-size: 28px;
+              display: flex;
+              svg {
+                width: 30px;
+                height: 30px;
+                path {
+                  fill: $dark-warning;
+                }
+              }
+              span {
+                margin-left: 15px;
+              }
+            }
           }
           .delete {
             margin-left: 10px;

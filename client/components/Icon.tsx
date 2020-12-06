@@ -7,11 +7,12 @@ import ChessKnightIcon from './icons/ChessKnight';
 import UsersIcon from './icons/Users';
 import UserIcon from './icons/User';
 import ClockIcon from './icons/Clock';
-import styles from 'styles/components/icon.module.scss';
 import KeyIcon from './icons/Key';
 import TwoUsersIcon from './icons/TwoUsers';
 import TimesIcon from './icons/Times';
 import EditSquareIcon from './icons/EditSquare';
+import CrownIcon from './icons/Crown';
+import styles from 'styles/components/icon.module.scss';
 
 // TODO: 客製化 大小 顏色
 
@@ -28,6 +29,7 @@ export enum IconType {
   TwoUsers = 'two-users',
   Times = 'times',
   EditSquare = 'edit-square',
+  Crown = 'crown',
 }
 
 type IconProps = {
@@ -49,6 +51,7 @@ const iconList = {
   [IconType.TwoUsers]: <TwoUsersIcon />,
   [IconType.Times]: <TimesIcon />,
   [IconType.EditSquare]: <EditSquareIcon />,
+  [IconType.Crown]: <CrownIcon />,
 };
 
 const Icon = (props: IconProps) => {

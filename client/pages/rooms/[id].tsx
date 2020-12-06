@@ -19,58 +19,60 @@ const Room = () => {
   const [ws, setWs] = useState<WebSocket>();
   const { userInfo } = useSelector(selectUserInfo);
 
-  const sendMessage = (data: WebSocketParams) => {
-    ws?.send(JSON.stringify(data))
+  useEffect(() => {
+    if (roomId && userInfo) {
+      runSocket();
+    }
+  }, [roomId, userInfo]);
+
+  const runSocket = () => {
+    if (!userInfo) {
+      return;
+    }
+    const tmpWs = new WebSocket(`ws://localhost:5000/ws/${roomId}`);
+    setWs(tmpWs);
+
+    const data = {
+      event: SocketEvent.JoinRoom,
+      player_id: userInfo.id,
+      data: {
+        player_name: userInfo.name,
+      }
+    }
+    tmpWs.onopen = function() {
+      tmpWs.send(JSON.stringify(data));
+    };
   };
 
   useEffect(() => {
-    if (roomId) {
-      setWs(new WebSocket(`ws://localhost:5000/ws/${roomId}`));
-    }
-  }, [dispatch, roomId]);
-
-  useEffect(() => {
-    if (ws && userInfo) {
-      ws.onopen = () => {
-        console.log('open connection')
-        const data = {
-          event: SocketEvent.JoinRoom,
-          player_id: userInfo.id,
-          data: {
-            player_name: userInfo.name,
-          }
-        }
-        sendMessage(data);
-      }
-      ws.onmessage = e => {
+    if (ws) {
+      ws.onmessage = msg => {
         const {
           event,
           data,
           player_id
-        }: WebSocketParams = JSON.parse(e.data);
+        }: WebSocketParams = JSON.parse(msg.data);
         switch (event) {
           case SocketEvent.JoinRoom: {
             const room = RoomFactory.createFromNet(data.room_info);
-            console.log('joooooooo', room)
             dispatch(joinRoom(room))
             break;
           }
         }
-      }
+      };
     }
-    return () => {
-      ws?.close();
-    }
-  }, [ws]);
+  }, [ws])
 
-  // TODO: 做 loading...
-  if (!ws || !selectedRoom) {
-    return null;
+  const isNowPlayer = (id: string) => {
+    if (userInfo && userInfo.id === id) {
+      return true;
+    }
+    return false;
   }
 
   return (
     <Layout>
-      <div className={styles.mainArea}>
+      {ws && selectedRoom && <div className={styles.mainArea}>
         <div className={styles.leftArea}>
           <div className={`${styles.block} ${styles.playerList}`}>
             <div className={styles.header}>
@@ -83,7 +85,7 @@ const Room = () => {
             <div className={styles.content}>
               {selectedRoom.playerList.map(player => (
                 // Now Player
-                <div key={player.id} className={`${styles.player}`}>
+                <div key={player.id} className={`${styles.player} ${isNowPlayer(player.id) ? 'nowPlayer' : ''}`}>
                   <div
                     className={styles.picture}
                     style={{ backgroundImage: "url('https://images.pexels.com/photos/3541389/pexels-photo-3541389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')" }}
@@ -92,9 +94,15 @@ const Room = () => {
                     <div className={styles.playerName}>
                       {player.name}
                     </div>
-                    <div className={styles.readyStatus}>
-                      Ready
-                    </div>
+                    {!player.isMaster ?
+                      <div className={styles.readyStatus}>
+                        Ready
+                      </div> :
+                      <div className={styles.master}>
+                        <Icon type={IconType.Crown} />
+                        <span>房主</span>
+                      </div>
+                    }
                   </div>
                   {player.isMaster &&
                     <div className={styles.delete}>
@@ -116,7 +124,7 @@ const Room = () => {
           <Button title="開始遊戲" color="secondary" />
           <Button title="離開房間" color="grey-4" />
         </div>
-      </div>
+      </div>}
     </Layout>
   )
 };
