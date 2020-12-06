@@ -52,13 +52,20 @@
             justify-content: space-between;
             .playerName {
               background: $grey-5;
-              font-size: 22px;
-              padding: 5px 10px;
+              font-size: 24px;
+              padding: 8px 10px;
               border-radius: 5px;
             }
-            .readyStatus {
-              font-size: 24px;
+            .nowPlayerName {
+              background: $dark-brown;
+            }
+            .notReady {
+              font-size: 28px;
               color: $grey-0;
+            }
+            .ready {
+              font-size: 28px;
+              color: $warning;
             }
             .master {
               font-size: 28px;

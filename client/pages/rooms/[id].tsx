@@ -5,11 +5,12 @@ import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { SocketEvent, WebSocketParams } from 'domain/models/WebSocket';
-import { joinRoom } from 'slices/roomsSlice';
+import { joinRoom, readyGame } from 'slices/roomsSlice';
 import { RoomFactory } from 'domain/factories/RoomFactory';
 import { selectRoomInfo } from 'selectors/roomsSelector';
-import styles from 'styles/pages/rooms.module.scss';
 import { selectUserInfo } from 'selectors/appSelector';
+import styles from 'styles/pages/rooms.module.scss';
+import { PlayerFactory } from 'domain/factories/PlayerFactory';
 
 const Room = () => {
   const router = useRouter();
@@ -58,6 +59,16 @@ const Room = () => {
             dispatch(joinRoom(room))
             break;
           }
+          case SocketEvent.ReadyGame: {
+            const players = PlayerFactory.createArrayFromNet(data.players);
+            dispatch(readyGame(players))
+            break;
+          }
+          case SocketEvent.StartGame: {
+            const room = RoomFactory.createFromNet(data.room_info);
+            dispatch(joinRoom(room))
+            break;
+          }
         }
       };
     }
@@ -69,6 +80,41 @@ const Room = () => {
     }
     return false;
   }
+
+  const playerInfo = () => {
+    if (!selectedRoom || !userInfo) {
+      return;
+    }
+    return selectedRoom.playerList.find(player => {
+      return player.id === userInfo.id;
+    });
+  };
+
+  const onReadyGame = () => {
+    if (!ws || !userInfo) {
+      return;
+    }
+    const data = {
+      event: SocketEvent.ReadyGame,
+      player_id: userInfo.id,
+      data: {},
+    }
+    ws.send(JSON.stringify(data));
+  };
+
+  const onStartGame = () => {
+    if (!ws || !userInfo) {
+      return;
+    }
+    const data = {
+      event: SocketEvent.StartGame,
+      player_id: userInfo.id,
+      data: {
+        game_mode: 'hidden',
+      }
+    }
+    ws.send(JSON.stringify(data));
+  };
 
   return (
     <Layout>
@@ -84,18 +130,17 @@ const Room = () => {
             </div>
             <div className={styles.content}>
               {selectedRoom.playerList.map(player => (
-                // Now Player
-                <div key={player.id} className={`${styles.player} ${isNowPlayer(player.id) ? 'nowPlayer' : ''}`}>
+                <div key={player.id} className={`${styles.player} ${isNowPlayer(player.id) ? styles.nowPlayer : ''}`}>
                   <div
                     className={styles.picture}
                     style={{ backgroundImage: "url('https://images.pexels.com/photos/3541389/pexels-photo-3541389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')" }}
                   />
                   <div className={styles.info}>
-                    <div className={styles.playerName}>
+                    <div className={`${styles.playerName} ${isNowPlayer(player.id) ? styles.nowPlayerName : ''}`}>
                       {player.name}
                     </div>
                     {!player.isMaster ?
-                      <div className={styles.readyStatus}>
+                      <div className={`${player.isReady ? styles.ready : styles.notReady}`}>
                         Ready
                       </div> :
                       <div className={styles.master}>
@@ -104,11 +149,12 @@ const Room = () => {
                       </div>
                     }
                   </div>
-                  {player.isMaster &&
+                  {/* TODO: 踢人 */}
+                  {/* {player.isMaster && isNowPlayer(player.id) &&
                     <div className={styles.delete}>
                       <Icon type={IconType.Times} />
                     </div>
-                  }
+                  } */}
                 </div>
               ))}
             </div>
@@ -121,7 +167,18 @@ const Room = () => {
         <div className={`${styles.rightArea} ${styles.block}`}>
           {/* // TODO: 遊戲設定 */}
           <div className={styles.content}></div>
-          <Button title="開始遊戲" color="secondary" />
+          {playerInfo()?.isMaster ?
+            <Button
+              title="開始遊戲"
+              color="secondary"
+              onClick={() => onStartGame()}
+            /> :
+            <Button
+              title={playerInfo()?.isReady ? '取消準備' : '準備遊戲'}
+              color="secondary"
+              onClick={() => onReadyGame()}
+            />
+          }
           <Button title="離開房間" color="grey-4" />
         </div>
       </div>}

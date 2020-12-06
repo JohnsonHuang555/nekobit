@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createRoom, loadRooms } from "actions/roomsAction";
+import { Player } from "domain/models/Player";
 import { Room } from "domain/models/Room";
 
 export type State = {
@@ -11,6 +12,7 @@ export type State = {
 
 export type CaseReducer = {
   joinRoom: (state: State, action: PayloadAction<Room>) => void;
+  readyGame: (state: State, action: PayloadAction<Player[]>) => void;
 };
 
 const roomsSlice = createSlice<State, CaseReducer>({
@@ -24,6 +26,14 @@ const roomsSlice = createSlice<State, CaseReducer>({
   reducers: {
     joinRoom: (state: State, action: PayloadAction<Room>) => {
       state.selectedRoom = action.payload;
+    },
+    readyGame: (state: State, action: PayloadAction<Player[]>) => {
+      if (state.selectedRoom) {
+        state.selectedRoom = {
+          ...state.selectedRoom,
+          playerList: action.payload,
+        };
+      }
     },
   },
   extraReducers: {
@@ -46,6 +56,7 @@ const roomsSlice = createSlice<State, CaseReducer>({
 
 export const {
   joinRoom,
+  readyGame,
 } = roomsSlice.actions;
 
 export default roomsSlice.reducer;
