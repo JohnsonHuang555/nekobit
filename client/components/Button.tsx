@@ -29,7 +29,7 @@ const Button = (props: ButtonProps) => {
       }}
       disabled={disabled}
       type={type}
-      className={styles[color]}
+      className={`${styles.button} ${styles[color]}`}
     >
       {children || title}
     </button>

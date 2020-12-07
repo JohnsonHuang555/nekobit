@@ -14,7 +14,7 @@
 .grey-4 {
   background-color: $grey-4;
   &:hover {
-    background-color: #333333;
+    background-color: $grey-4-hover;
   }
 }
 
@@ -23,4 +23,10 @@
   padding: 5px 20px;
   font-size: 20px;
   border-radius: 5px;
+}
+
+.button:disabled {
+  background-color: #505050;
+  color: #898989;
+  pointer-events: none;
 }

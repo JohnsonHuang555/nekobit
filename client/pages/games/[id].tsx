@@ -10,6 +10,7 @@ import { selectGameInfo } from 'selectors/gamesSelector';
 import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
 import { createRoom, loadRooms } from 'actions/roomsAction';
+import { selectUserInfo } from 'selectors/appSelector';
 
 const Game = () => {
   const router = useRouter();
@@ -18,6 +19,7 @@ const Game = () => {
   const { selectedGame } = useSelector(selectGameInfo);
   const { rooms } = useSelector(selectRooms);
   const { createdId } = useSelector(selectCreatedId);
+  const { userInfo } = useSelector(selectUserInfo);
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
@@ -49,6 +51,19 @@ const Game = () => {
     return null;
   }
 
+  const onCreateRoom = () => {
+    // TODO: 跳登入 modal
+    if (!userInfo) {
+      return;
+    }
+    dispatch(createRoom({
+      title: '來',
+      password: '',
+      game_pack: GamePack.ChineseChess,
+      game_mode: 'hidden',
+    }))
+  };
+
   return (
     <Layout>
       <div className="header">
@@ -70,14 +85,12 @@ const Game = () => {
             <Button
               title="建立房間"
               color="secondary"
-              onClick={() => dispatch(createRoom({
-                title: '來',
-                password: '',
-                game_pack: GamePack.ChineseChess,
-                game_mode: 'hidden',
-              }))}
+              onClick={() => onCreateRoom()}
             />
-            <Button title="快速加入" color="grey-4" />
+            <Button
+              title="快速加入"
+              color="grey-4"
+            />
           </div>
         </div>
         <div className={styles.rooms}>
