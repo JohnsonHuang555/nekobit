@@ -28,7 +28,6 @@ const Room = () => {
   }, [roomId, userInfo]);
 
   const runSocket = () => {
-    console.log(99999)
     if (!userInfo) {
       return;
     }
@@ -54,7 +53,6 @@ const Room = () => {
           event,
           data,
         }: WebSocketParams = JSON.parse(msg.data);
-        console.log(1111)
         switch (event) {
           case SocketEvent.JoinRoom: {
             const room = RoomFactory.createFromNet(data.room_info);
@@ -120,6 +118,7 @@ const Room = () => {
     ws.send(JSON.stringify(data));
   };
 
+  // FIXME: 要切三塊 components，container 保持乾淨
   return (
     <Layout>
       {ws && selectedRoom && <div className={styles.mainArea}>
