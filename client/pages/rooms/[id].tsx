@@ -13,6 +13,7 @@ import { PlayerFactory } from 'domain/factories/PlayerFactory';
 import { GamePack, GameStatus } from 'domain/models/Room';
 import PlayerList from 'components/pages/rooms/PlayerList';
 import GameScreen from 'components/pages/rooms/GameScreen';
+import { wsConnect } from 'actions/socketAction';
 
 const Room = () => {
   const router = useRouter();
@@ -23,10 +24,11 @@ const Room = () => {
   const { userInfo } = useSelector(selectUserInfo);
 
   useEffect(() => {
-    if (roomId && userInfo) {
-      runSocket();
+    if (roomId) {
+      const host = `ws://localhost:5000/ws/${roomId}`;
+      dispatch(wsConnect(host));
     }
-  }, [roomId, userInfo]);
+  }, [roomId]);
 
   const runSocket = () => {
     if (!userInfo) {
