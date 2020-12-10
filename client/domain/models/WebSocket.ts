@@ -1,7 +1,7 @@
 export type WebSocketParams = {
   event: SocketEvent | ChineseChessSocketEvent,
   player_id: string;
-  data: any;
+  data?: any;
 };
 
 export enum SocketEvent {

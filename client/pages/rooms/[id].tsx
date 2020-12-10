@@ -13,70 +13,44 @@ import { PlayerFactory } from 'domain/factories/PlayerFactory';
 import { GamePack, GameStatus } from 'domain/models/Room';
 import PlayerList from 'components/pages/rooms/PlayerList';
 import GameScreen from 'components/pages/rooms/GameScreen';
-import { wsConnect } from 'actions/socketAction';
+import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
+import { selectIsConnected } from 'selectors/webSocketSelector';
 
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = router.query.id;
   const { selectedRoom } = useSelector(selectRoomInfo);
-  const [ws, setWs] = useState<WebSocket>();
+  const { isConnected } = useSelector(selectIsConnected);
   const { userInfo } = useSelector(selectUserInfo);
+
+  useEffect(() => {
+    return () => {
+      dispatch(wsDisconnect())
+    }
+  }, []);
 
   useEffect(() => {
     if (roomId) {
       const host = `ws://localhost:5000/ws/${roomId}`;
       dispatch(wsConnect(host));
     }
+    return () => {
+
+    }
   }, [roomId]);
 
-  const runSocket = () => {
-    if (!userInfo) {
-      return;
-    }
-    const tmpWs = new WebSocket(`ws://localhost:5000/ws/${roomId}`);
-    setWs(tmpWs);
-
-    const data = {
-      event: SocketEvent.JoinRoom,
-      player_id: userInfo.id,
-      data: {
-        player_name: userInfo.name,
-      }
-    }
-    tmpWs.onopen = function() {
-      tmpWs.send(JSON.stringify(data));
-    };
-  };
-
   useEffect(() => {
-    if (ws) {
-      ws.onmessage = msg => {
-        const {
-          event,
-          data,
-        }: WebSocketParams = JSON.parse(msg.data);
-        switch (event) {
-          case SocketEvent.JoinRoom: {
-            const room = RoomFactory.createFromNet(data.room_info);
-            dispatch(joinRoom(room));
-            break;
-          }
-          case SocketEvent.ReadyGame: {
-            const players = PlayerFactory.createArrayFromNet(data.players);
-            dispatch(readyGame(players));
-            break;
-          }
-          case SocketEvent.StartGame: {
-            const room = RoomFactory.createFromNet(data.room_info);
-            console.log(room)
-            dispatch(startGame(room));
-            break;
-          }
+    if (isConnected && userInfo) {
+      dispatch(wsSendMessage({
+        event: SocketEvent.JoinRoom,
+        player_id: userInfo.id,
+        data: {
+          player_name: userInfo.name,
         }
-      };
+      }));
     }
-  }, [ws]);
+  }, [isConnected]);
 
   const isNowPlayer = (id: string) => {
     if (userInfo && userInfo.id === id) {
@@ -94,37 +68,10 @@ const Room = () => {
     });
   };
 
-  const onReadyGame = () => {
-    if (!ws || !userInfo) {
-      return;
-    }
-    const data = {
-      event: SocketEvent.ReadyGame,
-      player_id: userInfo.id,
-      data: {},
-    }
-    ws.send(JSON.stringify(data));
-  };
-
-  const onStartGame = () => {
-    if (!ws || !userInfo) {
-      return;
-    }
-    const data = {
-      event: SocketEvent.StartGame,
-      player_id: userInfo.id,
-      data: {
-        game_pack: GamePack.ChineseChess,
-        game_mode: 'hidden',
-      }
-    }
-    ws.send(JSON.stringify(data));
-  };
-
   // FIXME: 要切三塊 components，container 保持乾淨
   return (
     <Layout>
-      {ws && selectedRoom &&
+      {userInfo && isConnected && selectedRoom &&
         <div className={styles.mainArea}>
           <div className={styles.leftArea}>
             <PlayerList selectedRoom={selectedRoom} isNowPlayer={player => isNowPlayer(player)}/>
@@ -142,12 +89,22 @@ const Room = () => {
               <Button
                 title="開始遊戲"
                 color="secondary"
-                onClick={() => onStartGame()}
+                onClick={() => dispatch(wsSendMessage({
+                  event: SocketEvent.StartGame,
+                  player_id: userInfo.id,
+                  data: {
+                    game_pack: GamePack.ChineseChess,
+                    game_mode: 'hidden',
+                  }
+                }))}
               /> :
               <Button
                 title={playerInfo()?.isReady ? '取消準備' : '準備遊戲'}
                 color="secondary"
-                onClick={() => onReadyGame()}
+                onClick={() => dispatch(wsSendMessage({
+                  event: SocketEvent.ReadyGame,
+                  player_id: userInfo.id,
+                }))}
               />
             }
             <Button title="離開房間" color="grey-4" />
