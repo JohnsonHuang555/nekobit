@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Button from 'components/Button';
 import Layout from 'components/Layout';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { SocketEvent, WebSocketParams } from 'domain/models/WebSocket';
-import { joinRoom, readyGame, startGame } from 'slices/roomsSlice';
-import { RoomFactory } from 'domain/factories/RoomFactory';
+import { SocketEvent } from 'domain/models/WebSocket';
 import { selectRoomInfo } from 'selectors/roomsSelector';
 import { selectUserInfo } from 'selectors/appSelector';
 import styles from 'styles/pages/rooms.module.scss';
-import { PlayerFactory } from 'domain/factories/PlayerFactory';
 import { GamePack, GameStatus } from 'domain/models/Room';
 import PlayerList from 'components/pages/rooms/PlayerList';
 import GameScreen from 'components/pages/rooms/GameScreen';
@@ -110,7 +107,7 @@ const Room = () => {
             <Button title="離開房間" color="grey-4" />
           </div>
           {selectedRoom.status === GameStatus.Playing &&
-            <GameScreen />
+            <GameScreen gamePack={selectedRoom.gamePack}/>
           }
         </div>
       }

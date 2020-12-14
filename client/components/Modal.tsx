@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactModal, { Styles } from 'react-modal';
 import { useDispatch } from 'react-redux';
 import { setShowModal } from 'slices/appSlice';

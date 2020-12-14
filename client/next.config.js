@@ -11,4 +11,11 @@ module.exports = {
     path: '/_next/image',
     loader: 'default',
   },
+  webpackDevMiddleware: config => {
+    config.watchOptions = {
+      poll: 1000,
+      aggregateTimeout: 300,
+    }
+    return config
+  },
 };
