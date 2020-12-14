@@ -8,8 +8,8 @@ import { selectRoomInfo } from 'selectors/roomsSelector';
 import { selectUserInfo } from 'selectors/appSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { GamePack, GameStatus } from 'domain/models/Room';
-import PlayerList from 'components/pages/rooms/PlayerList';
-import GameScreen from 'components/pages/rooms/GameScreen';
+import PlayerList from 'components/rooms/PlayerList';
+import GameScreen from 'components/rooms/GameScreen';
 import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
 import { selectIsConnected } from 'selectors/webSocketSelector';
 

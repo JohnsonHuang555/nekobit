@@ -1,5 +1,5 @@
 import { GamePack } from 'domain/models/Room';
-import ChineseChessContainer from 'features/chinese_chess/ChineseChessContainer';
+import ChineseChessContainer from 'features/chinese_chess/components/ChineseChessContainer';
 import styles from 'styles/pages/rooms/gameScreen.module.scss';
 
 type GameScreenProps = {
