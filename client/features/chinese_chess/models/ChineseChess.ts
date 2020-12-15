@@ -1,7 +1,14 @@
+import { ChessName } from "features/chinese_chess/models/ChessName";
+
 export type ChineseChess = {
   id: number;
   side: ChessSide;
-  // name:
+  name: ChessName;
+  isFliped: boolean;
+  locationX: number;
+  locationY: number;
+  rank: number;
+  alive: boolean;
 };
 
 export enum ChessSide {

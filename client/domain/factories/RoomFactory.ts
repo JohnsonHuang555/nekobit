@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Room } from 'domain/models/Room';
 import { NetRoom } from 'domain/remote/NetRoom';
-import { PlayerFactory } from './PlayerFactory';
+import { nestedToJsCase } from 'helpers/ajaxConverter';
 
 export class RoomFactory {
   static createArrayFromNet(netRooms: NetRoom[]): Room[] {
@@ -9,8 +9,7 @@ export class RoomFactory {
   }
 
   static createFromNet(netRoom: NetRoom): Room {
-    const room = _.mapKeys(netRoom, (value, key) => (_.camelCase(key))) as Room;
-    room.playerList = PlayerFactory.createArrayFromNet(netRoom.player_list);
+    const room = nestedToJsCase(netRoom) as Room;
     return room;
   }
 }

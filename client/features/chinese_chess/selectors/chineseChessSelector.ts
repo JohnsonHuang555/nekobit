@@ -1,9 +1,16 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { StoreState } from "store";
+import { ChineseChess } from "../models/ChineseChess";
+import { PlayerSide } from "../models/PlayerSide";
 
-export const selectChineseChesses = createSelector(
+export type GameData = {
+  chineseChess: ChineseChess[];
+  playerSide: any;
+}
+
+export const selectGameData = createSelector(
   (state: StoreState) => ({
-    chineseChesses: state.app.showModal,
+    gameData: state.rooms.selectedRoom?.gameData as GameData,
   }),
   (state) => state,
 );

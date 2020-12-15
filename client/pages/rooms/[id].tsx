@@ -32,9 +32,6 @@ const Room = () => {
       const host = `ws://localhost:5000/ws/${roomId}`;
       dispatch(wsConnect(host));
     }
-    return () => {
-
-    }
   }, [roomId]);
 
   useEffect(() => {
