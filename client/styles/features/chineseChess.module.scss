@@ -24,16 +24,47 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        .item {
-          border: 3px solid;
-          width: 80px;
-          height: 80px;
+        .flipedChess {
+          width: 85px;
+          height: 85px;
           border-radius: 50%;
           display: flex;
           justify-content: center;
           align-items: center;
+          background: $white;
+          font-size: 40px;
+          position: relative;
+          cursor: pointer;
+          &:hover {
+            background: $grey-1;
+          }
+          .circle {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border: 2px solid $grey-5;
+            border-radius: 50%;
+          }
+          .red {
+            border-color: $error;
+          }
+        }
+        .red {
+          color: $error;
+        }
+        .black {
+          color: $grey-5;
+        }
+        .notFlipedChess {
+          cursor: pointer;
+          border: 3px solid;
+          width: 85px;
+          height: 85px;
+          border-radius: 50%;
           background: $second;
-          font-size: 36px;
+          &:hover {
+            background: $second-hover;
+          }
         }
       }
     }

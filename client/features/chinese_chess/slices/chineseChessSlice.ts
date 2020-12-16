@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChineseChess } from "../models/ChineseChess";
-import { PlayerSide } from "../models/PlayerSide";
+import { ChineseChess } from "../domain/models/ChineseChess";
+import { PlayerSide } from "../domain/models/PlayerSide";
 
 export type State = {
   chineseChess: ChineseChess[];
@@ -19,7 +19,6 @@ const chineseChessSlice = createSlice<State, CaseReducer>({
   },
   reducers: {
     setGameData: (state: State, action: PayloadAction<State>) => {
-      console.log(action)
       state.chineseChess = action.payload.chineseChess;
       state.playerSide = action.payload.playerSide;
     }

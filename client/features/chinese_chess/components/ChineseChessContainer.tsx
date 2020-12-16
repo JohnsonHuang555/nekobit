@@ -1,13 +1,30 @@
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectGameData } from "../selectors/chineseChessSelector";
 import GameMap from "./GameMap";
 import styles from 'styles/features/chineseChess.module.scss';
+import { useEffect } from "react";
 import { setGameData } from "../slices/chineseChessSlice";
+import { selectRoomInfo } from "selectors/roomsSelector";
+import { ChessSide } from "../domain/models/ChineseChess";
+import { wsSendMessage } from "actions/socketAction";
+import { ChineseChessSocketEvent } from "domain/models/WebSocket";
+import { selectUserInfo } from "selectors/appSelector";
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
   const { chineseChess, playerSide } = useSelector(selectGameData);
+  const { userInfo } = useSelector(selectUserInfo);
+  const { selectedRoom } = useSelector(selectRoomInfo);
+
+  if (!userInfo) {
+    return null;
+  }
+
+  useEffect(() => {
+    if (!chineseChess.length) {
+      dispatch(setGameData(selectedRoom?.gameData));
+    }
+  }, [])
 
   const chessMap = () => {
     let map = [];
@@ -43,15 +60,26 @@ const ChineseChessContainer = () => {
 
         if (chess) {
           map.push(
-            <div className={styles.itemContainer}>
-              <span className={styles.item}>{chess.name}</span>
+            <div className={styles.itemContainer} key={`x-${x}/y-${y}`}>
+              {chess.isFliped ?
+                <span className={`${styles.flipedChess} ${chess.side === ChessSide.Black ? styles.black : styles.red}`}>
+                  <span>{chess.name}</span>
+                  <span className={`${styles.circle} ${chess.side === ChessSide.Red ? styles.red : ''}`}></span>
+                </span> :
+                <span className={styles.notFlipedChess} onClick={() => dispatch(wsSendMessage({
+                  event: ChineseChessSocketEvent.FlipChess,
+                  player_id: userInfo.id,
+                  data: {
+                    chess_id: chess.id,
+                    chinese_chess_side: chess.side,
+                  }
+                }))}></span>
+              }
             </div>
           )
         } else {
           map.push(
-            <div className={styles.itemContainer}>
-              <span className={styles.item} />
-            </div>
+            <div className={styles.itemContainer} key={`x-${x}/y-${y}`}></div>
           )
         }
 
@@ -69,7 +97,6 @@ const ChineseChessContainer = () => {
         </div>
       </div>
     </div>
-    //  <div>qwe</div>
   )
 };
 

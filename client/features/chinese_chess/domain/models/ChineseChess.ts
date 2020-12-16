@@ -1,4 +1,4 @@
-import { ChessName } from "features/chinese_chess/models/ChessName";
+import { ChessName } from "features/chinese_chess/domain/models/ChessName";
 
 export type ChineseChess = {
   id: number;
