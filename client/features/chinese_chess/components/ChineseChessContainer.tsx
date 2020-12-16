@@ -1,20 +1,19 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { selectGameData } from "../selectors/chineseChessSelector";
 import GameMap from "./GameMap";
 import styles from 'styles/features/chineseChess.module.scss';
+import { setGameData } from "../slices/chineseChessSlice";
 
 const ChineseChessContainer = () => {
-  const { gameData } = useSelector(selectGameData);
-
-  if (!gameData) {
-    return null;
-  }
+  const dispatch = useDispatch();
+  const { chineseChess, playerSide } = useSelector(selectGameData);
 
   const chessMap = () => {
     let map = [];
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
-        const chess = [...gameData.chineseChess].find(c => {
+        const chess = chineseChess.find(c => {
           return c.locationX === x && c.locationY === y && c.alive;
         });
 

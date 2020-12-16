@@ -2,6 +2,7 @@ import { WebSocketEvents } from "actions/socketAction";
 import { PlayerFactory } from "domain/factories/PlayerFactory";
 import { RoomFactory } from "domain/factories/RoomFactory";
 import { SocketEvent } from "domain/models/WebSocket";
+import { setGameData as setChineseChessGameData } from "features/chinese_chess/slices/chineseChessSlice";
 import { joinRoom, readyGame, startGame } from "slices/roomsSlice";
 import { wsConnected, wsDisConnected } from "slices/webSocketSlice";
 
@@ -35,6 +36,9 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
           case SocketEvent.StartGame: {
             const room = RoomFactory.createFromNet(data.room_info);
             store.dispatch(startGame(room));
+
+            // 寫入所有遊戲的資料
+            store.dispatch(setChineseChessGameData(room.gameData))
             break;
           }
         }
