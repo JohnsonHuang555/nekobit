@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"fmt"
 	"go-server/domain"
 	chinesechess "go-server/domain/chinese-chess"
 	"net/http"
@@ -93,26 +92,28 @@ func (s subscription) readPump() {
 	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
 		var msg MsgData
+		err := c.ws.ReadJSON(&msg)
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				break
+			}
+			c.ws.Close()
+			return
+		}
+
 		room, err := s.roomUseCase.GetRoomInfo(s.roomID)
 		if err != nil {
 			break
 		}
-
-		// game usecases
-		// var chineseChessUseCase chinesechess.ChineseChessUseCase
 
 		// chinese chess
 		ccGameData := &chineseChessGameData.GameData{
 			ChineseChess: []*chineseChessGameData.ChineseChess{},
 		}
 
-		fmt.Println(room, "rororororororororororo")
-
 		// inject games every connection
 		if room.Status == domain.Playing {
-			fmt.Println(room.Status, "mmmmmmmmmmmmmmmmmmmmm")
 			ccGameData = room.GameData.(*chineseChessGameData.GameData)
-			fmt.Println(ccGameData, "wwwwwwwwwww")
 		}
 
 		chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(ccGameData)
@@ -147,7 +148,6 @@ func (s subscription) readPump() {
 				msg.Data.RoomInfo = room
 			}
 		case domain.FlipChess:
-			fmt.Println(room.GameData.(*chineseChessGameData.GameData), "gggggggggmmmmmmmm")
 			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide, msg.Data.PlayersID)
 			ccGameData.ChineseChess = newChesses
 			ccGameData.PlayerSide = playerSide
@@ -176,15 +176,6 @@ func (s subscription) readPump() {
 		nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
 		if err == nil {
 			msg.Data.NowTurn = nowTurn
-		}
-
-		err = c.ws.ReadJSON(&msg)
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				break
-			}
-			c.ws.Close()
-			return
 		}
 
 		m := message{msg, s.roomID}
