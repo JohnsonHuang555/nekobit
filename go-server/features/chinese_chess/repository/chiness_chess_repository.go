@@ -28,11 +28,25 @@ func (cr *chineseChessRepository) UpdateOne(id int, c *chinesechess.ChineseChess
 	cr.chesses[chessIndex] = c
 }
 
-func (cr *chineseChessRepository) UpdatePlayerSide(pid string, side chinesechess.ChineseChessSide) map[string]chinesechess.ChineseChessSide {
+func (cr *chineseChessRepository) UpdatePlayerSide(pid string, side chinesechess.ChineseChessSide, playersID []string) map[string]chinesechess.ChineseChessSide {
 	_, exist := cr.playerSide[pid]
 	// 不存在才塞值
 	if !exist {
 		cr.playerSide[pid] = side
+	}
+
+	// FIXME: 有點醜，再想想怎麼改
+	// 假如一方有值自動帶入另一方
+	for i := 0; i < len(playersID); i++ {
+		for key, v := range cr.playerSide {
+			if key != playersID[i] {
+				if v == chinesechess.Black {
+					cr.playerSide[playersID[i]] = chinesechess.Red
+				} else {
+					cr.playerSide[playersID[i]] = chinesechess.Black
+				}
+			}
+		}
 	}
 
 	return cr.playerSide

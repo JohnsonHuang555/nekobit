@@ -175,7 +175,3 @@ func (ru *roomUseCase) ChangePlayerTurn(rid string, pid string) (string, error) 
 
 	return room.NowTurn, nil
 }
-
-func (ru *roomUseCase) SetPlayerSideIndependence(rid string, pid string, side string, allSides []string) (string, string) {
-
-}

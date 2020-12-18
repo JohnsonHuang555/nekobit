@@ -56,5 +56,4 @@ type RoomUseCase interface {
 	CreateRoom(title string, gameMode GameMode, password string, gamePack GamePack) (string, error)
 	UpdateGameData(rid string, gameData interface{}) error
 	ChangePlayerTurn(rid string, pid string) (string, error)
-	SetPlayerSideIndependence(rid string, pid string, side string, allSides []string) (string, string)
 }

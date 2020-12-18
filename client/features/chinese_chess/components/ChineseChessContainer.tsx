@@ -29,6 +29,9 @@ const ChineseChessContainer = () => {
 
   const isYourTurn = userInfo.id === selectedRoom.nowTurn ? true : false;
   const yourSide = playerSide[userInfo.id];
+  const playersId = selectedRoom.playerList.map((p) => {
+    return p.id;
+  });
 
   const chessMap = () => {
     let map = [];
@@ -62,6 +65,19 @@ const ChineseChessContainer = () => {
           return false;
         };
 
+        const onFlip = (c: ChineseChess) => {
+          if (!chess || !isYourTurn) { return; }
+          dispatch(wsSendMessage({
+            event: ChineseChessSocketEvent.FlipChess,
+            player_id: userInfo.id,
+            data: {
+              chess_id: c.id,
+              chinese_chess_side: c.side,
+              players_id: playersId,
+            }
+          }))
+        };
+
         if (chess) {
           map.push(
             <div className={styles.itemContainer} key={`x-${x}/y-${y}`}>
@@ -77,14 +93,7 @@ const ChineseChessContainer = () => {
                 ) : (
                   <span
                     className={styles.notFlipedChess}
-                    onClick={() => dispatch(wsSendMessage({
-                      event: ChineseChessSocketEvent.FlipChess,
-                      player_id: userInfo.id,
-                      data: {
-                        chess_id: chess.id,
-                        chinese_chess_side: chess.side,
-                      }
-                    }))}
+                    onClick={() => onFlip(chess)}
                   />
                 )
               }

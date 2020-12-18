@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"fmt"
 	"go-server/domain"
 	chinesechess "go-server/domain/chinese-chess"
 	"net/http"
@@ -98,25 +99,24 @@ func (s subscription) readPump() {
 		}
 
 		// game usecases
-		var chineseChessUseCase chinesechess.ChineseChessUseCase
+		// var chineseChessUseCase chinesechess.ChineseChessUseCase
 
 		// chinese chess
 		ccGameData := &chineseChessGameData.GameData{
 			ChineseChess: []*chineseChessGameData.ChineseChess{},
 		}
 
+		fmt.Println(room, "rororororororororororo")
+
 		// inject games every connection
 		if room.Status == domain.Playing {
+			fmt.Println(room.Status, "mmmmmmmmmmmmmmmmmmmmm")
 			ccGameData = room.GameData.(*chineseChessGameData.GameData)
+			fmt.Println(ccGameData, "wwwwwwwwwww")
 		}
 
 		chineseChessRepo := _chineseChessRepo.NewChineseChessRepository(ccGameData)
-		chineseChessUseCase = _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
-
-		err = c.ws.ReadJSON(&msg)
-		if err != nil && websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-			break
-		}
+		chineseChessUseCase := _chineseChessUseCase.NewChineseChessUseCase(chineseChessRepo)
 
 		switch msg.Event {
 		case domain.JoinRoom:
@@ -147,7 +147,8 @@ func (s subscription) readPump() {
 				msg.Data.RoomInfo = room
 			}
 		case domain.FlipChess:
-			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide)
+			fmt.Println(room.GameData.(*chineseChessGameData.GameData), "gggggggggmmmmmmmm")
+			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide, msg.Data.PlayersID)
 			ccGameData.ChineseChess = newChesses
 			ccGameData.PlayerSide = playerSide
 			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
@@ -175,6 +176,15 @@ func (s subscription) readPump() {
 		nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
 		if err == nil {
 			msg.Data.NowTurn = nowTurn
+		}
+
+		err = c.ws.ReadJSON(&msg)
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+				break
+			}
+			c.ws.Close()
+			return
 		}
 
 		m := message{msg, s.roomID}

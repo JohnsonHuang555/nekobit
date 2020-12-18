@@ -15,13 +15,13 @@ func NewChineseChessUseCase(c chinesechess.ChineseChessRepository) chinesechess.
 	return &chineseChessUseCase{c}
 }
 
-func (cu *chineseChessUseCase) FlipChess(id int, pid string, side chinesechess.ChineseChessSide) ([]*chinesechess.ChineseChess, map[string]chinesechess.ChineseChessSide) {
+func (cu *chineseChessUseCase) FlipChess(id int, pid string, side chinesechess.ChineseChessSide, playersID []string) ([]*chinesechess.ChineseChess, map[string]chinesechess.ChineseChessSide) {
 	chess := cu.chineseChessRepo.FindOne(id)
 	chess.IsFliped = true
 	cu.chineseChessRepo.UpdateOne(id, chess)
 
 	chesses := cu.chineseChessRepo.FindAll()
-	playerSide := cu.chineseChessRepo.UpdatePlayerSide(pid, side)
+	playerSide := cu.chineseChessRepo.UpdatePlayerSide(pid, side, playersID)
 	return chesses, playerSide
 }
 
