@@ -104,6 +104,10 @@ func (ru *roomUseCase) StartGame(rid string, gameData interface{}) (*domain.Room
 	randOrders := utils.RandomShuffle(len(room.Players))
 	for i := 0; i < len(room.Players); i++ {
 		room.Players[i].PlayOrder = randOrders[i]
+		// 代表起始玩家
+		if randOrders[i] == 0 {
+			room.NowTurn = room.Players[i].ID
+		}
 	}
 
 	err = ru.roomRepo.UpdateByID(rid, room)

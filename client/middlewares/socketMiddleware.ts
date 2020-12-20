@@ -4,7 +4,7 @@ import { RoomFactory } from "domain/factories/RoomFactory";
 import { ChineseChessSocketEvent, SocketEvent } from "domain/models/WebSocket";
 import { GameDataFactory } from "features/chinese_chess/domain/factories/GameDataFactory";
 import { setGameData as setChineseChessGameData } from "features/chinese_chess/slices/chineseChessSlice";
-import { joinRoom, readyGame, startGame } from "slices/roomsSlice";
+import { changePlayer, joinRoom, readyGame, startGame } from "slices/roomsSlice";
 import { wsConnected, wsDisConnected } from "slices/webSocketSlice";
 
 let webSocket: WebSocket;
@@ -45,6 +45,7 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
           case ChineseChessSocketEvent.FlipChess: {
             const gameData = GameDataFactory.createFromNet(data.game_data);
             store.dispatch(setChineseChessGameData(gameData))
+            store.dispatch(changePlayer(data.now_turn))
           }
         }
       };

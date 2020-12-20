@@ -151,7 +151,11 @@ func (s subscription) readPump() {
 			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide, msg.Data.PlayersID)
 			ccGameData.ChineseChess = newChesses
 			ccGameData.PlayerSide = playerSide
-			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
+			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
+			if err == nil {
+				msg.Data.NowTurn = nowTurn
+			}
+			err = s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
 			if err == nil {
 				msg.Data.GameData = ccGameData
 			}
@@ -171,11 +175,6 @@ func (s subscription) readPump() {
 				msg.Data.GameData = ccGameData
 				msg.Data.GameOver = gameOver
 			}
-		}
-
-		nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
-		if err == nil {
-			msg.Data.NowTurn = nowTurn
 		}
 
 		m := message{msg, s.roomID}
