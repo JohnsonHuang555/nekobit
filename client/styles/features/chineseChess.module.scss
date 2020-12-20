@@ -33,6 +33,7 @@
         padding: 23px;
         .itemContainer {
           width: calc(100% / 8);
+          height: 112px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -47,9 +48,6 @@
             font-size: 40px;
             position: relative;
             cursor: pointer;
-            &:hover {
-              background: $grey-1;
-            }
             .circle {
               position: absolute;
               width: 70px;

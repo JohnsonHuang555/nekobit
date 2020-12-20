@@ -53,8 +53,8 @@ const ChineseChessContainer = () => {
         player_id: userInfo.id,
         data: {
           chess_id: selectedChess.id,
-          target_x: targetX,
-          target_y: targetY,
+          location_x: targetX,
+          location_y: targetY,
         }
       }));
       dispatch(reset());
@@ -96,7 +96,6 @@ const ChineseChessContainer = () => {
           if (yourSide === targetChess.side) {
             setSelectedChess(targetChess);
           } else if (selectedChess && selectedChess.side !== targetChess.side) {
-            console.log(55555)
             // eat chess
             dispatch(setCanEat({
               chessId: selectedChess.id,

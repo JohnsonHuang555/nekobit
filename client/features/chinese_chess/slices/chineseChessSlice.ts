@@ -141,14 +141,14 @@ const chineseChessSlice = createSlice<State, CaseReducer>({
         if (name === ChessName.CannonsRed || name === ChessName.CannonsBlack) {
           let middleChesses = [];
           if (locationX === targetX) {
-            chesses.filter(c => {
+            middleChesses = chesses.filter(c => {
               return c.locationX === targetX &&
                      c.locationY > Math.min(targetY, locationY) &&
                      c.locationY < Math.max(targetY, locationY) &&
                      c.alive
             });
           } else if (locationY === targetY) {
-            chesses.filter(c => {
+            middleChesses = chesses.filter(c => {
               return c.locationY === targetY &&
                      c.locationX > Math.min(targetX, locationX) &&
                      c.locationX < Math.max(targetX, locationX) &&
