@@ -162,7 +162,11 @@ func (s subscription) readPump() {
 		case domain.MoveChess:
 			newChesses := chineseChessUseCase.MoveChess(msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
 			ccGameData.ChineseChess = newChesses
-			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
+			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
+			if err == nil {
+				msg.Data.NowTurn = nowTurn
+			}
+			err = s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
 			if err == nil {
 				msg.Data.GameData = ccGameData
 			}
@@ -170,7 +174,11 @@ func (s subscription) readPump() {
 			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
 			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide)
 			ccGameData.ChineseChess = newChesses
-			err := s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
+			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
+			if err == nil {
+				msg.Data.NowTurn = nowTurn
+			}
+			err = s.roomUseCase.UpdateGameData(s.roomID, ccGameData)
 			if err == nil {
 				msg.Data.GameData = ccGameData
 				msg.Data.GameOver = gameOver

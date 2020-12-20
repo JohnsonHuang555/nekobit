@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectGameData } from "../selectors/chineseChessSelector";
+import { selectCanEat, selectCanMove, selectGameData, selectIsGameOver } from "../selectors/chineseChessSelector";
 import GameMap from "./GameMap";
 import styles from 'styles/features/chineseChess.module.scss';
 import { useEffect, useState } from "react";
-import { setGameData } from "../slices/chineseChessSlice";
+import { reset, setCanEat, setCanMove, setGameData } from "../slices/chineseChessSlice";
 import { selectRoomInfo } from "selectors/roomsSelector";
 import { ChessSide, ChineseChess } from "../domain/models/ChineseChess";
 import { wsSendMessage } from "actions/socketAction";
@@ -15,6 +15,9 @@ const ChineseChessContainer = () => {
   const { chineseChess, playerSide } = useSelector(selectGameData);
   const { userInfo } = useSelector(selectUserInfo);
   const { selectedRoom } = useSelector(selectRoomInfo);
+  const { canEat, targeId } = useSelector(selectCanEat);
+  const { canMove, targetX, targetY } = useSelector(selectCanMove);
+  const { isGameOver } = useSelector(selectIsGameOver);
   const [selectedChess, setSelectedChess] = useState<ChineseChess>();
 
   if (!userInfo || !selectedRoom) {
@@ -27,6 +30,42 @@ const ChineseChessContainer = () => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(canEat, targeId, selectedChess)
+    if (canEat && targeId !== -1 && selectedChess) {
+      dispatch(wsSendMessage({
+        event: ChineseChessSocketEvent.EatChess,
+        player_id: userInfo.id,
+        data: {
+          chess_id: selectedChess.id,
+          target_id: targeId,
+        }
+      }));
+      dispatch(reset());
+      setSelectedChess(undefined);
+    }
+  }, [canEat]);
+
+  useEffect(() => {
+    if (canMove && targetX !== -1 && targetY !== -1 && selectedChess) {
+      dispatch(wsSendMessage({
+        event: ChineseChessSocketEvent.MoveChess,
+        player_id: userInfo.id,
+        data: {
+          chess_id: selectedChess.id,
+          target_x: targetX,
+          target_y: targetY,
+        }
+      }));
+      dispatch(reset());
+      setSelectedChess(undefined);
+    }
+  }, [canMove]);
+
+  useEffect(() => {
+
+  }, [isGameOver]);
+
   const isYourTurn = userInfo.id === selectedRoom.nowTurn ? true : false;
   const yourSide = playerSide[userInfo.id];
   const playersId = selectedRoom.playerList.map((p) => {
@@ -37,36 +76,42 @@ const ChineseChessContainer = () => {
     let map = [];
     for (let y = 0; y < 4; y++) {
       for (let x = 0; x < 8; x++) {
-        const chess = chineseChess.find(c => {
+        const targetChess = chineseChess.find(c => {
           return c.locationX === x && c.locationY === y && c.alive;
         });
 
         const onMapClick = () => {
-          // if (!chessInfo && selectedChess) {
-          //   onMove(x, y);
-          // }
-        };
-
-        const onChessClick = () => {
-          if (!chess || !isYourTurn) { return; }
-          if (yourSide === chess.side) {
-            setSelectedChess(chess);
-          } else if (selectedChess && selectedChess.side !== chess.side) {
-            // onEat(chessInfo);
+          if (selectedChess) {
+            dispatch(setCanMove({
+              chessId: selectedChess.id,
+              targetX: x,
+              targetY: y,
+              chesses: chineseChess,
+            }))
           }
         };
 
-        const isSelected = (): boolean => {
-          // if (selectedChess && chessInfo) {
-          //   if (selectedChess.id === chessInfo.id) {
-          //     return true;
-          //   }
-          // }
-          return false;
+        const onChessClick = () => {
+          if (!targetChess || !isYourTurn) { return; }
+          if (yourSide === targetChess.side) {
+            setSelectedChess(targetChess);
+          } else if (selectedChess && selectedChess.side !== targetChess.side) {
+            console.log(55555)
+            // eat chess
+            dispatch(setCanEat({
+              chessId: selectedChess.id,
+              targeId: targetChess.id, // FIXME: 打包
+              targetName: targetChess.name,
+              targetRank: targetChess.rank,
+              targetX: targetChess.locationX,
+              targetY: targetChess.locationY,
+              chesses: chineseChess,
+            }))
+          }
         };
 
         const onFlip = (c: ChineseChess) => {
-          if (!chess || !isYourTurn) { return; }
+          if (!targetChess || !isYourTurn) { return; }
           dispatch(wsSendMessage({
             event: ChineseChessSocketEvent.FlipChess,
             player_id: userInfo.id,
@@ -75,25 +120,26 @@ const ChineseChessContainer = () => {
               chinese_chess_side: c.side,
               players_id: playersId,
             }
-          }))
+          }));
+          setSelectedChess(undefined);
         };
 
-        if (chess) {
+        if (targetChess) {
           map.push(
             <div className={styles.itemContainer} key={`x-${x}/y-${y}`}>
-              {chess.isFliped ?
+              {targetChess.isFliped ?
                 (
                   <span
-                    className={`${styles.flipedChess} ${chess.side === ChessSide.Black ? styles.black : styles.red}`}
+                    className={`${styles.flipedChess} ${targetChess.side === ChessSide.Black ? styles.black : styles.red} ${selectedChess?.id === targetChess.id ? styles.selectedChess : ''}`}
                     onClick={() => onChessClick()}
                   >
-                    <span>{chess.name}</span>
-                    <span className={`${styles.circle} ${chess.side === ChessSide.Red ? styles.red : ''}`}></span>
+                    <span>{targetChess.name}</span>
+                    <span className={`${styles.circle} ${targetChess.side === ChessSide.Red ? styles.red : ''}`}></span>
                   </span>
                 ) : (
                   <span
                     className={styles.notFlipedChess}
-                    onClick={() => onFlip(chess)}
+                    onClick={() => onFlip(targetChess)}
                   />
                 )
               }
@@ -101,7 +147,11 @@ const ChineseChessContainer = () => {
           )
         } else {
           map.push(
-            <div className={styles.itemContainer} key={`x-${x}/y-${y}`}></div>
+            <div
+              className={styles.itemContainer}
+              key={`x-${x}/y-${y}`}
+              onClick={() => onMapClick()}
+            ></div>
           )
         }
       }
@@ -129,6 +179,7 @@ const ChineseChessContainer = () => {
         <div className={styles.map}>
           <GameMap />
           <div className={styles.chesses}>
+            {/* FIXME: 判斷大盤小盤 */}
             {chessMap()}
           </div>
         </div>

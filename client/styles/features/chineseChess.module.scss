@@ -10,7 +10,7 @@
     }
     .players {
       .name {
-        
+
       }
     }
   }
@@ -60,6 +60,9 @@
             .red {
               border-color: $error;
             }
+          }
+          .selectedChess {
+            background: $warning;
           }
           .red {
             color: $error;

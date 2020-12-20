@@ -3,7 +3,7 @@ import { PlayerFactory } from "domain/factories/PlayerFactory";
 import { RoomFactory } from "domain/factories/RoomFactory";
 import { ChineseChessSocketEvent, SocketEvent } from "domain/models/WebSocket";
 import { GameDataFactory } from "features/chinese_chess/domain/factories/GameDataFactory";
-import { setGameData as setChineseChessGameData } from "features/chinese_chess/slices/chineseChessSlice";
+import { setGameData as setChineseChessGameData, setGameOver } from "features/chinese_chess/slices/chineseChessSlice";
 import { changePlayer, joinRoom, readyGame, startGame } from "slices/roomsSlice";
 import { wsConnected, wsDisConnected } from "slices/webSocketSlice";
 
@@ -39,13 +39,22 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
             store.dispatch(startGame(room));
 
             // 寫入所有遊戲的資料
-            store.dispatch(setChineseChessGameData(room.gameData))
+            store.dispatch(setChineseChessGameData(room.gameData));
             break;
           }
-          case ChineseChessSocketEvent.FlipChess: {
-            const gameData = GameDataFactory.createFromNet(data.game_data);
-            store.dispatch(setChineseChessGameData(gameData))
-            store.dispatch(changePlayer(data.now_turn))
+          case ChineseChessSocketEvent.FlipChess:
+          case ChineseChessSocketEvent.MoveChess: {
+            const { game_data, now_turn } = data;
+            const gameData = GameDataFactory.createFromNet(game_data);
+            store.dispatch(setChineseChessGameData(gameData));
+            store.dispatch(changePlayer(now_turn));
+          }
+          case ChineseChessSocketEvent.EatChess: {
+            const { game_data, now_turn, game_over } = data;
+            const gameData = GameDataFactory.createFromNet(game_data);
+            store.dispatch(setChineseChessGameData(gameData));
+            store.dispatch(changePlayer(now_turn));
+            store.dispatch(setGameOver(game_over))
           }
         }
       };
