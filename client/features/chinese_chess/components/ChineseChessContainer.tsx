@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import { selectCanEat, selectCanMove, selectGameData, selectIsGameOver } from "../selectors/chineseChessSelector";
-import { useEffect, useState } from "react";
-import { reset, setGameData } from "../slices/chineseChessSlice";
+import React, { useEffect, useState } from "react";
+import { reset, setGameData, setGameOver } from "../slices/chineseChessSlice";
 import { selectRoomInfo } from "selectors/roomsSelector";
-import {  ChineseChess } from "../domain/models/ChineseChess";
+import {  ChessSide, ChineseChess } from "../domain/models/ChineseChess";
 import { wsSendMessage } from "actions/socketAction";
 import { ChineseChessSocketEvent } from "domain/models/WebSocket";
 import { selectUserInfo } from "selectors/appSelector";
 import Hidden from "./hidden/Hidden";
 import styles from 'styles/features/chineseChess.module.scss';
+import Modal from "components/Modal";
+import Button from "components/Button";
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
@@ -19,6 +21,7 @@ const ChineseChessContainer = () => {
   const { canMove, targetX, targetY } = useSelector(selectCanMove);
   const { isGameOver } = useSelector(selectIsGameOver);
   const [selectedChess, setSelectedChess] = useState<ChineseChess>();
+  const [showGameOverModal, setShowGameOverModal] = useState(false);
 
   if (!userInfo || !selectedRoom) {
     return null;
@@ -31,7 +34,6 @@ const ChineseChessContainer = () => {
   }, []);
 
   useEffect(() => {
-    console.log(canEat, targeId, selectedChess)
     if (canEat && targeId !== -1 && selectedChess) {
       dispatch(wsSendMessage({
         event: ChineseChessSocketEvent.EatChess,
@@ -63,7 +65,9 @@ const ChineseChessContainer = () => {
   }, [canMove]);
 
   useEffect(() => {
-
+    if (isGameOver) {
+      setShowGameOverModal(true);
+    }
   }, [isGameOver]);
 
   const isYourTurn = userInfo.id === selectedRoom.nowTurn ? true : false;
@@ -71,6 +75,13 @@ const ChineseChessContainer = () => {
   const playersId = selectedRoom.playerList.map((p) => {
     return p.id;
   });
+  const gameOver = (): string => {
+    const redChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Red);
+    if (redChesses.length === 0 && yourSide === ChessSide.Black) {
+      return '你贏了!!';
+    }
+    return '你輸了~ GG';
+  }
 
   // 遊玩模式
   const gameMode: { [key: string]: React.ReactNode } = {
@@ -90,10 +101,26 @@ const ChineseChessContainer = () => {
   }
 
   return (
-    <div className={styles.chineseChess}>
-      {gameMode[selectedRoom.gameMode]}
-      <div className={styles.footer}></div>
-    </div>
+    <>
+      <Modal
+        show={showGameOverModal}
+        title="Game Over"
+      >
+        <div className={styles.gameOver}>{gameOver()}</div>
+        <Button
+          title="確認"
+          color="secondary"
+          onClick={() => {
+            dispatch(setGameOver(false));
+            dispatch(setShowGameOverModal(false));
+          }}
+        />
+      </Modal>
+      <div className={styles.chineseChess}>
+        {gameMode[selectedRoom.gameMode]}
+        <div className={styles.footer}></div>
+      </div>
+    </>
   )
 };
 

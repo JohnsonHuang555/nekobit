@@ -13,6 +13,8 @@ import TimesIcon from './icons/Times';
 import EditSquareIcon from './icons/EditSquare';
 import CrownIcon from './icons/Crown';
 import styles from 'styles/components/icon.module.scss';
+import HandPointLeftIcon from './icons/HandPointLeft';
+import HandPointRightIcon from './icons/HandPointRight';
 
 // TODO: 客製化 大小 顏色
 
@@ -30,6 +32,8 @@ export enum IconType {
   Times = 'times',
   EditSquare = 'edit-square',
   Crown = 'crown',
+  HandPointRight = 'hand-point-right',
+  HandPointLeft = 'hand-point-left',
 }
 
 type IconProps = {
@@ -55,6 +59,8 @@ const iconList = {
   [IconType.Times]: <TimesIcon />,
   [IconType.EditSquare]: <EditSquareIcon />,
   [IconType.Crown]: <CrownIcon />,
+  [IconType.HandPointLeft]: <HandPointLeftIcon />,
+  [IconType.HandPointRight]: <HandPointRightIcon />,
 };
 
 const Icon = (props: IconProps) => {

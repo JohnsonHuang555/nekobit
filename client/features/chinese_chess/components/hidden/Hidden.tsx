@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import GameMap from "../GameMap";
 import styles from 'styles/features/hidden.module.scss';
 import { Room } from "domain/models/Room";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setCanEat, setCanMove } from "features/chinese_chess/slices/chineseChessSlice";
 import { wsSendMessage } from "actions/socketAction";
 import { ChineseChessSocketEvent } from "domain/models/WebSocket";
+import Icon, { IconType } from "components/Icon";
 
 type HiddenProps = {
   room: Room;
@@ -124,17 +125,43 @@ const Hidden = (props: HiddenProps) => {
   return (
     <>
       <div className={styles.header}>
-        <div className={styles.players}>
-          <span className={styles.name}>{room.playerList[0].name}</span>
-          <span>VS</span>
-          <span className={styles.name}>{room.playerList[1].name}</span>
+        <div className={styles.leftPlayer}>
+          <span className={styles.name}>
+            {room.playerList[0].name}
+            {yourSide === playerSide[room.playerList[0].id] &&
+              <Icon
+                type={IconType.HandPointLeft}
+                size="lg"
+                style={{
+                  marginLeft: '10px'
+                }}
+                color="dark-warning"
+              />
+            }
+          </span>
+          <span className={styles.side}>{playerSide[room.playerList[0].id]}</span>
         </div>
-        <div className={styles.sides}>
-          <span>{playerSide[room.playerList[0].id]}</span>
+        <div className={styles.middle}>
+          <span className={styles.name}>VS</span>
           <span className={isYourTurn ? styles.yourTurn : styles.otherTurn}>
             {isYourTurn ? '你的回合' : '對方回合'}
-          </span >
-          <span>{playerSide[room.playerList[1].id]}</span>
+          </span>
+        </div>
+        <div className={`${styles.rightPlayer} ${yourSide === playerSide[room.playerList[1].id] ? styles.yourSide : ''}`}>
+          <span className={styles.name}>
+            {yourSide === playerSide[room.playerList[1].id] &&
+              <Icon
+                type={IconType.HandPointRight}
+                size="lg"
+                style={{
+                  marginRight: '10px'
+                }}
+                color="dark-warning"
+              />
+            }
+            {room.playerList[1].name}
+          </span>
+          <span className={styles.side}>{playerSide[room.playerList[1].id]}</span>
         </div>
       </div>
       <div className={styles.content}>
