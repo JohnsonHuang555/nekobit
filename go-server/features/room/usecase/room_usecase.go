@@ -41,6 +41,7 @@ func (ru *roomUseCase) JoinRoom(rid string, pid string, playerName string) (*dom
 	if existPlayer == nil {
 		if len(ru.roomRepo.FindAllPlayers(rid)) == 0 {
 			player.IsMaster = true
+			player.IsReady = true
 		}
 		err := ru.roomRepo.CreatePlayer(rid, player)
 		if err != nil {

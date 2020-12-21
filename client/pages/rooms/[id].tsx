@@ -62,6 +62,17 @@ const Room = () => {
     });
   };
 
+  const isReadyToPlay = (): boolean => {
+    if (selectedRoom) {
+      const notReadyPlayers = selectedRoom.playerList.filter(p => !p.isReady);
+      if (notReadyPlayers.length !== 0) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
   // FIXME: 要切三塊 components，container 保持乾淨
   return (
     <Layout>
@@ -91,6 +102,7 @@ const Room = () => {
                     game_mode: 'hidden',
                   }
                 }))}
+                disabled={!isReadyToPlay()}
               /> :
               <Button
                 title={playerInfo()?.isReady ? '取消準備' : '準備遊戲'}
@@ -104,7 +116,7 @@ const Room = () => {
             <Button title="離開房間" color="grey-4" />
           </div>
           {selectedRoom.status === GameStatus.Playing &&
-            <GameScreen gamePack={selectedRoom.gamePack}/>
+            <GameScreen gamePack={selectedRoom.gamePack} />
           }
         </div>
       }

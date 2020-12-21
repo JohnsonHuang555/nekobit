@@ -11,6 +11,7 @@ import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
 import { createRoom, loadRooms } from 'actions/roomsAction';
 import { selectUserInfo } from 'selectors/appSelector';
+import { toast } from 'react-toastify';
 
 const Game = () => {
   const router = useRouter();
@@ -51,9 +52,13 @@ const Game = () => {
     return null;
   }
 
+  const showLoginToast = () => {
+    toast.warn('⚠️ 請先登入唷');
+  }
+
   const onCreateRoom = () => {
-    // TODO: 跳登入 modal
     if (!userInfo) {
+      showLoginToast();
       return;
     }
     dispatch(createRoom({
@@ -62,6 +67,14 @@ const Game = () => {
       game_pack: GamePack.ChineseChess,
       game_mode: 'hidden',
     }))
+  };
+
+  const onJoinRoom = (id: string) => {
+    if (!userInfo) {
+      showLoginToast();
+      return;
+    }
+    router.push(`/rooms/${id}`)
   };
 
   return (
@@ -122,7 +135,8 @@ const Game = () => {
                 <Button
                   title="加入"
                   color="grey-4"
-                  onClick={() => router.push(`/rooms/${room.id}`)}
+                  disabled={selectedGame.maxPlayers === room.playerList.length ? true : false}
+                  onClick={() => onJoinRoom(room.id)}
                 />
               </div>
             </div>
