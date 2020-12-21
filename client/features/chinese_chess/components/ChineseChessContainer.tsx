@@ -111,7 +111,6 @@ const ChineseChessContainer = () => {
           title="確認"
           color="secondary"
           onClick={() => {
-            dispatch(setGameOver(false));
             dispatch(setShowGameOverModal(false));
           }}
         />
