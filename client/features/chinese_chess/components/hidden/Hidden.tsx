@@ -1,0 +1,152 @@
+import React, { useState } from "react";
+import GameMap from "../GameMap";
+import styles from 'styles/features/hidden.module.scss';
+import { Room } from "domain/models/Room";
+import { PlayerSide } from "features/chinese_chess/domain/models/PlayerSide";
+import { ChessSide, ChineseChess } from "features/chinese_chess/domain/models/ChineseChess";
+import { useDispatch } from "react-redux";
+import { setCanEat, setCanMove } from "features/chinese_chess/slices/chineseChessSlice";
+import { wsSendMessage } from "actions/socketAction";
+import { ChineseChessSocketEvent } from "domain/models/WebSocket";
+
+type HiddenProps = {
+  room: Room;
+  playerSide: PlayerSide;
+  isYourTurn: boolean;
+  chineseChess: ChineseChess[];
+  yourSide: ChessSide;
+  userId: string;
+  playersId: string[];
+  selectedChess?: ChineseChess;
+  onSelectChess: (c?: ChineseChess) => void;
+}
+
+const Hidden = (props: HiddenProps) => {
+  const {
+    room,
+    playerSide,
+    isYourTurn,
+    chineseChess,
+    yourSide,
+    userId,
+    playersId,
+    selectedChess,
+    onSelectChess,
+  } = props;
+  const dispatch = useDispatch();
+
+  const chessMap = () => {
+    let map = [];
+    for (let y = 0; y < 4; y++) {
+      for (let x = 0; x < 8; x++) {
+        const targetChess = chineseChess.find(c => {
+          return c.locationX === x && c.locationY === y && c.alive;
+        });
+
+        const onMapClick = () => {
+          if (selectedChess) {
+            dispatch(setCanMove({
+              chessId: selectedChess.id,
+              targetX: x,
+              targetY: y,
+              chesses: chineseChess,
+            }))
+          }
+        };
+
+        const onChessClick = () => {
+          if (!targetChess || !isYourTurn) { return; }
+          if (yourSide === targetChess.side) {
+            onSelectChess(targetChess);
+          } else if (selectedChess && selectedChess.side !== targetChess.side) {
+            // eat chess
+            dispatch(setCanEat({
+              chessId: selectedChess.id,
+              targeId: targetChess.id, // FIXME: 打包
+              targetName: targetChess.name,
+              targetRank: targetChess.rank,
+              targetX: targetChess.locationX,
+              targetY: targetChess.locationY,
+              chesses: chineseChess,
+            }))
+          }
+        };
+
+        const onFlip = (c: ChineseChess) => {
+          if (!targetChess || !isYourTurn) { return; }
+          dispatch(wsSendMessage({
+            event: ChineseChessSocketEvent.FlipChess,
+            player_id: userId,
+            data: {
+              chess_id: c.id,
+              chinese_chess_side: c.side,
+              players_id: playersId,
+            }
+          }));
+          onSelectChess(undefined);
+        };
+
+        if (targetChess) {
+          map.push(
+            <div className={styles.itemContainer} key={`x-${x}/y-${y}`}>
+              {targetChess.isFliped ?
+                (
+                  <span
+                    className={`${styles.flipedChess} ${targetChess.side === ChessSide.Black ? styles.black : styles.red} ${selectedChess?.id === targetChess.id ? styles.selectedChess : ''}`}
+                    onClick={() => onChessClick()}
+                  >
+                    <span>{targetChess.name}</span>
+                    <span className={`${styles.circle} ${targetChess.side === ChessSide.Red ? styles.red : ''}`}></span>
+                  </span>
+                ) : (
+                  <span
+                    className={styles.notFlipedChess}
+                    onClick={() => onFlip(targetChess)}
+                  />
+                )
+              }
+            </div>
+          )
+        } else {
+          map.push(
+            <div
+              className={styles.itemContainer}
+              key={`x-${x}/y-${y}`}
+              onClick={() => onMapClick()}
+            ></div>
+          )
+        }
+      }
+    }
+    return map;
+  }
+
+  return (
+    <>
+      <div className={styles.header}>
+        <div className={styles.players}>
+          <span className={styles.name}>{room.playerList[0].name}</span>
+          <span>VS</span>
+          <span className={styles.name}>{room.playerList[1].name}</span>
+        </div>
+        <div className={styles.sides}>
+          <span>{playerSide[room.playerList[0].id]}</span>
+          <span className={isYourTurn ? styles.yourTurn : styles.otherTurn}>
+            {isYourTurn ? '你的回合' : '對方回合'}
+          </span >
+          <span>{playerSide[room.playerList[1].id]}</span>
+        </div>
+      </div>
+      <div className={styles.content}>
+        <div className={styles.map}>
+          <GameMap />
+          <div className={styles.chesses}>
+            {chessMap()}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Hidden;
