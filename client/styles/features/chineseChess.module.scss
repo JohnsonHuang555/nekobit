@@ -3,9 +3,20 @@
 .chineseChess {
   width: 100%;
   height: 100%;
+  position: relative;
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right: 40px;
+    button {
+      width: 120px;
+    }
+  }
 }
 
 .gameOver {
   margin-bottom: 20px;
   font-size: 22px;
 }
+

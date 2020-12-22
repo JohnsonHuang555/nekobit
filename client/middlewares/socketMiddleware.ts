@@ -55,7 +55,9 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
-              store.dispatch(setGameOver(game_over))
+              if (game_over) {
+                store.dispatch(setGameOver(game_over));
+              }
             }
           }
         };

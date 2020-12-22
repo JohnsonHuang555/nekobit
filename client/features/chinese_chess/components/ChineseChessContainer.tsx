@@ -132,7 +132,13 @@ const ChineseChessContainer = () => {
       </Modal>
       <div className={styles.chineseChess}>
         {gameMode[selectedRoom.gameMode]}
-        <div className={styles.footer}></div>
+        <div className={styles.footer}>
+          <Button
+            title="投降"
+            color="brown"
+            onClick={() => {}}
+          />
+        </div>
       </div>
     </>
   )

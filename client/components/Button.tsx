@@ -4,7 +4,7 @@ import styles from 'styles/components/button.module.scss';
 interface ButtonProps extends Omit<Partial<React.HTMLAttributes<HTMLButtonElement>>, 'onClick'> {
   title: string;
   type?: 'button' | 'submit' | 'reset';
-  color?: 'primary' | 'secondary' | 'grey-4';
+  color?: 'primary' | 'secondary' | 'grey-4' | 'brown';
   customStyles?: CSSProperties;
   disabled?: boolean;
   onClick?: (el: React.ChangeEvent<HTMLInputElement>) => void;

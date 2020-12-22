@@ -18,6 +18,13 @@
   }
 }
 
+.brown {
+  background-color: $brown;
+  &:hover {
+    background-color: $brown-hover;
+  }
+}
+
 .outline {
   border: 2px solid;
   padding: 5px 20px;
