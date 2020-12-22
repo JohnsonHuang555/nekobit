@@ -5,7 +5,7 @@ interface ButtonProps extends Omit<Partial<React.HTMLAttributes<HTMLButtonElemen
   title: string;
   type?: 'button' | 'submit' | 'reset';
   color?: 'primary' | 'secondary' | 'grey-4';
-  styles?: CSSProperties;
+  customStyles?: CSSProperties;
   disabled?: boolean;
   onClick?: (el: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -17,6 +17,7 @@ const Button = (props: ButtonProps) => {
     color = 'primary',
     disabled,
     children,
+    customStyles,
     onClick = () => {},
   } = props;
 
@@ -30,6 +31,7 @@ const Button = (props: ButtonProps) => {
       disabled={disabled}
       type={type}
       className={`${styles.button} ${styles[color]}`}
+      style={customStyles}
     >
       {children || title}
     </button>

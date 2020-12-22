@@ -21,3 +21,10 @@ export const selectCreatedId = createSelector(
   }),
   (state) => state,
 )
+
+export const selectShowGameScreen = createSelector(
+  (state: StoreState) => ({
+    showGameScreen: state.rooms.showGameScreen,
+  }),
+  (state) => state,
+)

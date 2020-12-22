@@ -11,6 +11,7 @@ import Hidden from "./hidden/Hidden";
 import styles from 'styles/features/chineseChess.module.scss';
 import Modal from "components/Modal";
 import Button from "components/Button";
+import { setShowGameScreen } from "slices/roomsSlice";
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
@@ -76,11 +77,11 @@ const ChineseChessContainer = () => {
     return p.id;
   });
   const gameOver = (): string => {
-    const redChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Red);
-    if (redChesses.length === 0 && yourSide === ChessSide.Black) {
-      return '你贏了!!';
+    const blackChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Black);
+    if (blackChesses.length === 0 && yourSide === ChessSide.Black) {
+      return '你輸了~ GG';
     }
-    return '你輸了~ GG';
+    return '你贏了!!';
   }
 
   // 遊玩模式
@@ -92,7 +93,7 @@ const ChineseChessContainer = () => {
         isYourTurn={isYourTurn}
         chineseChess={chineseChess}
         yourSide={yourSide}
-        userId={userInfo.id}
+        userInfo={userInfo}
         playersId={playersId}
         selectedChess={selectedChess}
         onSelectChess={(c) => setSelectedChess(c)}
@@ -100,18 +101,32 @@ const ChineseChessContainer = () => {
     'standard': <></>,
   }
 
+  const onCloseModal = () => {
+    setShowGameOverModal(false);
+    dispatch(setGameOver(false));
+  };
+
   return (
     <>
       <Modal
         show={showGameOverModal}
         title="Game Over"
+        onCloseModal={() => onCloseModal()}
       >
         <div className={styles.gameOver}>{gameOver()}</div>
         <Button
           title="確認"
           color="secondary"
+          onClick={() => onCloseModal()}
+          customStyles={{ marginBottom: '10px' }}
+        />
+        <Button
+          title="離開"
+          color="grey-4"
           onClick={() => {
-            dispatch(setShowGameOverModal(false));
+            setShowGameOverModal(false);
+            dispatch(setGameOver(false));
+            dispatch(setShowGameScreen(false));
           }}
         />
       </Modal>

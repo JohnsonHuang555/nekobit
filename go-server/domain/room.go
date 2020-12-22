@@ -56,4 +56,5 @@ type RoomUseCase interface {
 	CreateRoom(title string, gameMode GameMode, password string, gamePack GamePack) (string, error)
 	UpdateGameData(rid string, gameData interface{}) error
 	ChangePlayerTurn(rid string, pid string) (string, error)
+	GameOver(rid string) error
 }

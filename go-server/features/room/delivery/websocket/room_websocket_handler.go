@@ -173,6 +173,12 @@ func (s subscription) readPump() {
 		case domain.EatChess:
 			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
 			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide)
+
+			// 更改狀態
+			if gameOver {
+				s.roomUseCase.GameOver(s.roomID)
+			}
+
 			ccGameData.ChineseChess = newChesses
 			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
 			if err == nil {

@@ -180,3 +180,19 @@ func (ru *roomUseCase) ChangePlayerTurn(rid string, pid string) (string, error) 
 
 	return room.NowTurn, nil
 }
+
+func (ru *roomUseCase) GameOver(rid string) error {
+	room, err := ru.roomRepo.FindByID(rid)
+	if err != nil {
+		return err
+	}
+
+	room.Status = domain.Preparing
+
+	err = ru.roomRepo.UpdateByID(rid, room)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

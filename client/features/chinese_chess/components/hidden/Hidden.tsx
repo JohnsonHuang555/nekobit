@@ -9,6 +9,7 @@ import { setCanEat, setCanMove } from "features/chinese_chess/slices/chineseChes
 import { wsSendMessage } from "actions/socketAction";
 import { ChineseChessSocketEvent } from "domain/models/WebSocket";
 import Icon, { IconType } from "components/Icon";
+import { User } from "domain/models/User";
 
 type HiddenProps = {
   room: Room;
@@ -16,7 +17,7 @@ type HiddenProps = {
   isYourTurn: boolean;
   chineseChess: ChineseChess[];
   yourSide: ChessSide;
-  userId: string;
+  userInfo: User;
   playersId: string[];
   selectedChess?: ChineseChess;
   onSelectChess: (c?: ChineseChess) => void;
@@ -29,7 +30,7 @@ const Hidden = (props: HiddenProps) => {
     isYourTurn,
     chineseChess,
     yourSide,
-    userId,
+    userInfo,
     playersId,
     selectedChess,
     onSelectChess,
@@ -77,7 +78,7 @@ const Hidden = (props: HiddenProps) => {
           if (!targetChess || !isYourTurn) { return; }
           dispatch(wsSendMessage({
             event: ChineseChessSocketEvent.FlipChess,
-            player_id: userId,
+            player_id: userInfo.id,
             data: {
               chess_id: c.id,
               chinese_chess_side: c.side,
@@ -128,7 +129,7 @@ const Hidden = (props: HiddenProps) => {
         <div className={styles.leftPlayer}>
           <span className={styles.name}>
             {room.playerList[0].name}
-            {yourSide === playerSide[room.playerList[0].id] &&
+            {userInfo.name === room.playerList[0].name &&
               <Icon
                 type={IconType.HandPointLeft}
                 size="lg"
@@ -139,7 +140,11 @@ const Hidden = (props: HiddenProps) => {
               />
             }
           </span>
-          <span className={styles.side}>{playerSide[room.playerList[0].id]}</span>
+          {playerSide[room.playerList[0].id] &&
+            <span className={styles.side}>
+              {playerSide[room.playerList[0].id]}
+            </span>
+          }
         </div>
         <div className={styles.middle}>
           <span className={styles.name}>VS</span>
@@ -149,7 +154,7 @@ const Hidden = (props: HiddenProps) => {
         </div>
         <div className={`${styles.rightPlayer} ${yourSide === playerSide[room.playerList[1].id] ? styles.yourSide : ''}`}>
           <span className={styles.name}>
-            {yourSide === playerSide[room.playerList[1].id] &&
+            {userInfo.name === room.playerList[1].name &&
               <Icon
                 type={IconType.HandPointRight}
                 size="lg"
@@ -161,7 +166,11 @@ const Hidden = (props: HiddenProps) => {
             }
             {room.playerList[1].name}
           </span>
-          <span className={styles.side}>{playerSide[room.playerList[1].id]}</span>
+          {playerSide[room.playerList[1].id] &&
+            <span className={styles.side}>
+              {playerSide[room.playerList[1].id]}
+            </span>
+          }
         </div>
       </div>
       <div className={styles.content}>

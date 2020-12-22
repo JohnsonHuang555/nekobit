@@ -24,6 +24,7 @@ type ModalProps = {
   show: boolean;
   title?: string;
   children?: React.ReactNode;
+  onCloseModal?: () => void;
 }
 
 ReactModal.setAppElement('#__next')
@@ -33,20 +34,28 @@ const Modal = (props: ModalProps) => {
     children,
     show,
     title = '',
+    onCloseModal,
   } = props;
   const dispatch = useDispatch();
+
+  const onClose = () => {
+    if (onCloseModal) {
+      onCloseModal();
+    }
+    dispatch(setShowModal(false));
+  };
 
   return (
     <div>
       <ReactModal
         isOpen={show}
-        onRequestClose={() => dispatch(setShowModal(false))}
+        onRequestClose={() => onClose()}
         style={customStyles}
         contentLabel="appModal"
       >
         <div className={styles.header}>
           <span className={styles.title}>{title}</span>
-          <div className={styles.closeModal} onClick={() => dispatch(setShowModal(false))}>
+          <div className={styles.closeModal} onClick={() => onClose()}>
             <Icon type={IconType.Times}/>
           </div>
         </div>

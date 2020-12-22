@@ -4,10 +4,10 @@ import Layout from 'components/Layout';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { SocketEvent } from 'domain/models/WebSocket';
-import { selectRoomInfo } from 'selectors/roomsSelector';
+import { selectRoomInfo, selectShowGameScreen } from 'selectors/roomsSelector';
 import { selectUserInfo } from 'selectors/appSelector';
 import styles from 'styles/pages/rooms.module.scss';
-import { GamePack, GameStatus } from 'domain/models/Room';
+import { GamePack } from 'domain/models/Room';
 import PlayerList from 'components/rooms/PlayerList';
 import GameScreen from 'components/rooms/GameScreen';
 import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
@@ -20,6 +20,7 @@ const Room = () => {
   const { selectedRoom } = useSelector(selectRoomInfo);
   const { isConnected } = useSelector(selectIsConnected);
   const { userInfo } = useSelector(selectUserInfo);
+  const { showGameScreen } = useSelector(selectShowGameScreen);
 
   useEffect(() => {
     return () => {
@@ -63,14 +64,11 @@ const Room = () => {
   };
 
   const isReadyToPlay = (): boolean => {
-    if (selectedRoom) {
-      const notReadyPlayers = selectedRoom.playerList.filter(p => !p.isReady);
-      if (notReadyPlayers.length !== 0) {
-        return false;
-      }
-      return true;
+    const notReadyPlayers = selectedRoom?.playerList.filter(p => !p.isReady);
+    if (notReadyPlayers?.length !== 0) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   // FIXME: 要切三塊 components，container 保持乾淨
@@ -115,7 +113,7 @@ const Room = () => {
             }
             <Button title="離開房間" color="grey-4" />
           </div>
-          {selectedRoom.status === GameStatus.Playing &&
+          {showGameScreen &&
             <GameScreen gamePack={selectedRoom.gamePack} />
           }
         </div>
