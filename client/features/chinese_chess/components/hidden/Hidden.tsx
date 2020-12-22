@@ -123,6 +123,9 @@ const Hidden = (props: HiddenProps) => {
     return map;
   }
 
+  const notAliveRedChesses = chineseChess.filter(c => !c.alive && c.side === ChessSide.Red);
+  const notAliveBlackChesses = chineseChess.filter(c => !c.alive && c.side === ChessSide.Black);
+
   return (
     <>
       <div className={styles.header}>
@@ -174,11 +177,21 @@ const Hidden = (props: HiddenProps) => {
         </div>
       </div>
       <div className={styles.content}>
+        <div>
+          {notAliveRedChesses.map(c => (
+            <span>{c.name}</span>
+          ))}
+        </div>
         <div className={styles.map}>
           <GameMap />
           <div className={styles.chesses}>
             {chessMap()}
           </div>
+        </div>
+        <div>
+          {notAliveBlackChesses.map(c => (
+            <span>{c.name}</span>
+          ))}
         </div>
       </div>
     </>
