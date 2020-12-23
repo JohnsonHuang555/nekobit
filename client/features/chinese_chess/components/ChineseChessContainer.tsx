@@ -78,7 +78,11 @@ const ChineseChessContainer = () => {
   });
   const gameOver = (): string => {
     const blackChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Black);
-    if (blackChesses.length === 0 && yourSide === ChessSide.Black) {
+    const redChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Red);
+    if (
+      (blackChesses.length === 0 && yourSide === ChessSide.Black) ||
+      (redChesses.length === 0 && yourSide === ChessSide.Red)
+    ) {
       return '你輸了~ GG';
     }
     return '你贏了!!';

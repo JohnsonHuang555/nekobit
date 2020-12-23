@@ -41,6 +41,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  .leftSides, .rightSides {
+    display: flex;
+    flex-direction: column;
+    .chess {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      -webkit-align-items: center;
+      align-items: center;
+      background: #fff;
+      font-size: 30px;
+      position: relative;
+    }
+  }
+  .leftSides {
+    margin-right: 40px;
+  }
+  .rightSides {
+    margin-left: 40px;
+  }
   .map {
     position: relative;
     height: 500px;

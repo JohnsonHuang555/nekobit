@@ -16,6 +16,7 @@ import PlayerList from 'components/rooms/PlayerList';
 import GameScreen from 'components/rooms/GameScreen';
 import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
 import { selectIsConnected } from 'selectors/webSocketSelector';
+import { setIsReadyToStart } from 'slices/roomsSlice';
 
 const Room = () => {
   const router = useRouter();
@@ -59,24 +60,30 @@ const Room = () => {
       interval = setInterval(() => {
         setStartingCount(seconds => seconds - 1);
       }, 1000);
-    } else if (!isReadyToStart && startingCount === 0) {
-      // 重新設定
-      clearInterval(interval);
-
-      // 房主開始遊戲
-      if (playerInfo()?.isMaster) {
-        dispatch(wsSendMessage({
-          event: SocketEvent.StartGame,
-          player_id: userInfo?.id as string,
-          data: {
-            game_pack: GamePack.ChineseChess,
-            game_mode: 'hidden',
-          }
-        }));
-      }
     }
     return () => clearInterval(interval);
   }, [isReadyToStart]);
+
+  useEffect(() => {
+    // 房主開始遊戲
+    if (startingCount === 0 && playerInfo()?.isMaster) {
+      dispatch(wsSendMessage({
+        event: SocketEvent.StartGame,
+        player_id: userInfo?.id as string,
+        data: {
+          game_pack: GamePack.ChineseChess,
+          game_mode: 'hidden',
+        }
+      }));
+    }
+  }, [startingCount]);
+
+  useEffect(() => {
+    if (!showGameScreen) {
+      dispatch(setIsReadyToStart(false));
+      setStartingCount(5);
+    }
+  }, [showGameScreen]);
 
   const isNowPlayer = (id: string) => {
     if (userInfo && userInfo.id === id) {
@@ -112,7 +119,7 @@ const Room = () => {
 
             {/* // TODO: 聊天 */}
             <div className={`${styles.block} ${styles.messages}`}>
-              <div className={styles.content}>{startingCount}</div>
+              <div className={styles.content}>遊戲準備開始 {startingCount} ...</div>
             </div>
           </div>
           <div className={`${styles.rightArea} ${styles.block}`}>
