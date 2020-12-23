@@ -28,3 +28,10 @@ export const selectShowGameScreen = createSelector(
   }),
   (state) => state,
 )
+
+export const selectIsReadyToStart = createSelector(
+  (state: StoreState) => ({
+    isReadyToStart: state.rooms.isReadyToStart,
+  }),
+  (state) => state,
+)

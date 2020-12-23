@@ -9,6 +9,7 @@ export type State = {
   createdId: string;
   loading: boolean;
   showGameScreen: boolean;
+  isReadyToStart: boolean;
 };
 
 export type CaseReducer = {
@@ -17,6 +18,7 @@ export type CaseReducer = {
   startGame: (state: State, action: PayloadAction<Room>) => void;
   changePlayer: (state: State, action: PayloadAction<string>) => void;
   setShowGameScreen: (state: State, action: PayloadAction<boolean>) => void;
+  setIsReadyToStart: (state: State, action: PayloadAction<boolean>) => void;
 };
 
 const roomsSlice = createSlice<State, CaseReducer>({
@@ -27,6 +29,7 @@ const roomsSlice = createSlice<State, CaseReducer>({
     createdId: '',
     loading: false,
     showGameScreen: false,
+    isReadyToStart: false,
   },
   reducers: {
     joinRoom: (state: State, action: PayloadAction<Room>) => {
@@ -54,6 +57,9 @@ const roomsSlice = createSlice<State, CaseReducer>({
     },
     setShowGameScreen: (state: State, action: PayloadAction<boolean>) => {
       state.showGameScreen = action.payload;
+    },
+    setIsReadyToStart: (state: State, action: PayloadAction<boolean>) => {
+      state.isReadyToStart = action.payload;
     }
   },
   extraReducers: {
@@ -80,6 +86,7 @@ export const {
   startGame,
   changePlayer,
   setShowGameScreen,
+  setIsReadyToStart,
 } = roomsSlice.actions;
 
 export default roomsSlice.reducer;

@@ -4,7 +4,7 @@ import { RoomFactory } from "domain/factories/RoomFactory";
 import { ChineseChessSocketEvent, SocketEvent } from "domain/models/WebSocket";
 import { GameDataFactory } from "features/chinese_chess/domain/factories/GameDataFactory";
 import { setGameData as setChineseChessGameData, setGameOver } from "features/chinese_chess/slices/chineseChessSlice";
-import { changePlayer, joinRoom, readyGame, startGame } from "slices/roomsSlice";
+import { changePlayer, joinRoom, readyGame, setIsReadyToStart, startGame } from "slices/roomsSlice";
 import { wsConnected, wsDisConnected } from "slices/webSocketSlice";
 
 let webSocket: WebSocket;
@@ -30,9 +30,16 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               store.dispatch(joinRoom(room));
               break;
             }
+            // 按下準備遊戲後，都要把 isReadyToStart 設成 false
             case SocketEvent.ReadyGame: {
               const players = PlayerFactory.createArrayFromNet(data.players);
               store.dispatch(readyGame(players));
+              store.dispatch(setIsReadyToStart(false));
+              break;
+            }
+            // 按下開始遊戲後，等待倒數五秒後開始
+            case SocketEvent.ReadyToStart: {
+              store.dispatch(setIsReadyToStart(true));
               break;
             }
             case SocketEvent.StartGame: {

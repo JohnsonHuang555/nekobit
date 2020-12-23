@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'components/Button';
 import Layout from 'components/Layout';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { SocketEvent } from 'domain/models/WebSocket';
-import { selectRoomInfo, selectShowGameScreen } from 'selectors/roomsSelector';
+import {
+  selectIsReadyToStart,
+  selectRoomInfo,
+  selectShowGameScreen
+} from 'selectors/roomsSelector';
 import { selectUserInfo } from 'selectors/appSelector';
 import styles from 'styles/pages/rooms.module.scss';
 import { GamePack } from 'domain/models/Room';
@@ -21,6 +25,8 @@ const Room = () => {
   const { isConnected } = useSelector(selectIsConnected);
   const { userInfo } = useSelector(selectUserInfo);
   const { showGameScreen } = useSelector(selectShowGameScreen);
+  const { isReadyToStart } = useSelector(selectIsReadyToStart);
+  const [startingCount, setStartingCount] = useState(5); // 倒數五秒遊戲開始
 
   useEffect(() => {
     return () => {
@@ -47,12 +53,37 @@ const Room = () => {
     }
   }, [isConnected]);
 
+  useEffect(() => {
+    let interval: any = null;
+    if (isReadyToStart) {
+      interval = setInterval(() => {
+        setStartingCount(seconds => seconds - 1);
+      }, 1000);
+    } else if (!isReadyToStart && startingCount === 0) {
+      // 重新設定
+      clearInterval(interval);
+
+      // 房主開始遊戲
+      if (playerInfo()?.isMaster) {
+        dispatch(wsSendMessage({
+          event: SocketEvent.StartGame,
+          player_id: userInfo?.id as string,
+          data: {
+            game_pack: GamePack.ChineseChess,
+            game_mode: 'hidden',
+          }
+        }));
+      }
+    }
+    return () => clearInterval(interval);
+  }, [isReadyToStart]);
+
   const isNowPlayer = (id: string) => {
     if (userInfo && userInfo.id === id) {
       return true;
     }
     return false;
-  }
+  };
 
   const playerInfo = () => {
     if (!selectedRoom || !userInfo) {
@@ -69,7 +100,7 @@ const Room = () => {
       return false;
     }
     return true;
-  }
+  };
 
   // FIXME: 要切三塊 components，container 保持乾淨
   return (
@@ -81,7 +112,7 @@ const Room = () => {
 
             {/* // TODO: 聊天 */}
             <div className={`${styles.block} ${styles.messages}`}>
-              <div className={styles.content}></div>
+              <div className={styles.content}>{startingCount}</div>
             </div>
           </div>
           <div className={`${styles.rightArea} ${styles.block}`}>
@@ -93,12 +124,8 @@ const Room = () => {
                 title="開始遊戲"
                 color="secondary"
                 onClick={() => dispatch(wsSendMessage({
-                  event: SocketEvent.StartGame,
+                  event: SocketEvent.ReadyToStart,
                   player_id: userInfo.id,
-                  data: {
-                    game_pack: GamePack.ChineseChess,
-                    game_mode: 'hidden',
-                  }
                 }))}
                 disabled={!isReadyToPlay()}
               /> :
