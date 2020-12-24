@@ -17,6 +17,10 @@
     .content {
       width: 100%;
     }
+    .chat {
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   .rightArea {

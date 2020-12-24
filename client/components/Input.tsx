@@ -27,7 +27,7 @@ const Input = (props: InputProps) => {
   } = props;
   return (
     <div className={styles.input} style={customStyles}>
-      <div className={styles.titleLabel}>{label}</div>
+      {label && <div className={styles.titleLabel}>{label}</div>}
       <input
         autoComplete="off"
         type={type}

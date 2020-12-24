@@ -1,6 +1,5 @@
 #!/bin/sh -e
-
-psql --variable=ON_ERROR_STOP=1 --username "postgres" <<-EOSQL
+psql --variable=ON_ERROR_STOP=1 --username "postgres" <<- EOSQL
     CREATE TABLE game (
         id serial primary key,
         name varchar(50),

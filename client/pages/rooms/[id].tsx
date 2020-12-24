@@ -17,6 +17,7 @@ import GameScreen from 'components/rooms/GameScreen';
 import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
 import { selectIsConnected } from 'selectors/webSocketSelector';
 import { setIsReadyToStart } from 'slices/roomsSlice';
+import ChatArea from 'components/rooms/ChatArea';
 
 const Room = () => {
   const router = useRouter();
@@ -61,6 +62,7 @@ const Room = () => {
         setStartingCount(seconds => seconds - 1);
       }, 1000);
     }
+    setStartingCount(5);
     return () => clearInterval(interval);
   }, [isReadyToStart]);
 
@@ -119,7 +121,13 @@ const Room = () => {
 
             {/* // TODO: 聊天 */}
             <div className={`${styles.block} ${styles.messages}`}>
-              <div className={styles.content}>遊戲準備開始 {startingCount} ...</div>
+              <div className={`${styles.content} ${styles.chat}`}>
+                <ChatArea
+                  messages={['hi', 'yo', 'hello']}
+                  startingCount={isReadyToStart && startingCount !== 0 ? startingCount : undefined}
+                  onSubmit={() => {}}
+                />
+              </div>
             </div>
           </div>
           <div className={`${styles.rightArea} ${styles.block}`}>
