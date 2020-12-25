@@ -1,6 +1,0 @@
-database:
-  dbname: GamePlatformDB
-  connectionString: mongodb://localhost:27017
-
-server:
-  address: 8080
