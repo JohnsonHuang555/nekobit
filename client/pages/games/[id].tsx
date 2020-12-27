@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
 import { GamePack, GameStatus } from 'domain/models/Room';
@@ -12,6 +12,7 @@ import styles from 'styles/pages/games.module.scss';
 import { createRoom, loadRooms } from 'actions/roomsAction';
 import { selectUserInfo } from 'selectors/appSelector';
 import { toast } from 'react-toastify';
+import CreateRoomModal from 'components/modals/CreateRoomModal';
 
 const Game = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ const Game = () => {
   const { rooms } = useSelector(selectRooms);
   const { createdId } = useSelector(selectCreatedId);
   const { userInfo } = useSelector(selectUserInfo);
+  const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
@@ -61,12 +63,13 @@ const Game = () => {
       showLoginToast();
       return;
     }
-    dispatch(createRoom({
-      title: '來',
-      password: '',
-      game_pack: GamePack.ChineseChess,
-      game_mode: 'hidden',
-    }))
+    setShowCreateRoomModal(true);
+    // dispatch(createRoom({
+    //   title: '來',
+    //   password: '',
+    //   game_pack: GamePack.ChineseChess,
+    //   game_mode: 'hidden',
+    // }))
   };
 
   const onJoinRoom = (id: string) => {
@@ -79,6 +82,7 @@ const Game = () => {
 
   return (
     <Layout>
+      <CreateRoomModal show={showCreateRoomModal} />
       <div className="header">
         <h2 className="page-title">{selectedGame.name}</h2>
       </div>
