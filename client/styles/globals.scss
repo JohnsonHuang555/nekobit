@@ -53,11 +53,11 @@ button {
   }
 }
 
-.ReactModal__Content {
-  overflow: inherit;
-}
 
 .ReactModal__Overlay {
   z-index: 999;
   background-color: rgba(0, 0, 0, 0.75) !important;
+  .ReactModal__Content {
+    overflow: inherit !important;
+  }
 }

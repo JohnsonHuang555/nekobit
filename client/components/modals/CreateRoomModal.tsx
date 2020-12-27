@@ -21,13 +21,26 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
         label="房間名稱"
         value={roomName}
         onChange={(e) => setRoomName(e.target.value)}
+        customStyles={{ marginBottom: '20px' }}
       />
       <Select
         value={selectedGame}
         options={[
           {label: '象棋', value: GamePack.ChineseChess}
         ]}
+        label="遊戲"
         onChange={(o) => setSelectedGame(o)}
+        customStyles={{ marginBottom: '20px' }}
+      />
+      <Select
+        value={selectedGame}
+        options={[
+          {label: '大盤(標準)', value: 'standard'},
+          {label: '小盤(暗棋)', value: 'hidden'}
+        ]}
+        label="模式"
+        onChange={(o) => setSelectedGame(o)}
+        customStyles={{ marginBottom: '20px' }}
       />
     </Modal>
   );
