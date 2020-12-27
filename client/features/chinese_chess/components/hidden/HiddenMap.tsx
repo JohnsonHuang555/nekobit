@@ -1,4 +1,4 @@
-const GameMap = () => {
+const HiddenMap = () => {
   return (
     <svg width="420" height="220" viewBox="0 0 420 220">
       <defs>
@@ -147,4 +147,4 @@ const GameMap = () => {
   );
 }
 
-export default GameMap;
+export default HiddenMap;
