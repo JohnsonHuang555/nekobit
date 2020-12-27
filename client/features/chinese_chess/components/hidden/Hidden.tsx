@@ -1,5 +1,5 @@
 import React from "react";
-import GameMap from "../GameMap";
+import GameMap from "./HiddenMap";
 import styles from 'styles/features/hidden.module.scss';
 import { Room } from "domain/models/Room";
 import { PlayerSide } from "features/chinese_chess/domain/models/PlayerSide";
@@ -11,7 +11,7 @@ import { ChineseChessSocketEvent } from "domain/models/WebSocket";
 import Icon, { IconType } from "components/Icon";
 import { User } from "domain/models/User";
 
-type HiddenProps = {
+export type HiddenProps = {
   room: Room;
   playerSide: PlayerSide;
   isYourTurn: boolean;
