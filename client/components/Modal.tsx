@@ -39,6 +39,7 @@ const Modal = (props: ModalProps) => {
   const dispatch = useDispatch();
 
   const onClose = () => {
+    console.log(123)
     if (onCloseModal) {
       onCloseModal();
     }

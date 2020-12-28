@@ -10,9 +10,10 @@ import { selectGameInfo } from 'selectors/gamesSelector';
 import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
 import { createRoom, loadRooms } from 'actions/roomsAction';
-import { selectUserInfo } from 'selectors/appSelector';
+import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
 import { toast } from 'react-toastify';
 import CreateRoomModal from 'components/modals/CreateRoomModal';
+import { setShowModal } from 'slices/appSlice';
 
 const Game = () => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const Game = () => {
   const { rooms } = useSelector(selectRooms);
   const { createdId } = useSelector(selectCreatedId);
   const { userInfo } = useSelector(selectUserInfo);
-  const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
+  const { showModal } = useSelector(selectShowModal);
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
@@ -63,7 +64,7 @@ const Game = () => {
       showLoginToast();
       return;
     }
-    setShowCreateRoomModal(true);
+    dispatch(setShowModal(true));
     // dispatch(createRoom({
     //   title: '來',
     //   password: '',
@@ -82,7 +83,7 @@ const Game = () => {
 
   return (
     <Layout>
-      <CreateRoomModal show={showCreateRoomModal} />
+      <CreateRoomModal show={showModal} />
       <div className="header">
         <h2 className="page-title">{selectedGame.name}</h2>
       </div>
