@@ -10,3 +10,8 @@ export type Game = {
   createAt: string; // FIXME:
   updateAt: string; // FIXME:
 }
+
+export const GameMode: {[key: string]: string} = {
+  hidden: '暗棋(小盤)',
+  standard: '暗棋(小盤)',
+};

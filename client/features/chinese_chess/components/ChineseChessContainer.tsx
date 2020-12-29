@@ -110,6 +110,12 @@ const ChineseChessContainer = () => {
     dispatch(setGameOver(false));
   };
 
+  const onLeave = () => {
+    setShowGameOverModal(false);
+    dispatch(setGameOver(false));
+    dispatch(setShowGameScreen(false));
+  };
+
   return (
     <>
       <Modal
@@ -127,21 +133,24 @@ const ChineseChessContainer = () => {
         <Button
           title="離開"
           color="grey-4"
-          onClick={() => {
-            setShowGameOverModal(false);
-            dispatch(setGameOver(false));
-            dispatch(setShowGameScreen(false));
-          }}
+          onClick={() => onLeave()}
         />
       </Modal>
       <div className={styles.chineseChess}>
         {gameMode[selectedRoom.gameMode]}
         <div className={styles.footer}>
-          <Button
-            title="投降"
-            color="brown"
-            onClick={() => {}}
-          />
+          {isGameOver && !showGameOverModal ?
+            <Button
+              title="結束"
+              color="brown"
+              onClick={() => onLeave()}
+            /> :
+            <Button
+              title="投降"
+              color="brown"
+              onClick={() => {}}
+            />
+          }
         </div>
       </div>
     </>

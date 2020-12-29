@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { HiddenProps } from "../hidden/Hidden";
 import GameMap from "./StandardMap";
 import styles from 'styles/features/standard.module.scss';
+import { ChessSide } from "features/chinese_chess/domain/models/ChineseChess";
 
 export type StandardProps = HiddenProps;
 
@@ -20,15 +21,37 @@ const Standard = (props: StandardProps) => {
   const dispatch = useDispatch();
 
   const chessMap = () => {
-    // let map = [];
+    let map = [];
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 9; x++) {
-        const chess = chineseChess.find(c => {
+        const targetChess = chineseChess.find(c => {
           return c.locationX === x && c.locationY === y && c.alive;
         });
+
+        if (targetChess) {
+          map.push(
+            <div className={styles.itemContainer} key={`x-${x}/y-${y}`}>
+              <span
+                className={`${styles.flipedChess} ${targetChess.side === ChessSide.Black ? styles.black : styles.red} ${selectedChess?.id === targetChess.id ? styles.selectedChess : ''}`}
+                onClick={() => {}}
+              >
+                <span>{targetChess.name}</span>
+                <span className={`${styles.circle} ${targetChess.side === ChessSide.Red ? styles.red : ''}`}></span>
+              </span>
+            </div>
+          );
+        } else {
+          map.push(
+            <div
+              className={styles.itemContainer}
+              key={`x-${x}/y-${y}`}
+              onClick={() => {}}
+            ></div>
+          );
+        }
       }
     }
-    return <div></div>;
+    return map;
   };
 
   return (

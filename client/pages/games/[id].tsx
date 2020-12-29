@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import { GamePack, GameStatus } from 'domain/models/Room';
+import { GameStatus } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,11 +9,12 @@ import { loadGameInfo } from 'actions/gamesAction';
 import { selectGameInfo } from 'selectors/gamesSelector';
 import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
 import styles from 'styles/pages/games.module.scss';
-import { createRoom, loadRooms } from 'actions/roomsAction';
+import { loadRooms } from 'actions/roomsAction';
 import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
 import { toast } from 'react-toastify';
 import CreateRoomModal from 'components/modals/CreateRoomModal';
 import { setShowModal } from 'slices/appSlice';
+import { GameMode } from 'domain/models/Game';
 
 const Game = () => {
   const router = useRouter();
@@ -65,12 +66,6 @@ const Game = () => {
       return;
     }
     dispatch(setShowModal(true));
-    // dispatch(createRoom({
-    //   title: '來',
-    //   password: '',
-    //   game_pack: GamePack.ChineseChess,
-    //   game_mode: 'hidden',
-    // }))
   };
 
   const onJoinRoom = (id: string) => {
@@ -99,7 +94,6 @@ const Game = () => {
             {selectedGame.description}
           </div>
           <div className={styles.controls}>
-           {/* TODO: 跳model */}
             <Button
               title="建立房間"
               color="secondary"
@@ -135,7 +129,7 @@ const Game = () => {
                   />
                 </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
-                  一般模式
+                  {GameMode[room.gameMode]}
                 </span>
                 <Button
                   title="加入"
