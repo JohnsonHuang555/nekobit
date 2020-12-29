@@ -73,8 +73,8 @@ const Room = () => {
         event: SocketEvent.StartGame,
         player_id: userInfo?.id as string,
         data: {
-          game_pack: GamePack.ChineseChess,
-          game_mode: 'hidden',
+          game_pack: selectedRoom?.gamePack,
+          game_mode: selectedRoom?.gameMode,
         }
       }));
     }
