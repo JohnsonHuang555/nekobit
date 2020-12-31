@@ -3,8 +3,8 @@ import { PlayerFactory } from "domain/factories/PlayerFactory";
 import { RoomFactory } from "domain/factories/RoomFactory";
 import { ChineseChessSocketEvent, SocketEvent } from "domain/models/WebSocket";
 import { GameDataFactory } from "features/chinese_chess/domain/factories/GameDataFactory";
-import { setGameData as setChineseChessGameData, setGameOver } from "features/chinese_chess/slices/chineseChessSlice";
-import { changePlayer, joinRoom, readyGame, setIsReadyToStart, startGame } from "slices/roomsSlice";
+import { setGameData as setChineseChessGameData } from "features/chinese_chess/slices/chineseChessSlice";
+import { changePlayer, joinRoom, readyGame, setGameOver, setIsReadyToStart, startGame } from "slices/roomsSlice";
 import { wsConnected, wsDisConnected } from "slices/webSocketSlice";
 
 let webSocket: WebSocket;
@@ -50,6 +50,15 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               store.dispatch(setChineseChessGameData(room.gameData));
               break;
             }
+            case SocketEvent.Surrender: {
+              const { player_id, game_over } = data;
+              store.dispatch(setGameOver({
+                isGameOver: game_over,
+                surrenderId: player_id,
+              }));
+              break;
+            }
+            // 象棋
             case ChineseChessSocketEvent.FlipChess:
             case ChineseChessSocketEvent.MoveChess: {
               const { game_data, now_turn } = data;
@@ -63,7 +72,10 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
               if (game_over) {
-                store.dispatch(setGameOver(game_over));
+                store.dispatch(setGameOver({
+                  isGameOver: game_over,
+                  surrenderId: ''
+                }));
               }
             }
           }

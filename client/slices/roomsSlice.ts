@@ -10,6 +10,8 @@ export type State = {
   loading: boolean;
   showGameScreen: boolean;
   isReadyToStart: boolean;
+  isGameOver: boolean;
+  surrenderId: string; // 投降者
 };
 
 export type CaseReducer = {
@@ -19,6 +21,10 @@ export type CaseReducer = {
   changePlayer: (state: State, action: PayloadAction<string>) => void;
   setShowGameScreen: (state: State, action: PayloadAction<boolean>) => void;
   setIsReadyToStart: (state: State, action: PayloadAction<boolean>) => void;
+  setGameOver: (state: State, action: PayloadAction<{
+    isGameOver: boolean,
+    surrenderId: string,
+  }>) => void;
 };
 
 const roomsSlice = createSlice<State, CaseReducer>({
@@ -30,6 +36,8 @@ const roomsSlice = createSlice<State, CaseReducer>({
     loading: false,
     showGameScreen: false,
     isReadyToStart: false,
+    isGameOver: false,
+    surrenderId: '',
   },
   reducers: {
     joinRoom: (state: State, action: PayloadAction<Room>) => {
@@ -60,7 +68,14 @@ const roomsSlice = createSlice<State, CaseReducer>({
     },
     setIsReadyToStart: (state: State, action: PayloadAction<boolean>) => {
       state.isReadyToStart = action.payload;
-    }
+    },
+    setGameOver: (state: State, action: PayloadAction<{
+      isGameOver: boolean,
+      surrenderId: string,
+    }>) => {
+      state.isGameOver = action.payload.isGameOver;
+      state.surrenderId = action.payload.surrenderId;
+    },
   },
   extraReducers: {
     [loadRooms.pending.toString()]: (state) => {
@@ -87,6 +102,7 @@ export const {
   changePlayer,
   setShowGameScreen,
   setIsReadyToStart,
+  setGameOver,
 } = roomsSlice.actions;
 
 export default roomsSlice.reducer;

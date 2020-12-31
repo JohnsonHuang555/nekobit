@@ -9,7 +9,6 @@ export type State = {
   playerSide: PlayerSide;
   canMove: boolean;
   canEat: boolean;
-  isGameOver: boolean;
 
   // 到後端的參數
   targetId: number;
@@ -37,7 +36,6 @@ export type CaseReducer = {
     targetY: number;
     chesses: ChineseChess[];
   }>) => void;
-  setGameOver: (state: State, action: PayloadAction<boolean>) => void;
   reset: (state: State) => void;
 };
 
@@ -48,7 +46,6 @@ const chineseChessSlice = createSlice<State, CaseReducer>({
     playerSide: {},
     canMove: false,
     canEat: false,
-    isGameOver: false,
     targetId: -1,
     targetX: -1,
     targetY: -1,
@@ -171,9 +168,6 @@ const chineseChessSlice = createSlice<State, CaseReducer>({
         }
       }
     },
-    setGameOver: (state: State, action: PayloadAction<boolean>) => {
-      state.isGameOver = action.payload;
-    },
     reset: (state: State) => {
       state.canEat = false;
       state.canMove = false;
@@ -189,7 +183,6 @@ export const {
   setGameData,
   setCanMove,
   setCanEat,
-  setGameOver,
   reset,
 } = chineseChessSlice.actions;
 

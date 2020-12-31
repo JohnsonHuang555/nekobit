@@ -25,10 +25,3 @@ export const selectCanEat = createSelector(
   }),
   (state) => state,
 );
-
-export const selectIsGameOver = createSelector(
-  (state: StoreState) => ({
-    isGameOver: state.chineseChess.isGameOver,
-  }),
-  (state) => state,
-);

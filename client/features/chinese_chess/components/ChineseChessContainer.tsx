@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectCanEat, selectCanMove, selectGameData, selectIsGameOver } from "../selectors/chineseChessSelector";
+import { selectCanEat, selectCanMove, selectGameData } from "../selectors/chineseChessSelector";
 import React, { useEffect, useState } from "react";
-import { reset, setGameData, setGameOver } from "../slices/chineseChessSlice";
-import { selectRoomInfo } from "selectors/roomsSelector";
+import { reset, setGameData } from "../slices/chineseChessSlice";
+import { selectIsGameOver, selectRoomInfo } from "selectors/roomsSelector";
 import {  ChessSide, ChineseChess } from "../domain/models/ChineseChess";
 import { wsSendMessage } from "actions/socketAction";
 import { ChineseChessSocketEvent } from "domain/models/WebSocket";
@@ -11,7 +11,7 @@ import Hidden from "./hidden/Hidden";
 import styles from 'styles/features/chineseChess.module.scss';
 import Modal from "components/Modal";
 import Button from "components/Button";
-import { setShowGameScreen } from "slices/roomsSlice";
+import { setGameOver, setShowGameScreen } from "slices/roomsSlice";
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
@@ -107,13 +107,23 @@ const ChineseChessContainer = () => {
 
   const onCloseModal = () => {
     setShowGameOverModal(false);
-    dispatch(setGameOver(false));
+    dispatch(setGameOver({
+      isGameOver: false,
+      surrenderId: '',
+    }));
   };
 
   const onLeave = () => {
     setShowGameOverModal(false);
-    dispatch(setGameOver(false));
+    dispatch(setGameOver({
+      isGameOver: false,
+      surrenderId: '',
+    }));
     dispatch(setShowGameScreen(false));
+  };
+
+  const surrender = () => {
+
   };
 
   return (

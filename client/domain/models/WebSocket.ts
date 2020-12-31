@@ -10,6 +10,7 @@ export enum SocketEvent {
   ReadyGame = 'ready_game',
   ReadyToStart = 'ready_to_start',
   StartGame = 'start_game',
+  Surrender = 'surrender',
 }
 
 export enum ChineseChessSocketEvent {

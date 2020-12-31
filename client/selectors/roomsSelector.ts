@@ -35,3 +35,10 @@ export const selectIsReadyToStart = createSelector(
   }),
   (state) => state,
 )
+
+export const selectIsGameOver = createSelector(
+  (state: StoreState) => ({
+    isGameOver: state.rooms.isGameOver,
+  }),
+  (state) => state,
+);

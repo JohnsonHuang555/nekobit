@@ -147,6 +147,9 @@ func (s subscription) readPump() {
 			if err == nil {
 				msg.Data.RoomInfo = room
 			}
+		case domain.Surrender:
+			s.roomUseCase.GameOver(s.roomID)
+			msg.Data.GameOver = true
 		case domain.FlipChess:
 			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide, msg.Data.PlayersID)
 			ccGameData.ChineseChess = newChesses
