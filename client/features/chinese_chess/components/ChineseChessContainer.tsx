@@ -5,7 +5,7 @@ import { reset, setGameData } from "../slices/chineseChessSlice";
 import { selectIsGameOver, selectRoomInfo } from "selectors/roomsSelector";
 import {  ChessSide, ChineseChess } from "../domain/models/ChineseChess";
 import { wsSendMessage } from "actions/socketAction";
-import { ChineseChessSocketEvent } from "domain/models/WebSocket";
+import { ChineseChessSocketEvent, SocketEvent } from "domain/models/WebSocket";
 import { selectUserInfo } from "selectors/appSelector";
 import Hidden from "./hidden/Hidden";
 import styles from 'styles/features/chineseChess.module.scss';
@@ -23,6 +23,7 @@ const ChineseChessContainer = () => {
   const { isGameOver } = useSelector(selectIsGameOver);
   const [selectedChess, setSelectedChess] = useState<ChineseChess>();
   const [showGameOverModal, setShowGameOverModal] = useState(false);
+  const [showSurrenderModal, setShowSurrenderModal] = useState(false);
 
   if (!userInfo || !selectedRoom) {
     return null;
@@ -122,8 +123,12 @@ const ChineseChessContainer = () => {
     dispatch(setShowGameScreen(false));
   };
 
-  const surrender = () => {
-
+  const onSurrender = () => {
+    dispatch(wsSendMessage({
+      event: SocketEvent.Surrender,
+      player_id: userInfo.id,
+    }));
+    setShowSurrenderModal(false);
   };
 
   return (
@@ -146,6 +151,24 @@ const ChineseChessContainer = () => {
           onClick={() => onLeave()}
         />
       </Modal>
+      <Modal
+        show={showSurrenderModal}
+        title="提示"
+        onCloseModal={() => setShowSurrenderModal(false)}
+      >
+        <div className={styles.surrender}>確定要投降嗎？</div>
+        <Button
+          title="確認"
+          color="secondary"
+          onClick={() => onSurrender()}
+          customStyles={{ marginBottom: '10px' }}
+        />
+        <Button
+          title="離開"
+          color="grey-4"
+          onClick={() => setShowSurrenderModal(false)}
+        />
+      </Modal>
       <div className={styles.chineseChess}>
         {gameMode[selectedRoom.gameMode]}
         <div className={styles.footer}>
@@ -158,7 +181,7 @@ const ChineseChessContainer = () => {
             <Button
               title="投降"
               color="brown"
-              onClick={() => {}}
+              onClick={() => setShowSurrenderModal(true)}
             />
           }
         </div>
