@@ -20,7 +20,7 @@ const ChineseChessContainer = () => {
   const { selectedRoom } = useSelector(selectRoomInfo);
   const { canEat, targeId } = useSelector(selectCanEat);
   const { canMove, targetX, targetY } = useSelector(selectCanMove);
-  const { isGameOver } = useSelector(selectIsGameOver);
+  const { isGameOver, surrenderId } = useSelector(selectIsGameOver);
   const [selectedChess, setSelectedChess] = useState<ChineseChess>();
   const [showGameOverModal, setShowGameOverModal] = useState(false);
   const [showSurrenderModal, setShowSurrenderModal] = useState(false);
@@ -78,6 +78,14 @@ const ChineseChessContainer = () => {
     return p.id;
   });
   const gameOver = (): string => {
+    if (surrenderId !== '') {
+      if (surrenderId === userInfo.id) {
+        return '你輸了~ GG';
+      } else {
+        return '你贏了!!';
+      }
+    }
+
     const blackChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Black);
     const redChesses = chineseChess.filter(c => c.alive && c.side === ChessSide.Red);
     if (

@@ -23,7 +23,7 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
         webSocket.onclose = () => store.dispatch(wsDisConnected());
 
         webSocket.onmessage = (e) => {
-          const { event, data } = JSON.parse(e.data);
+          const { event, data, player_id } = JSON.parse(e.data);
           switch (event) {
             case SocketEvent.JoinRoom: {
               const room = RoomFactory.createFromNet(data.room_info);
@@ -51,7 +51,7 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               break;
             }
             case SocketEvent.Surrender: {
-              const { player_id, game_over } = data;
+              const { game_over } = data;
               store.dispatch(setGameOver({
                 isGameOver: game_over,
                 surrenderId: player_id,
