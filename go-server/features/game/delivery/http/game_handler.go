@@ -18,7 +18,7 @@ func NewGameHandler(e *echo.Echo, gus domain.GameUseCase) {
 	}
 
 	e.GET("/api/games", handler.GetGames)
-	e.GET("/api/games/:id", handler.GetGameInfo)
+	e.GET("/api/games/:game_pack", handler.GetGameInfo)
 }
 
 // GetGames will fetch the all games
@@ -34,9 +34,8 @@ func (g *GameHandler) GetGames(c echo.Context) error {
 
 // GetGameInfo will get the game by given id
 func (g *GameHandler) GetGameInfo(c echo.Context) error {
-	id := c.Param("id")
-
-	game, err := g.GameUseCase.GetGameInfo(id)
+	gamePack := c.Param("game_pack")
+	game, err := g.GameUseCase.GetGameInfo(gamePack)
 	if err != nil {
 		return c.JSON(utils.GetStatusCode(err), utils.ResponseError{Message: err.Error()})
 	}

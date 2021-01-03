@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import { GameStatus } from 'domain/models/Room';
+import { GamePack, GameStatus } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +19,7 @@ import { GameMode } from 'domain/models/Game';
 const Game = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const gameId = router.query.id;
+  const gamePack = router.query.id;
   const { selectedGame } = useSelector(selectGameInfo);
   const { rooms } = useSelector(selectRooms);
   const { createdId } = useSelector(selectCreatedId);
@@ -28,16 +28,16 @@ const Game = () => {
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
-      await dispatch(loadGameInfo(String(gameId)));
+      await dispatch(loadGameInfo(String(gamePack)));
     }
     async function dispatchLoadRooms() {
-      await dispatch(loadRooms());
+      await dispatch(loadRooms(String(gamePack)));
     }
-    if (gameId) {
+    if (gamePack) {
       dispatchLoadGameInfo();
       dispatchLoadRooms();
     }
-  }, [dispatch, gameId]);
+  }, [dispatch, gamePack]);
 
   useEffect(() => {
     if (createdId) {

@@ -37,6 +37,7 @@ func (p *postgreSqlGameRepository) fetch(query string) (result []*domain.Game, e
 		err = rows.Scan(
 			&t.ID,
 			&t.Name,
+			&t.GamePack,
 			&t.MinPlayers,
 			&t.MaxPlayers,
 			&t.Brief,
@@ -69,8 +70,8 @@ func (p *postgreSqlGameRepository) FindAll() (res []*domain.Game, err error) {
 	return res, nil
 }
 
-func (p *postgreSqlGameRepository) FindOneByID(id string) (res *domain.Game, err error) {
-	query := "SELECT * FROM game WHERE ID =" + id
+func (p *postgreSqlGameRepository) FindOneByID(gamePack string) (res *domain.Game, err error) {
+	query := "SELECT * FROM game WHERE GAMEPACK =" + gamePack
 	list, err := p.fetch(query)
 
 	if err != nil {

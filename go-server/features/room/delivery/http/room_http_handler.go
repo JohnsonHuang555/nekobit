@@ -25,7 +25,7 @@ func NewRoomHttpHandler(e *echo.Echo, rus domain.RoomUseCase) {
 	}
 
 	e.POST("/api/createRoom", handler.CreateRoom)
-	e.GET("/api/getRooms", handler.GetRooms)
+	e.GET("/api/getRooms/:id", handler.GetRooms)
 }
 
 func (r *RoomHttpHandler) CreateRoom(c echo.Context) error {
@@ -44,6 +44,7 @@ func (r *RoomHttpHandler) CreateRoom(c echo.Context) error {
 }
 
 func (r *RoomHttpHandler) GetRooms(c echo.Context) error {
-	rooms := r.RoomUseCase.GetRooms()
+	gamePack := c.Param("game_pack")
+	rooms := r.RoomUseCase.GetRooms(gamePack)
 	return c.JSON(http.StatusOK, rooms)
 }

@@ -31,7 +31,7 @@ type Room struct {
 }
 
 type RoomRepository interface {
-	FindAll() []*Room
+	FindAllByGID(gamePack string) []*Room
 	FindByID(id string) (*Room, error)
 	Create(r *Room) (string, error) // return id
 	DeleteByID(id string) error
@@ -47,7 +47,7 @@ type RoomRepository interface {
 }
 
 type RoomUseCase interface {
-	GetRooms() []*Room
+	GetRooms(gamePack string) []*Room
 	GetRoomInfo(rid string) (*Room, error)
 	JoinRoom(rid string, pid string, playerName string) (*Room, error)
 	LeaveRoom(rid string, pid string) ([]*Player, error)

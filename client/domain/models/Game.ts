@@ -1,6 +1,9 @@
+import { GamePack } from "./Room";
+
 export type Game = {
   id: string;
   name: string;
+  gamePack: GamePack;
   minPlayers: number;
   maxPlayers: number;
   brief: string;
