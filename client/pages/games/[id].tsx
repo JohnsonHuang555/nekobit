@@ -14,7 +14,7 @@ import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
 import { toast } from 'react-toastify';
 import CreateRoomModal from 'components/modals/CreateRoomModal';
 import { setShowModal } from 'slices/appSlice';
-import { GameMode } from 'domain/models/Game';
+import { EnhanceGame } from 'domain/models/Game';
 
 const Game = () => {
   const router = useRouter();
@@ -78,7 +78,7 @@ const Game = () => {
 
   return (
     <Layout>
-      <CreateRoomModal show={showModal} />
+      {userInfo && <CreateRoomModal show={showModal} />}
       <div className="header">
         <h2 className="page-title">{selectedGame.name}</h2>
       </div>
@@ -129,7 +129,7 @@ const Game = () => {
                   />
                 </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
-                  {GameMode[room.gameMode]}
+                  {EnhanceGame[selectedGame.gamePack][room.gameMode]}
                 </span>
                 <Button
                   title="加入"

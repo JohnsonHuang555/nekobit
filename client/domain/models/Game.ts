@@ -1,3 +1,4 @@
+import { GameMode as ChineseChessModes } from "features/chinese_chess/domain/models/ChineseChess";
 import { GamePack } from "./Room";
 
 export type Game = {
@@ -14,7 +15,12 @@ export type Game = {
   updateAt: string; // FIXME:
 }
 
-export const GameMode: {[key: string]: string} = {
-  hidden: '暗棋(小盤)',
-  standard: '暗棋(小盤)',
-};
+export const EnhanceGame: {
+  [key in
+    GamePack.ChineseChess |
+    GamePack.Chess
+  ]: {[key: string]: string}
+} = {
+  [GamePack.ChineseChess]: ChineseChessModes,
+  [GamePack.Chess]: ChineseChessModes,
+}

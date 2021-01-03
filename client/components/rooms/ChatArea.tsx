@@ -13,8 +13,8 @@ const ChatArea = (props: ChatAreaProps) => {
   return (
     <>
       <div className={styles.chatArea}>
-        {messages.map(m =>
-          <div className={styles.row}>{m}</div>
+        {messages.map((m, idx) =>
+          <div className={styles.row} key={idx}>{m}</div>
         )}
         {startingCount &&
           <div className={styles.countdown}>遊戲開始倒數 {startingCount} 秒...</div>
