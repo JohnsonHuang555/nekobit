@@ -25,7 +25,7 @@ func NewRoomHttpHandler(e *echo.Echo, rus domain.RoomUseCase) {
 	}
 
 	e.POST("/api/createRoom", handler.CreateRoom)
-	e.GET("/api/getRooms/:id", handler.GetRooms)
+	e.GET("/api/getRooms/:game_pack", handler.GetRooms)
 }
 
 func (r *RoomHttpHandler) CreateRoom(c echo.Context) error {
