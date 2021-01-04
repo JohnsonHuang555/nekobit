@@ -19,8 +19,8 @@ func (gu *gameUseCase) GetGames() (res []*domain.Game, err error) {
 	return res, nil
 }
 
-func (gu *gameUseCase) GetGameInfo(id string) (res *domain.Game, err error) {
-	res, err = gu.gameRepo.FindOneByID(id)
+func (gu *gameUseCase) GetGameInfo(gamePack string) (res *domain.Game, err error) {
+	res, err = gu.gameRepo.FindOneByID(gamePack)
 	if err != nil {
 		return nil, err
 	}

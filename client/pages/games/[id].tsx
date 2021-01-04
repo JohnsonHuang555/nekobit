@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Layout from 'components/Layout';
 import Button from 'components/Button';
-import { GameStatus } from 'domain/models/Room';
+import { GamePack, GameStatus } from 'domain/models/Room';
 import Icon, { IconType } from 'components/Icon';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,12 +14,12 @@ import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
 import { toast } from 'react-toastify';
 import CreateRoomModal from 'components/modals/CreateRoomModal';
 import { setShowModal } from 'slices/appSlice';
-import { GameMode } from 'domain/models/Game';
+import { EnhanceGame } from 'domain/models/Game';
 
 const Game = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const gameId = router.query.id;
+  const gamePack = router.query.id;
   const { selectedGame } = useSelector(selectGameInfo);
   const { rooms } = useSelector(selectRooms);
   const { createdId } = useSelector(selectCreatedId);
@@ -28,16 +28,16 @@ const Game = () => {
 
   useEffect(() => {
     async function dispatchLoadGameInfo() {
-      await dispatch(loadGameInfo(String(gameId)));
+      await dispatch(loadGameInfo(String(gamePack)));
     }
     async function dispatchLoadRooms() {
-      await dispatch(loadRooms());
+      await dispatch(loadRooms(String(gamePack)));
     }
-    if (gameId) {
+    if (gamePack) {
       dispatchLoadGameInfo();
       dispatchLoadRooms();
     }
-  }, [dispatch, gameId]);
+  }, [dispatch, gamePack]);
 
   useEffect(() => {
     if (createdId) {
@@ -78,7 +78,7 @@ const Game = () => {
 
   return (
     <Layout>
-      <CreateRoomModal show={showModal} />
+      {userInfo && <CreateRoomModal show={showModal} />}
       <div className="header">
         <h2 className="page-title">{selectedGame.name}</h2>
       </div>
@@ -129,7 +129,7 @@ const Game = () => {
                   />
                 </span>
                 <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
-                  {GameMode[room.gameMode]}
+                  {EnhanceGame[selectedGame.gamePack][room.gameMode]}
                 </span>
                 <Button
                   title="加入"

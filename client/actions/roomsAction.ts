@@ -5,9 +5,9 @@ import { GamePack } from "domain/models/Room";
 
 export const loadRooms = createAsyncThunk(
   'rooms/loadRooms',
-  async (_, thunkAPI) => {
+  async (gamePack: string, thunkAPI) => {
     try {
-      const response = await getApi('/getRooms');
+      const response = await getApi(`/getRooms/${gamePack}`);
       return RoomFactory.createArrayFromNet(response.data);
     } catch (error) {
       return thunkAPI.rejectWithValue({ error: error.message })

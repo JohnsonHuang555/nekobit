@@ -13,8 +13,8 @@ func NewRoomUseCase(r domain.RoomRepository) domain.RoomUseCase {
 	return &roomUseCase{r}
 }
 
-func (ru *roomUseCase) GetRooms() []*domain.Room {
-	rooms := ru.roomRepo.FindAll()
+func (ru *roomUseCase) GetRooms(gamePack string) []*domain.Room {
+	rooms := ru.roomRepo.FindAllByGID(gamePack)
 	return rooms
 }
 

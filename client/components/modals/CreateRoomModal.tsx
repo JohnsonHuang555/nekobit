@@ -3,9 +3,11 @@ import Button from "components/Button";
 import Input from "components/Input";
 import Modal from "components/Modal";
 import Select, { OptionType } from "components/Select";
-import { GamePack } from "domain/models/Room";
+import { EnhanceGame } from "domain/models/Game";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { selectGameInfo } from "selectors/gamesSelector";
 import { setShowModal } from "slices/appSlice";
 import styles from 'styles/components/modals/createRoomModal.module.scss';
 
@@ -17,9 +19,33 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
   const { show } = props;
   const [roomName, setRoomName] = useState('');
   const [roomPassword, setRoomPassword] = useState('');
-  const [selectedGame, setSelectedGame] = useState<OptionType>();
   const [selectedMode, setSelectedMode] = useState<OptionType>();
+  const { selectedGame } = useSelector(selectGameInfo);
   const dispatch = useDispatch();
+
+  const getAllModes = () => {
+    if (!selectedGame) { return []; }
+    const modes = EnhanceGame[selectedGame.gamePack];
+    const options: OptionType[] = Object.keys(modes).map(m => ({
+      label: modes[m],
+      value: m,
+    }));
+    return options;
+  }
+
+  const onCreate = () => {
+    if (!selectedGame || !selectedMode) {
+      toast.warn('請選擇');
+      return;
+    }
+    dispatch(createRoom({
+      title: roomName,
+      password: roomPassword,
+      game_pack: selectedGame.gamePack,
+      game_mode: selectedMode.value,
+    }))
+    dispatch(setShowModal(false));
+  }
 
   return (
     <Modal title="New Room" show={show}>
@@ -31,7 +57,8 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
         onChange={(e) => setRoomName(e.target.value)}
         customStyles={{ marginBottom: '20px' }}
       />
-      <Select
+      {/* TODO: 考慮要不要放 */}
+      {/* <Select
         value={selectedGame}
         options={[
           {label: '象棋', value: GamePack.ChineseChess}
@@ -39,13 +66,10 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
         label="遊戲"
         onChange={(o) => setSelectedGame(o)}
         customStyles={{ marginBottom: '20px' }}
-      />
+      /> */}
       <Select
         value={selectedMode}
-        options={[
-          {label: '大盤(標準)', value: 'standard'},
-          {label: '小盤(暗棋)', value: 'hidden'}
-        ]}
+        options={getAllModes()}
         label="模式"
         onChange={(o) => setSelectedMode(o)}
         customStyles={{ marginBottom: '20px' }}
@@ -60,15 +84,7 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
       />
       <div className={styles.controls}>
         <Button title="取消" color="grey-4" onClick={() => dispatch(setShowModal(false))}/>
-        <Button title="創建房間" color="secondary" onClick={() => {
-          dispatch(createRoom({
-            title: roomName,
-            password: roomPassword,
-            game_pack: selectedGame?.value as GamePack,
-            game_mode: selectedMode?.value as string,
-          }))
-          dispatch(setShowModal(false))
-        }}/>
+        <Button title="創建房間" color="secondary" onClick={() => onCreate()}/>
       </div>
     </Modal>
   );

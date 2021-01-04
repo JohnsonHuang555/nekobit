@@ -70,7 +70,7 @@ export default function Home() {
                   <h2>{game.name}</h2>
                   <Button
                     title="PLAY"
-                    onClick={() => router.push(`/games/${game.id}`)}
+                    onClick={() => router.push(`/games/${game.gamePack}`)}
                   />
                 </div>
               </div>
