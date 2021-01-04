@@ -8,6 +8,7 @@ import (
 type Game struct {
 	ID           string    `json:"id"`
 	Name         string    `json:"name"`
+	Modes        []string  `json:"modes"`
 	GamePack     GamePack  `json:"game_pack"`
 	MinPlayers   int       `json:"min_players"`
 	MaxPlayers   int       `json:"max_players"`
