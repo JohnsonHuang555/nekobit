@@ -18,24 +18,29 @@ import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
 import { selectIsConnected } from 'selectors/webSocketSelector';
 import { setIsReadyToStart } from 'slices/roomsSlice';
 import ChatArea from 'components/rooms/ChatArea';
+import { selectGameInfo } from 'selectors/gamesSelector';
+import { loadGameInfo } from 'actions/gamesAction';
 
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = router.query.id;
   const { selectedRoom } = useSelector(selectRoomInfo);
+  const { selectedGame } = useSelector(selectGameInfo);
   const { isConnected } = useSelector(selectIsConnected);
   const { userInfo } = useSelector(selectUserInfo);
   const { showGameScreen } = useSelector(selectShowGameScreen);
   const { isReadyToStart } = useSelector(selectIsReadyToStart);
   const [startingCount, setStartingCount] = useState(5); // 倒數五秒遊戲開始
 
+  // 清除副作用
   useEffect(() => {
     return () => {
       dispatch(wsDisconnect())
     }
   }, []);
 
+  // 當房間創立之後連 socket
   useEffect(() => {
     if (roomId) {
       const host = `ws://localhost:5000/ws/${roomId}`;
@@ -43,6 +48,7 @@ const Room = () => {
     }
   }, [roomId]);
 
+  // 成功連到 socket 打 join event
   useEffect(() => {
     if (isConnected && userInfo) {
       dispatch(wsSendMessage({
@@ -54,6 +60,16 @@ const Room = () => {
       }));
     }
   }, [isConnected]);
+
+  // 拿到房間之後 打 getGameInfo
+  useEffect(() => {
+    async function dispatchLoadGameInfo(gamePack: string) {
+      await dispatch(loadGameInfo(gamePack));
+    }
+    if (selectedRoom) {
+      dispatchLoadGameInfo(selectedRoom.gamePack);
+    }
+  }, [selectedRoom]);
 
   useEffect(() => {
     let interval: any = null;
@@ -104,6 +120,10 @@ const Room = () => {
   };
 
   const isReadyToPlay = (): boolean => {
+    // if (selected) {
+
+    // }
+
     const notReadyPlayers = selectedRoom?.playerList.filter(p => !p.isReady);
     if (notReadyPlayers?.length !== 0) {
       return false;
@@ -114,7 +134,7 @@ const Room = () => {
   // FIXME: 要切三塊 components，container 保持乾淨
   return (
     <Layout>
-      {userInfo && isConnected && selectedRoom &&
+      {userInfo && isConnected && selectedRoom && selectedGame &&
         <div className={styles.mainArea}>
           <div className={styles.leftArea}>
             <PlayerList selectedRoom={selectedRoom} isNowPlayer={player => isNowPlayer(player)}/>
