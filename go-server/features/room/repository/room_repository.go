@@ -25,7 +25,7 @@ func (rr *roomRepository) FindAllByGID(gamePack string) []*domain.Room {
 			rooms = append(rooms, rr.rooms[i])
 		}
 	}
-	return rr.rooms
+	return rooms
 }
 
 func (rr *roomRepository) FindByID(id string) (*domain.Room, error) {

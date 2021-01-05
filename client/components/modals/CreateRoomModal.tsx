@@ -23,16 +23,6 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
   const { selectedGame } = useSelector(selectGameInfo);
   const dispatch = useDispatch();
 
-  const getAllModes = () => {
-    if (!selectedGame) { return []; }
-    const modes = EnhanceGame[selectedGame.gamePack];
-    const options: OptionType[] = Object.keys(modes).map(m => ({
-      label: modes[m],
-      value: m,
-    }));
-    return options;
-  }
-
   const onCreate = () => {
     if (!selectedGame || !selectedMode) {
       toast.warn('請選擇');
@@ -69,7 +59,7 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
       /> */}
       <Select
         value={selectedMode}
-        options={getAllModes()}
+        options={selectedGame?.modes || []}
         label="模式"
         onChange={(o) => setSelectedMode(o)}
         customStyles={{ marginBottom: '20px' }}

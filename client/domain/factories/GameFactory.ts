@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { NetGame } from 'domain/remote/NetGame';
-import { Game } from 'domain/models/Game';
+import { EnhanceGame, Game } from 'domain/models/Game';
+import { OptionType } from 'components/Select';
 
 export class GameFactory {
   static createArrayFromNet(netGames: NetGame[]): Game[] {
@@ -8,6 +9,24 @@ export class GameFactory {
   }
 
   static createFromNet(netGame: NetGame): Game {
-    return _.mapKeys(netGame, (v, key) => (_.camelCase(key))) as Game;
+    const modes = EnhanceGame[netGame.game_pack];
+    const options: OptionType[] = netGame.modes.map(m => ({
+      label: modes[m],
+      value: m,
+    }));
+    return {
+      id: netGame.id,
+      name: netGame.name,
+      modes: options,
+      gamePack: netGame.game_pack,
+      minPlayers: netGame.min_players,
+      maxPlayers: netGame.max_players,
+      brief: netGame.brief,
+      description: netGame.description,
+      imgUrl: netGame.img_url,
+      estimateTime: netGame.estimate_time,
+      createAt: netGame.created_at,
+      updateAt: netGame.updated_at,
+    }
   }
 }

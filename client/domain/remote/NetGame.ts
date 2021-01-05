@@ -4,6 +4,7 @@ export type NetGame = {
   id: string;
   img_url: string;
   name: string;
+  modes: string[];
   game_pack: GamePack;
   brief: string;
   description: string;

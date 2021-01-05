@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"go-server/domain"
 
+	"github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 )
 
@@ -37,6 +38,7 @@ func (p *postgreSqlGameRepository) fetch(query string) (result []*domain.Game, e
 		err = rows.Scan(
 			&t.ID,
 			&t.Name,
+			(*pq.StringArray)(&t.Modes),
 			&t.GamePack,
 			&t.MinPlayers,
 			&t.MaxPlayers,
