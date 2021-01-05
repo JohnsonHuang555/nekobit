@@ -12,6 +12,7 @@ import styles from 'styles/features/chineseChess.module.scss';
 import Modal from "components/Modal";
 import Button from "components/Button";
 import { setGameOver, setShowGameScreen } from "slices/roomsSlice";
+import Standard from "./standard/Standard";
 
 const ChineseChessContainer = () => {
   const dispatch = useDispatch();
@@ -111,7 +112,18 @@ const ChineseChessContainer = () => {
         selectedChess={selectedChess}
         onSelectChess={(c) => setSelectedChess(c)}
       />,
-    'standard': <></>,
+    'standard':
+      <Standard
+        room={selectedRoom}
+        playerSide={playerSide}
+        isYourTurn={isYourTurn}
+        chineseChess={chineseChess}
+        yourSide={yourSide}
+        userInfo={userInfo}
+        playersId={playersId}
+        selectedChess={selectedChess}
+        onSelectChess={(c) => setSelectedChess(c)}
+      />,
   }
 
   const onCloseModal = () => {

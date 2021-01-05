@@ -6,7 +6,7 @@ const StandardMap = () => {
           <rect width="450" height="500"/>
         </clipPath>
       </defs>
-      <g id="map" clip-path="url(#clip-map)">
+      <g id="map" clipPath="url(#clip-map)">
         <rect width="450" height="500" fill="#fcd38b"/>
         <g id="Group_3" data-name="Group 3">
           <g id="Rectangle_1" data-name="Rectangle 1" transform="translate(25 25)" fill="#f8e3b8" stroke="#000" stroke-width="0.5">
@@ -288,8 +288,8 @@ const StandardMap = () => {
           <rect width="400" height="50" stroke="none"/>
           <rect x="0.25" y="0.25" width="399.5" height="49.5" fill="none"/>
         </g>
-        <text id="楚河" transform="translate(74 256)" font-size="25" font-family="DFKaiShu-SB-Estd-BF, DFKai-SB" letter-spacing="0.05em"><tspan x="0" y="0">楚河</tspan></text>
-        <text id="漢界" transform="translate(325 256)" font-size="25" font-family="DFKaiShu-SB-Estd-BF, DFKai-SB" letter-spacing="0.05em"><tspan x="0" y="0">漢界</tspan></text>
+        <text id="楚河" transform="translate(74 256)" fontSize="25" fontFamily="DFKaiShu-SB-Estd-BF, DFKai-SB" letterSpacing="0.05em"><tspan x="0" y="0">楚河</tspan></text>
+        <text id="漢界" transform="translate(325 256)" fontSize="25" fontFamily="DFKaiShu-SB-Estd-BF, DFKai-SB" letterSpacing="0.05em"><tspan x="0" y="0">漢界</tspan></text>
       </g>
     </svg>
   );

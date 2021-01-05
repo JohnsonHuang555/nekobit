@@ -11,7 +11,6 @@ import {
 } from 'selectors/roomsSelector';
 import { selectUserInfo } from 'selectors/appSelector';
 import styles from 'styles/pages/rooms.module.scss';
-import { GamePack } from 'domain/models/Room';
 import PlayerList from 'components/rooms/PlayerList';
 import GameScreen from 'components/rooms/GameScreen';
 import { wsConnect, wsDisconnect, wsSendMessage } from 'actions/socketAction';
@@ -61,16 +60,17 @@ const Room = () => {
     }
   }, [isConnected]);
 
-  // 拿到房間之後 打 getGameInfo
+  // 拿到房間之後打 getGameInfo
   useEffect(() => {
     async function dispatchLoadGameInfo(gamePack: string) {
       await dispatch(loadGameInfo(gamePack));
     }
-    if (selectedRoom) {
+    if (selectedRoom && !selectedGame) {
       dispatchLoadGameInfo(selectedRoom.gamePack);
     }
   }, [selectedRoom]);
 
+  // 倒數計時監聽
   useEffect(() => {
     let interval: any = null;
     if (isReadyToStart) {
@@ -82,6 +82,7 @@ const Room = () => {
     return () => clearInterval(interval);
   }, [isReadyToStart]);
 
+  // 計時結束打開始遊戲
   useEffect(() => {
     // 房主開始遊戲
     if (startingCount === 0 && playerInfo()?.isMaster) {
@@ -120,12 +121,11 @@ const Room = () => {
   };
 
   const isReadyToPlay = (): boolean => {
-    // if (selected) {
-
-    // }
-
-    const notReadyPlayers = selectedRoom?.playerList.filter(p => !p.isReady);
-    if (notReadyPlayers?.length !== 0) {
+    if (!selectedGame || !selectedRoom) { return false; }
+    const { playerList } = selectedRoom;
+    const { maxPlayers } = selectedGame;
+    const notReadyPlayers = playerList.filter(p => !p.isReady);
+    if (notReadyPlayers?.length !== 0 || maxPlayers > playerList.length) {
       return false;
     }
     return true;
