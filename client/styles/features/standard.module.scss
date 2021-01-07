@@ -20,6 +20,7 @@
       position: absolute;
       top: 0;
       flex-wrap: wrap;
+      width: calc(95vh * 0.9);
       .itemContainer {
         width: calc(100% / 9);
         height: calc(95vh / 10);
