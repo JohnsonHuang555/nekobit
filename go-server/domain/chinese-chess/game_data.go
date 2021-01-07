@@ -7,11 +7,6 @@ type GameData struct {
 	PlayerSide   map[string]ChineseChessSide `json:"player_side"`
 }
 
-// type PlayerSide struct {
-// 	ID   string           `json:"id"`
-// 	Side ChineseChessSide `json:"side"`
-// }
-
 const (
 	Standard domain.GameMode = "standard"
 	Hidden   domain.GameMode = "hidden"

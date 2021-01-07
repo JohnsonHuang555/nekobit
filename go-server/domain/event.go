@@ -11,7 +11,7 @@ const (
 	Surrender SocketEvent = "surrender"  // 投降
 
 	// chinese chess
-	FlipChess SocketEvent = "flip_chess" // 翻棋
-	MoveChess SocketEvent = "move_chess" // 移動棋子
-	EatChess  SocketEvent = "eat_chess"  // 吃棋
+	ChineseChessFlipChess SocketEvent = "chinese_chess/flip_chess" // 翻棋
+	ChineseChessMoveChess SocketEvent = "chinese_chess/move_chess" // 移動棋子
+	ChineseChessEatChess  SocketEvent = "chinese_chess/eat_chess"  // 吃棋
 )

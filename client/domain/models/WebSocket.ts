@@ -14,7 +14,7 @@ export enum SocketEvent {
 }
 
 export enum ChineseChessSocketEvent {
-  MoveChess = 'move_chess',
-  EatChess = 'eat_chess',
-  FlipChess = 'flip_chess',
+  MoveChess = 'chinese_chess/move_chess',
+  EatChess = 'chinese_chess/eat_chess',
+  FlipChess = 'chinese_chess/flip_chess',
 }
