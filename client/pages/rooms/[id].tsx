@@ -131,13 +131,15 @@ const Room = () => {
     return true;
   };
 
-  // FIXME: 要切三塊 components，container 保持乾淨
   return (
     <Layout>
       {userInfo && isConnected && selectedRoom && selectedGame &&
         <div className={styles.mainArea}>
           <div className={styles.leftArea}>
-            <PlayerList selectedRoom={selectedRoom} isNowPlayer={player => isNowPlayer(player)}/>
+            <PlayerList
+              selectedRoom={selectedRoom}
+              isNowPlayer={player => isNowPlayer(player)}
+            />
 
             {/* // TODO: 聊天 */}
             <div className={`${styles.block} ${styles.messages}`}>

@@ -56,6 +56,7 @@ const Hidden = (props: HiddenProps) => {
           }
         };
 
+        // FIXME: 抽出來
         const onChessClick = () => {
           if (!targetChess || !isYourTurn) { return; }
           if (yourSide === targetChess.side) {
