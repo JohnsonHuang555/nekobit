@@ -3,6 +3,7 @@ import { HiddenProps } from "../hidden/Hidden";
 import GameMap from "./StandardMap";
 import styles from 'styles/features/standard.module.scss';
 import { ChessSide } from "features/chinese_chess/domain/models/ChineseChess";
+import { setCanMove } from "features/chinese_chess/slices/chineseChessSlice";
 
 export type StandardProps = Omit<HiddenProps, 'yourSide'>;
 
@@ -40,6 +41,18 @@ const Standard = (props: StandardProps) => {
           return c.locationX === x && c.locationY === y && c.alive;
         });
 
+        const onMove = () => {
+          if (selectedChess) {
+            dispatch(setCanMove({
+              chessId: selectedChess.id,
+              targetX: x,
+              targetY: y,
+              chesses: chineseChess,
+              mode: 'standard',
+            }))
+          }
+        }
+
         const onChessClick = () => {
           if (!targetChess || !isYourTurn) { return; }
           if (yourSide() === targetChess.side) {
@@ -67,7 +80,7 @@ const Standard = (props: StandardProps) => {
             <div
               className={styles.itemContainer}
               key={`x-${x}/y-${y}`}
-              onClick={() => {}}
+              onClick={() => onMove()}
             ></div>
           );
         }

@@ -52,6 +52,7 @@ const Hidden = (props: HiddenProps) => {
               targetX: x,
               targetY: y,
               chesses: chineseChess,
+              mode: 'hidden',
             }))
           }
         };
