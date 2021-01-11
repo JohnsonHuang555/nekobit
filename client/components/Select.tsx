@@ -25,9 +25,10 @@ const Select = (props: SelectProps<OptionType>) => {
   } = props;
 
   return (
-    <div className={styles.select} style={customStyles}>
+    <div className={`select ${styles.select}`} style={customStyles}>
       {label && <div className={styles.titleLabel}>{label}</div>}
       <ReactSelect
+        classNamePrefix="select"
         options={options}
         value={value}
         onChange={(o: any) => onChange(o)}

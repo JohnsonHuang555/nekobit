@@ -53,6 +53,63 @@ button {
   }
 }
 
+.select {
+  .select__control {
+    border: none;
+    border-radius: 5px;
+    min-height: 0;
+    background-color: #555555;
+    color: #fff;
+    .select__value-container {
+      border: none;
+      .select__input {
+        color: #fff;
+        height: 25px;
+      }
+      .select__single-value {
+        color: #fff;
+      }
+    }
+    .select__indicators {
+      .select__clear-indicator {
+        padding-right: 0;
+      }
+
+      .select__indicator-separator {
+        display: none;
+      }
+      .select__dropdown-indicator {
+        padding: 0 10px;
+        svg {
+          fill: $grey-1;
+          transition: all .3s;
+        }
+      }
+    }
+  }
+
+  &:hover .select__control, .select__control--is-focused {
+    box-shadow: none;
+    .select__indicators {
+      .select__dropdown-indicator svg {
+        fill: #eee;
+      }
+    }
+  }
+
+  .select__menu-list {
+    .select__option.select__option--is-focused {
+      background-color: $grey-2;
+    }
+    .select__option--is-selected {
+      background-color: #7b7b7b;
+    }
+  }
+}
+
+.select__menu {
+  background-color: #6c6c6c !important;
+}
 
 .ReactModal__Overlay {
   z-index: 999;
