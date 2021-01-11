@@ -3,8 +3,9 @@ import { HiddenProps } from "../hidden/Hidden";
 import GameMap from "./StandardMap";
 import styles from 'styles/features/standard.module.scss';
 import { ChessSide } from "features/chinese_chess/domain/models/ChineseChess";
+import { setCanMove } from "features/chinese_chess/slices/chineseChessSlice";
 
-export type StandardProps = HiddenProps;
+export type StandardProps = Omit<HiddenProps, 'yourSide'>;
 
 const Standard = (props: StandardProps) => {
   const {
@@ -12,13 +13,25 @@ const Standard = (props: StandardProps) => {
     playerSide,
     isYourTurn,
     chineseChess,
-    yourSide,
     userInfo,
     playersId,
     selectedChess,
     onSelectChess,
   } = props;
   const dispatch = useDispatch();
+
+  const getPlayerSide = (id: string) => {
+    // 紅方玩家
+    const redPlayer = room.playerList.find(p => p.id === id && p.playOrder === 0);
+    if (redPlayer) {
+      return ChessSide.Red;
+    }
+    return ChessSide.Black;
+  }
+
+  const yourSide = () => {
+    return getPlayerSide(userInfo.id);
+  }
 
   const chessMap = () => {
     let map = [];
@@ -28,12 +41,34 @@ const Standard = (props: StandardProps) => {
           return c.locationX === x && c.locationY === y && c.alive;
         });
 
+        const onMove = () => {
+          if (selectedChess) {
+            dispatch(setCanMove({
+              chessId: selectedChess.id,
+              targetX: x,
+              targetY: y,
+              chesses: chineseChess,
+              mode: 'standard',
+            }))
+          }
+        }
+
+        const onChessClick = () => {
+          if (!targetChess || !isYourTurn) { return; }
+          if (yourSide() === targetChess.side) {
+            console.log('selected')
+            onSelectChess(targetChess);
+          } else if (selectedChess && selectedChess.side !== targetChess.side) {
+            // eat chess
+          }
+        };
+
         if (targetChess) {
           map.push(
             <div className={styles.itemContainer} key={`x-${x}/y-${y}`}>
               <span
                 className={`${styles.flipedChess} ${targetChess.side === ChessSide.Black ? styles.black : styles.red} ${selectedChess?.id === targetChess.id ? styles.selectedChess : ''}`}
-                onClick={() => {}}
+                onClick={() => onChessClick()}
               >
                 <span>{targetChess.name}</span>
                 <span className={`${styles.circle} ${targetChess.side === ChessSide.Red ? styles.red : ''}`}></span>
@@ -45,7 +80,7 @@ const Standard = (props: StandardProps) => {
             <div
               className={styles.itemContainer}
               key={`x-${x}/y-${y}`}
-              onClick={() => {}}
+              onClick={() => onMove()}
             ></div>
           );
         }
@@ -57,32 +92,19 @@ const Standard = (props: StandardProps) => {
   return (
     <>
       <div className={styles.header}>
-        <span>{room.playerList[0].name}</span>
+        {/* FIXME: UI */}
+        <span>{room.playerList[0].name} {getPlayerSide(room.playerList[0].id)}</span>
         <div className={styles.vsArea}>
           {isYourTurn ? '你的回合' : '對方回合'}
         </div>
-        <span>{room.playerList[1].name}</span>
+        <span>{room.playerList[1].name} {getPlayerSide(room.playerList[1].id)}</span>
       </div>
       <div className={styles.content}>
-        <div className={styles.leftSide}>
-          {playerSide[room.playerList[0].id] &&
-            <span className={styles.side}>
-              {playerSide[room.playerList[0].id]}
-            </span>
-          }
-        </div>
         <div className={styles.map}>
           <GameMap />
           <div className={styles.chesses}>
             {chessMap()}
           </div>
-        </div>
-        <div className={styles.rightSide}>
-          {playerSide[room.playerList[1].id] &&
-            <span className={styles.side}>
-              {playerSide[room.playerList[1].id]}
-            </span>
-          }
         </div>
       </div>
     </>

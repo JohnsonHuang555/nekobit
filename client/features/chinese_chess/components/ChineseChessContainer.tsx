@@ -118,7 +118,6 @@ const ChineseChessContainer = () => {
         playerSide={playerSide}
         isYourTurn={isYourTurn}
         chineseChess={chineseChess}
-        yourSide={yourSide}
         userInfo={userInfo}
         playersId={playersId}
         selectedChess={selectedChess}

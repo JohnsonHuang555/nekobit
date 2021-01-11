@@ -52,10 +52,12 @@ const Hidden = (props: HiddenProps) => {
               targetX: x,
               targetY: y,
               chesses: chineseChess,
+              mode: 'hidden',
             }))
           }
         };
 
+        // FIXME: 抽出來
         const onChessClick = () => {
           if (!targetChess || !isYourTurn) { return; }
           if (yourSide === targetChess.side) {
