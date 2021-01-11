@@ -37,6 +37,7 @@ export type CaseReducer = {
     targetX: number;
     targetY: number;
     chesses: ChineseChess[];
+    mode: string
   }>) => void;
   reset: (state: State) => void;
 };
@@ -108,6 +109,7 @@ const chineseChessSlice = createSlice<State, CaseReducer>({
       targetX: number;
       targetY: number;
       chesses: ChineseChess[];
+      mode: string;
     }>) => {
       const {
         chessId,
@@ -117,71 +119,101 @@ const chineseChessSlice = createSlice<State, CaseReducer>({
         targetX,
         targetY,
         chesses,
+        mode,
       } = action.payload;
       const nowChess = chesses.find(c => c.id === chessId);
 
       if (nowChess) {
         const { name, rank, locationX, locationY } = nowChess;
-
-        // 判斷可不可以吃
-        const isEatable = (): boolean => {
-          if (
-            (name === ChessName.SoldiersBlack || name === ChessName.SoldiersRed) &&
-            (targetName === ChessName.KingBlack || targetName === ChessName.KingRed)
-          ) {
-            // 卒可以吃帥，兵可以吃將
-            return true;
-          } else if (
-            (name === ChessName.KingBlack || name === ChessName.KingRed) &&
-            (targetName === ChessName.SoldiersBlack || targetName === ChessName.SoldiersRed)
-          ) {
-            // 帥不可以吃卒，將不可以吃兵
-            return false;
-          } else if (
-            (name === ChessName.SoldiersBlack || name === ChessName.SoldiersRed) &&
-            (targetName === ChessName.CannonsBlack || targetName === ChessName.CannonsRed)
-          ) {
-            // 卒不可以吃炮，兵不可以吃包
-            return false;
-          } else {
-            // 其餘則以階級判斷
-            if (rank >= targetRank) {
-              return true
-            }
-            return false
-          }
-        }
-
         // 炮 要判斷中間是否隔一個
         if (name === ChessName.CannonsRed || name === ChessName.CannonsBlack) {
-          let middleChesses = [];
+          let middleChesses: ChineseChess[] = [];
           if (locationX === targetX) {
             middleChesses = chesses.filter(c => {
               return c.locationX === targetX &&
-                     c.locationY > Math.min(targetY, locationY) &&
-                     c.locationY < Math.max(targetY, locationY) &&
-                     c.alive
+                    c.locationY > Math.min(targetY, locationY) &&
+                    c.locationY < Math.max(targetY, locationY) &&
+                    c.alive
             });
           } else if (locationY === targetY) {
             middleChesses = chesses.filter(c => {
               return c.locationY === targetY &&
-                     c.locationX > Math.min(targetX, locationX) &&
-                     c.locationX < Math.max(targetX, locationX) &&
-                     c.alive
+                    c.locationX > Math.min(targetX, locationX) &&
+                    c.locationX < Math.max(targetX, locationX) &&
+                    c.alive
             });
           }
+          console.log(middleChesses)
           // 判斷中間是不是一定隔一個
           if (middleChesses.length === 1) {
             state.canEat = true;
             state.targetId = targeId;
           }
-        } else {
-          // 其餘判斷 階級 + 步法
-          const range = CheckMoveRange.shortCross(nowChess.locationX, nowChess.locationY);
-          const isInRange = CheckMoveRange.isInRange(range, targetX, targetY)
-          if (isInRange && isEatable()) {
-            state.canEat = true;
-            state.targetId = targeId;
+          return;
+        }
+        switch (mode) {
+          case 'hidden': {
+            // 判斷可不可以吃
+            const isEatable = (): boolean => {
+              if (
+                (name === ChessName.SoldiersBlack || name === ChessName.SoldiersRed) &&
+                (targetName === ChessName.KingBlack || targetName === ChessName.KingRed)
+              ) {
+                // 卒可以吃帥，兵可以吃將
+                return true;
+              } else if (
+                (name === ChessName.KingBlack || name === ChessName.KingRed) &&
+                (targetName === ChessName.SoldiersBlack || targetName === ChessName.SoldiersRed)
+              ) {
+                // 帥不可以吃卒，將不可以吃兵
+                return false;
+              } else if (
+                (name === ChessName.SoldiersBlack || name === ChessName.SoldiersRed) &&
+                (targetName === ChessName.CannonsBlack || targetName === ChessName.CannonsRed)
+              ) {
+                // 卒不可以吃炮，兵不可以吃包
+                return false;
+              } else {
+                // 其餘則以階級判斷
+                if (rank >= targetRank) {
+                  return true
+                }
+                return false
+              }
+            }
+            // 其餘判斷 階級 + 步法
+            const range = CheckMoveRange.shortCross(nowChess.locationX, nowChess.locationY);
+            const isInRange = CheckMoveRange.isInRange(range, targetX, targetY)
+            if (isInRange && isEatable()) {
+              state.canEat = true;
+              state.targetId = targeId;
+            }
+            break;
+          }
+          case 'standard': {
+            const isInRange = checkMove(chesses, nowChess, targetX, targetY);
+            if (nowChess.name === ChessName.KingBlack || nowChess.name === ChessName.KingRed) {
+              let hasChesses = false;
+              for (let i = 0; i < Math.abs(nowChess.locationY - targetY) - 1; i++) {
+                let hasChessY;
+                if (targetY > nowChess.locationY) {
+                  hasChessY = findChessByLocation(chesses, targetX, nowChess.locationY + i + 1);
+                } else {
+                  hasChessY = findChessByLocation(chesses, targetX, targetY + i + 1);
+                }
+                if (hasChessY && hasChessY.alive) {
+                  hasChesses = true;
+                  break;
+                }
+              }
+              if (!hasChesses) {
+                state.canEat = true;
+                state.targetId = targeId;
+              }
+            } else if (isInRange || nowChess.name === ChessName.CannonsBlack || nowChess.name === ChessName.CannonsRed) {
+              state.canEat = true;
+              state.targetId = targeId;
+            }
           }
         }
       }

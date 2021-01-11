@@ -368,19 +368,25 @@ func (cu *chineseChessUseCase) CreateGame(gameMode domain.GameMode) *chineseches
 	return gameData
 }
 
-func (cu *chineseChessUseCase) CheckGameOver(pid string, playerSides map[string]chinesechess.ChineseChessSide) bool {
+func (cu *chineseChessUseCase) CheckGameOver(pid string, playerSides map[string]chinesechess.ChineseChessSide, gameMode domain.GameMode) bool {
 	gameOver := true
-	var anotherPlayerSide chinesechess.ChineseChessSide
-	for key, side := range playerSides {
-		if key != pid {
-			anotherPlayerSide = side
+	switch gameMode {
+	case chinesechess.Standard:
+		// TODO: 每下一步棋檢查是否將軍
+		gameOver = false
+	case chinesechess.Hidden:
+		var anotherPlayerSide chinesechess.ChineseChessSide
+		for key, side := range playerSides {
+			if key != pid {
+				anotherPlayerSide = side
+			}
 		}
-	}
 
-	chesses := cu.chineseChessRepo.FindAll()
-	for _, chess := range chesses {
-		if chess.Side == anotherPlayerSide && chess.Alive == true {
-			gameOver = false
+		chesses := cu.chineseChessRepo.FindAll()
+		for _, chess := range chesses {
+			if chess.Side == anotherPlayerSide && chess.Alive == true {
+				gameOver = false
+			}
 		}
 	}
 	return gameOver

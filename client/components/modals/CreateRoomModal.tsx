@@ -63,6 +63,7 @@ const CreateRoomModal = (props: CreateRoomModalProps) => {
         label="模式"
         onChange={(o) => setSelectedMode(o)}
         customStyles={{ marginBottom: '20px' }}
+        placeholder="請選擇模式"
       />
       <Input
         type="text"

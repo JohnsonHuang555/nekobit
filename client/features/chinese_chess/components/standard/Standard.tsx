@@ -3,7 +3,7 @@ import { HiddenProps } from "../hidden/Hidden";
 import GameMap from "./StandardMap";
 import styles from 'styles/features/standard.module.scss';
 import { ChessSide } from "features/chinese_chess/domain/models/ChineseChess";
-import { setCanMove } from "features/chinese_chess/slices/chineseChessSlice";
+import { setCanEat, setCanMove } from "features/chinese_chess/slices/chineseChessSlice";
 
 export type StandardProps = Omit<HiddenProps, 'yourSide'>;
 
@@ -60,6 +60,16 @@ const Standard = (props: StandardProps) => {
             onSelectChess(targetChess);
           } else if (selectedChess && selectedChess.side !== targetChess.side) {
             // eat chess
+            dispatch(setCanEat({
+              chessId: selectedChess.id,
+              targeId: targetChess.id, // FIXME: 打包
+              targetName: targetChess.name,
+              targetRank: targetChess.rank,
+              targetX: targetChess.locationX,
+              targetY: targetChess.locationY,
+              chesses: chineseChess,
+              mode: 'standard',
+            }))
           }
         };
 

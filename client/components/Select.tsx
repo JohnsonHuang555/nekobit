@@ -12,6 +12,7 @@ interface SelectProps<O> {
   value?: O;
   label?: string;
   customStyles?: CSSProperties;
+  placeholder: string;
   onChange: (selected: O) => void;
 }
 
@@ -21,6 +22,7 @@ const Select = (props: SelectProps<OptionType>) => {
     value,
     label,
     customStyles,
+    placeholder,
     onChange,
   } = props;
 
@@ -31,6 +33,7 @@ const Select = (props: SelectProps<OptionType>) => {
         classNamePrefix="select"
         options={options}
         value={value}
+        placeholder={placeholder}
         onChange={(o: any) => onChange(o)}
       />
     </div>
