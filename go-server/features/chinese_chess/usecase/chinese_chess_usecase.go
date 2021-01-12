@@ -391,3 +391,37 @@ func (cu *chineseChessUseCase) CheckGameOver(pid string, playerSides map[string]
 	}
 	return gameOver
 }
+
+type Range struct {
+	x int
+	y int
+}
+
+func (cu *chineseChessUseCase) CheckMate(id int, targetID int) bool {
+	chess := cu.chineseChessRepo.FindOne(id)
+	targetChess := cu.chineseChessRepo.FindOne(targetID)
+	var moveRange []*Range
+	switch chess.Name {
+	case chinesechess.SoldiersBlack:
+		moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY})
+		moveRange = append(moveRange, &Range{x: chess.LocationX, y: chess.LocationY + 1})
+		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
+		for _, r := range moveRange {
+			if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
+				return true
+			}
+		}
+		break
+	case chinesechess.SoldiersRed:
+		break
+	case chinesechess.ChariotsBlack:
+		break
+	case chinesechess.ChariotsRed:
+		break
+	case chinesechess.CannonsBlack:
+		break
+	case chinesechess.CannonsRed:
+		break
+	}
+	return false
+}

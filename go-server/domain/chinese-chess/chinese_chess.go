@@ -36,4 +36,5 @@ type ChineseChessUseCase interface {
 	MoveChess(id int, locationX int, locationY int) []*ChineseChess
 	CreateGame(gameMode domain.GameMode) *GameData
 	CheckGameOver(pid string, playerSides map[string]ChineseChessSide, gameMode domain.GameMode) bool
+	CheckMate(pid int, targetID int) bool
 }
