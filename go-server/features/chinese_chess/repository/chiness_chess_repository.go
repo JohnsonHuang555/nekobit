@@ -23,6 +23,17 @@ func (cr *chineseChessRepository) FindOne(id int) *chinesechess.ChineseChess {
 	return cr.chesses[chessIndex]
 }
 
+func (cr *chineseChessRepository) FindOneByLocation(x int, y int) *chinesechess.ChineseChess {
+	var chess *chinesechess.ChineseChess
+	for _, c := range cr.chesses {
+		if c.LocationX == x && c.LocationY == y {
+			chess = c
+			break
+		}
+	}
+	return chess
+}
+
 func (cr *chineseChessRepository) UpdateOne(id int, c *chinesechess.ChineseChess) {
 	chessIndex := cr.findIndexByID(id)
 	cr.chesses[chessIndex] = c

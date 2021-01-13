@@ -26,6 +26,7 @@ type NetChineseChess struct {
 type ChineseChessRepository interface {
 	FindAll() []*ChineseChess
 	FindOne(id int) *ChineseChess
+	FindOneByLocation(x int, y int) *ChineseChess
 	UpdateOne(id int, c *ChineseChess)
 	UpdatePlayerSide(pid string, side ChineseChessSide, playersID []string) map[string]ChineseChessSide
 }

@@ -398,6 +398,7 @@ type Range struct {
 }
 
 func (cu *chineseChessUseCase) CheckMate(id int, targetID int) bool {
+	isCheckMate := false
 	chess := cu.chineseChessRepo.FindOne(id)
 	targetChess := cu.chineseChessRepo.FindOne(targetID)
 	var moveRange []*Range
@@ -408,20 +409,69 @@ func (cu *chineseChessUseCase) CheckMate(id int, targetID int) bool {
 		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
 		for _, r := range moveRange {
 			if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
-				return true
+				isCheckMate = true
 			}
 		}
 		break
 	case chinesechess.SoldiersRed:
+		moveRange = append(moveRange, &Range{x: chess.LocationX, y: chess.LocationY - 1})
+		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
+		moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY})
+		for _, r := range moveRange {
+			if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
+				isCheckMate = true
+			}
+		}
 		break
 	case chinesechess.ChariotsBlack:
 		break
 	case chinesechess.ChariotsRed:
+		break
+	case chinesechess.HorsesBlack:
+	case chinesechess.HorsesRed:
+		horseRanges := []string{"xAdd", "xMinus", "yAdd", "yMinus"}
+		for _, h := range horseRanges {
+			switch h {
+			case "xAdd":
+				// 拐馬腳
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX+1, chess.LocationY)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 2, y: chess.LocationY + 1})
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 2, y: chess.LocationY - 1})
+				break
+			case "xMinus":
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX-1, chess.LocationY)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 2, y: chess.LocationY + 1})
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 2, y: chess.LocationY - 1})
+				break
+			case "yAdd":
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX, chess.LocationY+1)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY + 2})
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY + 2})
+				break
+			case "yMinus":
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX, chess.LocationY-1)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY - 2})
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY - 2})
+				break
+			}
+		}
 		break
 	case chinesechess.CannonsBlack:
 		break
 	case chinesechess.CannonsRed:
 		break
 	}
-	return false
+	return isCheckMate
 }
