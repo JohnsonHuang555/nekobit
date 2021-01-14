@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"fmt"
 	"go-server/domain"
 	chinesechess "go-server/domain/chinese-chess"
 	"net/http"
@@ -173,6 +174,13 @@ func (s subscription) readPump() {
 			if err == nil {
 				msg.Data.GameData = ccGameData
 			}
+
+			fmt.Println(room.GameMode)
+			// 標準要多判斷是否將軍
+			if room.GameMode == chinesechess.Standard {
+				checkMate := chineseChessUseCase.CheckMate(msg.Data.ChessID)
+				msg.Data.CheckMate = checkMate
+			}
 		case domain.ChineseChessEatChess:
 			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
 			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide, room.GameMode)
@@ -191,6 +199,12 @@ func (s subscription) readPump() {
 			if err == nil {
 				msg.Data.GameData = ccGameData
 				msg.Data.GameOver = gameOver
+			}
+
+			// 標準要多判斷是否將軍
+			if room.GameMode == chinesechess.Standard {
+				checkMate := chineseChessUseCase.CheckMate(msg.Data.ChessID)
+				msg.Data.CheckMate = checkMate
 			}
 		}
 

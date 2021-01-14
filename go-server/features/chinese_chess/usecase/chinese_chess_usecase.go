@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"go-server/domain"
 	chinesechess "go-server/domain/chinese-chess"
 	"go-server/utils"
@@ -397,9 +398,21 @@ type Range struct {
 	y int
 }
 
-func (cu *chineseChessUseCase) CheckMate(id int, targetID int) bool {
-	isCheckMate := false
+func (cu *chineseChessUseCase) CheckMate(id int) bool {
+	checkMate := false
 	chess := cu.chineseChessRepo.FindOne(id)
+	var targetID int
+	// RED side id 17
+	// BLACK side id 1
+	// 紅方殺黑方
+	if chess.Side == chinesechess.Red {
+		targetID = 1
+	} else {
+		targetID = 17
+	}
+
+	fmt.Println(targetID)
+
 	targetChess := cu.chineseChessRepo.FindOne(targetID)
 	var moveRange []*Range
 	switch chess.Name {
@@ -407,25 +420,47 @@ func (cu *chineseChessUseCase) CheckMate(id int, targetID int) bool {
 		moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY})
 		moveRange = append(moveRange, &Range{x: chess.LocationX, y: chess.LocationY + 1})
 		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
-		for _, r := range moveRange {
-			if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
-				isCheckMate = true
-			}
-		}
 		break
 	case chinesechess.SoldiersRed:
 		moveRange = append(moveRange, &Range{x: chess.LocationX, y: chess.LocationY - 1})
 		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
 		moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY})
-		for _, r := range moveRange {
-			if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
-				isCheckMate = true
-			}
-		}
 		break
 	case chinesechess.ChariotsBlack:
-		break
 	case chinesechess.ChariotsRed:
+		tempCheckMate := true
+		if chess.LocationX == targetChess.LocationX {
+			total := math.Abs(float64(chess.LocationY - targetChess.LocationY))
+			for i := 0; i < int(total); i++ {
+				var foundChess *chinesechess.ChineseChess
+				if targetChess.LocationY > chess.LocationY {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, chess.LocationY+i+1)
+				} else {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, targetChess.LocationY+i+1)
+				}
+				if foundChess != nil {
+					tempCheckMate = false
+					break
+				}
+			}
+		} else if chess.LocationY == targetChess.LocationY {
+			total := math.Abs(float64(chess.LocationX - targetChess.LocationX))
+			for i := 0; i < int(total); i++ {
+				var foundChess *chinesechess.ChineseChess
+				if targetChess.LocationX > chess.LocationX {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(chess.LocationX+i+1, targetChess.LocationY)
+				} else {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX+i+1, targetChess.LocationY)
+				}
+				if foundChess != nil {
+					tempCheckMate = false
+					break
+				}
+			}
+		} else {
+			tempCheckMate = false
+		}
+		checkMate = tempCheckMate
 		break
 	case chinesechess.HorsesBlack:
 	case chinesechess.HorsesRed:
@@ -469,9 +504,36 @@ func (cu *chineseChessUseCase) CheckMate(id int, targetID int) bool {
 		}
 		break
 	case chinesechess.CannonsBlack:
-		break
 	case chinesechess.CannonsRed:
+		var foundChesses []*chinesechess.ChineseChess
+		if chess.LocationX == targetChess.LocationX {
+			total := math.Abs(float64(chess.LocationY - targetChess.LocationY))
+			for i := 0; i < int(total); i++ {
+				if targetChess.LocationY > chess.LocationY {
+					foundChesses = append(foundChesses, cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, chess.LocationY+i+1))
+				} else {
+					foundChesses = append(foundChesses, cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, targetChess.LocationY+i+1))
+				}
+			}
+		} else if chess.LocationY == targetChess.LocationY {
+			total := math.Abs(float64(chess.LocationX - targetChess.LocationX))
+			for i := 0; i < int(total); i++ {
+				if targetChess.LocationX > chess.LocationX {
+					foundChesses = append(foundChesses, cu.chineseChessRepo.FindOneByLocation(chess.LocationX+i+1, targetChess.LocationY))
+				} else {
+					foundChesses = append(foundChesses, cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX+i+1, targetChess.LocationY))
+				}
+			}
+		}
+		if len(foundChesses) == 1 {
+			checkMate = true
+		}
 		break
 	}
-	return isCheckMate
+	for _, r := range moveRange {
+		if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
+			checkMate = true
+		}
+	}
+	return checkMate
 }

@@ -61,13 +61,16 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
             // 象棋
             case ChineseChessSocketEvent.FlipChess:
             case ChineseChessSocketEvent.MoveChess: {
-              const { game_data, now_turn } = data;
+              const { game_data, now_turn, check_mate } = data;
+              console.log(check_mate);
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
+              break;
             }
             case ChineseChessSocketEvent.EatChess: {
-              const { game_data, now_turn, game_over } = data;
+              const { game_data, now_turn, game_over, check_mate } = data;
+              console.log(check_mate);
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
@@ -77,6 +80,7 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
                   surrenderId: ''
                 }));
               }
+              break;
             }
           }
         };

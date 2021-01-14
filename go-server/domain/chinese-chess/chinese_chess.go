@@ -21,6 +21,7 @@ type NetChineseChess struct {
 	LocationY        int              `json:"location_y"`
 	ChineseChessSide ChineseChessSide `json:"chinese_chess_side"`
 	PlayersID        []string         `json:"players_id"`
+	CheckMate        bool             `json:"check_mate"`
 }
 
 type ChineseChessRepository interface {
@@ -37,5 +38,5 @@ type ChineseChessUseCase interface {
 	MoveChess(id int, locationX int, locationY int) []*ChineseChess
 	CreateGame(gameMode domain.GameMode) *GameData
 	CheckGameOver(pid string, playerSides map[string]ChineseChessSide, gameMode domain.GameMode) bool
-	CheckMate(pid int, targetID int) bool
+	CheckMate(id int) bool
 }
