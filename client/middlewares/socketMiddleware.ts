@@ -3,8 +3,18 @@ import { PlayerFactory } from "domain/factories/PlayerFactory";
 import { RoomFactory } from "domain/factories/RoomFactory";
 import { ChineseChessSocketEvent, SocketEvent } from "domain/models/WebSocket";
 import { GameDataFactory } from "features/chinese_chess/domain/factories/GameDataFactory";
-import { setGameData as setChineseChessGameData } from "features/chinese_chess/slices/chineseChessSlice";
-import { changePlayer, joinRoom, readyGame, setGameOver, setIsReadyToStart, startGame } from "slices/roomsSlice";
+import {
+  setCheckMate,
+  setGameData as setChineseChessGameData,
+} from "features/chinese_chess/slices/chineseChessSlice";
+import {
+  changePlayer,
+  joinRoom,
+  readyGame,
+  setGameOver,
+  setIsReadyToStart,
+  startGame,
+} from "slices/roomsSlice";
 import { wsConnected, wsDisConnected } from "slices/webSocketSlice";
 
 let webSocket: WebSocket;
@@ -18,7 +28,7 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
         // Attach the callbacks
         webSocket.onopen = () => {
           store.dispatch(wsConnected());
-        }
+        };
 
         webSocket.onclose = () => store.dispatch(wsDisConnected());
 
@@ -52,33 +62,57 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
             }
             case SocketEvent.Surrender: {
               const { game_over } = data;
-              store.dispatch(setGameOver({
-                isGameOver: game_over,
-                surrenderId: player_id,
-              }));
+              store.dispatch(
+                setGameOver({
+                  isGameOver: game_over,
+                  surrenderId: player_id,
+                })
+              );
               break;
             }
             // 象棋
-            case ChineseChessSocketEvent.FlipChess:
-            case ChineseChessSocketEvent.MoveChess: {
-              const { game_data, now_turn, check_mate } = data;
-              console.log(check_mate);
+            case ChineseChessSocketEvent.FlipChess: {
+              const { game_data, now_turn } = data;
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
+              break;
+            }
+            case ChineseChessSocketEvent.MoveChess: {
+              const { game_data, now_turn, check_mate } = data;
+              const gameData = GameDataFactory.createFromNet(game_data);
+              store.dispatch(setChineseChessGameData(gameData));
+              store.dispatch(changePlayer(now_turn));
+              if (check_mate) {
+                store.dispatch(
+                  setCheckMate({
+                    isCheck: true,
+                    playerId: player_id,
+                  })
+                );
+              }
               break;
             }
             case ChineseChessSocketEvent.EatChess: {
               const { game_data, now_turn, game_over, check_mate } = data;
-              console.log(check_mate);
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
+              if (check_mate) {
+                store.dispatch(
+                  setCheckMate({
+                    isCheck: true,
+                    playerId: player_id,
+                  })
+                );
+              }
               if (game_over) {
-                store.dispatch(setGameOver({
-                  isGameOver: game_over,
-                  surrenderId: ''
-                }));
+                store.dispatch(
+                  setGameOver({
+                    isGameOver: game_over,
+                    surrenderId: "",
+                  })
+                );
               }
               break;
             }
@@ -96,10 +130,10 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
         webSocket.close();
         break;
       }
-    };
+    }
   }
 
   return next(action);
-}
+};
 
 export default SocketMiddleware;
