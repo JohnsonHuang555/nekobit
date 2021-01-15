@@ -1,7 +1,6 @@
 package websocket
 
 import (
-	"fmt"
 	"go-server/domain"
 	chinesechess "go-server/domain/chinese-chess"
 	"net/http"
@@ -175,7 +174,6 @@ func (s subscription) readPump() {
 				msg.Data.GameData = ccGameData
 			}
 
-			fmt.Println(room.GameMode)
 			// 標準要多判斷是否將軍
 			if room.GameMode == chinesechess.Standard {
 				checkMate := chineseChessUseCase.CheckMate(msg.Data.ChessID)
