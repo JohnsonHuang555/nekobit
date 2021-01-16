@@ -5,12 +5,12 @@ export const selectGames = createSelector(
   (state: StoreState) => ({
     games: state.games.games,
   }),
-  (state) => state,
+  (state) => state
 );
 
 export const selectGameInfo = createSelector(
   (state: StoreState) => ({
     selectedGame: state.games.selectedGame,
   }),
-  (state) => state,
+  (state) => state
 );

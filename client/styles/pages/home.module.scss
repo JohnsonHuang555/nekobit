@@ -1,4 +1,4 @@
-@import './color';
+@import "./color";
 
 .backgroundImage {
   position: fixed;
@@ -27,7 +27,7 @@
     height: 100%;
     width: 100%;
     opacity: 0;
-    transition: all .3s;
+    transition: all 0.3s;
     position: absolute;
     display: flex;
     justify-content: center;

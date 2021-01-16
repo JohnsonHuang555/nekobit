@@ -1,11 +1,11 @@
 export type Range = {
   x: number;
   y: number;
-}
+};
 
 export class CheckMoveRange {
   static isInRange(range: Range[], targetX: number, targetY: number): boolean {
-    const canMove = range.find(r => {
+    const canMove = range.find((r) => {
       return r.x === targetX && r.y === targetY;
     });
     return canMove ? true : false;
@@ -24,10 +24,10 @@ export class CheckMoveRange {
   // 對角
   static diagonal(currentX: number, currentY: number): Range[] {
     const range: Range[] = [];
-    range.push({x: currentX - 1, y: currentY - 1});
-    range.push({x: currentX - 1, y: currentY + 1});
-    range.push({x: currentX + 1, y: currentY - 1});
-    range.push({x: currentX + 1, y: currentY + 1});
+    range.push({ x: currentX - 1, y: currentY - 1 });
+    range.push({ x: currentX - 1, y: currentY + 1 });
+    range.push({ x: currentX + 1, y: currentY - 1 });
+    range.push({ x: currentX + 1, y: currentY + 1 });
     return range;
   }
 }

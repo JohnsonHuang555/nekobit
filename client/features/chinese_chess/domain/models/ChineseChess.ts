@@ -12,11 +12,11 @@ export type ChineseChess = {
 };
 
 export enum ChessSide {
-  Red = 'RED',
-  Black = 'BLACK',
+  Red = "RED",
+  Black = "BLACK",
 }
 
-export const GameMode: {[key: string]: string} = {
-  standard: '標準(大盤)',
-  hidden: '暗棋(小盤)',
+export const GameMode: { [key: string]: string } = {
+  standard: "標準(大盤)",
+  hidden: "暗棋(小盤)",
 };

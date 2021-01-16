@@ -21,23 +21,26 @@ export type CaseReducer = {
   changePlayer: (state: State, action: PayloadAction<string>) => void;
   setShowGameScreen: (state: State, action: PayloadAction<boolean>) => void;
   setIsReadyToStart: (state: State, action: PayloadAction<boolean>) => void;
-  setGameOver: (state: State, action: PayloadAction<{
-    isGameOver: boolean,
-    surrenderId: string,
-  }>) => void;
+  setGameOver: (
+    state: State,
+    action: PayloadAction<{
+      isGameOver: boolean;
+      surrenderId: string;
+    }>
+  ) => void;
 };
 
 const roomsSlice = createSlice<State, CaseReducer>({
-  name: 'rooms',
+  name: "rooms",
   initialState: {
     rooms: [],
     selectedRoom: undefined,
-    createdId: '',
+    createdId: "",
     loading: false,
     showGameScreen: false,
     isReadyToStart: false,
     isGameOver: false,
-    surrenderId: '',
+    surrenderId: "",
   },
   reducers: {
     joinRoom: (state: State, action: PayloadAction<Room>) => {
@@ -69,10 +72,13 @@ const roomsSlice = createSlice<State, CaseReducer>({
     setIsReadyToStart: (state: State, action: PayloadAction<boolean>) => {
       state.isReadyToStart = action.payload;
     },
-    setGameOver: (state: State, action: PayloadAction<{
-      isGameOver: boolean,
-      surrenderId: string,
-    }>) => {
+    setGameOver: (
+      state: State,
+      action: PayloadAction<{
+        isGameOver: boolean;
+        surrenderId: string;
+      }>
+    ) => {
       state.isGameOver = action.payload.isGameOver;
       state.surrenderId = action.payload.surrenderId;
     },
@@ -81,14 +87,20 @@ const roomsSlice = createSlice<State, CaseReducer>({
     [loadRooms.pending.toString()]: (state) => {
       state.loading = true;
     },
-    [loadRooms.fulfilled.toString()]: (state, action: PayloadAction<Room[]>) => {
+    [loadRooms.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<Room[]>
+    ) => {
       state.rooms = action.payload;
       state.loading = false;
     },
     [createRoom.pending.toString()]: (state) => {
       state.loading = true;
     },
-    [createRoom.fulfilled.toString()]: (state, action: PayloadAction<string>) => {
+    [createRoom.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<string>
+    ) => {
       state.createdId = action.payload;
       state.loading = false;
     },

@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import { Room } from 'domain/models/Room';
-import { NetRoom } from 'domain/remote/NetRoom';
-import { nestedToJsCase } from 'helpers/ajaxConverter';
+import _ from "lodash";
+import { Room } from "domain/models/Room";
+import { NetRoom } from "domain/remote/NetRoom";
+import { nestedToJsCase } from "helpers/ajaxConverter";
 
 export class RoomFactory {
   static createArrayFromNet(netRooms: NetRoom[]): Room[] {

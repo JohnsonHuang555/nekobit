@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
-import Layout from 'components/Layout';
-import Button from 'components/Button';
-import { GamePack, GameStatus } from 'domain/models/Room';
-import Icon, { IconType } from 'components/Icon';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadGameInfo } from 'actions/gamesAction';
-import { selectGameInfo } from 'selectors/gamesSelector';
-import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
-import styles from 'styles/pages/games.module.scss';
-import { loadRooms } from 'actions/roomsAction';
-import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
-import { toast } from 'react-toastify';
-import CreateRoomModal from 'components/modals/CreateRoomModal';
-import { setShowModal } from 'slices/appSlice';
-import { EnhanceGame } from 'domain/models/Game';
+import React, { useEffect } from "react";
+import Layout from "components/Layout";
+import Button from "components/Button";
+import { GamePack, GameStatus } from "domain/models/Room";
+import Icon, { IconType } from "components/Icon";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { loadGameInfo } from "actions/gamesAction";
+import { selectGameInfo } from "selectors/gamesSelector";
+import { selectCreatedId, selectRooms } from "selectors/roomsSelector";
+import styles from "styles/pages/games.module.scss";
+import { loadRooms } from "actions/roomsAction";
+import { selectShowModal, selectUserInfo } from "selectors/appSelector";
+import { toast } from "react-toastify";
+import CreateRoomModal from "components/modals/CreateRoomModal";
+import { setShowModal } from "slices/appSlice";
+import { EnhanceGame } from "domain/models/Game";
 
 const Game = () => {
   const router = useRouter();
@@ -41,15 +41,13 @@ const Game = () => {
 
   useEffect(() => {
     if (createdId) {
-      router.push(`/rooms/${createdId}`)
+      router.push(`/rooms/${createdId}`);
     }
   }, [createdId]);
 
   const roomStatus = (status: GameStatus) => {
-    return status === GameStatus.Preparing ?
-      styles.preparing :
-      styles.playing;
-  }
+    return status === GameStatus.Preparing ? styles.preparing : styles.playing;
+  };
 
   // TODO: 空白畫面 未來可以補 loading
   if (!selectedGame) {
@@ -57,8 +55,8 @@ const Game = () => {
   }
 
   const showLoginToast = () => {
-    toast.warn('⚠️ 請先登入唷');
-  }
+    toast.warn("⚠️ 請先登入唷");
+  };
 
   const onCreateRoom = () => {
     if (!userInfo) {
@@ -73,7 +71,7 @@ const Game = () => {
       showLoginToast();
       return;
     }
-    router.push(`/rooms/${id}`)
+    router.push(`/rooms/${id}`);
   };
 
   return (
@@ -90,51 +88,59 @@ const Game = () => {
             width="100%"
             height={250}
           />
-          <div className={styles.description}>
-            {selectedGame.description}
-          </div>
+          <div className={styles.description}>{selectedGame.description}</div>
           <div className={styles.controls}>
             <Button
               title="建立房間"
               color="secondary"
               onClick={() => onCreateRoom()}
             />
-            <Button
-              title="快速加入"
-              color="grey-4"
-            />
+            <Button title="快速加入" color="grey-4" />
           </div>
         </div>
         <div className={styles.rooms}>
-          {rooms.map(room => (
-            <div key={room.id} className={`${styles.room} ${roomStatus(room.status)}`}>
-              <div className={`${styles.roomHeader} ${roomStatus(room.status)}`}>
+          {rooms.map((room) => (
+            <div
+              key={room.id}
+              className={`${styles.room} ${roomStatus(room.status)}`}
+            >
+              <div
+                className={`${styles.roomHeader} ${roomStatus(room.status)}`}
+              >
                 <div className={styles.roomTitle}>
                   <span>001</span>
-                  <div className={styles.roomName}>
-                    {room.title}
-                  </div>
+                  <div className={styles.roomName}>{room.title}</div>
                 </div>
                 {room.password && <Icon type={IconType.Key} label="私密" />}
               </div>
               <div className={styles.roomInfo}>
                 <span className={styles.gameStatus}>
-                  {room.status === GameStatus.Preparing ? 'Waiting...' : 'Playing...'}
+                  {room.status === GameStatus.Preparing
+                    ? "Waiting..."
+                    : "Playing..."}
                 </span>
-                <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
+                <span
+                  className={`${styles.infoBlock} ${roomStatus(room.status)}`}
+                >
                   <Icon
                     type={IconType.TwoUsers}
                     label={`${room.playerList.length}/${selectedGame.maxPlayers}`}
                     size="md"
                   />
                 </span>
-                <span className={`${styles.infoBlock} ${roomStatus(room.status)}`}>
+                <span
+                  className={`${styles.infoBlock} ${roomStatus(room.status)}`}
+                >
                   {EnhanceGame[selectedGame.gamePack][room.gameMode]}
                 </span>
                 <Button
                   title="加入"
                   color="grey-4"
-                  disabled={selectedGame.maxPlayers === room.playerList.length ? true : false}
+                  disabled={
+                    selectedGame.maxPlayers === room.playerList.length
+                      ? true
+                      : false
+                  }
                   onClick={() => onJoinRoom(room.id)}
                 />
               </div>

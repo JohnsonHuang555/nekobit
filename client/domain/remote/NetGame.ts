@@ -13,4 +13,4 @@ export type NetGame = {
   estimate_time: number;
   created_at: string;
   updated_at: string;
-}
+};

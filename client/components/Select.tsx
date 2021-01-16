@@ -1,6 +1,6 @@
-import { CSSProperties } from 'react';
-import ReactSelect from 'react-select';
-import styles from 'styles/components/select.module.scss';
+import { CSSProperties } from "react";
+import ReactSelect from "react-select";
+import styles from "styles/components/select.module.scss";
 
 export type OptionType = {
   label: string;
@@ -17,14 +17,7 @@ interface SelectProps<O> {
 }
 
 const Select = (props: SelectProps<OptionType>) => {
-  const {
-    options,
-    value,
-    label,
-    customStyles,
-    placeholder,
-    onChange,
-  } = props;
+  const { options, value, label, customStyles, placeholder, onChange } = props;
 
   return (
     <div className={`select ${styles.select}`} style={customStyles}>

@@ -1,4 +1,4 @@
-@import './color';
+@import "./color";
 
 .chineseChess {
   width: 100%;
@@ -16,8 +16,8 @@
   }
 }
 
-.gameOver, .surrender {
+.gameOver,
+.surrender {
   margin-bottom: 20px;
   font-size: 22px;
 }
-

@@ -1,4 +1,4 @@
-@import './color';
+@import "./color";
 
 .header {
   width: 100%;
@@ -8,7 +8,7 @@
   color: $white;
   padding: 0 56px;
   box-shadow: 0 0 10px $black;
-  @media(max-width: 1200px) {
+  @media (max-width: 1200px) {
     padding: 0 24px;
   }
   .logo {

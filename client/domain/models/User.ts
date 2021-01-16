@@ -3,4 +3,4 @@ export type User = {
   id: string;
   name: string;
   // TODO: 帳號密碼
-}
+};

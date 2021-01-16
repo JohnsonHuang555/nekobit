@@ -1,10 +1,11 @@
-import React, { CSSProperties } from 'react';
-import styles from 'styles/components/button.module.scss';
+import React, { CSSProperties } from "react";
+import styles from "styles/components/button.module.scss";
 
-interface ButtonProps extends Omit<Partial<React.HTMLAttributes<HTMLButtonElement>>, 'onClick'> {
+interface ButtonProps
+  extends Omit<Partial<React.HTMLAttributes<HTMLButtonElement>>, "onClick"> {
   title: string;
-  type?: 'button' | 'submit' | 'reset';
-  color?: 'primary' | 'secondary' | 'grey-4' | 'brown';
+  type?: "button" | "submit" | "reset";
+  color?: "primary" | "secondary" | "grey-4" | "brown";
   customStyles?: CSSProperties;
   disabled?: boolean;
   onClick?: (el: React.ChangeEvent<HTMLInputElement>) => void;
@@ -13,8 +14,8 @@ interface ButtonProps extends Omit<Partial<React.HTMLAttributes<HTMLButtonElemen
 const Button = (props: ButtonProps) => {
   const {
     title,
-    type = 'button',
-    color = 'primary',
+    type = "button",
+    color = "primary",
     disabled,
     children,
     customStyles,
@@ -23,7 +24,7 @@ const Button = (props: ButtonProps) => {
 
   return (
     <button
-      onClick={e => {
+      onClick={(e) => {
         const el = (e as unknown) as React.ChangeEvent<HTMLInputElement>;
         onClick(el);
         el.target.blur();
