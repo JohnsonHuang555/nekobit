@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "components/Layout";
+import Layout from "components/AppLayout";
 import Icon, { IconType } from "components/Icon";
 import { Game } from "domain/models/Game";
 import { useRouter } from "next/router";

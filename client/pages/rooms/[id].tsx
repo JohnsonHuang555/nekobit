@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from "components/Button";
-import Layout from "components/Layout";
+import Layout from "components/AppLayout";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { SocketEvent } from "domain/models/WebSocket";

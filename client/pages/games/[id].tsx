@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Layout from "components/Layout";
+import Layout from "components/AppLayout";
 import Button from "components/Button";
 import { GamePack, GameStatus } from "domain/models/Room";
 import Icon, { IconType } from "components/Icon";
