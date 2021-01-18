@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export type State = {
   isSocketConnected: boolean;
-}
+};
 
 export type CaseReducer = {
   wsConnected: (state: State) => void;
@@ -10,25 +10,22 @@ export type CaseReducer = {
 };
 
 const webSocketSlice = createSlice<State, CaseReducer>({
-  name: 'webSocket',
+  name: "webSocket",
   initialState: {
     isSocketConnected: false,
   },
   reducers: {
     wsConnected: (state: State) => {
-      console.log('connected')
+      console.log("connected");
       state.isSocketConnected = true;
     },
     wsDisConnected: (state: State) => {
-      console.log('disconnected')
+      console.log("disconnected");
       state.isSocketConnected = false;
-    }
-  }
+    },
+  },
 });
 
-export const {
-  wsConnected,
-  wsDisConnected,
-} = webSocketSlice.actions;
+export const { wsConnected, wsDisConnected } = webSocketSlice.actions;
 
 export default webSocketSlice.reducer;

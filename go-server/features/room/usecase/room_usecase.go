@@ -27,6 +27,7 @@ func (ru *roomUseCase) GetRoomInfo(rid string) (*domain.Room, error) {
 	return room, nil
 }
 
+// FIXME:playerName string
 func (ru *roomUseCase) JoinRoom(rid string, pid string, playerName string) (*domain.Room, error) {
 	player := &domain.Player{
 		ID:        pid,

@@ -5,12 +5,12 @@ export const selectShowModal = createSelector(
   (state: StoreState) => ({
     showModal: state.app.showModal,
   }),
-  (state) => state,
+  (state) => state
 );
 
 export const selectUserInfo = createSelector(
   (state: StoreState) => ({
     userInfo: state.app.userInfo,
   }),
-  (state) => state,
+  (state) => state
 );

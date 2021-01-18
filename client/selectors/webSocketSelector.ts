@@ -5,5 +5,5 @@ export const selectIsConnected = createSelector(
   (state: StoreState) => ({
     isConnected: state.webSocket.isSocketConnected,
   }),
-  (state) => state,
+  (state) => state
 );

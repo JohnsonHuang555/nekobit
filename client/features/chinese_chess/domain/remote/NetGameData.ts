@@ -16,4 +16,4 @@ export type NetChineseChess = {
   location_Y: number;
   rank: number;
   alive: boolean;
-}
+};

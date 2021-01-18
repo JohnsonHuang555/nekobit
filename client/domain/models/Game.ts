@@ -15,14 +15,11 @@ export type Game = {
   estimateTime: number;
   createAt: string; // FIXME:
   updateAt: string; // FIXME:
-}
+};
 
 export const EnhanceGame: {
-  [key in
-    GamePack.ChineseChess |
-    GamePack.Chess
-  ]: {[key: string]: string}
+  [key in GamePack.ChineseChess | GamePack.Chess]: { [key: string]: string };
 } = {
   [GamePack.ChineseChess]: ChineseChessModes,
   [GamePack.Chess]: ChineseChessModes,
-}
+};

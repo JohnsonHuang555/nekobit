@@ -1,8 +1,8 @@
-import React, { CSSProperties } from 'react';
-import styles from 'styles/components/input.module.scss';
+import React, { CSSProperties } from "react";
+import styles from "styles/components/input.module.scss";
 
 type InputProps = {
-  type: 'text' | 'password' | 'number';
+  type: "text" | "password" | "number";
   value: string;
   disabled?: boolean;
   label?: string;
@@ -11,11 +11,11 @@ type InputProps = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   onBlur?: (event: React.FocusEvent) => void;
-}
+};
 
 const Input = (props: InputProps) => {
   const {
-    type = 'text',
+    type = "text",
     value,
     label,
     disabled = false,
@@ -39,7 +39,7 @@ const Input = (props: InputProps) => {
         onBlur={onBlur}
       />
     </div>
-  )
+  );
 };
 
 export default Input;

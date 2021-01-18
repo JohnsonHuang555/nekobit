@@ -12,7 +12,7 @@ export type CaseReducer = {
 };
 
 const appSlice = createSlice<State, CaseReducer>({
-  name: 'app',
+  name: "app",
   initialState: {
     showModal: false,
   },
@@ -22,13 +22,10 @@ const appSlice = createSlice<State, CaseReducer>({
     },
     setShowModal: (state: State, action: PayloadAction<boolean>) => {
       state.showModal = action.payload;
-    }
+    },
   },
 });
 
-export const {
-  setUserInfo,
-  setShowModal,
-} = appSlice.actions;
+export const { setUserInfo, setShowModal } = appSlice.actions;
 
 export default appSlice.reducer;

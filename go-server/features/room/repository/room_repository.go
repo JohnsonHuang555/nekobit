@@ -17,11 +17,11 @@ func NewRoomRepository(rooms []*domain.Room) domain.RoomRepository {
 }
 
 func (rr *roomRepository) FindAllByGID(gamePack string) []*domain.Room {
-	var aa domain.GamePack
-	aa = domain.GamePack(gamePack)
+	var gp domain.GamePack
+	gp = domain.GamePack(gamePack)
 	var rooms []*domain.Room
 	for i := 0; i < len(rr.rooms); i++ {
-		if rr.rooms[i].GamePack == aa {
+		if rr.rooms[i].GamePack == gp {
 			rooms = append(rooms, rr.rooms[i])
 		}
 	}

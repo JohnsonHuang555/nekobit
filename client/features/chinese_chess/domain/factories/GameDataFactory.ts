@@ -1,13 +1,13 @@
-import _ from 'lodash';
-import { ChineseChess } from '../models/ChineseChess';
-import { PlayerSide } from '../models/PlayerSide';
-import { NetGameData } from '../remote/NetGameData';
-import { ChineseChessFactory } from './ChineseChessFactory';
+import _ from "lodash";
+import { ChineseChess } from "../models/ChineseChess";
+import { PlayerSide } from "../models/PlayerSide";
+import { NetGameData } from "../remote/NetGameData";
+import { ChineseChessFactory } from "./ChineseChessFactory";
 
 export type ChineseChessGameData = {
   chineseChess: ChineseChess[];
   playerSide: PlayerSide;
-}
+};
 
 export class GameDataFactory {
   static createFromNet(netChess: NetGameData): ChineseChessGameData {
@@ -16,6 +16,6 @@ export class GameDataFactory {
     return {
       chineseChess,
       playerSide: player_side,
-    }
+    };
   }
 }

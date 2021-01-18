@@ -150,7 +150,7 @@ func (s subscription) readPump() {
 		case domain.Surrender:
 			s.roomUseCase.GameOver(s.roomID)
 			msg.Data.GameOver = true
-		case domain.FlipChess:
+		case domain.ChineseChessFlipChess:
 			newChesses, playerSide := chineseChessUseCase.FlipChess(msg.Data.ChessID, msg.PlayerID, msg.Data.ChineseChessSide, msg.Data.PlayersID)
 			ccGameData.ChineseChess = newChesses
 			ccGameData.PlayerSide = playerSide
@@ -162,7 +162,7 @@ func (s subscription) readPump() {
 			if err == nil {
 				msg.Data.GameData = ccGameData
 			}
-		case domain.MoveChess:
+		case domain.ChineseChessMoveChess:
 			newChesses := chineseChessUseCase.MoveChess(msg.Data.ChessID, msg.Data.LocationX, msg.Data.LocationY)
 			ccGameData.ChineseChess = newChesses
 			nowTurn, err := s.roomUseCase.ChangePlayerTurn(s.roomID, msg.PlayerID)
@@ -173,9 +173,15 @@ func (s subscription) readPump() {
 			if err == nil {
 				msg.Data.GameData = ccGameData
 			}
-		case domain.EatChess:
+
+			// 標準要多判斷是否將軍
+			if room.GameMode == chinesechess.Standard {
+				checkMate := chineseChessUseCase.CheckMate(msg.Data.ChessID)
+				msg.Data.CheckMate = checkMate
+			}
+		case domain.ChineseChessEatChess:
 			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
-			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide)
+			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide, room.GameMode)
 
 			// 更改狀態
 			if gameOver {
@@ -191,6 +197,12 @@ func (s subscription) readPump() {
 			if err == nil {
 				msg.Data.GameData = ccGameData
 				msg.Data.GameOver = gameOver
+			}
+
+			// 標準要多判斷是否將軍
+			if room.GameMode == chinesechess.Standard {
+				checkMate := chineseChessUseCase.CheckMate(msg.Data.ChessID)
+				msg.Data.CheckMate = checkMate
 			}
 		}
 

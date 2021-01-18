@@ -54,296 +54,7 @@ func (cu *chineseChessUseCase) CreateGame(gameMode domain.GameMode) *chineseches
 	var chesses []*chinesechess.ChineseChess
 	switch gameMode {
 	case chinesechess.Standard:
-		chesses = []*chinesechess.ChineseChess{
-			{
-				ID:        1,
-				Side:      "BLACK",
-				Name:      "將",
-				LocationX: 4,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        2,
-				Side:      "BLACK",
-				Name:      "士",
-				LocationX: 3,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        3,
-				Side:      "BLACK",
-				Name:      "士",
-				LocationX: 5,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        4,
-				Side:      "BLACK",
-				Name:      "象",
-				LocationX: 2,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        5,
-				Side:      "BLACK",
-				Name:      "象",
-				LocationX: 6,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        6,
-				Side:      "BLACK",
-				Name:      "車",
-				LocationX: 0,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        7,
-				Side:      "BLACK",
-				Name:      "車",
-				LocationX: 8,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        8,
-				Side:      "BLACK",
-				Name:      "馬",
-				LocationX: 1,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        9,
-				Side:      "BLACK",
-				Name:      "馬",
-				LocationX: 7,
-				LocationY: 0,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        10,
-				Side:      "BLACK",
-				Name:      "卒",
-				LocationX: 0,
-				LocationY: 3,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        11,
-				Side:      "BLACK",
-				Name:      "卒",
-				LocationX: 2,
-				LocationY: 3,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        12,
-				Side:      "BLACK",
-				Name:      "卒",
-				LocationX: 4,
-				LocationY: 3,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        13,
-				Side:      "BLACK",
-				Name:      "卒",
-				LocationX: 6,
-				LocationY: 3,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        14,
-				Side:      "BLACK",
-				Name:      "卒",
-				LocationX: 8,
-				LocationY: 3,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        15,
-				Side:      "BLACK",
-				Name:      "包",
-				LocationX: 1,
-				LocationY: 2,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        16,
-				Side:      "BLACK",
-				Name:      "包",
-				LocationX: 7,
-				LocationY: 2,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        17,
-				Side:      "RED",
-				Name:      "帥",
-				LocationX: 4,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        18,
-				Side:      "RED",
-				Name:      "仕",
-				LocationX: 3,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        19,
-				Side:      "RED",
-				Name:      "仕",
-				LocationX: 5,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        20,
-				Side:      "RED",
-				Name:      "相",
-				LocationX: 2,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        21,
-				Side:      "RED",
-				Name:      "相",
-				LocationX: 6,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        22,
-				Side:      "RED",
-				Name:      "俥",
-				LocationX: 0,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        23,
-				Side:      "RED",
-				Name:      "俥",
-				LocationX: 8,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        24,
-				Side:      "RED",
-				Name:      "傌",
-				LocationX: 1,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        25,
-				Side:      "RED",
-				Name:      "傌",
-				LocationX: 7,
-				LocationY: 9,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        26,
-				Side:      "RED",
-				Name:      "兵",
-				LocationX: 0,
-				LocationY: 6,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        27,
-				Side:      "RED",
-				Name:      "兵",
-				LocationX: 2,
-				LocationY: 6,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        28,
-				Side:      "RED",
-				Name:      "兵",
-				LocationX: 4,
-				LocationY: 6,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        29,
-				Side:      "RED",
-				Name:      "兵",
-				LocationX: 6,
-				LocationY: 6,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        30,
-				Side:      "RED",
-				Name:      "兵",
-				LocationX: 8,
-				LocationY: 6,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        31,
-				Side:      "RED",
-				Name:      "炮",
-				LocationX: 1,
-				LocationY: 7,
-				IsFliped:  true,
-				Alive:     true,
-			},
-			{
-				ID:        32,
-				Side:      "RED",
-				Name:      "炮",
-				LocationX: 7,
-				LocationY: 7,
-				IsFliped:  true,
-				Alive:     true,
-			},
-		}
+		chesses = chinesechess.GetChesses()
 	case chinesechess.Hidden:
 		randLocation := utils.RandomShuffle(32)
 		for i := 0; i < 32; i++ {
@@ -368,20 +79,178 @@ func (cu *chineseChessUseCase) CreateGame(gameMode domain.GameMode) *chineseches
 	return gameData
 }
 
-func (cu *chineseChessUseCase) CheckGameOver(pid string, playerSides map[string]chinesechess.ChineseChessSide) bool {
+func (cu *chineseChessUseCase) CheckGameOver(pid string, playerSides map[string]chinesechess.ChineseChessSide, gameMode domain.GameMode) bool {
 	gameOver := true
-	var anotherPlayerSide chinesechess.ChineseChessSide
-	for key, side := range playerSides {
-		if key != pid {
-			anotherPlayerSide = side
+	switch gameMode {
+	case chinesechess.Standard:
+		// TODO: 每下一步棋檢查是否將軍
+		gameOver = false
+	case chinesechess.Hidden:
+		var anotherPlayerSide chinesechess.ChineseChessSide
+		for key, side := range playerSides {
+			if key != pid {
+				anotherPlayerSide = side
+			}
 		}
-	}
 
-	chesses := cu.chineseChessRepo.FindAll()
-	for _, chess := range chesses {
-		if chess.Side == anotherPlayerSide && chess.Alive == true {
-			gameOver = false
+		chesses := cu.chineseChessRepo.FindAll()
+		for _, chess := range chesses {
+			if chess.Side == anotherPlayerSide && chess.Alive == true {
+				gameOver = false
+			}
 		}
 	}
 	return gameOver
+}
+
+type Range struct {
+	x int
+	y int
+}
+
+func (cu *chineseChessUseCase) CheckMate(id int) bool {
+	checkMate := false
+	chess := cu.chineseChessRepo.FindOne(id)
+	var targetID int
+	// RED side id 17
+	// BLACK side id 1
+	// 紅方殺黑方
+	if chess.Side == chinesechess.Red {
+		targetID = 1
+	} else {
+		targetID = 17
+	}
+
+	targetChess := cu.chineseChessRepo.FindOne(targetID)
+	var moveRange []*Range
+	switch chess.Name {
+	case chinesechess.SoldiersBlack:
+		moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY})
+		moveRange = append(moveRange, &Range{x: chess.LocationX, y: chess.LocationY + 1})
+		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
+		break
+	case chinesechess.SoldiersRed:
+		moveRange = append(moveRange, &Range{x: chess.LocationX, y: chess.LocationY - 1})
+		moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY})
+		moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY})
+		break
+	case chinesechess.ChariotsBlack, chinesechess.ChariotsRed:
+		tempCheckMate := true
+		if chess.LocationX == targetChess.LocationX {
+			total := math.Abs(float64(chess.LocationY-targetChess.LocationY)) - 1
+			for i := 0; i < int(total); i++ {
+				var foundChess *chinesechess.ChineseChess
+				if targetChess.LocationY > chess.LocationY {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, chess.LocationY+i+1)
+				} else {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, targetChess.LocationY+i+1)
+				}
+				if foundChess != nil {
+					tempCheckMate = false
+					break
+				}
+			}
+		} else if chess.LocationY == targetChess.LocationY {
+			total := math.Abs(float64(chess.LocationX-targetChess.LocationX)) - 1
+			for i := 0; i < int(total); i++ {
+				var foundChess *chinesechess.ChineseChess
+				if targetChess.LocationX > chess.LocationX {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(chess.LocationX+i+1, targetChess.LocationY)
+				} else {
+					foundChess = cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX+i+1, targetChess.LocationY)
+				}
+				if foundChess != nil {
+					tempCheckMate = false
+					break
+				}
+			}
+		} else {
+			tempCheckMate = false
+		}
+		checkMate = tempCheckMate
+		break
+	case chinesechess.HorsesBlack, chinesechess.HorsesRed:
+		horseRanges := []string{"xAdd", "xMinus", "yAdd", "yMinus"}
+		for _, h := range horseRanges {
+			switch h {
+			case "xAdd":
+				// 拐馬腳
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX+1, chess.LocationY)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 2, y: chess.LocationY + 1})
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 2, y: chess.LocationY - 1})
+				break
+			case "xMinus":
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX-1, chess.LocationY)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 2, y: chess.LocationY + 1})
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 2, y: chess.LocationY - 1})
+				break
+			case "yAdd":
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX, chess.LocationY+1)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY + 2})
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY + 2})
+				break
+			case "yMinus":
+				obstacle := cu.chineseChessRepo.FindOneByLocation(chess.LocationX, chess.LocationY-1)
+				if obstacle != nil {
+					break
+				}
+				moveRange = append(moveRange, &Range{x: chess.LocationX + 1, y: chess.LocationY - 2})
+				moveRange = append(moveRange, &Range{x: chess.LocationX - 1, y: chess.LocationY - 2})
+				break
+			}
+		}
+		break
+	case chinesechess.CannonsBlack, chinesechess.CannonsRed:
+		var foundChesses []*chinesechess.ChineseChess
+		if chess.LocationX == targetChess.LocationX {
+			total := math.Abs(float64(chess.LocationY-targetChess.LocationY)) - 1
+			for i := 0; i < int(total); i++ {
+				if targetChess.LocationY > chess.LocationY {
+					locationChess := cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, chess.LocationY+i+1)
+					if locationChess != nil {
+						foundChesses = append(foundChesses, locationChess)
+					}
+				} else {
+					locationChess := cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX, targetChess.LocationY+i+1)
+					if locationChess != nil {
+						foundChesses = append(foundChesses, locationChess)
+					}
+				}
+			}
+		} else if chess.LocationY == targetChess.LocationY {
+			total := math.Abs(float64(chess.LocationX-targetChess.LocationX)) - 1
+			for i := 0; i < int(total); i++ {
+				if targetChess.LocationX > chess.LocationX {
+					locationChess := cu.chineseChessRepo.FindOneByLocation(chess.LocationX+i+1, targetChess.LocationY)
+					if locationChess != nil {
+						foundChesses = append(foundChesses, locationChess)
+					}
+				} else {
+					locationChess := cu.chineseChessRepo.FindOneByLocation(targetChess.LocationX+i+1, targetChess.LocationY)
+					if locationChess != nil {
+						foundChesses = append(foundChesses, locationChess)
+					}
+				}
+			}
+		}
+		if len(foundChesses) == 1 {
+			checkMate = true
+		}
+		break
+	}
+	for _, r := range moveRange {
+		if targetChess.LocationX == r.x && targetChess.LocationY == r.y {
+			checkMate = true
+		}
+	}
+	return checkMate
 }

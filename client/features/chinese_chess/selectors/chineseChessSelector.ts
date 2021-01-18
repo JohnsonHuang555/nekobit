@@ -6,7 +6,7 @@ export const selectGameData = createSelector(
     chineseChess: state.chineseChess.chineseChess,
     playerSide: state.chineseChess.playerSide,
   }),
-  (state) => state,
+  (state) => state
 );
 
 export const selectCanMove = createSelector(
@@ -15,7 +15,7 @@ export const selectCanMove = createSelector(
     targetX: state.chineseChess.targetX,
     targetY: state.chineseChess.targetY,
   }),
-  (state) => state,
+  (state) => state
 );
 
 export const selectCanEat = createSelector(
@@ -23,5 +23,13 @@ export const selectCanEat = createSelector(
     canEat: state.chineseChess.canEat,
     targeId: state.chineseChess.targetId,
   }),
-  (state) => state,
+  (state) => state
+);
+
+export const selectCheckMate = createSelector(
+  (state: StoreState) => ({
+    isCheck: state.chineseChess.checkMate.isCheck,
+    playerId: state.chineseChess.checkMate.playerId,
+  }),
+  (state) => state
 );

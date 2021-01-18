@@ -7,4 +7,4 @@ export type Player = {
   playOrder: number;
   group: number;
   characterId?: number;
-}
+};

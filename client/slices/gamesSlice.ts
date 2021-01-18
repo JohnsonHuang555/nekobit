@@ -6,36 +6,40 @@ export type State = {
   games: Game[];
   selectedGame?: Game;
   loading: boolean;
-}
+};
 
 export type CaseReducer = {};
 
 const gamesSlice = createSlice<State, CaseReducer>({
-  name: 'games',
+  name: "games",
   initialState: {
     games: [],
     selectedGame: undefined,
     loading: false,
   },
-  reducers: {
-
-  },
+  reducers: {},
   extraReducers: {
     [loadGames.pending.toString()]: (state) => {
       state.loading = true;
     },
-    [loadGames.fulfilled.toString()]: (state, action: PayloadAction<Game[]>) => {
+    [loadGames.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<Game[]>
+    ) => {
       state.games = action.payload;
       state.loading = false;
     },
     [loadGameInfo.pending.toString()]: (state) => {
       state.loading = true;
     },
-    [loadGameInfo.fulfilled.toString()]: (state, action: PayloadAction<Game>) => {
+    [loadGameInfo.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<Game>
+    ) => {
       state.selectedGame = action.payload;
       state.loading = false;
     },
-  }
+  },
 });
 
 export default gamesSlice.reducer;

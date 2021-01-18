@@ -1,4 +1,4 @@
-@import './color';
+@import "./color";
 
 .mainArea {
   display: flex;
@@ -11,7 +11,7 @@
     flex-direction: column;
     margin-right: 15px;
     .messages {
-      flex: .4;
+      flex: 0.4;
       border: 1px solid $grey-4;
     }
     .content {
@@ -24,7 +24,7 @@
   }
 
   .rightArea {
-    flex: .4;
+    flex: 0.4;
     display: flex;
     flex-direction: column;
     border: 1px solid $grey-4;
@@ -47,4 +47,3 @@
     margin: 10px;
   }
 }
-

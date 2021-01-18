@@ -1,47 +1,43 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
-import Modal from './Modal';
-import Input from './Input';
-import Button from './Button';
-import { setShowModal, setUserInfo } from 'slices/appSlice';
-import { v4 as uuidv4 } from 'uuid';
-import styles from 'styles/components/header.module.scss';
-import { User } from 'domain/models/User';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { selectShowModal, selectUserInfo } from "selectors/appSelector";
+import Modal from "./Modal";
+import Input from "./Input";
+import Button from "./Button";
+import { setShowModal, setUserInfo } from "slices/appSlice";
+import { v4 as uuidv4 } from "uuid";
+import styles from "styles/components/header.module.scss";
+import { User } from "domain/models/User";
 
 const Header = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector(selectUserInfo);
   const { showModal } = useSelector(selectShowModal);
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState("");
 
   const onLogin = () => {
     const user: User = {
       id: uuidv4(),
       name: userName,
     };
-    localStorage.setItem('userInfo', JSON.stringify(user));
+    localStorage.setItem("userInfo", JSON.stringify(user));
     dispatch(setUserInfo(user));
     dispatch(setShowModal(false));
   };
 
   return (
     <>
-      <Modal show={showModal} title="LogIn" >
+      <Modal show={showModal} title="LogIn">
         <Input
           type="text"
           placeholder="請輸入玩家暱稱"
           label="玩家暱稱"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          customStyles={{ marginBottom: '20px' }}
+          customStyles={{ marginBottom: "20px" }}
         />
-        <Button
-          title="確認"
-          color="secondary"
-          onClick={() => onLogin()}
-        />
+        <Button title="確認" color="secondary" onClick={() => onLogin()} />
       </Modal>
       <header className={styles.header}>
         <Link href="/">
@@ -64,7 +60,7 @@ const Header = () => {
             </Link>
           </li>
         </ul>
-        {userInfo ?
+        {userInfo ? (
           <>
             {/* TODO: beta 版不做 */}
             {/* <div className={styles.alert}>
@@ -82,7 +78,8 @@ const Header = () => {
                 <span className={styles.userLevel}>Lv. 100</span>
               </div>
             </div>
-          </> :
+          </>
+        ) : (
           <ul className={styles.notLogin}>
             <li>
               <div className={styles.logIn}>Log In</div>
@@ -96,7 +93,7 @@ const Header = () => {
               </div>
             </li>
           </ul>
-        }
+        )}
       </header>
     </>
   );
