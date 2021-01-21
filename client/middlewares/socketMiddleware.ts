@@ -83,14 +83,12 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
-              if (check_mate) {
-                store.dispatch(
-                  setCheckMate({
-                    isCheck: true,
-                    playerId: player_id,
-                  })
-                );
-              }
+              store.dispatch(
+                setCheckMate({
+                  isCheck: check_mate,
+                  playerId: player_id,
+                })
+              );
               break;
             }
             case ChineseChessSocketEvent.EatChess: {
@@ -98,14 +96,12 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
               const gameData = GameDataFactory.createFromNet(game_data);
               store.dispatch(setChineseChessGameData(gameData));
               store.dispatch(changePlayer(now_turn));
-              if (check_mate) {
-                store.dispatch(
-                  setCheckMate({
-                    isCheck: true,
-                    playerId: player_id,
-                  })
-                );
-              }
+              store.dispatch(
+                setCheckMate({
+                  isCheck: check_mate,
+                  playerId: player_id,
+                })
+              );
               if (game_over) {
                 store.dispatch(
                   setGameOver({

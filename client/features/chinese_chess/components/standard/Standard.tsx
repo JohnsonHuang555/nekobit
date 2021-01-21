@@ -105,7 +105,7 @@ const Standard = (props: StandardProps) => {
                 }`}
                 onClick={() => onChessClick()}
               >
-                <span>{targetChess.name}</span>
+                <span className={yourSide() === ChessSide.Black ? styles.blackSide : ''}>{targetChess.name}</span>
                 <span
                   className={`${styles.circle} ${
                     targetChess.side === ChessSide.Red ? styles.red : ""
@@ -147,7 +147,9 @@ const Standard = (props: StandardProps) => {
       <div className={styles.content}>
         <div className={styles.map}>
           <GameMap />
-          <div className={styles.chesses}>{chessMap()}</div>
+          <div className={`${styles.chesses} ${yourSide() === ChessSide.Black ? styles.blackSide : ''}`}>
+            {chessMap()}
+          </div>
         </div>
       </div>
     </>
