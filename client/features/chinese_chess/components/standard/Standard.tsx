@@ -132,16 +132,25 @@ const Standard = (props: StandardProps) => {
     <>
       <div className={styles.header}>
         {/* FIXME: UI */}
-        <span>
-          {room.playerList[0].name} {getPlayerSide(room.playerList[0].id)}
-          {isCheck && playerId === room.playerList[0].id && <span>將軍</span>}
+        <span className={styles.playerInfo}>
+          <span className={styles.playerName}>{room.playerList[0].name}</span>
+          <span className={styles.playerSide}>{getPlayerSide(room.playerList[0].id)}</span>
+          {isCheck && playerId === room.playerList[0].id &&
+            <span className={styles.checkMate}>將軍</span>
+          }
+          <div className={styles.vsArea}>
+            {isYourTurn ? "你的回合" : "對方回合"}
+          </div>
         </span>
-        <div className={styles.vsArea}>
-          {isYourTurn ? "你的回合" : "對方回合"}
-        </div>
-        <span>
-          {room.playerList[1].name} {getPlayerSide(room.playerList[1].id)}
-          {isCheck && playerId === room.playerList[1].id && <span>將軍</span>}
+        <span className={styles.playerInfo}>
+          <span className={styles.playerName}>{room.playerList[1].name}</span>
+          <span className={styles.playerSide}>{getPlayerSide(room.playerList[1].id)}</span>
+          {isCheck && playerId === room.playerList[1].id &&
+            <span className={styles.checkMate}>將軍</span>
+          }
+          <div className={styles.vsArea}>
+            {isYourTurn ? "你的回合" : "對方回合"}
+          </div>
         </span>
       </div>
       <div className={styles.content}>

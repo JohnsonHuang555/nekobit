@@ -181,7 +181,7 @@ func (s subscription) readPump() {
 			}
 		case domain.ChineseChessEatChess:
 			newChesses := chineseChessUseCase.EatChess(msg.Data.ChessID, msg.Data.TargetID)
-			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide, room.GameMode)
+			gameOver := chineseChessUseCase.CheckGameOver(msg.PlayerID, ccGameData.PlayerSide, room.GameMode, newChesses)
 
 			// 更改狀態
 			if gameOver {

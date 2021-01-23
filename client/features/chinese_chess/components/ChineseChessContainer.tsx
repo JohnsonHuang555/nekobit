@@ -92,9 +92,15 @@ const ChineseChessContainer = () => {
     if (surrenderId !== "") {
       if (surrenderId === userInfo.id) {
         return "你輸了~ GG";
-      } else {
-        return "你贏了!!";
       }
+      return "你贏了!!";
+    }
+
+    if (selectedRoom.gameMode === "standard") {
+      if (isYourTurn) {
+        return "你輸了~ GG";
+      }
+      return "你贏了!!";
     }
 
     const blackChesses = chineseChess.filter(
