@@ -42,15 +42,19 @@ const Room = () => {
     localStorage.removeItem("leaveRoute");
 
     const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      return (e.returnValue = "");
+      dispatch(
+        wsSendMessage({
+          event: SocketEvent.LeaveRoom,
+          player_id: userInfo?.id as string,
+        })
+      );
     };
 
-    // window.addEventListener("beforeunload", leaveRoomConfirmHandler);
+    window.addEventListener("unload", leaveRoomConfirmHandler);
     Router.events.on("routeChangeStart", onRouteChange);
 
     return () => {
-      // window.removeEventListener("beforeunload", leaveRoomConfirmHandler);
+      window.removeEventListener("unload", leaveRoomConfirmHandler);
       Router.events.off("routeChangeStart", onRouteChange);
       dispatch(wsDisconnect());
     };
@@ -135,7 +139,9 @@ const Room = () => {
     if (url.substr(0, 5) !== "/room") {
       localStorage.setItem("leaveRoute", url);
       setShowLeaveRoomModal(true);
-      throw "route changing";
+      Router.events.emit("routeChangeError");
+      Router.replace(Router, Router.asPath);
+      throw "Abort route change. Please ignore this error.";
     }
     // clear
     localStorage.removeItem("leaveRoute");
