@@ -19,6 +19,8 @@ import { setIsReadyToStart } from "slices/roomsSlice";
 import ChatArea from "components/rooms/ChatArea";
 import { selectGameInfo } from "selectors/gamesSelector";
 import { loadGameInfo } from "actions/gamesAction";
+import ConfirmModal from "components/modals/ConfirmModal";
+import Router from "next/router";
 
 const Room = () => {
   const router = useRouter();
@@ -30,11 +32,26 @@ const Room = () => {
   const { userInfo } = useSelector(selectUserInfo);
   const { showGameScreen } = useSelector(selectShowGameScreen);
   const { isReadyToStart } = useSelector(selectIsReadyToStart);
-  const [startingCount, setStartingCount] = useState(5); // 倒數五秒遊戲開始
+  const [showLeaveRoomModal, setShowLeaveRoomModal] = useState(false);
+
+  const [startingCount, setStartingCount] = useState(5); // 倒數五秒遊戲開
 
   // 清除副作用
   useEffect(() => {
+    // clear leaveRoute
+    localStorage.removeItem("leaveRoute");
+
+    const leaveRoomConfirmHandler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      return (e.returnValue = "");
+    };
+
+    // window.addEventListener("beforeunload", leaveRoomConfirmHandler);
+    Router.events.on("routeChangeStart", onRouteChange);
+
     return () => {
+      // window.removeEventListener("beforeunload", leaveRoomConfirmHandler);
+      Router.events.off("routeChangeStart", onRouteChange);
       dispatch(wsDisconnect());
     };
   }, []);
@@ -49,6 +66,7 @@ const Room = () => {
 
   // 成功連到 socket 打 join event
   useEffect(() => {
+    // FIXME: 直接輸入網址進，來多判斷密碼
     if (isConnected && userInfo) {
       dispatch(
         wsSendMessage({
@@ -108,6 +126,21 @@ const Room = () => {
     }
   }, [showGameScreen]);
 
+  const onRouteChange = (url: string) => {
+    const leaveRoute = localStorage.getItem("leaveRoute");
+    if (leaveRoute) {
+      return;
+    }
+
+    if (url.substr(0, 5) !== "/room") {
+      localStorage.setItem("leaveRoute", url);
+      setShowLeaveRoomModal(true);
+      throw "route changing";
+    }
+    // clear
+    localStorage.removeItem("leaveRoute");
+  };
+
   const isNowPlayer = (id: string) => {
     if (userInfo && userInfo.id === id) {
       return true;
@@ -139,6 +172,25 @@ const Room = () => {
 
   return (
     <Layout>
+      {userInfo && (
+        <ConfirmModal
+          show={showLeaveRoomModal}
+          onClose={() => {
+            localStorage.removeItem("leaveRoute");
+            setShowLeaveRoomModal(false);
+          }}
+          onConfirm={() => {
+            dispatch(
+              wsSendMessage({
+                event: SocketEvent.LeaveRoom,
+                player_id: userInfo?.id as string,
+              })
+            );
+            Router.push(localStorage.getItem("leaveRoute") || "/");
+            setShowLeaveRoomModal(false);
+          }}
+        />
+      )}
       {userInfo && isConnected && selectedRoom && selectedGame && (
         <div className={styles.mainArea}>
           <div className={styles.leftArea}>
