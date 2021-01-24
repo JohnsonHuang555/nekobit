@@ -74,6 +74,29 @@ func (ru *roomUseCase) LeaveRoom(rid string, pid string) ([]*domain.Player, erro
 	}
 
 	newPlayers := ru.roomRepo.FindAllPlayers(rid)
+
+	var hasMaster = false
+	for _, p := range newPlayers {
+		if p.IsMaster {
+			hasMaster = true
+		}
+	}
+
+	if !hasMaster {
+		masterID := newPlayers[0].ID
+		player, err := ru.roomRepo.FindPlayerByID(rid, masterID)
+		if err != nil {
+			return nil, err
+		}
+		player.IsMaster = true
+		err = ru.roomRepo.UpdatePlayerByID(rid, masterID, player)
+		if err != nil {
+			return nil, err
+		}
+
+		newPlayers = ru.roomRepo.FindAllPlayers(rid)
+	}
+
 	return newPlayers, nil
 }
 

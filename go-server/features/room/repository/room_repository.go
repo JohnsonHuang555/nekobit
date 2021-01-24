@@ -131,6 +131,7 @@ func (rr *roomRepository) DeletePlayerByID(rid string, pid string) error {
 
 	players := rr.rooms[roomIndex].Players
 	players = append(players[:playerIndex], players[playerIndex+1:]...)
+	rr.rooms[roomIndex].Players = players
 	return nil
 }
 
