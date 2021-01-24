@@ -56,6 +56,7 @@ const roomsSlice = createSlice<State, CaseReducer>({
           ...state.selectedRoom,
           playerList: action.payload,
         };
+        state.createdId = "";
       }
     },
     readyGame: (state: State, action: PayloadAction<Player[]>) => {

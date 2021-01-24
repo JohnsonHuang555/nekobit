@@ -43,7 +43,6 @@ const SocketMiddleware = (store: any) => (next: any) => (action: any) => {
             }
             case SocketEvent.LeaveRoom: {
               const players = PlayerFactory.createArrayFromNet(data.players);
-              console.log(players)
               store.dispatch(leaveRoom(players));
             }
             // 按下準備遊戲後，都要把 isReadyToStart 設成 false

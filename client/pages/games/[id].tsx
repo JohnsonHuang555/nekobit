@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Layout from "components/AppLayout";
 import Button from "components/Button";
-import { GamePack, GameStatus } from "domain/models/Room";
+import { GameStatus } from "domain/models/Room";
 import Icon, { IconType } from "components/Icon";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
