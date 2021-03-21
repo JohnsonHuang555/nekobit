@@ -1,8 +1,8 @@
-import React, { CSSProperties } from "react";
-import styles from "styles/components/input.module.scss";
+import React, { CSSProperties } from 'react';
+import styles from 'styles/components/input.module.scss';
 
 type InputProps = {
-  type: "text" | "password" | "number";
+  type: 'text' | 'password' | 'number';
   value: string;
   disabled?: boolean;
   label?: string;
@@ -15,7 +15,7 @@ type InputProps = {
 
 const Input = (props: InputProps) => {
   const {
-    type = "text",
+    type = 'text',
     value,
     label,
     disabled = false,

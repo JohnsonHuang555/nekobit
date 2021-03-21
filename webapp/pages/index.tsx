@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import Layout from "components/AppLayout";
-import Button from "components/Button";
-import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { selectGames } from "selectors/gamesSelector";
-import { loadGames } from "actions/gamesAction";
-import styles from "styles/pages/home.module.scss";
+import React, { useEffect } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import Layout from 'components/AppLayout';
+import Button from 'components/Button';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectGames } from 'selectors/gamesSelector';
+import { loadGames } from 'actions/gamesAction';
+import styles from 'styles/pages/home.module.scss';
 
 export default function Home() {
   const router = useRouter();

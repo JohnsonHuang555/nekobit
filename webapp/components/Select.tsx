@@ -1,6 +1,6 @@
-import { CSSProperties } from "react";
-import ReactSelect from "react-select";
-import styles from "styles/components/select.module.scss";
+import { CSSProperties } from 'react';
+import ReactSelect from 'react-select';
+import styles from 'styles/components/select.module.scss';
 
 export type OptionType = {
   label: string;

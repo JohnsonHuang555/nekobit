@@ -1,27 +1,27 @@
-import React, { useState } from "react";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { selectShowModal, selectUserInfo } from "selectors/appSelector";
-import Modal from "./Modal";
-import Input from "./Input";
-import Button from "./Button";
-import { setShowModal, setUserInfo } from "slices/appSlice";
-import { v4 as uuidv4 } from "uuid";
-import styles from "styles/components/header.module.scss";
-import { User } from "domain/models/User";
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
+import Modal from './Modal';
+import Input from './Input';
+import Button from './Button';
+import { setShowModal, setUserInfo } from 'slices/appSlice';
+import { v4 as uuidv4 } from 'uuid';
+import styles from 'styles/components/header.module.scss';
+import { User } from 'domain/models/User';
 
 const Header = () => {
   const dispatch = useDispatch();
   const { userInfo } = useSelector(selectUserInfo);
   const { showModal } = useSelector(selectShowModal);
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState('');
 
   const onLogin = () => {
     const user: User = {
       id: uuidv4(),
       name: userName,
     };
-    localStorage.setItem("userInfo", JSON.stringify(user));
+    localStorage.setItem('userInfo', JSON.stringify(user));
     dispatch(setUserInfo(user));
     dispatch(setShowModal(false));
   };
@@ -35,7 +35,7 @@ const Header = () => {
           label="玩家暱稱"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          customStyles={{ marginBottom: "20px" }}
+          customStyles={{ marginBottom: '20px' }}
         />
         <Button title="確認" color="secondary" onClick={() => onLogin()} />
       </Modal>
