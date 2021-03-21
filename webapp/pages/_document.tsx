@@ -14,6 +14,18 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          <style>
+            {`
+            #__next {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+              width: 100%;
+              height: 100%;
+            }
+          `}
+          </style>
         </Head>
         <body>
           <Main />

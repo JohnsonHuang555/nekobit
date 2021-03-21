@@ -6,6 +6,7 @@ import styles from 'styles/components/layout.module.scss';
 import { User } from 'domain/models/User';
 import { setUserInfo } from 'slices/appSlice';
 import { useDispatch } from 'react-redux';
+import { Container } from 'next/app';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -23,15 +24,17 @@ const Layout = (props: LayoutProps) => {
   }, [dispatch]);
 
   return (
-    <div className={styles.container}>
+    <>
       <Head>
-        <title>Game Play</title>
+        <title>nekobit</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className={styles.main}>{props.children}</main>
+      <Container>
+        <main className={styles.main}>{props.children}</main>
+      </Container>
       <Footer />
-    </div>
+    </>
   );
 };
 

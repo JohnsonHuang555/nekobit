@@ -1,100 +1,72 @@
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
-import Modal from './Modal';
-import Input from './Input';
-import Button from './Button';
-import { setShowModal, setUserInfo } from 'slices/appSlice';
+import { selectUserInfo } from 'selectors/appSelector';
+import { setUserInfo } from 'slices/appSlice';
 import { v4 as uuidv4 } from 'uuid';
-import styles from 'styles/components/header.module.scss';
 import { User } from 'domain/models/User';
+import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
+import { useRouter } from 'next/router';
+import LoginModal from './modals/LoginModal';
 
 const Header = () => {
   const dispatch = useDispatch();
-  const { userInfo } = useSelector(selectUserInfo);
-  const { showModal } = useSelector(selectShowModal);
-  const [userName, setUserName] = useState('');
+  const router = useRouter();
 
-  const onLogin = () => {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { userInfo } = useSelector(selectUserInfo);
+
+  const onLogin = (name: string) => {
     const user: User = {
       id: uuidv4(),
-      name: userName,
+      name,
     };
     localStorage.setItem('userInfo', JSON.stringify(user));
     dispatch(setUserInfo(user));
-    dispatch(setShowModal(false));
+    setShowLoginModal(false);
+  };
+
+  const changeRoute = (url: string) => {
+    router.push(url);
   };
 
   return (
     <>
-      <Modal show={showModal} title="LogIn">
-        <Input
-          type="text"
-          placeholder="請輸入玩家暱稱"
-          label="玩家暱稱"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          customStyles={{ marginBottom: '20px' }}
-        />
-        <Button title="確認" color="secondary" onClick={() => onLogin()} />
-      </Modal>
-      <header className={styles.header}>
-        <Link href="/">
-          <a className={styles.logo}>LOGO</a>
-        </Link>
-        <ul>
-          <li>
-            <Link href="/">
-              <a>Home</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/games">
-              <a>Games</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/">
-              <a>About</a>
-            </Link>
-          </li>
-        </ul>
-        {userInfo ? (
-          <>
-            {/* TODO: beta 版不做 */}
-            {/* <div className={styles.alert}>
-              <Icon type={IconType.Alert} />
-            </div> */}
-            <div className={styles.userInfo}>
-              <img
-                src="https://images.pexels.com/photos/4297820/pexels-photo-4297820.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"
-                alt="user-avator"
-                width={46}
-                height={46}
-              />
-              <div className={styles.detail}>
-                <span className={styles.userName}>{userInfo.name}</span>
-                <span className={styles.userLevel}>Lv. 100</span>
-              </div>
-            </div>
-          </>
-        ) : (
-          <ul className={styles.notLogin}>
-            <li>
-              <div className={styles.logIn}>Log In</div>
-            </li>
-            <li>
-              <div
-                className={styles.getStart}
-                onClick={() => dispatch(setShowModal(true))}
-              >
-                Get Start
-              </div>
-            </li>
-          </ul>
-        )}
-      </header>
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSubmit={(name) => onLogin(name)}
+      />
+      <AppBar position="static">
+        <Toolbar>
+          {/* TODO: LOGO */}
+          <Typography variant="h6" style={{ marginRight: '15px' }}>
+            nekobit
+          </Typography>
+          <div style={{ flexGrow: 1 }}>
+            <Button color="inherit" onClick={() => changeRoute('/')}>
+              Home
+            </Button>
+            <Button color="inherit" onClick={() => changeRoute('/games')}>
+              Games
+            </Button>
+            <Button color="inherit" onClick={() => changeRoute('/')}>
+              About
+            </Button>
+          </div>
+          {userInfo ? (
+            <>
+              <Typography variant="h6">歡迎！{userInfo.name}</Typography>
+            </>
+          ) : (
+            <>
+              <Button color="inherit" onClick={() => setShowLoginModal(true)}>
+                Login
+              </Button>
+              {/* <Button color="inherit">Get Start</Button> */}
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
     </>
   );
 };
