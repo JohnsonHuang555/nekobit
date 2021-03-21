@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import Layout from "components/AppLayout";
-import Button from "components/Button";
-import { GameStatus } from "domain/models/Room";
-import Icon, { IconType } from "components/Icon";
-import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { loadGameInfo } from "actions/gamesAction";
-import { selectGameInfo } from "selectors/gamesSelector";
-import { selectCreatedId, selectRooms } from "selectors/roomsSelector";
-import styles from "styles/pages/games.module.scss";
-import { loadRooms } from "actions/roomsAction";
-import { selectShowModal, selectUserInfo } from "selectors/appSelector";
-import { toast } from "react-toastify";
-import CreateRoomModal from "components/modals/CreateRoomModal";
-import { setShowModal } from "slices/appSlice";
-import { EnhanceGame } from "domain/models/Game";
+import React, { useEffect } from 'react';
+import Layout from 'components/AppLayout';
+import { GameStatus } from 'domain/models/Room';
+import Icon, { IconType } from 'components/Icon';
+import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadGameInfo } from 'actions/gamesAction';
+import { selectGameInfo } from 'selectors/gamesSelector';
+import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
+import styles from 'styles/pages/games.module.scss';
+import { loadRooms } from 'actions/roomsAction';
+import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
+import { toast } from 'react-toastify';
+import CreateRoomModal from 'components/modals/CreateRoomModal';
+import { setShowModal } from 'slices/appSlice';
+import { EnhanceGame } from 'domain/models/Game';
+import { Button } from '@material-ui/core';
 
 const Game = () => {
   const router = useRouter();
@@ -55,7 +55,7 @@ const Game = () => {
   }
 
   const showLoginToast = () => {
-    toast.warn("⚠️ 請先登入唷");
+    toast.warn('⚠️ 請先登入唷');
   };
 
   const onCreateRoom = () => {
@@ -91,11 +91,16 @@ const Game = () => {
           <div className={styles.description}>{selectedGame.description}</div>
           <div className={styles.controls}>
             <Button
-              title="建立房間"
+              variant="contained"
               color="secondary"
+              size="medium"
               onClick={() => onCreateRoom()}
-            />
-            <Button title="快速加入" color="grey-4" />
+            >
+              建立房間
+            </Button>
+            <Button variant="contained" color="secondary" size="medium">
+              快速加入
+            </Button>
           </div>
         </div>
         <div className={styles.rooms}>
@@ -116,8 +121,8 @@ const Game = () => {
               <div className={styles.roomInfo}>
                 <span className={styles.gameStatus}>
                   {room.status === GameStatus.Preparing
-                    ? "Waiting..."
-                    : "Playing..."}
+                    ? 'Waiting...'
+                    : 'Playing...'}
                 </span>
                 <span
                   className={`${styles.infoBlock} ${roomStatus(room.status)}`}

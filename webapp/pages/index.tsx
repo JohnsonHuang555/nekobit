@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/AppLayout';
-import Button from 'components/Button';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectGames } from 'selectors/gamesSelector';
 import { loadGames } from 'actions/gamesAction';
 import styles from 'styles/pages/home.module.scss';
+import { Button } from '@material-ui/core';
 
 export default function Home() {
   const router = useRouter();
@@ -35,22 +35,18 @@ export default function Home() {
           spaceBetween={30}
           slidesPerView={1}
           breakpoints={{
-            // when window width is >= 640px
             640: {
               width: 640,
               slidesPerView: 2,
             },
-            // when window width is >= 768px
             768: {
               width: 768,
               slidesPerView: 3,
             },
-            // when window width is >= 768px
             1024: {
               width: 1024,
               slidesPerView: 4,
             },
-            // when window width is >= 768px
             1200: {
               width: 1200,
               slidesPerView: 5,
@@ -69,9 +65,13 @@ export default function Home() {
                 <div className={styles.gameTitle}>
                   <h2>{game.name}</h2>
                   <Button
-                    title="PLAY"
+                    variant="contained"
+                    color="secondary"
+                    size="large"
                     onClick={() => router.push(`/games/${game.gamePack}`)}
-                  />
+                  >
+                    PLAY
+                  </Button>
                 </div>
               </div>
             </SwiperSlide>
