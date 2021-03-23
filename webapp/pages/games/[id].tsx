@@ -139,15 +139,16 @@ const Game = () => {
                   {EnhanceGame[selectedGame.gamePack][room.gameMode]}
                 </span>
                 <Button
-                  title="加入"
-                  color="grey-4"
+                  color="inherit"
                   disabled={
                     selectedGame.maxPlayers === room.playerList.length
                       ? true
                       : false
                   }
                   onClick={() => onJoinRoom(room.id)}
-                />
+                >
+                  加入
+                </Button>
               </div>
             </div>
           ))}

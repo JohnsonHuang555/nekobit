@@ -27,6 +27,7 @@ const LoginModal = (props: LoginModalProps) => {
 
   return (
     <Dialog
+      fullWidth
       open={show}
       onClose={onClose}
       aria-labelledby="alert-dialog-title"
@@ -36,9 +37,9 @@ const LoginModal = (props: LoginModalProps) => {
       <DialogContent>
         <TextField
           onChange={(e) => setUserName(e.target.value)}
-          id="outlined-basic"
-          label="Outlined"
+          label="Your name"
           variant="outlined"
+          fullWidth
         />
       </DialogContent>
       <DialogActions>
