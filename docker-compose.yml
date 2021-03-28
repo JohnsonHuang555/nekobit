@@ -23,9 +23,9 @@ services:
     ports:
       - 3000:3000
     build:
-      context: webapp
+      context: web
       dockerfile: Dockerfile
     volumes:
-      - ./webapp:/usr/src/app
+      - ./web:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/.next
