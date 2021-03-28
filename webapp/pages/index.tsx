@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import Layout from 'components/AppLayout';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectGames } from 'selectors/gamesSelector';
+// import { selectGames } from 'selectors/gamesSelector';
 import { loadGames } from 'actions/gamesAction';
 import styles from 'styles/pages/home.module.scss';
 import { Button } from '@material-ui/core';
@@ -11,7 +11,7 @@ import { Button } from '@material-ui/core';
 export default function Home() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { games } = useSelector(selectGames);
+  // const { games } = useSelector(selectGames);
 
   useEffect(() => {
     async function dispatchLoadGames() {
@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <div
+      {/* <div
         className={styles.backgroundImage}
         style={{ backgroundImage: "url('img/intro.jpg')" }}
       />
@@ -77,7 +77,7 @@ export default function Home() {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
+      </div> */}
     </Layout>
   );
 }

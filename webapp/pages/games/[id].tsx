@@ -1,82 +1,82 @@
 import React, { useEffect } from 'react';
 import Layout from 'components/AppLayout';
-import { GameStatus } from 'domain/models/Room';
-import Icon, { IconType } from 'components/Icon';
-import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadGameInfo } from 'actions/gamesAction';
-import { selectGameInfo } from 'selectors/gamesSelector';
-import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
-import styles from 'styles/pages/games.module.scss';
-import { loadRooms } from 'actions/roomsAction';
-import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
-import { toast } from 'react-toastify';
-import CreateRoomModal from 'components/modals/CreateRoomModal';
-import { setShowModal } from 'slices/appSlice';
-import { EnhanceGame } from 'domain/models/Game';
-import { Button } from '@material-ui/core';
+// import { GameStatus } from 'domain/models/Room';
+// import Icon, { IconType } from 'components/Icon';
+// import { useRouter } from 'next/router';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { loadGameInfo } from 'actions/gamesAction';
+// import { selectGameInfo } from 'selectors/gamesSelector';
+// import { selectCreatedId, selectRooms } from 'selectors/roomsSelector';
+// import styles from 'styles/pages/games.module.scss';
+// import { loadRooms } from 'actions/roomsAction';
+// import { selectShowModal, selectUserInfo } from 'selectors/appSelector';
+// import { toast } from 'react-toastify';
+// import CreateRoomModal from 'components/modals/CreateRoomModal';
+// import { setShowModal } from 'slices/appSlice';
+// import { EnhanceGame } from 'domain/models/Game';
+// import { Button } from '@material-ui/core';
 
 const Game = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const gamePack = router.query.id;
-  const { selectedGame } = useSelector(selectGameInfo);
-  const { rooms } = useSelector(selectRooms);
-  const { createdId } = useSelector(selectCreatedId);
-  const { userInfo } = useSelector(selectUserInfo);
-  const { showModal } = useSelector(selectShowModal);
+  // const router = useRouter();
+  // const dispatch = useDispatch();
+  // const gamePack = router.query.id;
+  // const { selectedGame } = useSelector(selectGameInfo);
+  // const { rooms } = useSelector(selectRooms);
+  // const { createdId } = useSelector(selectCreatedId);
+  // const { userInfo } = useSelector(selectUserInfo);
+  // const { showModal } = useSelector(selectShowModal);
 
-  useEffect(() => {
-    async function dispatchLoadGameInfo() {
-      await dispatch(loadGameInfo(String(gamePack)));
-    }
-    async function dispatchLoadRooms() {
-      await dispatch(loadRooms(String(gamePack)));
-    }
-    if (gamePack) {
-      dispatchLoadGameInfo();
-      dispatchLoadRooms();
-    }
-  }, [dispatch, gamePack]);
+  // useEffect(() => {
+  //   async function dispatchLoadGameInfo() {
+  //     await dispatch(loadGameInfo(String(gamePack)));
+  //   }
+  //   async function dispatchLoadRooms() {
+  //     await dispatch(loadRooms(String(gamePack)));
+  //   }
+  //   if (gamePack) {
+  //     dispatchLoadGameInfo();
+  //     dispatchLoadRooms();
+  //   }
+  // }, [dispatch, gamePack]);
 
-  useEffect(() => {
-    if (createdId) {
-      router.push(`/rooms/${createdId}`);
-    }
-  }, [createdId]);
+  // useEffect(() => {
+  //   if (createdId) {
+  //     router.push(`/rooms/${createdId}`);
+  //   }
+  // }, [createdId]);
 
-  const roomStatus = (status: GameStatus) => {
-    return status === GameStatus.Preparing ? styles.preparing : styles.playing;
-  };
+  // const roomStatus = (status: GameStatus) => {
+  //   return status === GameStatus.Preparing ? styles.preparing : styles.playing;
+  // };
 
-  // TODO: 空白畫面 未來可以補 loading
-  if (!selectedGame) {
-    return null;
-  }
+  // // TODO: 空白畫面 未來可以補 loading
+  // if (!selectedGame) {
+  //   return null;
+  // }
 
-  const showLoginToast = () => {
-    toast.warn('⚠️ 請先登入唷');
-  };
+  // const showLoginToast = () => {
+  //   toast.warn('⚠️ 請先登入唷');
+  // };
 
-  const onCreateRoom = () => {
-    if (!userInfo) {
-      showLoginToast();
-      return;
-    }
-    dispatch(setShowModal(true));
-  };
+  // const onCreateRoom = () => {
+  //   if (!userInfo) {
+  //     showLoginToast();
+  //     return;
+  //   }
+  //   dispatch(setShowModal(true));
+  // };
 
-  const onJoinRoom = (id: string) => {
-    if (!userInfo) {
-      showLoginToast();
-      return;
-    }
-    router.push(`/rooms/${id}`);
-  };
+  // const onJoinRoom = (id: string) => {
+  //   if (!userInfo) {
+  //     showLoginToast();
+  //     return;
+  //   }
+  //   router.push(`/rooms/${id}`);
+  // };
 
   return (
     <Layout>
-      {userInfo && <CreateRoomModal show={showModal} />}
+      {/* {userInfo && <CreateRoomModal show={showModal} />}
       <div className="header">
         <h2 className="page-title">{selectedGame.name}</h2>
       </div>
@@ -153,7 +153,7 @@ const Game = () => {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </Layout>
   );
 };

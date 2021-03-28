@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
-import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from 'theme/theme';
-import store from 'store';
+import { wrapper } from 'store';
 import 'styles/globals.scss';
 import 'swiper/swiper.scss';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Provider store={store}>
+    <ThemeProvider theme={theme}>
       <ToastContainer
         position="bottom-right"
         autoClose={4000}
@@ -32,12 +31,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         draggable
         pauseOnHover
       />
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </Provider>
+      <CssBaseline />
+      <Component {...pageProps} />
+    </ThemeProvider>
   );
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

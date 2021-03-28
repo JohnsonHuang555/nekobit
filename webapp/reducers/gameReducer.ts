@@ -1,33 +1,27 @@
-import { actionTypes } from 'actions/gameAction';
 import { Game } from 'domain/models/Game';
+import { LoadedGamesAction, GET_GAMES_SUCCESS } from 'actions/gameAction'
+import { HYDRATE } from 'next-redux-wrapper'
 
 export type State = {
-  games: Game[];
+  games: Game[] | null;
 };
 
-export enum ActionType {
-
+export const initialState: State = {
+  games: null,
 }
 
-export type LoadedGamesAction = {
-  type:
-}
-
-export type Action = {
-
-}
-
-const initialState: State = {
-  games: [],
-}
-
-const reducer = (state: State = initialState, action: Action) => {
+const reducer = (state: State = initialState, action: LoadedGamesAction) => {
   switch (action.type) {
-    case value:
-
-      break;
-
-    default:
-      break;
+    case HYDRATE: {
+      return { ...state, ...action.payload }
+    }
+    case GET_GAMES_SUCCESS: {
+      return { ...state, ...action.payload };
+    }
+    default: {
+      return state;
+    }
   }
 }
+
+export default reducer;

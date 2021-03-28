@@ -1,15 +1,15 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { StoreState } from "store";
+// import { StoreState } from "store";
 
 export const selectShowModal = createSelector(
-  (state: StoreState) => ({
+  (state: any) => ({
     showModal: state.app.showModal,
   }),
   (state) => state
 );
 
 export const selectUserInfo = createSelector(
-  (state: StoreState) => ({
+  (state: any) => ({
     userInfo: state.app.userInfo,
   }),
   (state) => state
