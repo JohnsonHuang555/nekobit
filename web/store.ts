@@ -1,23 +1,34 @@
-import { createStore, AnyAction } from 'redux';
-import { MakeStore, createWrapper, Context, HYDRATE } from 'next-redux-wrapper';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { HYDRATE, createWrapper } from 'next-redux-wrapper';
+import gameReducer from 'reducers/GameReducer';
 
-export interface State {}
+const bindMiddleware = (middleware: any) => {
+  if (process.env.NODE_ENV !== 'production') {
+    const { composeWithDevTools } = require('redux-devtools-extension');
+    return composeWithDevTools(applyMiddleware(...middleware));
+  }
+  return applyMiddleware(...middleware);
+};
 
-// create your reducer
-const reducer = (state: State = { tick: 'init' }, action: AnyAction) => {
-  switch (action.type) {
-    case HYDRATE:
-      // Attention! This will overwrite client state! Real apps should use proper reconciliation.
-      return { ...state, ...action.payload };
-    case 'TICK':
-      return { ...state, tick: action.payload };
-    default:
-      return state;
+const combineReducer = combineReducers({
+  gameReducer,
+});
+
+const reducer = (state: any, action: any) => {
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state, // use previous state
+      ...action.payload, // apply delta from hydration
+    };
+    if (state.count.count) nextState.count.count = state.count.count; // preserve count value on client side navigation
+    return nextState;
+  } else {
+    return combineReducer(state, action);
   }
 };
 
-// create a makeStore function
-const makeStore: MakeStore<State> = (context: Context) => createStore(reducer);
+const initStore = () => {
+  return createStore(reducer, bindMiddleware([]));
+};
 
-// export an assembled wrapper
-export const wrapper = createWrapper<State>(makeStore, { debug: true });
+export const wrapper = createWrapper(initStore);
