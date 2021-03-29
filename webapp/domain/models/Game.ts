@@ -1,6 +1,6 @@
-import { OptionType } from "components/Select";
-import { GameMode as ChineseChessModes } from "features/chinese_chess/domain/models/ChineseChess";
-import { GamePack } from "./Room";
+import { OptionType } from 'components/Select';
+import { GameMode as ChineseChessModes } from 'features/chinese_chess/domain/models/ChineseChess';
+import { GamePack } from './Room';
 
 export type Game = {
   id: string;

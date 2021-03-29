@@ -1,4 +1,4 @@
-import { GamePack } from 'domain/Room';
+import { GamePack } from 'domain/models/Room';
 
 export type OptionType = {
   label: string;
@@ -18,4 +18,11 @@ export type Game = {
   estimateTime: number;
   createAt: string; // FIXME:
   updateAt: string; // FIXME:
+};
+
+export const EnhanceGame: {
+  [key in GamePack.ChineseChess | GamePack.Chess]: { [key: string]: string };
+} = {
+  [GamePack.ChineseChess]: {},
+  [GamePack.Chess]: {},
 };

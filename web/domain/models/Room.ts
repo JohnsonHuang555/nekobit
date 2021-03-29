@@ -1,4 +1,4 @@
-import { Player } from 'domain/Player';
+import { Player } from 'domain/models/Player';
 
 export type Room = {
   id: string;
