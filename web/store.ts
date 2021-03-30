@@ -1,6 +1,8 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { HYDRATE, createWrapper } from 'next-redux-wrapper';
-import gameReducer from 'reducers/GameReducer';
+import rootReducer from 'reducers/rootReducer';
+import rootSaga from 'sagas/rootSaga';
+import createSagaMiddleware from 'redux-saga';
 
 const bindMiddleware = (middleware: any) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -10,25 +12,19 @@ const bindMiddleware = (middleware: any) => {
   return applyMiddleware(...middleware);
 };
 
-const combineReducer = combineReducers({
-  gameReducer,
-});
-
 const reducer = (state: any, action: any) => {
   if (action.type === HYDRATE) {
-    const nextState = {
-      ...state, // use previous state
-      ...action.payload, // apply delta from hydration
-    };
-    if (state.count.count) nextState.count.count = state.count.count; // preserve count value on client side navigation
-    return nextState;
+    return { ...state, ...action.payload };
   } else {
-    return combineReducer(state, action);
+    return rootReducer(state, action);
   }
 };
 
 const initStore = () => {
-  return createStore(reducer, bindMiddleware([]));
+  const sagaMiddleware = createSagaMiddleware();
+  const store = createStore(reducer, bindMiddleware([sagaMiddleware]));
+  store.sagaTask = sagaMiddleware.run(rootSaga);
+  return store;
 };
 
 export const wrapper = createWrapper(initStore);
