@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { wrapper } from 'store';
 import { loadGames } from 'actions/GameAction';
 import { END } from 'redux-saga';
 import { gamesSelector } from 'selectors/GameSelector';
+import { wsConnect } from 'actions/WebSocketAction';
 
 function Home() {
+  const dispatch = useDispatch();
   const games = useSelector(gamesSelector);
-  console.log(games);
-  return <Button>123</Button>;
+  useEffect(() => {
+    dispatch(wsConnect('ws://localhost:5000/ws/123'));
+  }, []);
+  return <Button>333</Button>;
 }
 
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {

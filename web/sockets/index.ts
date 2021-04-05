@@ -7,16 +7,14 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
       webSocket = new WebSocket(action.host);
 
       webSocket.onopen = () => {
-        console.log('connected')
-      }
+        console.log('connected');
+      };
 
       webSocket.onclose = () => {
-        console.log('close')
-      }
+        console.log('close');
+      };
 
-      webSocket.onmessage = (e) => {
-
-      }
+      webSocket.onmessage = (e) => {};
       break;
     }
     case ActionType.WS_SEND_MESSAGE: {
@@ -45,6 +43,6 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
 
   // return socket
   return next(action);
-}
+};
 
-export default socketMiddleware
+export default socketMiddleware;
