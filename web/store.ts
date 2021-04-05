@@ -3,6 +3,7 @@ import { HYDRATE, createWrapper } from 'next-redux-wrapper';
 import rootReducer from 'reducers/rootReducer';
 import rootSaga from 'sagas/rootSaga';
 import createSagaMiddleware from 'redux-saga';
+import websocketMiddleware from 'sockets/index';
 
 const bindMiddleware = (middleware: any) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -22,7 +23,7 @@ const reducer = (state: any, action: any) => {
 
 const initStore = () => {
   const sagaMiddleware = createSagaMiddleware();
-  const store = createStore(reducer, bindMiddleware([sagaMiddleware]));
+  const store = createStore(reducer, bindMiddleware([sagaMiddleware, websocketMiddleware]));
   store.sagaTask = sagaMiddleware.run(rootSaga);
   return store;
 };
