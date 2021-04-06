@@ -3,6 +3,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { wrapper } from 'store';
 import theme from 'theme/theme';
+import 'styles/globals.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

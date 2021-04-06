@@ -6,14 +6,21 @@ import { loadGames } from 'actions/GameAction';
 import { END } from 'redux-saga';
 import { gamesSelector } from 'selectors/GameSelector';
 import { wsConnect } from 'actions/WebSocketAction';
+import Layout from 'components/Layout';
 
 function Home() {
   const dispatch = useDispatch();
   const games = useSelector(gamesSelector);
+
   useEffect(() => {
     dispatch(wsConnect('ws://localhost:5000/ws/123'));
   }, []);
-  return <Button>333</Button>;
+
+  return (
+    <Layout>
+      <Button>Test</Button>
+    </Layout>
+  );
 }
 
 export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
