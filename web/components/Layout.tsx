@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Container from '@material-ui/core/Container';
 import Header from 'components/Header';
-import Footer from './Footer';
+import Footer from 'components/Footer';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -18,8 +18,10 @@ const Layout = (props: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <Container maxWidth={false}>
-        <main>{children}</main>
+      <Container maxWidth={false} style={{ flex: '1 0 auto' }}>
+        <main style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+          {children}
+        </main>
       </Container>
       <Footer />
     </>

@@ -1,8 +1,14 @@
+import styles from 'styles/components/footer.module.scss';
+
 const Footer = () => {
   return (
-    <div>
-      <div>Game makes us happy and crazy. Keep your curiosity forever.</div>
-      <div>Copyright © 2020 All Rights Reserved by GPlay</div>
+    <div className={styles.footer}>
+      <div className={styles.slogan}>
+        Game makes us happy and crazy. Keep your curiosity forever.
+      </div>
+      <div className={styles.copyright}>
+        The website is created at 2020 by Johnson Huang
+      </div>
     </div>
   );
 };
