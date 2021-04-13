@@ -19,8 +19,13 @@ const LoginModal = (props: LoginModalProps) => {
   const [userName, setUserName] = useState('');
 
   return (
-    <Dialog open={show} onClose={onClose} aria-labelledby="form-dialog-title">
-      <DialogTitle id="form-dialog-title">Login</DialogTitle>
+    <Dialog
+      open={show}
+      onClose={onClose}
+      aria-labelledby="login-dialog-title"
+      fullWidth
+    >
+      <DialogTitle id="login-dialog-title">Login</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus

@@ -19,7 +19,14 @@ const Layout = (props: LayoutProps) => {
       </Head>
       <Header />
       <Container maxWidth={false} style={{ flex: '1 0 auto' }}>
-        <main style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+        <main
+          style={{
+            height: '100%',
+            display: 'flex',
+            alignItems: 'flex-start',
+            flexDirection: 'column',
+          }}
+        >
           {children}
         </main>
       </Container>
