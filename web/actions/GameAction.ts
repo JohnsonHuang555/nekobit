@@ -4,6 +4,8 @@ export enum ActionType {
   FAILURE = 'FAILURE',
   LOAD_GAMES = 'LOAD_GAMES',
   LOAD_GAMES_SUCCESS = 'LOAD_GAMES_SUCCESS',
+  LOAD_GAME_INFO = 'LOAD_GAME_INFO',
+  LOAD_GAME_INFO_SUCCESS = 'LOAD_GAME_INFO_SUCCESS',
   HYDRATE = 'HYDRATE',
 }
 
@@ -24,5 +26,21 @@ export const loadGamesSuccess = (games: Game[]) => {
   return {
     type: ActionType.LOAD_GAMES_SUCCESS,
     games,
+  };
+};
+
+export const loadGameInfo = (gamePack: string) => {
+  return {
+    type: ActionType.LOAD_GAME_INFO,
+    payload: {
+      gamePack,
+    },
+  };
+};
+
+export const loadGameInfoSuccess = (game: Game) => {
+  return {
+    type: ActionType.LOAD_GAME_INFO_SUCCESS,
+    game,
   };
 };
