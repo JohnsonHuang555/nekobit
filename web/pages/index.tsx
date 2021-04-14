@@ -45,7 +45,6 @@ const fakeGames = [
 ];
 
 function Home() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const games = useSelector(gamesSelector);
 
@@ -83,7 +82,7 @@ function Home() {
             },
           }}
         >
-          {fakeGames.map((game) => (
+          {games.map((game) => (
             <SwiperSlide key={game.id} className={styles.swiperSlide}>
               <img
                 src={`${game.imgUrl}/home.png`}
