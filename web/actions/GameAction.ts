@@ -32,9 +32,7 @@ export const loadGamesSuccess = (games: Game[]) => {
 export const loadGameInfo = (gamePack: string) => {
   return {
     type: ActionType.LOAD_GAME_INFO,
-    payload: {
-      gamePack,
-    },
+    gamePack,
   };
 };
 

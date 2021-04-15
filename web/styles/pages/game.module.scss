@@ -1,0 +1,172 @@
+@import "./color";
+
+.title {
+  width: 100%;
+  border-bottom: 4px double white;
+  padding-bottom: 10px;
+}
+
+@import "./color";
+
+.row {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  .categories,
+  .detail {
+    flex: 0.2;
+    margin-right: 20px;
+  }
+  .games,
+  .rooms {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    .game {
+      height: 200px;
+      background-position: center;
+      background-size: cover;
+      width: calc(100% / 3 - 20px);
+      margin: 10px;
+      border-radius: 5px;
+      .gameInfo {
+        position: relative;
+        border-radius: 5px;
+        opacity: 0;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.65);
+        width: 100%;
+        height: 100%;
+        transition: all 0.3s;
+        cursor: pointer;
+        &:hover {
+          opacity: 1;
+        }
+      }
+      .gameName {
+        font-size: 30px;
+        margin-bottom: 10px;
+      }
+      .gameBrief {
+        font-size: 16px;
+      }
+      .icons {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        .icon {
+          display: flex;
+        }
+      }
+    }
+  }
+  .categories {
+    .title {
+      font-size: 20px;
+      border-bottom: 1px solid $grey-3;
+      padding: 5px 15px;
+      margin-bottom: 10px;
+    }
+  }
+  .categoryRow {
+    display: flex;
+    padding: 5px 20px;
+    transition: all 0.3s;
+    cursor: pointer;
+    border-radius: 5px;
+    &:hover {
+      background-color: $grey-4;
+    }
+    .categoryTitle {
+      font-size: 20px;
+      margin-left: 10px;
+    }
+  }
+  .detail {
+    display: flex;
+    flex-direction: column;
+    img {
+      margin-bottom: 20px;
+    }
+    .description {
+      line-height: 25px;
+      flex: 1;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      button {
+        margin-bottom: 15px;
+      }
+    }
+  }
+  .room {
+    height: 140px;
+    border-radius: 5px;
+    width: calc(100% / 2 - 20px);
+    padding: 20px;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    &:nth-child(odd) {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    .roomHeader {
+      display: flex;
+      height: 40px;
+      width: 100%;
+      border-radius: 5px;
+      padding: 10px;
+      justify-content: space-between;
+    }
+    .roomTitle {
+      display: flex;
+      align-items: center;
+      span {
+        margin-right: 10px;
+        font-size: 18px;
+      }
+      .roomName {
+        font-size: 16px;
+      }
+    }
+    .roomInfo {
+      display: flex;
+      justify-content: space-between;
+      .gameStatus {
+        font-size: 26px;
+        letter-spacing: 2px;
+        flex: 1;
+        margin-top: 5px;
+      }
+      .infoBlock {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $dark-brown;
+        width: 120px;
+        border-radius: 5px;
+        flex: 1;
+        margin: 0 10px;
+      }
+      button {
+        width: 120px;
+        margin-left: 10px;
+      }
+    }
+    .preparing {
+      background-color: $dark-brown !important;
+    }
+    .playing {
+      background-color: $grey-5 !important;
+    }
+  }
+  .preparing {
+    background-color: $brown;
+  }
+  .playing {
+    background-color: $grey-4;
+  }
+}

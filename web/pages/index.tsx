@@ -1,52 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { wrapper } from 'store';
 import { loadGames } from 'actions/GameAction';
-import { END } from 'redux-saga';
 import { gamesSelector } from 'selectors/GameSelector';
 import Layout from 'components/Layout';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useRouter } from 'next/router';
-import { GamePack } from 'domain/models/Room';
-import styles from 'styles/pages/index.module.scss';
 import { Person, Schedule } from '@material-ui/icons';
 import Icon from 'components/Icon';
-
-const fakeGames = [
-  {
-    id: '123-555',
-    name: '象棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chinese-chess',
-    estimateTime: 30,
-    modes: [],
-    gamePack: GamePack.ChineseChess,
-    createAt: '',
-    updateAt: '',
-  },
-  {
-    id: '888-555',
-    name: '西洋棋',
-    minPlayers: 2,
-    maxPlayers: 2,
-    brief: '對弈',
-    description: 'PKPK',
-    imgUrl: '/img/chess',
-    estimateTime: 30,
-    modes: [],
-    gamePack: GamePack.ChineseChess,
-    createAt: '',
-    updateAt: '',
-  },
-];
+import styles from 'styles/pages/index.module.scss';
 
 function Home() {
   const router = useRouter();
   const games = useSelector(gamesSelector);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadGames());
+  }, [dispatch]);
 
   if (!games) {
     return null;
@@ -92,7 +63,12 @@ function Home() {
               />
               <div className={styles.game}>
                 <span className={styles.name}>{game.name}</span>
-                <Button variant="outlined" size="large" className={styles.play}>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  className={styles.play}
+                  onClick={() => router.push(`/games/${game.gamePack}`)}
+                >
                   PLAY
                 </Button>
                 <div className={styles.icons}>
@@ -114,14 +90,5 @@ function Home() {
     </Layout>
   );
 }
-
-export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
-  if (!store.getState().games) {
-    store.dispatch(loadGames());
-    store.dispatch(END);
-  }
-
-  await store.sagaTask.toPromise();
-});
 
 export default Home;
