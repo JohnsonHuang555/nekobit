@@ -1,9 +1,6 @@
 import { GamePack } from 'domain/models/Room';
-
-export type OptionType = {
-  label: string;
-  value: string;
-};
+import { OptionType } from 'domain/models/OptionType';
+import { GameMode as ChineseChessModes } from 'features/chinese_chess/domain/models/ChineseChess';
 
 export type Game = {
   id: string;
@@ -23,6 +20,6 @@ export type Game = {
 export const EnhanceGame: {
   [key in GamePack.ChineseChess | GamePack.Chess]: { [key: string]: string };
 } = {
-  [GamePack.ChineseChess]: {},
-  [GamePack.Chess]: {},
+  [GamePack.ChineseChess]: ChineseChessModes,
+  [GamePack.Chess]: ChineseChessModes,
 };

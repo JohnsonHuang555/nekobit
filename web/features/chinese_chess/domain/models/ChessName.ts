@@ -1,0 +1,16 @@
+export enum ChessName {
+  KingBlack = '將',
+  KingRed = '帥',
+  GuardsBlack = '士',
+  GuardsRed = '仕',
+  MinisterBlack = '象',
+  MinisterRed = '相',
+  ChariotsBlack = '車',
+  ChariotsRed = '俥',
+  CannonsBlack = '包',
+  CannonsRed = '炮',
+  HorsesBlack = '馬',
+  HorsesRed = '傌',
+  SoldiersBlack = '卒',
+  SoldiersRed = '兵',
+}

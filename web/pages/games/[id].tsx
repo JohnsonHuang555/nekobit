@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { loadGameInfo } from 'actions/GameAction';
 import Layout from 'components/Layout';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ import { EnhanceGame } from 'domain/models/Game';
 import { loadRooms } from 'actions/RoomAction';
 import { userInfoSelector } from 'selectors/AppSelector';
 import { setSnackbar } from 'actions/AppAction';
+import CreateRoom, { CreateRoomParams } from 'components/modals/CreateRoom';
 
 const Game = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const Game = () => {
   const game = useSelector(gameSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
+  const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   useEffect(() => {
     if (gamePack) {
@@ -46,7 +48,7 @@ const Game = () => {
     // router.push(`/rooms/${id}`);
   };
 
-  const onCreateRoom = () => {
+  const onCreateRoom = (params: CreateRoomParams) => {
     if (!userInfo) {
       dispatch(
         setSnackbar({
@@ -60,6 +62,12 @@ const Game = () => {
 
   return (
     <Layout>
+      <CreateRoom
+        show={showCreateRoomModal}
+        selectedGame={game}
+        onClose={() => setShowCreateRoomModal(false)}
+        onCreateRoom={onCreateRoom}
+      />
       <h2 className={styles.title}>{game.name}</h2>
       <div className={styles.row}>
         <div className={styles.detail}>
@@ -75,7 +83,7 @@ const Game = () => {
               variant="outlined"
               size="large"
               className={styles.play}
-              onClick={() => onCreateRoom()}
+              onClick={() => setShowCreateRoomModal(true)}
             >
               建立房間
             </Button>

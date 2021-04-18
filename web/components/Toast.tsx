@@ -29,7 +29,7 @@ const Toast = () => {
         horizontal: 'right',
       }}
       open={show}
-      autoHideDuration={4000}
+      autoHideDuration={3000}
       onClose={handleClose}
       message={message}
       action={
