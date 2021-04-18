@@ -51,11 +51,10 @@ const CreateRoom = (props: CreateRoomProps) => {
       );
       return;
     }
-    console.log(roomName, selectedMode);
-    // onCreateRoom({
-    //   name: roomName,
-    //   mode: selectedMode,
-    // });
+    onCreateRoom({
+      name: roomName,
+      mode: selectedMode,
+    });
   };
 
   return (

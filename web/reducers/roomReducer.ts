@@ -3,10 +3,12 @@ import { Room } from 'domain/models/Room';
 
 export type State = {
   rooms: Room[] | null;
+  createdId: string;
 };
 
 const initialState: State = {
   rooms: null,
+  createdId: '',
 };
 
 type LoadedRoomsAction = {
@@ -14,14 +16,25 @@ type LoadedRoomsAction = {
   rooms: Room[];
 };
 
-type Action = LoadedRoomsAction;
+type CreatedRoomAction = {
+  type: ActionType.CREATE_ROOM_SUCCESS;
+  roomId: string;
+};
 
-const reducer = (state = initialState, action: Action) => {
+type Action = LoadedRoomsAction | CreatedRoomAction;
+
+const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
     case ActionType.LOAD_ROOMS_SUCCESS: {
       return {
         ...state,
-        ...{ rooms: action.rooms },
+        rooms: action.rooms,
+      };
+    }
+    case ActionType.CREATE_ROOM_SUCCESS: {
+      return {
+        ...state,
+        createdId: action.roomId,
       };
     }
     default: {

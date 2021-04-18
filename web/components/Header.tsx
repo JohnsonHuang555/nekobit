@@ -7,11 +7,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { loadUserInfo } from 'actions/AppAction';
 import { userInfoSelector } from 'selectors/AppSelector';
 import Toast from 'components/Toast';
+import { useRouter } from 'next/router';
 
 const Header = () => {
   const dispatch = useDispatch();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const userInfo = useSelector(userInfoSelector);
+  const router = useRouter();
 
   useEffect(() => {
     const userInfo = localStorage.getItem('userInfo');
@@ -43,7 +45,7 @@ const Header = () => {
         <Toolbar>
           {/* TODO: LOGO */}
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            nekobit
+            <span onClick={() => router.push('/')}>nekobit</span>
           </Typography>
           <div>
             {userInfo ? (

@@ -6,12 +6,12 @@ import { useRouter } from 'next/router';
 import styles from 'styles/pages/game.module.scss';
 import { gameSelector } from 'selectors/GameSelector';
 import { Button } from '@material-ui/core';
-import { roomsSelector } from 'selectors/RoomSelector';
+import { createdIdSelector, roomsSelector } from 'selectors/RoomSelector';
 import { GameStatus } from 'domain/models/Room';
 import Icon from 'components/Icon';
 import { People } from '@material-ui/icons';
 import { EnhanceGame } from 'domain/models/Game';
-import { loadRooms } from 'actions/RoomAction';
+import { createRoom, loadRooms } from 'actions/RoomAction';
 import { userInfoSelector } from 'selectors/AppSelector';
 import { setSnackbar } from 'actions/AppAction';
 import CreateRoom, { CreateRoomParams } from 'components/modals/CreateRoom';
@@ -23,6 +23,7 @@ const Game = () => {
   const game = useSelector(gameSelector);
   const rooms = useSelector(roomsSelector);
   const userInfo = useSelector(userInfoSelector);
+  const createdId = useSelector(createdIdSelector);
   const [showCreateRoomModal, setShowCreateRoomModal] = useState(false);
 
   useEffect(() => {
@@ -31,6 +32,12 @@ const Game = () => {
       dispatch(loadRooms(String(gamePack)));
     }
   }, [dispatch, gamePack]);
+
+  useEffect(() => {
+    if (createdId) {
+      router.push(`/rooms/${createdId}`);
+    }
+  }, [createdId]);
 
   if (!game || !rooms) {
     return null;
@@ -58,6 +65,13 @@ const Game = () => {
       );
       return;
     }
+
+    dispatch(
+      createRoom({
+        ...params,
+        gamePack: game.gamePack,
+      })
+    );
   };
 
   return (
