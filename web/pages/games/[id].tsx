@@ -12,6 +12,8 @@ import Icon from 'components/Icon';
 import { People } from '@material-ui/icons';
 import { EnhanceGame } from 'domain/models/Game';
 import { loadRooms } from 'actions/RoomAction';
+import { userInfoSelector } from 'selectors/AppSelector';
+import { setSnackbar } from 'actions/AppAction';
 
 const Game = () => {
   const router = useRouter();
@@ -19,6 +21,7 @@ const Game = () => {
   const gamePack = router.query.id;
   const game = useSelector(gameSelector);
   const rooms = useSelector(roomsSelector);
+  const userInfo = useSelector(userInfoSelector);
 
   useEffect(() => {
     if (gamePack) {
@@ -43,6 +46,18 @@ const Game = () => {
     // router.push(`/rooms/${id}`);
   };
 
+  const onCreateRoom = () => {
+    if (!userInfo) {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '請先登入',
+        })
+      );
+      return;
+    }
+  };
+
   return (
     <Layout>
       <h2 className={styles.title}>{game.name}</h2>
@@ -60,7 +75,7 @@ const Game = () => {
               variant="outlined"
               size="large"
               className={styles.play}
-              onClick={() => {}}
+              onClick={() => onCreateRoom()}
             >
               建立房間
             </Button>
@@ -82,6 +97,7 @@ const Game = () => {
                   <span>001</span>
                   <div className={styles.roomName}>{room.title}</div>
                 </div>
+                {/* TODO: password */}
                 {/* {room.password && <Icon type={IconType.Key} label="私密" />} */}
               </div>
               <div className={styles.roomInfo}>

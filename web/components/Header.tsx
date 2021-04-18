@@ -6,6 +6,7 @@ import { User } from 'domain/models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { loadUserInfo } from 'actions/AppAction';
 import { userInfoSelector } from 'selectors/AppSelector';
+import Toast from 'components/Toast';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const Header = () => {
 
   return (
     <>
+      <Toast />
       <LoginModal
         show={showLoginModal}
         onClose={() => setShowLoginModal(false)}

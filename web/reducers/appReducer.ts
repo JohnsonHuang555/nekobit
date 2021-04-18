@@ -3,23 +3,47 @@ import { User } from 'domain/models/User';
 
 export type State = {
   userInfo?: User;
+  snackbar: {
+    show: boolean;
+    message: string;
+  };
 };
 
-const initialState: State = {};
+const initialState: State = {
+  snackbar: {
+    show: false,
+    message: '',
+  },
+};
 
 type LoadedUserInfoAction = {
   type: ActionType.LOADED_USER_INFO;
   userInfo: User;
 };
 
-type Action = LoadedUserInfoAction;
+type SetSnackbarAction = {
+  type: ActionType.SET_SNACKBAR;
+  show: boolean;
+  message: string;
+};
 
-const reducer = (state = initialState, action: Action) => {
+type Action = LoadedUserInfoAction | SetSnackbarAction;
+
+const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
     case ActionType.LOADED_USER_INFO: {
       return {
         ...state,
-        ...{ userInfo: action.userInfo },
+        userInfo: action.userInfo,
+      };
+    }
+    case ActionType.SET_SNACKBAR: {
+      return {
+        ...state,
+        snackbar: {
+          show: action.show,
+          message: action.message,
+        },
       };
     }
     default: {
