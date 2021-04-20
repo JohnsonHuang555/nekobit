@@ -57,17 +57,17 @@ func main() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 
-	// room
-	rooms := []*domain.Room{}
-	roomRepo := _roomRepo.NewRoomRepository(rooms)
-	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
-	_roomHandlerHttpDelivery.NewRoomHttpHandler(e, roomUseCase)
-	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase)
-
 	// game
 	gameRepo := _gameRepo.NewpostgreSqlGameRepository(db)
 	gameUseCase := _gameUsecase.NewGameUseCase(gameRepo)
 	_gameHandlerHttpDelivery.NewGameHandler(e, gameUseCase)
+
+	// room
+	rooms := []*domain.Room{}
+	roomRepo := _roomRepo.NewRoomRepository(rooms)
+	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
+	_roomHandlerHttpDelivery.NewRoomHttpHandler(e, roomUseCase, gameUseCase)
+	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase)
 
 	logrus.Fatal(e.Start(restfulHost + ":" + restfulPort))
 }

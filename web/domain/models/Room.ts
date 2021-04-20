@@ -22,3 +22,19 @@ export enum GameStatus {
   Preparing = 'preparing',
   Playing = 'playing',
 }
+
+// action params
+export type CreateRoomParams = {
+  name: string;
+  mode: string;
+};
+
+export type CheckJoinRoomParams = {
+  roomId: string;
+  gamePack: GamePack;
+};
+
+export type CheckJionRoomResponse = {
+  canJoin: boolean;
+  message: string;
+};

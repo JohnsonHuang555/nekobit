@@ -1,13 +1,13 @@
 import { getApi } from 'fetcher';
 import {
   ActionType,
-  failure,
   loadGameInfoSuccess,
   loadGamesSuccess,
 } from 'actions/GameAction';
 import { GameFactory } from 'domain/factories/GameFactory';
 import { Game } from 'domain/models/Game';
 import { all, call, put, takeEvery } from 'redux-saga/effects';
+import { failure } from 'actions/AppAction';
 
 function* loadGames() {
   try {
@@ -20,7 +20,12 @@ function* loadGames() {
   }
 }
 
-function* loadGameInfo(action: any) {
+type LoadGameInfoAction = {
+  type: ActionType.LOAD_GAME_INFO;
+  gamePack: string;
+};
+
+function* loadGameInfo(action: LoadGameInfoAction) {
   try {
     const game: Game = yield call(() =>
       getApi(`/games/${action.gamePack}`).then((res) =>

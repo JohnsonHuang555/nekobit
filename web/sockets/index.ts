@@ -1,4 +1,8 @@
-import { ActionType } from 'actions/WebSocketAction';
+import {
+  ActionType,
+  wsConnected,
+  wsDisConnected,
+} from 'actions/WebSocketAction';
 
 let webSocket: WebSocket;
 const socketMiddleware = (store: any) => (next: any) => (action: any) => {
@@ -7,11 +11,11 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
       webSocket = new WebSocket(action.host);
 
       webSocket.onopen = () => {
-        console.log('connected');
+        store.dispatch(wsConnected());
       };
 
       webSocket.onclose = () => {
-        console.log('close');
+        store.dispatch(wsDisConnected());
       };
 
       webSocket.onmessage = (e) => {};
@@ -25,23 +29,6 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
       break;
     }
   }
-  // socket.onopen = () => {
-  // }
-  // socket.onmessage = (event) => {
-  //   const data = JSON.parse(event.data)
-  //   switch (data.type) {
-  //     case ActionType.JoinRoom:
-  //       // dispatch(messageReceived(data.message, data.author))
-  //       break
-  //     case ActionType.LeaveRoom:
-  //       // dispatch(populateUsersList(data.users))
-  //       break
-  //     default:
-  //       break
-  //   }
-  // }
-
-  // return socket
   return next(action);
 };
 

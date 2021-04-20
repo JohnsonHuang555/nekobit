@@ -57,4 +57,5 @@ type RoomUseCase interface {
 	UpdateGameData(rid string, gameData interface{}) error
 	ChangePlayerTurn(rid string, pid string) (string, error)
 	GameOver(rid string) error
+	CheckJoinRoom(rid string, maxPlayers int) (bool, string, error)
 }

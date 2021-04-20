@@ -220,3 +220,19 @@ func (ru *roomUseCase) GameOver(rid string) error {
 
 	return nil
 }
+
+func (ru *roomUseCase) CheckJoinRoom(rid string, maxPlayers int) (bool, string, error) {
+	room, err := ru.roomRepo.FindByID(rid)
+	// 查無此房間
+	if err != nil {
+		return false, "房間不存在", err
+	}
+
+	// 房間滿了
+	if len(room.Players) == maxPlayers {
+		return false, "房間已滿", nil
+	}
+
+	// TODO: 密碼輸入錯誤
+	return true, "", nil
+}

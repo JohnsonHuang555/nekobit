@@ -1,5 +1,5 @@
-import { GamePack, GameStatus } from "domain/models/Room";
-import { NetPlayer } from "./NetPlayer";
+import { GamePack, GameStatus } from 'domain/models/Room';
+import { NetPlayer } from './NetPlayer';
 
 export type NetRoom = {
   id: string;
@@ -12,4 +12,9 @@ export type NetRoom = {
   game_pack: GamePack;
   game_mode: string;
   create_at: string;
+};
+
+export type NetCheckJoinRoomRespose = {
+  can_join: boolean;
+  message: string;
 };

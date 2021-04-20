@@ -1,5 +1,9 @@
-import { CreateRoomParams } from 'components/modals/CreateRoom';
-import { GamePack, Room } from 'domain/models/Room';
+import {
+  Room,
+  GamePack,
+  CreateRoomParams,
+  CheckJoinRoomParams,
+} from 'domain/models/Room';
 
 export enum ActionType {
   HYDRATE = 'HYDRATE',
@@ -7,8 +11,11 @@ export enum ActionType {
   LOAD_ROOMS_SUCCESS = 'LOAD_ROOMS_SUCCESS',
   CREATE_ROOM = 'CREATE_ROOM',
   CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS',
+  CHECK_JOIN_ROOM = 'CHECK_JOIN_ROOM',
+  CHECK_JOIN_ROOM_SUCCESS = 'CHECK_JOIN_ROOM_SUCCESS',
 }
 
+// loadRooms
 export const loadRooms = (gamePack: string) => {
   return {
     type: ActionType.LOAD_ROOMS,
@@ -23,10 +30,10 @@ export const loadRoomsSuccess = (rooms: Room[]) => {
   };
 };
 
+// createRoom
 export type CreateRoomPayload = CreateRoomParams & {
   gamePack: GamePack;
 };
-
 export const createRoom = ({ name, mode, gamePack }: CreateRoomPayload) => {
   return {
     type: ActionType.CREATE_ROOM,
@@ -42,5 +49,21 @@ export const createRoomSuccess = (roomId: string) => {
   return {
     type: ActionType.CREATE_ROOM_SUCCESS,
     roomId,
+  };
+};
+
+// checkJoinRoom
+export const checkJoinRoom = (roomId: string) => {
+  return {
+    type: ActionType.CHECK_JOIN_ROOM,
+    roomId,
+  };
+};
+
+export const checkJoinRoomSuccess = (canJoin: boolean, message: string) => {
+  return {
+    type: ActionType.CHECK_JOIN_ROOM_SUCCESS,
+    canJoin,
+    message,
   };
 };

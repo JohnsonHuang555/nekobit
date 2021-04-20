@@ -1,20 +1,12 @@
 import { Game } from 'domain/models/Game';
 
 export enum ActionType {
-  FAILURE = 'FAILURE',
   LOAD_GAMES = 'LOAD_GAMES',
   LOAD_GAMES_SUCCESS = 'LOAD_GAMES_SUCCESS',
   LOAD_GAME_INFO = 'LOAD_GAME_INFO',
   LOAD_GAME_INFO_SUCCESS = 'LOAD_GAME_INFO_SUCCESS',
   HYDRATE = 'HYDRATE',
 }
-
-export const failure = (error: Error) => {
-  return {
-    type: ActionType.FAILURE,
-    error,
-  };
-};
 
 export const loadGames = () => {
   return {

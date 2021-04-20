@@ -7,14 +7,14 @@ import styles from 'styles/pages/game.module.scss';
 import { gameSelector } from 'selectors/GameSelector';
 import { Button } from '@material-ui/core';
 import { createdIdSelector, roomsSelector } from 'selectors/RoomSelector';
-import { GameStatus } from 'domain/models/Room';
+import { CreateRoomParams, GameStatus } from 'domain/models/Room';
 import Icon from 'components/Icon';
 import { People } from '@material-ui/icons';
 import { EnhanceGame } from 'domain/models/Game';
 import { createRoom, loadRooms } from 'actions/RoomAction';
 import { userInfoSelector } from 'selectors/AppSelector';
 import { setSnackbar } from 'actions/AppAction';
-import CreateRoom, { CreateRoomParams } from 'components/modals/CreateRoom';
+import CreateRoom from 'components/modals/CreateRoom';
 
 const Game = () => {
   const router = useRouter();
@@ -48,11 +48,16 @@ const Game = () => {
   };
 
   const onJoinRoom = (id: string) => {
-    // if (!userInfo) {
-    //   showLoginToast();
-    //   return;
-    // }
-    // router.push(`/rooms/${id}`);
+    if (!userInfo) {
+      dispatch(
+        setSnackbar({
+          show: true,
+          message: '請先登入',
+        })
+      );
+      return;
+    }
+    router.push(`/rooms/${id}`);
   };
 
   const onCreateRoom = (params: CreateRoomParams) => {
@@ -147,6 +152,7 @@ const Game = () => {
                   variant="outlined"
                   size="large"
                   className={styles.play}
+                  disabled={game.maxPlayers === room.playerList.length}
                   onClick={() => onJoinRoom(room.id)}
                 >
                   加入

@@ -1,5 +1,4 @@
 import { Game } from 'domain/models/Game';
-import { OptionType } from 'domain/models/OptionType';
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -13,11 +12,7 @@ import {
 import Select from '@material-ui/core/Select';
 import { useDispatch } from 'react-redux';
 import { setSnackbar } from 'actions/AppAction';
-
-export type CreateRoomParams = {
-  name: string;
-  mode: string;
-};
+import { CreateRoomParams } from 'domain/models/Room';
 
 type CreateRoomProps = {
   show: boolean;
