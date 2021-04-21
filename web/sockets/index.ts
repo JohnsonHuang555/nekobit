@@ -3,6 +3,7 @@ import {
   wsConnected,
   wsDisConnected,
 } from 'actions/WebSocketAction';
+import { SocketEvent } from 'domain/models/WebSocket';
 
 let webSocket: WebSocket;
 const socketMiddleware = (store: any) => (next: any) => (action: any) => {
@@ -18,7 +19,17 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
         store.dispatch(wsDisConnected());
       };
 
-      webSocket.onmessage = (e) => {};
+      webSocket.onmessage = (e) => {
+        const { event, data, player_id } = JSON.parse(e.data);
+        switch (event) {
+          case SocketEvent.JoinRoom: {
+            break;
+          }
+          default: {
+            throw new Error('You get bug. QAQ');
+          }
+        }
+      };
       break;
     }
     case ActionType.WS_SEND_MESSAGE: {

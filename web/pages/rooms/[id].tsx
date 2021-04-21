@@ -7,13 +7,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfoSelector } from 'selectors/AppSelector';
 import { checkJoinSelector } from 'selectors/RoomSelector';
-import { isConnectedSelector } from 'selectors/WebSocketSelector';
+import { isConnectedSelector } from 'selectors/WebsocketSelector';
 
 const Room = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const roomId = router.query.id;
-  const checkJoin = useSelector(checkJoinSelector);
+  const checkJoinObj = useSelector(checkJoinSelector);
   const userInfo = useSelector(userInfoSelector);
   const isConnected = useSelector(isConnectedSelector);
 
@@ -21,30 +21,39 @@ const Room = () => {
     if (roomId) {
       const host = `ws://localhost:5000/ws/${roomId}`;
       dispatch(wsConnect(host));
+      dispatch(checkJoinRoom(String(roomId)));
     }
-    // if (!userInfo) {
-    //   dispatch(
-    //     setSnackbar({
-    //       show: true,
-    //       message: '請先登入',
-    //     })
-    //   );
-    // }
   }, [roomId]);
 
   useEffect(() => {
-    console.log('tttttt');
-  }, [isConnected]);
+    if (checkJoinObj) {
+      const { canJoin, message } = checkJoinObj;
+      if (!canJoin) {
+        dispatch(
+          setSnackbar({
+            message,
+            show: true,
+          })
+        );
+        return;
+      }
+      // joinRoom
+    }
+  }, [checkJoinObj]);
 
-  // when room created then get roomId
-  // useEffect(() => {
-  //   // check join room
-  //   dispatch(checkJoinRoom(String(roomId)));
-  // }, [roomId]);
-
-  // useEffect(() => {
-  //   console.log(checkJoin);
-  // }, [checkJoin]);
+  useEffect(() => {
+    if (isConnected) {
+      if (!userInfo) {
+        dispatch(
+          setSnackbar({
+            show: true,
+            message: '請先登入',
+          })
+        );
+        return;
+      }
+    }
+  }, [isConnected, userInfo]);
 
   return (
     <Layout>

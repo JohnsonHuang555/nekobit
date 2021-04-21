@@ -1,9 +1,4 @@
-import {
-  Room,
-  GamePack,
-  CreateRoomParams,
-  CheckJoinRoomParams,
-} from 'domain/models/Room';
+import { Room, GamePack, CreateRoomParams } from 'domain/models/Room';
 
 export enum ActionType {
   HYDRATE = 'HYDRATE',

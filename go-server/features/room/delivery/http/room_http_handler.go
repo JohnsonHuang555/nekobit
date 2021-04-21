@@ -21,7 +21,7 @@ func NewRoomHttpHandler(e *echo.Echo, rus domain.RoomUseCase, gus domain.GameUse
 
 	e.POST("/api/createRoom", handler.CreateRoom)
 	e.GET("/api/getRooms/:game_pack", handler.GetRooms)
-	e.GET("/api/checkJoinRoom", handler.CheckJoinRoom)
+	e.GET("/api/checkJoinRoom/:room_id", handler.CheckJoinRoom)
 }
 
 type createRoomParams struct {
