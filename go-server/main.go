@@ -67,7 +67,7 @@ func main() {
 	roomRepo := _roomRepo.NewRoomRepository(rooms)
 	roomUseCase := _roomUsecase.NewRoomUseCase(roomRepo)
 	_roomHandlerHttpDelivery.NewRoomHttpHandler(e, roomUseCase, gameUseCase)
-	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase)
+	_roomHandlerWebSocketDelivery.NewRoomWebSocketHandler(e, roomUseCase, gameUseCase)
 
 	logrus.Fatal(e.Start(restfulHost + ":" + restfulPort))
 }

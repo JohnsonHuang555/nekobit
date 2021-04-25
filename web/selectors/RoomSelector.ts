@@ -7,3 +7,8 @@ export const createdIdSelector = (store: StoreState) => store.room.createdId;
 // room
 export const checkJoinSelector = (store: StoreState) =>
   store.room.checkJoinRoomObj;
+
+export const roomSelector = (store: StoreState) => ({
+  roomInfo: store.room.roomInfo,
+  gameInfo: store.room.gameInfo,
+});

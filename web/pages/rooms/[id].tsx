@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfoSelector } from 'selectors/AppSelector';
-import { checkJoinSelector } from 'selectors/RoomSelector';
+import { checkJoinSelector, roomSelector } from 'selectors/RoomSelector';
 import { isConnectedSelector } from 'selectors/WebsocketSelector';
 import PlayerList from 'components/pages/room/PlayerList';
 import ChatArea from 'components/pages/room/ChatArea';
@@ -21,6 +21,7 @@ const Room = () => {
   const roomId = router.query.id;
   const checkJoinObj = useSelector(checkJoinSelector);
   const userInfo = useSelector(userInfoSelector);
+  const { roomInfo, gameInfo } = useSelector(roomSelector);
   const isConnected = useSelector(isConnectedSelector);
 
   // 拿到 roomId 後打 checkJoinRoom
@@ -61,7 +62,6 @@ const Room = () => {
         );
         return;
       }
-      console.log(123);
       // join room
       dispatch(
         wsSendMessage({
@@ -72,13 +72,88 @@ const Room = () => {
           },
         })
       );
-      console.log(456);
     }
   }, [isConnected, userInfo]);
 
+  const isNowPlayer = (id: string) => {
+    if (userInfo && userInfo.id === id) {
+      return true;
+    }
+    return false;
+  };
+
+  const playerInfo = () => {
+    return roomInfo?.playerList.find((player) => {
+      return player.id === userInfo?.id;
+    });
+  };
+
+  const isReadyToPlay = (): boolean => {
+    // const { playerList } = roomInfo;
+    // const { maxPlayers } = gameInfo;
+    // const notReadyPlayers = playerList.filter((p) => !p.isReady);
+    // if (notReadyPlayers?.length !== 0 || maxPlayers > playerList.length) {
+    //   return false;
+    // }
+    return true;
+  };
+
   return (
     <Layout>
-      <div className={styles.mainArea}>123</div>
+      {userInfo && isConnected && roomInfo && gameInfo && (
+        <div className={styles.mainArea}>
+          <div className={styles.leftArea}>
+            <PlayerList
+              roomInfo={roomInfo}
+              isNowPlayer={(player) => isNowPlayer(player)}
+            />
+            {/* // TODO: 聊天 */}
+            <div className={`${styles.block} ${styles.messages}`}>
+              <div className={`${styles.content} ${styles.chat}`}>
+                <ChatArea
+                  messages={['hi', 'yo', 'hello']}
+                  startingCount={0}
+                  onSubmit={() => {}}
+                />
+              </div>
+            </div>
+          </div>
+          <div className={`${styles.rightArea} ${styles.block}`}>
+            {/* // TODO: 遊戲設定 */}
+            <div className={styles.content}></div>
+            {playerInfo()?.isMaster ? (
+              <Button
+                title="開始遊戲"
+                color="secondary"
+                onClick={() =>
+                  dispatch(
+                    wsSendMessage({
+                      event: SocketEvent.ReadyToStart,
+                      player_id: userInfo.id,
+                    })
+                  )
+                }
+                disabled={!isReadyToPlay()}
+              />
+            ) : (
+              <Button
+                title={playerInfo()?.isReady ? '取消準備' : '準備遊戲'}
+                color="secondary"
+                onClick={() =>
+                  dispatch(
+                    wsSendMessage({
+                      event: SocketEvent.ReadyGame,
+                      player_id: userInfo.id,
+                    })
+                  )
+                }
+              />
+            )}
+            <Button title="離開房間" />
+          </div>
+          {/* {false && <GameScreen gamePack={roomInfo.gamePack} />} */}
+        </div>
+      )}
     </Layout>
   );
 };

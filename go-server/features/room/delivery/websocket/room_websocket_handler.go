@@ -17,6 +17,7 @@ import (
 
 type RoomWebSocketHandler struct {
 	RoomUseCase         domain.RoomUseCase
+	GameUseCase         domain.GameUseCase
 	ChineseChessUseCase chinesechess.ChineseChessUseCase
 }
 
@@ -29,6 +30,7 @@ type MsgData struct {
 type Attachment struct {
 	PlayerName      string           `json:"player_name,omitempty"`
 	RoomInfo        *domain.Room     `json:"room_info,omitempty"`
+	GameInfo        *domain.Game     `json:"game_info,omitempty"`
 	Players         []*domain.Player `json:"players,omitempty"`
 	GamePack        domain.GamePack  `json:"game_pack,omitempty"`
 	GameData        interface{}      `json:"game_data,omitempty"`
@@ -56,9 +58,10 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func NewRoomWebSocketHandler(e *echo.Echo, ru domain.RoomUseCase) {
+func NewRoomWebSocketHandler(e *echo.Echo, ru domain.RoomUseCase, gu domain.GameUseCase) {
 	handler := &RoomWebSocketHandler{
 		RoomUseCase: ru,
+		GameUseCase: gu,
 	}
 	e.GET("/ws/:roomID", handler.SocketHandler)
 }
@@ -74,7 +77,7 @@ func (r *RoomWebSocketHandler) SocketHandler(c echo.Context) error {
 		return err
 	}
 	conn := &connection{send: make(chan MsgData), ws: ws}
-	s := subscription{conn, roomID, r.RoomUseCase}
+	s := subscription{conn, roomID, r.RoomUseCase, r.GameUseCase}
 	h.register <- s
 	go s.writePump()
 	s.readPump()
@@ -122,8 +125,10 @@ func (s subscription) readPump() {
 		switch msg.Event {
 		case domain.JoinRoom:
 			room, err := s.roomUseCase.JoinRoom(s.roomID, msg.PlayerID, msg.Data.PlayerName)
+			game, err := s.gameUseCase.GetGameInfo(string(room.GamePack))
 			if err == nil {
 				msg.Data.RoomInfo = room
+				msg.Data.GameInfo = game
 			}
 		case domain.LeaveRoom:
 			players, err := s.roomUseCase.LeaveRoom(s.roomID, msg.PlayerID)

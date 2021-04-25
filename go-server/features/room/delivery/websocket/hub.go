@@ -13,6 +13,7 @@ type subscription struct {
 	conn        *connection
 	roomID      string
 	roomUseCase domain.RoomUseCase
+	gameUseCase domain.GameUseCase
 }
 
 // hub maintains the set of active connections and broadcasts messages to the

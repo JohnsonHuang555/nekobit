@@ -1,3 +1,4 @@
+import { Game } from 'domain/models/Game';
 import { Room, GamePack, CreateRoomParams } from 'domain/models/Room';
 import { SocketEvent } from 'domain/models/WebSocket';
 
@@ -64,9 +65,10 @@ export const checkJoinRoomSuccess = (canJoin: boolean, message: string) => {
   };
 };
 
-export const joinRoom = (room: Room) => {
+export const joinRoom = (roomInfo: Room, gameInfo: Game) => {
   return {
     type: SocketEvent.JoinRoom,
-    room,
+    roomInfo,
+    gameInfo,
   };
 };

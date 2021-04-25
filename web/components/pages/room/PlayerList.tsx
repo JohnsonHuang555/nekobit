@@ -2,24 +2,24 @@ import { Room } from 'domain/models/Room';
 import styles from 'styles/pages/room/playerList.module.scss';
 
 type PlayerListProps = {
-  selectedRoom: Room;
+  roomInfo: Room;
   isNowPlayer: (playerId: string) => boolean;
 };
 
 const PlayerList = (props: PlayerListProps) => {
-  const { selectedRoom, isNowPlayer } = props;
+  const { roomInfo, isNowPlayer } = props;
 
   return (
     <div className={`${styles.block} ${styles.playerList}`}>
       <div className={styles.header}>
         <div className={styles.roomInfo}>
           <div className={styles.roomNumber}>001</div>
-          <div className={styles.roomTitle}>{selectedRoom.title}</div>
+          <div className={styles.roomTitle}>{roomInfo.title}</div>
         </div>
         {/* <Icon type={IconType.EditSquare} label="編輯" /> */}
       </div>
       <div className={styles.content}>
-        {selectedRoom.playerList.map((player) => (
+        {roomInfo.playerList.map((player) => (
           <div
             key={player.id}
             className={`${styles.player} ${

@@ -4,6 +4,7 @@ import {
   wsConnected,
   wsDisConnected,
 } from 'actions/WebSocketAction';
+import { GameFactory } from 'domain/factories/GameFactory';
 import { RoomFactory } from 'domain/factories/RoomFactory';
 import { SocketEvent } from 'domain/models/WebSocket';
 
@@ -25,8 +26,9 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
         const { event, data, player_id } = JSON.parse(e.data);
         switch (event) {
           case SocketEvent.JoinRoom: {
-            const room = RoomFactory.createFromNet(data.room_info);
-            store.dispatch(joinRoom(room));
+            const roomInfo = RoomFactory.createFromNet(data.room_info);
+            const gameInfo = GameFactory.createFromNet(data.game_info);
+            store.dispatch(joinRoom(roomInfo, gameInfo));
             break;
           }
           default: {

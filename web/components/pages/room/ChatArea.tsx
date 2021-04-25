@@ -1,4 +1,4 @@
-import styles from 'styles/pages/rooms/chatArea.module.scss';
+import styles from 'styles/pages/room/chatArea.module.scss';
 
 type ChatAreaProps = {
   messages: string[];
