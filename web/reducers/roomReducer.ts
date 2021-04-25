@@ -1,5 +1,6 @@
 import { ActionType } from 'actions/RoomAction';
 import { Room } from 'domain/models/Room';
+import { SocketEvent } from 'domain/models/WebSocket';
 
 export type State = {
   rooms: Room[] | null;
@@ -8,6 +9,7 @@ export type State = {
     canJoin: boolean;
     message: string;
   };
+  room?: Room;
 };
 
 const initialState: State = {
@@ -31,7 +33,16 @@ type CheckJoinRoomAction = {
   message: string;
 };
 
-type Action = LoadedRoomsAction | CreatedRoomAction | CheckJoinRoomAction;
+type JoinRoomAction = {
+  type: SocketEvent.JoinRoom;
+  room: Room;
+};
+
+type Action =
+  | LoadedRoomsAction
+  | CreatedRoomAction
+  | CheckJoinRoomAction
+  | JoinRoomAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -54,6 +65,12 @@ const reducer = (state = initialState, action: Action): State => {
           canJoin: action.canJoin,
           message: action.message,
         },
+      };
+    }
+    case SocketEvent.JoinRoom: {
+      return {
+        ...state,
+        room: action.room,
       };
     }
     default: {

@@ -1,7 +1,5 @@
-import { ActionType as RoomActionType } from 'actions/RoomAction';
-
 export type WebSocketParams = {
-  event: RoomActionType;
+  event: SocketEvent;
   player_id: string;
   data?: any;
 };

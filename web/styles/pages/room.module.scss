@@ -1,0 +1,49 @@
+@import "./color";
+
+.mainArea {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  margin: 15px 0;
+  .leftArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-right: 15px;
+    .messages {
+      flex: 0.4;
+      border: 1px solid $grey-4;
+    }
+    .content {
+      width: 100%;
+    }
+    .chat {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .rightArea {
+    flex: 0.4;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $grey-4;
+    .content {
+      height: 100%;
+    }
+    button {
+      margin: 0 10px 10px 10px;
+    }
+  }
+
+  .block {
+    background: $grey-5;
+    border-radius: 5px;
+    display: flex;
+  }
+
+  .content {
+    background: $primary;
+    margin: 10px;
+  }
+}

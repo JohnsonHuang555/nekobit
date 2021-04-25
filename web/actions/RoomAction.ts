@@ -1,4 +1,5 @@
 import { Room, GamePack, CreateRoomParams } from 'domain/models/Room';
+import { SocketEvent } from 'domain/models/WebSocket';
 
 export enum ActionType {
   HYDRATE = 'HYDRATE',
@@ -60,5 +61,12 @@ export const checkJoinRoomSuccess = (canJoin: boolean, message: string) => {
     type: ActionType.CHECK_JOIN_ROOM_SUCCESS,
     canJoin,
     message,
+  };
+};
+
+export const joinRoom = (room: Room) => {
+  return {
+    type: SocketEvent.JoinRoom,
+    room,
   };
 };
