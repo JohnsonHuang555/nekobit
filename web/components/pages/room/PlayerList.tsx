@@ -1,4 +1,6 @@
 import { Room } from 'domain/models/Room';
+import Icon from 'components/Icon';
+import { Stars, AccountCircle } from '@material-ui/icons';
 import styles from 'styles/pages/room/playerList.module.scss';
 
 type PlayerListProps = {
@@ -26,13 +28,12 @@ const PlayerList = (props: PlayerListProps) => {
               isNowPlayer(player.id) ? styles.nowPlayer : ''
             }`}
           >
-            <div
-              className={styles.picture}
-              style={{
-                backgroundImage:
-                  "url('https://images.pexels.com/photos/3541389/pexels-photo-3541389.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260')",
-              }}
-            />
+            <Icon customStyles={{ width: '50px', height: '50px' }}>
+              <AccountCircle
+                htmlColor="#cccccc"
+                style={{ width: '100%', height: '100%' }}
+              />
+            </Icon>
             <div className={styles.info}>
               <div
                 className={`${styles.playerName} ${
@@ -51,12 +52,9 @@ const PlayerList = (props: PlayerListProps) => {
                 </div>
               ) : (
                 <div className={styles.master}>
-                  {/* <Icon
-                    type={IconType.Crown}
-                    label="房主"
-                    size="lg"
-                    color="dark-warning"
-                  /> */}
+                  <Icon title="房主" customStyles={{ fontSize: '28px' }}>
+                    <Stars htmlColor="#e2c138" />
+                  </Icon>
                 </div>
               )}
             </div>

@@ -1,5 +1,6 @@
 import { ActionType } from 'actions/RoomAction';
 import { Game } from 'domain/models/Game';
+import { Player } from 'domain/models/Player';
 import { Room } from 'domain/models/Room';
 import { SocketEvent } from 'domain/models/WebSocket';
 
@@ -41,11 +42,28 @@ type JoinRoomAction = {
   gameInfo: Game;
 };
 
+type LeaveRoomAction = {
+  type: SocketEvent.LeaveRoom;
+  players: Player[];
+};
+
+type ReadyGameAction = {
+  type: SocketEvent.ReadyGame;
+  players: Player[];
+};
+
+type ResetAction = {
+  type: ActionType.RESET;
+};
+
 type Action =
   | LoadedRoomsAction
   | CreatedRoomAction
   | CheckJoinRoomAction
-  | JoinRoomAction;
+  | JoinRoomAction
+  | LeaveRoomAction
+  | ReadyGameAction
+  | ResetAction;
 
 const reducer = (state = initialState, action: Action): State => {
   switch (action.type) {
@@ -75,6 +93,41 @@ const reducer = (state = initialState, action: Action): State => {
         ...state,
         roomInfo: action.roomInfo,
         gameInfo: action.gameInfo,
+        checkJoinRoomObj: undefined,
+      };
+    }
+    case SocketEvent.LeaveRoom: {
+      console.log('leave');
+      if (!state.roomInfo) {
+        return state;
+      }
+      console.log(state);
+      return {
+        ...state,
+        roomInfo: {
+          ...state.roomInfo,
+          playerList: action.players,
+        },
+        checkJoinRoomObj: undefined,
+      };
+    }
+    case SocketEvent.ReadyGame: {
+      if (!state.roomInfo) {
+        return state;
+      }
+      return {
+        ...state,
+        createdId: '',
+        roomInfo: {
+          ...state.roomInfo,
+          playerList: action.players,
+        },
+      };
+    }
+    case ActionType.RESET: {
+      return {
+        ...state,
+        checkJoinRoomObj: undefined,
       };
     }
     default: {

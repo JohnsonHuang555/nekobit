@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 import styles from 'styles/components/icon.module.scss';
 
 type IconProps = {
-  title: string | number;
+  title?: string | number;
   children: JSX.Element;
   customStyles?: CSSProperties;
 };

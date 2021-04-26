@@ -1,12 +1,16 @@
 import { setSnackbar } from 'actions/AppAction';
-import { checkJoinRoom } from 'actions/RoomAction';
+import { checkJoinRoom, reset } from 'actions/RoomAction';
 import { wsConnect, wsSendMessage } from 'actions/WebSocketAction';
 import Layout from 'components/Layout';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfoSelector } from 'selectors/AppSelector';
-import { checkJoinSelector, roomSelector } from 'selectors/RoomSelector';
+import {
+  checkJoinSelector,
+  createdIdSelector,
+  roomSelector,
+} from 'selectors/RoomSelector';
 import { isConnectedSelector } from 'selectors/WebsocketSelector';
 import PlayerList from 'components/pages/room/PlayerList';
 import ChatArea from 'components/pages/room/ChatArea';
@@ -41,6 +45,7 @@ const Room = () => {
             show: true,
           })
         );
+        dispatch(reset());
         // 導回首頁
         router.push('/');
         return;
@@ -52,6 +57,16 @@ const Room = () => {
   }, [checkJoinObj]);
 
   useEffect(() => {
+    const leaveRoomHandler = (e: BeforeUnloadEvent) => {
+      dispatch(
+        wsSendMessage({
+          event: SocketEvent.LeaveRoom,
+          player_id: userInfo?.id as string,
+        })
+      );
+      console.log(123456);
+      router.push('/');
+    };
     if (isConnected) {
       if (!userInfo) {
         dispatch(
@@ -62,6 +77,7 @@ const Room = () => {
         );
         return;
       }
+      window.addEventListener('unload', leaveRoomHandler);
       // join room
       dispatch(
         wsSendMessage({
@@ -73,6 +89,9 @@ const Room = () => {
         })
       );
     }
+    return () => {
+      window.removeEventListener('unload', leaveRoomHandler);
+    };
   }, [isConnected, userInfo]);
 
   const isNowPlayer = (id: string) => {
@@ -89,12 +108,15 @@ const Room = () => {
   };
 
   const isReadyToPlay = (): boolean => {
-    // const { playerList } = roomInfo;
-    // const { maxPlayers } = gameInfo;
-    // const notReadyPlayers = playerList.filter((p) => !p.isReady);
-    // if (notReadyPlayers?.length !== 0 || maxPlayers > playerList.length) {
-    //   return false;
-    // }
+    if (!gameInfo || !roomInfo) {
+      return false;
+    }
+    const { playerList } = roomInfo;
+    const { maxPlayers } = gameInfo;
+    const notReadyPlayers = playerList.filter((p) => !p.isReady);
+    if (notReadyPlayers?.length !== 0 || maxPlayers > playerList.length) {
+      return false;
+    }
     return true;
   };
 
@@ -123,8 +145,7 @@ const Room = () => {
             <div className={styles.content}></div>
             {playerInfo()?.isMaster ? (
               <Button
-                title="開始遊戲"
-                color="secondary"
+                variant="outlined"
                 onClick={() =>
                   dispatch(
                     wsSendMessage({
@@ -134,11 +155,12 @@ const Room = () => {
                   )
                 }
                 disabled={!isReadyToPlay()}
-              />
+              >
+                開始遊戲
+              </Button>
             ) : (
               <Button
-                title={playerInfo()?.isReady ? '取消準備' : '準備遊戲'}
-                color="secondary"
+                variant="outlined"
                 onClick={() =>
                   dispatch(
                     wsSendMessage({
@@ -147,9 +169,11 @@ const Room = () => {
                     })
                   )
                 }
-              />
+              >
+                {playerInfo()?.isReady ? '取消準備' : '準備遊戲'}
+              </Button>
             )}
-            <Button title="離開房間" />
+            <Button variant="outlined">離開房間</Button>
           </div>
           {/* {false && <GameScreen gamePack={roomInfo.gamePack} />} */}
         </div>

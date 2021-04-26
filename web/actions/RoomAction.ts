@@ -1,4 +1,5 @@
 import { Game } from 'domain/models/Game';
+import { Player } from 'domain/models/Player';
 import { Room, GamePack, CreateRoomParams } from 'domain/models/Room';
 import { SocketEvent } from 'domain/models/WebSocket';
 
@@ -10,6 +11,7 @@ export enum ActionType {
   CREATE_ROOM_SUCCESS = 'CREATE_ROOM_SUCCESS',
   CHECK_JOIN_ROOM = 'CHECK_JOIN_ROOM',
   CHECK_JOIN_ROOM_SUCCESS = 'CHECK_JOIN_ROOM_SUCCESS',
+  RESET = 'RESET',
 }
 
 // loadRooms
@@ -70,5 +72,25 @@ export const joinRoom = (roomInfo: Room, gameInfo: Game) => {
     type: SocketEvent.JoinRoom,
     roomInfo,
     gameInfo,
+  };
+};
+
+export const leaveRoom = (players: Player[]) => {
+  return {
+    type: SocketEvent.LeaveRoom,
+    players,
+  };
+};
+
+export const readyGame = (players: Player[]) => {
+  return {
+    type: SocketEvent.ReadyGame,
+    players,
+  };
+};
+
+export const reset = () => {
+  return {
+    type: ActionType.RESET,
   };
 };
