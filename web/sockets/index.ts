@@ -34,7 +34,6 @@ const socketMiddleware = (store: any) => (next: any) => (action: any) => {
           }
           case SocketEvent.LeaveRoom: {
             const players = PlayerFactory.createArrayFromNet(data.players);
-            console.log('leave', players);
             store.dispatch(leaveRoom(players));
           }
           case SocketEvent.ReadyGame: {

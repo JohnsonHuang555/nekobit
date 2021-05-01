@@ -45,7 +45,12 @@ const Header = () => {
         <Toolbar>
           {/* TODO: LOGO */}
           <Typography variant="h6" style={{ flexGrow: 1 }}>
-            <span onClick={() => router.push('/')}>nekobit</span>
+            <span
+              onClick={() => router.push('/')}
+              style={{ cursor: 'pointer' }}
+            >
+              nekobit
+            </span>
           </Typography>
           <div>
             {userInfo ? (

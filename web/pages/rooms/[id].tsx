@@ -3,7 +3,7 @@ import { checkJoinRoom, reset } from 'actions/RoomAction';
 import { wsConnect, wsSendMessage } from 'actions/WebSocketAction';
 import Layout from 'components/Layout';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userInfoSelector } from 'selectors/AppSelector';
 import {
@@ -18,6 +18,8 @@ import GameScreen from 'components/pages/room/GameScreen';
 import { Button } from '@material-ui/core';
 import styles from 'styles/pages/room.module.scss';
 import { SocketEvent } from 'domain/models/WebSocket';
+import ConfirmModal from 'components/modals/ConfirmModal';
+import Router from 'next/router';
 
 const Room = () => {
   const router = useRouter();
@@ -27,6 +29,21 @@ const Room = () => {
   const userInfo = useSelector(userInfoSelector);
   const { roomInfo, gameInfo } = useSelector(roomSelector);
   const isConnected = useSelector(isConnectedSelector);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+
+  useEffect(() => {
+    const beforeLeaveRoom = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', beforeLeaveRoom);
+    Router.events.on('routeChangeStart', onRouteChange);
+    return () => {
+      localStorage.removeItem('leaveRoute');
+      window.removeEventListener('beforeunload', beforeLeaveRoom);
+      Router.events.off('routeChangeStart', onRouteChange);
+    };
+  }, []);
 
   // 拿到 roomId 後打 checkJoinRoom
   useEffect(() => {
@@ -57,15 +74,13 @@ const Room = () => {
   }, [checkJoinObj]);
 
   useEffect(() => {
-    const leaveRoomHandler = (e: BeforeUnloadEvent) => {
+    const leaveRoomHandler = () => {
       dispatch(
         wsSendMessage({
           event: SocketEvent.LeaveRoom,
           player_id: userInfo?.id as string,
         })
       );
-      console.log(123456);
-      router.push('/');
     };
     if (isConnected) {
       if (!userInfo) {
@@ -93,6 +108,19 @@ const Room = () => {
       window.removeEventListener('unload', leaveRoomHandler);
     };
   }, [isConnected, userInfo]);
+
+  const onRouteChange = (url: string) => {
+    localStorage.setItem('leaveRoute', url);
+    const leaveRoute = localStorage.getItem('leaveRoute');
+    // if (leaveRoute) {
+    //   return;
+    // }
+    if (!leaveRoute && url.substr(0, 6) !== '/rooms') {
+      // localStorage.setItem('leaveRoute', url);
+      setShowLeaveModal(true);
+      throw 'Abort route change. Please ignore this error.';
+    }
+  };
 
   const isNowPlayer = (id: string) => {
     if (userInfo && userInfo.id === id) {
@@ -122,6 +150,26 @@ const Room = () => {
 
   return (
     <Layout>
+      {userInfo && (
+        <ConfirmModal
+          show={showLeaveModal}
+          text="確定要離開房間?"
+          onClose={() => {
+            localStorage.removeItem('leaveRoute');
+            setShowLeaveModal(false);
+          }}
+          onConfirm={() => {
+            dispatch(
+              wsSendMessage({
+                event: SocketEvent.LeaveRoom,
+                player_id: userInfo.id,
+              })
+            );
+            setShowLeaveModal(false);
+            router.push('/');
+          }}
+        />
+      )}
       {userInfo && isConnected && roomInfo && gameInfo && (
         <div className={styles.mainArea}>
           <div className={styles.leftArea}>

@@ -97,11 +97,9 @@ const reducer = (state = initialState, action: Action): State => {
       };
     }
     case SocketEvent.LeaveRoom: {
-      console.log('leave');
       if (!state.roomInfo) {
         return state;
       }
-      console.log(state);
       return {
         ...state,
         roomInfo: {
